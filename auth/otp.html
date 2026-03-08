@@ -217,13 +217,15 @@
           return;
         }
 
-        // Save profile info from signup step (Profile.upsert auto-reads current user)
+        // Save profile info from signup step
         const name = sessionStorage.getItem('signupName');
         const lang = sessionStorage.getItem('signupLang');
-        if (name || lang) {
+        const role = sessionStorage.getItem('signupRole');
+        if (name || lang || role) {
           await Profile.upsert({
-            full_name: name || undefined,
-            preferred_language: lang || undefined
+            full_name:            name || undefined,
+            preferred_language:   lang || undefined,
+            role:                 role || undefined
           });
         }
 
