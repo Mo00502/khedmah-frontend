@@ -8,7 +8,7 @@
    ============================================================ */
 
 const SUPABASE_URL      = 'https://vajsiefmbpwzwsasakmn.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_uaV1NpS0RYYiPNh4iLdkYQ__Odwy-PNY';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZhanNpZWZtYnB3endzYXNha21uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI5MDI1MDQsImV4cCI6MjA4ODQ3ODUwNH0.iFq-GeDkjrCgRvgANP9uR-kGDrJZeEWDwQ57mAqUK8o';
 
 /* ── Demo mode: bypass all Supabase calls ─────────────────────── */
 const _DEMO = !!localStorage.getItem('khedmah_demo');
