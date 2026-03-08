@@ -186,11 +186,7 @@
       return;
     }
 
-    /* ── DEMO MODE: skip OTP, go straight to dashboard ── */
     const role = document.querySelector('input[name="loginRole"]:checked')?.value || 'customer';
-    quickLogin(role);
-
-    /* ── PRODUCTION: uncomment below and remove quickLogin() above ──
     const btn = document.getElementById('loginBtn');
     btn.disabled = true;
     btn.innerHTML = '<i class="fas fa-spinner fa-spin ms-2"></i> جاري الإرسال...';
@@ -207,7 +203,6 @@
       }
       window.location.href = 'otp.html';
     });
-    ── END PRODUCTION ── */
   }
 </script>
 </body>

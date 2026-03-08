@@ -201,11 +201,6 @@
           return;
         }
 
-        /* ── DEMO MODE: any 6-digit code works ── */
-        demoBypass();
-        return;
-
-        /* ── PRODUCTION: remove the two lines above and uncomment below ──
         const phone = sessionStorage.getItem('otpPhone');
         if (!phone) { window.location.href = 'signup.html'; return; }
 
@@ -221,7 +216,6 @@
           document.querySelector('.k-otp-input')?.focus();
           return;
         }
-        ── END PRODUCTION ── */
 
         // Save profile info from signup step (Profile.upsert auto-reads current user)
         const name = sessionStorage.getItem('signupName');

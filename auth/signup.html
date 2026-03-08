@@ -289,23 +289,10 @@
         sessionStorage.setItem('otpPhone',     this.phone);
         sessionStorage.setItem('otpMode',      'signup');
 
-        /* ── DEMO MODE: skip OTP, go straight to dashboard ── */
-        const demoDest = {
-          customer: '../customer/dashboard.html', provider: '../provider/dashboard.html',
-          company: '../tenders/index.html', equipment: '../equipment/list-equipment.html',
-          engineer: '../services/professional-services.html', admin: '../admin/dashboard.html'
-        };
-        localStorage.setItem('khedmah_demo', JSON.stringify({ name: name || 'مستخدم جديد', phone: this.phone, role: this.role }));
-        sessionStorage.clear();
-        this.loading = false;
-        window.location.href = demoDest[this.role] || '../customer/dashboard.html';
-
-        /* ── PRODUCTION: remove the 5 lines above and uncomment below ──
         const { ok, error } = await Auth.sendOtp(this.phone);
         this.loading = false;
         if (!ok) { this.error = error?.message || 'تعذّر إرسال رمز التحقق.'; return; }
         window.location.href = 'otp.html';
-        ── END PRODUCTION ── */
       }
     };
   }
