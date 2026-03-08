@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تأكيد إتمام الخدمة — خدمة</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="../assets/css/khedmah.css">
+  <style>
+    body { background: #f8fafc; }
+    .question-card { background: #fff; border-radius: 14px; padding: 1.25rem; border: 1px solid #e2e8f0; margin-bottom: 1rem; }
+    .ans-btn { border: 2px solid #e2e8f0; border-radius: 10px; padding: 0.5rem 1.5rem; font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: all 0.2s; background: #fff; }
+    .ans-btn.yes { border-color: var(--k-success); background: rgba(16,185,129,0.08); color: var(--k-success); }
+    .ans-btn.no  { border-color: var(--k-danger); background: rgba(239,68,68,0.08); color: var(--k-danger); }
+    .ans-btn:hover { transform: translateY(-1px); }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../assets/js/supabase-client.js"></script>
+</head>
+<body>
+<script>
+  /* ── Auth guard ── */
+  (function() {
+    if (localStorage.getItem('khedmah_demo')) return;
+    var hasSession = Object.keys(localStorage).some(function(k) {
+      return k.indexOf('auth-token') !== -1 || k.indexOf('supabase') !== -1;
+    });
+    if (!hasSession) { window.location.replace('../auth/login.html'); }
+  })();
+</script>
+
+
+<nav class="k-navbar navbar navbar-expand-lg">
+  <div class="container">
+    <a class="navbar-brand" href="../index.html">خدم<span style="color:var(--k-accent)">ة</span></a>
+    <ul class="navbar-nav ms-auto">
+      <li class="nav-item"><a class="nav-link" href="dashboard.html" style="color:rgba(255,255,255,0.75)">لوحة التحكم</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="container py-4" style="max-width:680px" x-data="confirmApp()">
+
+  <!-- Header Card -->
+  <div style="background:linear-gradient(135deg,var(--k-primary),var(--k-secondary));border-radius:20px;padding:2rem;text-align:center;color:#fff;margin-bottom:1.5rem">
+    <div style="width:72px;height:72px;background:rgba(255,255,255,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:2rem">
+      <i class="fas fa-clipboard-check"></i>
+    </div>
+    <h3 style="font-weight:900;margin-bottom:0.5rem">تأكيد إتمام الخدمة</h3>
+    <p style="opacity:0.85;margin:0;font-size:0.95rem">بعد تأكيدك سيتم تحرير المبلغ المحجوز للمزود</p>
+  </div>
+
+  <!-- Service Summary -->
+  <div class="card border-0 shadow-sm mb-3" style="border-radius:16px">
+    <div class="card-body">
+      <div class="d-flex align-items-center gap-3 mb-3">
+        <div style="width:56px;height:56px;background:linear-gradient(135deg,var(--k-primary),var(--k-accent));border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.4rem">
+          <i class="fas fa-user"></i>
+        </div>
+        <div>
+          <div style="font-weight:800;color:var(--k-dark-2)">أحمد السباك المحترف</div>
+          <div style="color:var(--k-gray);font-size:0.85rem">خدمة سباكة</div>
+        </div>
+      </div>
+      <div class="row g-2" style="font-size:0.85rem">
+        <div class="col-6">
+          <span style="color:var(--k-gray)"><i class="fas fa-calendar ms-1"></i> التاريخ:</span>
+          <strong style="color:var(--k-dark-2)"> 5 مارس 2026</strong>
+        </div>
+        <div class="col-6">
+          <span style="color:var(--k-gray)"><i class="fas fa-clock ms-1"></i> المدة:</span>
+          <strong style="color:var(--k-dark-2)"> 3 ساعات</strong>
+        </div>
+        <div class="col-6">
+          <span style="color:var(--k-gray)"><i class="fas fa-map-marker ms-1"></i> الموقع:</span>
+          <strong style="color:var(--k-dark-2)"> الرياض</strong>
+        </div>
+        <div class="col-6">
+          <span style="color:var(--k-gray)"><i class="fas fa-money-bill ms-1"></i> المبلغ:</span>
+          <strong style="color:var(--k-primary)"> 350 ر.س</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Escrow Status -->
+  <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:14px;padding:1.25rem;margin-bottom:1.5rem">
+    <div class="d-flex align-items-start gap-3">
+      <i class="fas fa-clock" style="color:#d97706;font-size:1.3rem;margin-top:0.2rem"></i>
+      <div>
+        <div style="font-weight:700;color:#92400e">المبلغ 350 ر.س محجوز في نظام الضمان</div>
+        <div style="font-size:0.85rem;color:#b45309;margin-top:0.25rem">
+          متبقي على الإصدار التلقائي: <strong x-text="countdown" style="font-size:1rem"></strong>
+        </div>
+        <div style="font-size:0.8rem;color:#92400e;margin-top:0.5rem">
+          <i class="fas fa-info-circle ms-1"></i> سيتم تحرير المبلغ تلقائياً بعد 48 ساعة إن لم تُبلَّغ أي مشكلة
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Questions -->
+  <h5 style="font-weight:800;color:var(--k-dark-2);margin-bottom:1rem">هل أُنجزت الخدمة بشكل صحيح؟</h5>
+
+  <div class="question-card">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+      <span style="font-weight:600;color:var(--k-dark-2)">هل تم إنجاز العمل كما تم الاتفاق؟</span>
+      <div class="d-flex gap-2">
+        <button class="ans-btn" :class="{ yes: q1===true, no: q1===false && q1!==null }" @click="q1=true; checkAll()">
+          <i class="fas fa-check ms-1"></i> نعم
+        </button>
+        <button class="ans-btn" :class="{ no: q1===false }" @click="q1=false; checkAll()">
+          <i class="fas fa-times ms-1"></i> لا
+        </button>
+      </div>
+    </div>
+    <div x-show="q1===false" x-transition style="margin-top:1rem">
+      <textarea class="form-control" rows="3" placeholder="يرجى وصف المشكلة..."></textarea>
+    </div>
+  </div>
+
+  <div class="question-card">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+      <span style="font-weight:600;color:var(--k-dark-2)">هل جودة الخدمة كما توقعت؟</span>
+      <div class="d-flex gap-2">
+        <button class="ans-btn" :class="{ yes: q2===true }" @click="q2=true; checkAll()">
+          <i class="fas fa-check ms-1"></i> نعم
+        </button>
+        <button class="ans-btn" :class="{ no: q2===false }" @click="q2=false; checkAll()">
+          <i class="fas fa-times ms-1"></i> لا
+        </button>
+      </div>
+    </div>
+    <div x-show="q2===false" x-transition style="margin-top:1rem">
+      <textarea class="form-control" rows="3" placeholder="يرجى وصف المشكلة..."></textarea>
+    </div>
+  </div>
+
+  <div class="question-card">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+      <span style="font-weight:600;color:var(--k-dark-2)">هل أنت راضٍ بشكل عام عن الخدمة؟</span>
+      <div class="d-flex gap-2">
+        <button class="ans-btn" :class="{ yes: q3===true }" @click="q3=true; checkAll()">
+          <i class="fas fa-check ms-1"></i> نعم
+        </button>
+        <button class="ans-btn" :class="{ no: q3===false }" @click="q3=false; checkAll()">
+          <i class="fas fa-times ms-1"></i> لا
+        </button>
+      </div>
+    </div>
+    <div x-show="q3===false" x-transition style="margin-top:1rem">
+      <textarea class="form-control" rows="3" placeholder="يرجى وصف المشكلة..."></textarea>
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="d-flex gap-3 mt-4">
+    <button class="btn btn-outline-danger flex-fill py-3" style="border-radius:12px">
+      <i class="fas fa-flag ms-2"></i> تقديم شكوى
+    </button>
+    <button class="btn btn-primary flex-fill py-3" :disabled="!canConfirm" style="border-radius:12px;font-size:1rem"
+      @click="loading=true; setTimeout(()=>{ location.href='rate-service.html' }, 1500)">
+      <span x-show="!loading"><i class="fas fa-check-circle ms-2"></i> تحرير المبلغ للمزود</span>
+      <span x-show="loading"><i class="fas fa-spinner fa-spin ms-2"></i> جاري المعالجة...</span>
+    </button>
+  </div>
+
+  <p style="color:var(--k-gray);font-size:0.8rem;text-align:center;margin-top:1rem">
+    <i class="fas fa-exclamation-triangle ms-1" style="color:var(--k-warning)"></i>
+    تحرير المبلغ لا يمكن التراجع عنه. يُرجى التأكد من إتمام الخدمة قبل المتابعة.
+  </p>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+<script src="../assets/js/khedmah.js"></script>
+<script>
+  function confirmApp() {
+    return {
+      q1: null, q2: null, q3: null,
+      canConfirm: false,
+      loading: false,
+      countdown: '47 ساعة و 23 دقيقة',
+      init() {
+        let hours = 47, mins = 23;
+        setInterval(() => {
+          mins--;
+          if (mins < 0) { mins = 59; hours--; }
+          if (hours >= 0) this.countdown = hours + ' ساعة و ' + mins + ' دقيقة';
+        }, 60000);
+      },
+      checkAll() {
+        this.canConfirm = this.q1 === true && this.q2 === true && this.q3 === true;
+      }
+    };
+  }
+</script>
+</body>
+</html>

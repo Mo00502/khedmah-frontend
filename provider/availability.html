@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>جدول التوفر — خدمة</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="../assets/css/khedmah.css">
+  <style>
+    body{background:#f1f5f9;}
+    @media(max-width:991px){.k-sidebar{display:none}.k-main-content{margin-right:0}}
+    .slot-btn{
+      padding:0.5rem 0.3rem; border-radius:8px; border:2px solid #e2e8f0;
+      background:#f8fafc; font-size:0.72rem; font-weight:600;
+      color:var(--k-gray); cursor:pointer; transition:all 0.15s;
+      width:100%; font-family:'Tajawal',sans-serif;
+    }
+    .slot-btn.on{ background:rgba(2,128,144,0.1); border-color:var(--k-primary); color:var(--k-primary); }
+    .slot-btn:hover{ transform:scale(1.04); }
+    .day-head{ font-size:0.8rem; font-weight:700; color:var(--k-gray); text-align:center; padding:0.4rem 0; }
+    .time-lbl{ font-size:0.82rem; font-weight:600; color:var(--k-dark-2); display:flex; align-items:center; }
+    .status-dot{ width:10px;height:10px;border-radius:50%;display:inline-block;margin-left:6px; }
+    .pulse{ animation:pulse 2s infinite; }
+    @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.6;transform:scale(1.3)}}
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../assets/js/supabase-client.js"></script>
+</head>
+<body>
+<script>
+  (function(){
+    if(localStorage.getItem('khedmah_demo')) return;
+    var has=Object.keys(localStorage).some(function(k){return k.indexOf('auth-token')!==-1||k.indexOf('supabase')!==-1;});
+    if(!has) window.location.replace('../auth/login.html');
+  })();
+</script>
+
+<nav class="k-navbar navbar navbar-expand-lg" style="position:sticky;top:0;z-index:200">
+  <div class="container-fluid px-4">
+    <a class="navbar-brand" href="../index.html">خدم<span style="color:var(--k-accent)">ة</span></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navMain">
+      <ul class="navbar-nav me-auto gap-1">
+        <li class="nav-item"><a class="nav-link" href="dashboard.html">لوحة المزود</a></li>
+        <li class="nav-item"><a class="nav-link" href="manage-services.html">خدماتي</a></li>
+        <li class="nav-item"><a class="nav-link active" href="availability.html">التوفر</a></li>
+        <li class="nav-item"><a class="nav-link" href="chat-translation.html">المحادثات</a></li>
+      </ul>
+      <div class="d-flex gap-2 align-items-center">
+        <span class="badge" style="background:rgba(16,185,129,0.2);color:#059669;font-size:0.78rem;padding:0.35rem 0.75rem">مزود معتمد</span>
+        <span style="color:rgba(255,255,255,0.75);font-size:0.9rem">محمد الكهربائي</span>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="d-flex">
+  <div class="k-sidebar">
+    <div class="k-sidebar-brand mb-4">خدم<span>ة</span></div>
+    <div style="font-size:0.72rem;font-weight:700;color:rgba(255,255,255,0.35);letter-spacing:1px;text-transform:uppercase;margin-bottom:0.5rem;padding-right:0.75rem">الرئيسية</div>
+    <nav class="nav flex-column gap-1 mb-3">
+      <a href="dashboard.html" class="nav-link"><i class="fas fa-th-large"></i> لوحة التحكم</a>
+      <a href="profile.html" class="nav-link"><i class="fas fa-user-circle"></i> ملفي الشخصي</a>
+      <a href="chat-translation.html" class="nav-link"><i class="fas fa-comments"></i> المحادثات</a>
+    </nav>
+    <div style="font-size:0.72rem;font-weight:700;color:rgba(255,255,255,0.35);letter-spacing:1px;text-transform:uppercase;margin-bottom:0.5rem;padding-right:0.75rem">الإدارة</div>
+    <nav class="nav flex-column gap-1 mb-3">
+      <a href="manage-services.html" class="nav-link"><i class="fas fa-tools"></i> خدماتي</a>
+      <a href="availability.html" class="nav-link active"><i class="fas fa-calendar-check"></i> التوفر</a>
+      <a href="bank-settings.html" class="nav-link"><i class="fas fa-university"></i> إعدادات البنك</a>
+      <a href="rate-customer.html" class="nav-link"><i class="fas fa-star"></i> تقييم العملاء</a>
+    </nav>
+    <a href="#" onclick="localStorage.removeItem('khedmah_demo');sessionStorage.clear();window.location.href='../auth/login.html'" class="nav-link" style="color:rgba(239,68,68,0.8)!important;margin-top:2rem"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</a>
+  </div>
+
+  <div class="k-main-content flex-grow-1">
+
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+      <div>
+        <h4 style="font-weight:900;color:var(--k-dark-2);margin-bottom:0.25rem">إدارة التوفر</h4>
+        <p style="color:var(--k-gray);font-size:0.9rem;margin:0">حدد أوقات عملك الأسبوعية وفترات إجازاتك</p>
+      </div>
+      <div id="statusBadge" class="badge px-3 py-2" style="font-size:0.9rem;background:rgba(16,185,129,0.12);color:#059669">
+        <span class="status-dot pulse" style="background:#059669"></span> متاح الآن
+      </div>
+    </div>
+
+    <!-- Quick Presets -->
+    <div class="card border-0 shadow-sm mb-4" style="border-radius:16px">
+      <div class="card-body">
+        <h6 class="fw-bold mb-3"><i class="fas fa-bolt text-warning ms-2"></i> إعداد سريع</h6>
+        <div class="d-flex gap-2 flex-wrap">
+          <button class="btn btn-outline-primary btn-sm" onclick="applyPreset('full')">🌐 دوام كامل</button>
+          <button class="btn btn-outline-primary btn-sm" onclick="applyPreset('weekdays')">📅 أيام العمل</button>
+          <button class="btn btn-outline-primary btn-sm" onclick="applyPreset('morning')">🌅 صباحي فقط</button>
+          <button class="btn btn-outline-primary btn-sm" onclick="applyPreset('evening')">🌆 مسائي فقط</button>
+          <button class="btn btn-outline-danger btn-sm" onclick="applyPreset('clear')">🚫 مسح الكل</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Schedule Grid -->
+    <div class="card border-0 shadow-sm mb-4" style="border-radius:16px;overflow-x:auto">
+      <div class="card-body">
+        <h6 class="fw-bold mb-3"><i class="fas fa-calendar-alt ms-2" style="color:var(--k-primary)"></i> الجدول الأسبوعي</h6>
+        <div style="min-width:650px">
+          <div class="row g-1 mb-1">
+            <div class="col-2"></div>
+            <div class="col day-head">الأحد</div>
+            <div class="col day-head">الاثنين</div>
+            <div class="col day-head">الثلاثاء</div>
+            <div class="col day-head">الأربعاء</div>
+            <div class="col day-head">الخميس</div>
+            <div class="col day-head">الجمعة</div>
+            <div class="col day-head">السبت</div>
+          </div>
+          <!-- Morning -->
+          <div class="row g-1 mb-1 align-items-center">
+            <div class="col-2 time-lbl">🌅 صباحي<br><small style="font-weight:400;color:var(--k-gray)">8ص–12م</small></div>
+            <div class="col"><button class="slot-btn on" data-slot="sun-m" onclick="toggleSlot(this)">متاح</button></div>
+            <div class="col"><button class="slot-btn on" data-slot="mon-m" onclick="toggleSlot(this)">متاح</button></div>
+            <div class="col"><button class="slot-btn on" data-slot="tue-m" onclick="toggleSlot(this)">متاح</button></div>
+            <div class="col"><button class="slot-btn on" data-slot="wed-m" onclick="toggleSlot(this)">متاح</button></div>
+            <div class="col"><button class="slot-btn on" data-slot="thu-m" onclick="toggleSlot(this)">متاح</button></div>
+            <div class="col"><button class="slot-btn" data-slot="fri-m" onclick="toggleSlot(this)">غير متاح</button></div>
+            <div class="col"><button class="slot-btn" data-slot="sat-m" onclick="toggleSlot(this)">غير متاح</button></div>
+          </div>
+          <!-- Afternoon -->
+          <div class="row g-1 mb-1 align-items-center">
+            <div class="col-2 time-lbl">☀️ ظهري<br><small style="font-weight:400;color:var(--k-gray)">12م–5م</small></div>
+            <div class="col"><button class="slot-btn on" data-slot="sun-a" onclick="toggleSlot(this)">متاح</button></div>
+            <div class="col"><button class="slot-btn on" data-slot="mon-a" onclick="toggleSlot(this)">متاح</button></div>
+            <div class="col"><button class="slot-btn on" data-slot="tue-a" onclick="toggleSlot(this)">متاح</button></div>
+            <div class="col"><button class="slot-btn on" data-slot="wed-a" onclick="toggleSlot(this)">متاح</button></div>
+            <div class="col"><button class="slot-btn on" data-slot="thu-a" onclick="toggleSlot(this)">متاح</button></div>
+            <div class="col"><button class="slot-btn" data-slot="fri-a" onclick="toggleSlot(this)">غير متاح</button></div>
+            <div class="col"><button class="slot-btn" data-slot="sat-a" onclick="toggleSlot(this)">غير متاح</button></div>
+          </div>
+          <!-- Evening -->
+          <div class="row g-1 align-items-center">
+            <div class="col-2 time-lbl">🌆 مسائي<br><small style="font-weight:400;color:var(--k-gray)">5م–10م</small></div>
+            <div class="col"><button class="slot-btn on" data-slot="sun-e" onclick="toggleSlot(this)">متاح</button></div>
+            <div class="col"><button class="slot-btn on" data-slot="mon-e" onclick="toggleSlot(this)">متاح</button></div>
+            <div class="col"><button class="slot-btn" data-slot="tue-e" onclick="toggleSlot(this)">غير متاح</button></div>
+            <div class="col"><button class="slot-btn" data-slot="wed-e" onclick="toggleSlot(this)">غير متاح</button></div>
+            <div class="col"><button class="slot-btn on" data-slot="thu-e" onclick="toggleSlot(this)">متاح</button></div>
+            <div class="col"><button class="slot-btn" data-slot="fri-e" onclick="toggleSlot(this)">غير متاح</button></div>
+            <div class="col"><button class="slot-btn" data-slot="sat-e" onclick="toggleSlot(this)">غير متاح</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Vacation Mode -->
+    <div class="card border-0 shadow-sm mb-4" style="border-radius:16px">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <div>
+            <h6 class="fw-bold mb-0"><i class="fas fa-umbrella-beach ms-2" style="color:var(--k-warning)"></i> وضع الإجازة</h6>
+            <small style="color:var(--k-gray)">تفعيله يوقف استقبال الطلبات الجديدة مؤقتاً</small>
+          </div>
+          <div class="form-check form-switch mb-0">
+            <input class="form-check-input" type="checkbox" id="vacToggle" onchange="toggleVacation(this)" style="width:52px;height:28px;cursor:pointer">
+          </div>
+        </div>
+        <div id="vacBody" style="display:none">
+          <div class="row g-3 mt-1">
+            <div class="col-md-6">
+              <label class="form-label fw-semibold" style="font-size:0.85rem">من تاريخ</label>
+              <input type="date" class="form-control" id="vacFrom">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold" style="font-size:0.85rem">إلى تاريخ</label>
+              <input type="date" class="form-control" id="vacTo">
+            </div>
+          </div>
+          <div class="alert alert-warning mt-3 mb-0 py-2" style="font-size:0.85rem">
+            <i class="fas fa-exclamation-triangle ms-2"></i>
+            خلال الإجازة لن تظهر في نتائج البحث ولن تتلقى طلبات جديدة.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Save -->
+    <div class="d-flex gap-3 justify-content-end">
+      <button class="btn btn-outline-secondary" onclick="resetSchedule()"><i class="fas fa-undo ms-2"></i> إعادة تعيين</button>
+      <button class="btn btn-primary px-5" onclick="saveSchedule()"><i class="fas fa-save ms-2"></i> حفظ الجدول</button>
+    </div>
+
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../assets/js/khedmah.js"></script>
+<script>
+  function toggleSlot(btn){
+    var on=btn.classList.toggle('on');
+    btn.textContent=on?'متاح':'غير متاح';
+    updateStatus();
+  }
+
+  function updateStatus(){
+    var now=new Date(); var h=now.getHours();
+    var days=['sun','mon','tue','wed','thu','fri','sat'];
+    var day=days[now.getDay()];
+    var period=h<12?'m':h<17?'a':'e';
+    var slot=document.querySelector('[data-slot="'+day+'-'+period+'"]');
+    var badge=document.getElementById('statusBadge');
+    if(slot&&slot.classList.contains('on')){
+      badge.style.background='rgba(16,185,129,0.12)';badge.style.color='#059669';
+      badge.innerHTML='<span class="status-dot pulse" style="background:#059669"></span> متاح الآن';
+    } else {
+      badge.style.background='rgba(239,68,68,0.1)';badge.style.color='#dc2626';
+      badge.innerHTML='<span class="status-dot" style="background:#dc2626"></span> غير متاح الآن';
+    }
+  }
+
+  function applyPreset(p){
+    var workdays=['sun','mon','tue','wed','thu'];
+    document.querySelectorAll('.slot-btn').forEach(function(btn){
+      var parts=btn.dataset.slot.split('-'); var day=parts[0]; var period=parts[1];
+      var on=false;
+      if(p==='full') on=true;
+      else if(p==='weekdays') on=workdays.includes(day);
+      else if(p==='morning') on=period==='m'&&workdays.includes(day);
+      else if(p==='evening') on=period==='e'&&workdays.includes(day);
+      btn.classList.toggle('on',on);
+      btn.textContent=on?'متاح':'غير متاح';
+    });
+    updateStatus();
+    var labels={full:'دوام كامل',weekdays:'أيام العمل',morning:'صباحي فقط',evening:'مسائي فقط',clear:'مسح الكل'};
+    if(typeof kToast==='function') kToast('✓ تم تطبيق: '+labels[p]);
+  }
+
+  function toggleVacation(chk){
+    document.getElementById('vacBody').style.display=chk.checked?'block':'none';
+    if(chk.checked){
+      var today=new Date().toISOString().split('T')[0];
+      var nw=new Date(Date.now()+7*86400000).toISOString().split('T')[0];
+      document.getElementById('vacFrom').value=today;
+      document.getElementById('vacTo').value=nw;
+    }
+  }
+
+  function saveSchedule(){
+    if(typeof kToast==='function') kToast('✓ تم حفظ جدول التوفر بنجاح');
+  }
+
+  function resetSchedule(){
+    if(confirm('إعادة تعيين الجدول؟')) applyPreset('weekdays');
+  }
+
+  updateStatus();
+</script>
+</body>
+</html>

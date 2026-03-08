@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تقييم العميل — خدمة</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="../assets/css/khedmah.css">
+  <style>
+    body { background: #f8fafc; }
+    .criteria-item { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1rem; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 0.75rem; }
+    .criteria-item:hover { border-color: var(--k-primary); background: rgba(2,128,144,0.04); }
+    .criteria-item input[type=checkbox]:checked + .criteria-icon { color: var(--k-primary); }
+    .rec-card { border: 2px solid #e2e8f0; border-radius: 16px; padding: 1.5rem; text-align: center; cursor: pointer; transition: all 0.2s; }
+    .rec-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+    .rec-card.active-yes  { border-color: var(--k-success); background: rgba(16,185,129,0.06); }
+    .rec-card.active-maybe{ border-color: var(--k-warning); background: rgba(245,158,11,0.06); }
+    .rec-card.active-no   { border-color: var(--k-danger); background: rgba(239,68,68,0.06); }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../assets/js/supabase-client.js"></script>
+</head>
+<body>
+<script>
+  /* ── Auth guard ── */
+  (function() {
+    if (localStorage.getItem('khedmah_demo')) return;
+    var hasSession = Object.keys(localStorage).some(function(k) {
+      return k.indexOf('auth-token') !== -1 || k.indexOf('supabase') !== -1;
+    });
+    if (!hasSession) { window.location.replace('../auth/login.html'); }
+  })();
+</script>
+
+
+<nav class="k-navbar navbar navbar-expand-lg">
+  <div class="container">
+    <a class="navbar-brand" href="../index.html">خدم<span style="color:var(--k-accent)">ة</span></a>
+    <ul class="navbar-nav me-auto gap-1">
+      <li class="nav-item"><a class="nav-link" href="dashboard.html">لوحة المزود</a></li>
+      <li class="nav-item"><a class="nav-link" href="profile.html">ملفي</a></li>
+      <li class="nav-item"><a class="nav-link" href="chat-translation.html">المحادثات</a></li>
+      <li class="nav-item"><a class="nav-link active" href="rate-customer.html">تقييم العميل</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="container py-4" style="max-width:600px" x-data="rateCustomerApp()">
+
+  <!-- Success -->
+  <div x-show="submitted" style="text-align:center;padding:3rem 1rem">
+    <div style="width:100px;height:100px;background:linear-gradient(135deg,var(--k-success),#059669);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem;box-shadow:0 10px 30px rgba(16,185,129,0.4)">
+      <i class="fas fa-check fa-3x" style="color:#fff"></i>
+    </div>
+    <h3 style="font-weight:900;color:var(--k-dark-2)">شكراً على تقييمك!</h3>
+    <p style="color:var(--k-gray)">تقييمك يساعد المجتمع على بناء بيئة عمل أفضل</p>
+    <a href="../customer/dashboard.html" class="btn btn-primary mt-2">العودة للوحة التحكم</a>
+  </div>
+
+  <div x-show="!submitted">
+
+    <!-- Header -->
+    <div style="background:linear-gradient(135deg,var(--k-primary),var(--k-secondary));border-radius:20px;padding:2rem;text-align:center;color:#fff;margin-bottom:1.5rem">
+      <div style="width:64px;height:64px;background:rgba(255,255,255,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:1.8rem">
+        <i class="fas fa-star"></i>
+      </div>
+      <h3 style="font-weight:900;margin-bottom:0.25rem">تقييم العميل</h3>
+      <p style="opacity:0.85;margin:0;font-size:0.9rem">تقييمك يساعد المزودين الآخرين على اختيار العملاء الجيدين</p>
+    </div>
+
+    <!-- Customer Info -->
+    <div class="card border-0 shadow-sm mb-4" style="border-radius:16px">
+      <div class="card-body p-4">
+        <div class="d-flex align-items-center gap-3">
+          <div style="width:60px;height:60px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.5rem;font-weight:700">م</div>
+          <div>
+            <div style="font-weight:800;color:var(--k-dark-2);font-size:1.05rem">محمد العتيبي</div>
+            <div style="color:var(--k-gray);font-size:0.85rem">خدمة سباكة · 5 مارس 2026</div>
+            <div style="font-size:0.82rem;color:var(--k-primary)">350 ر.س</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Overall Rating -->
+    <div class="card border-0 shadow-sm mb-4" style="border-radius:16px">
+      <div class="card-body p-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h6 style="font-weight:800;color:var(--k-dark-2);margin:0">التقييم العام</h6>
+          <span class="badge" style="background:#fef3c7;color:#92400e;font-size:0.8rem">مطلوب</span>
+        </div>
+        <div class="d-flex justify-content-center gap-2 mb-2">
+          <template x-for="i in 5" :key="i">
+            <button class="star-btn" :class="{ active: i <= (hover || rating) }"
+                    @click="rating = i" @mouseenter="hover = i" @mouseleave="hover = 0">
+              <i class="fas fa-star"></i>
+            </button>
+          </template>
+        </div>
+        <div style="text-align:center;font-size:1rem;font-weight:700;color:var(--k-primary);min-height:1.5rem"
+             x-text="['','ضعيف 😞','مقبول 😐','جيد 😊','ممتاز 😄','رائع جداً 🤩'][hover||rating]"></div>
+      </div>
+    </div>
+
+    <!-- Behavioral Criteria -->
+    <div class="card border-0 shadow-sm mb-4" style="border-radius:16px">
+      <div class="card-body p-4">
+        <h6 style="font-weight:800;color:var(--k-dark-2);margin-bottom:1rem">معايير السلوك <small style="color:var(--k-gray);font-weight:400">(اختياري)</small></h6>
+        <div class="d-flex flex-column gap-2">
+          <label class="criteria-item">
+            <input type="checkbox" class="form-check-input" x-model="criteria" value="respectful" style="flex-shrink:0">
+            <i class="fas fa-handshake criteria-icon" style="color:var(--k-primary);width:20px"></i>
+            <span style="font-weight:600;font-size:0.9rem">معاملة محترمة وأخلاقية</span>
+          </label>
+          <label class="criteria-item">
+            <input type="checkbox" class="form-check-input" x-model="criteria" value="clear" style="flex-shrink:0">
+            <i class="fas fa-comments criteria-icon" style="color:var(--k-primary);width:20px"></i>
+            <span style="font-weight:600;font-size:0.9rem">وصف واضح للمشكلة المطلوبة</span>
+          </label>
+          <label class="criteria-item">
+            <input type="checkbox" class="form-check-input" x-model="criteria" value="punctual" style="flex-shrink:0">
+            <i class="fas fa-clock criteria-icon" style="color:var(--k-primary);width:20px"></i>
+            <span style="font-weight:600;font-size:0.9rem">التزام بالمواعيد المحددة</span>
+          </label>
+          <label class="criteria-item">
+            <input type="checkbox" class="form-check-input" x-model="criteria" value="payment" style="flex-shrink:0">
+            <i class="fas fa-credit-card criteria-icon" style="color:var(--k-primary);width:20px"></i>
+            <span style="font-weight:600;font-size:0.9rem">دفع سريع بدون تأخير</span>
+          </label>
+          <label class="criteria-item">
+            <input type="checkbox" class="form-check-input" x-model="criteria" value="location" style="flex-shrink:0">
+            <i class="fas fa-map-marker-alt criteria-icon" style="color:var(--k-primary);width:20px"></i>
+            <span style="font-weight:600;font-size:0.9rem">موقع واضح وسهل الوصول</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recommendation -->
+    <div class="card border-0 shadow-sm mb-4" style="border-radius:16px">
+      <div class="card-body p-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h6 style="font-weight:800;color:var(--k-dark-2);margin:0">هل تنصح بهذا العميل؟</h6>
+          <span class="badge" style="background:#fef3c7;color:#92400e;font-size:0.8rem">مطلوب</span>
+        </div>
+        <div class="row g-3">
+          <div class="col-4">
+            <div class="rec-card" :class="{ 'active-yes': recommend==='yes' }" @click="recommend='yes'">
+              <div style="font-size:2rem;margin-bottom:0.5rem">👍</div>
+              <div style="font-weight:700;font-size:0.9rem" :style="recommend==='yes' ? 'color:var(--k-success)' : 'color:var(--k-dark-2)'">أنصح به</div>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="rec-card" :class="{ 'active-maybe': recommend==='maybe' }" @click="recommend='maybe'">
+              <div style="font-size:2rem;margin-bottom:0.5rem">🤔</div>
+              <div style="font-weight:700;font-size:0.9rem" :style="recommend==='maybe' ? 'color:var(--k-warning)' : 'color:var(--k-dark-2)'">ربما</div>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="rec-card" :class="{ 'active-no': recommend==='no' }" @click="recommend='no'">
+              <div style="font-size:2rem;margin-bottom:0.5rem">👎</div>
+              <div style="font-weight:700;font-size:0.9rem" :style="recommend==='no' ? 'color:var(--k-danger)' : 'color:var(--k-dark-2)'">لا أنصح</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notes -->
+    <div class="card border-0 shadow-sm mb-4" style="border-radius:16px">
+      <div class="card-body p-4">
+        <h6 style="font-weight:800;color:var(--k-dark-2);margin-bottom:0.75rem">ملاحظات إضافية <small style="color:var(--k-gray);font-weight:400">(اختياري)</small></h6>
+        <textarea class="form-control" rows="3" placeholder="أي ملاحظات أخرى عن العميل..." x-model="notes" maxlength="300"></textarea>
+        <div class="d-flex justify-content-end mt-1">
+          <small style="color:var(--k-gray)" x-text="notes.length + '/300'"></small>
+        </div>
+      </div>
+    </div>
+
+    <!-- Submit -->
+    <button class="btn btn-primary w-100 py-3" :disabled="rating===0||!recommend||loading" @click="submit()" style="border-radius:12px;font-size:1rem">
+      <span x-show="!loading"><i class="fas fa-paper-plane ms-2"></i> إرسال التقييم</span>
+      <span x-show="loading"><i class="fas fa-spinner fa-spin ms-2"></i> جاري الإرسال...</span>
+    </button>
+
+    <div style="background:rgba(2,128,144,0.05);border:1px solid rgba(2,128,144,0.15);border-radius:12px;padding:1rem;margin-top:1rem;font-size:0.85rem;color:var(--k-gray)">
+      <i class="fas fa-info-circle ms-1" style="color:var(--k-primary)"></i>
+      تقييمك سري ولن يظهر للعميل بشكل مباشر، لكنه يؤثر في ترتيبه في النظام.
+    </div>
+
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+<script src="../assets/js/khedmah.js"></script>
+<script>
+  function rateCustomerApp() {
+    return {
+      rating: 0, hover: 0, recommend: '', criteria: [], notes: '', loading: false, submitted: false,
+      submit() {
+        this.loading = true;
+        setTimeout(() => { this.loading = false; this.submitted = true; }, 1500);
+      }
+    };
+  }
+</script>
+</body>
+</html>

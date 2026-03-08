@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>نشر مناقصة — خدمة</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="../assets/css/khedmah.css">
+  <style>
+    body { background: #f8fafc; }
+    .pt-card { background:#fff; border-radius:20px; padding:2rem; box-shadow:0 4px 20px rgba(0,0,0,0.06); margin-bottom:1.25rem; }
+    .pt-step-header { display:flex; align-items:center; gap:0.75rem; margin-bottom:1.5rem; }
+    .pt-step-num { width:40px; height:40px; background:linear-gradient(135deg,var(--k-primary),var(--k-accent)); color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:1rem; flex-shrink:0; }
+    .pt-step-header h5 { font-weight:800; color:var(--k-dark-2); margin:0; }
+    .doc-upload-zone { border:2px dashed #e2e8f0; border-radius:12px; padding:1.5rem; text-align:center; cursor:pointer; transition:all 0.2s; }
+    .doc-upload-zone:hover { border-color:var(--k-primary); background:rgba(2,128,144,0.03); }
+    .doc-item { display:flex; align-items:center; gap:0.6rem; background:#f8fafc; border-radius:8px; padding:0.6rem 0.75rem; margin-bottom:0.5rem; border:1px solid #e2e8f0; }
+    .cat-btn { border:2px solid #e2e8f0; border-radius:10px; padding:0.6rem 0.9rem; cursor:pointer; transition:all 0.2s; font-size:0.85rem; font-weight:600; background:#fff; color:var(--k-dark-2); text-align:center; }
+    .cat-btn:hover, .cat-btn.active { border-color:var(--k-primary); background:rgba(2,128,144,0.05); color:var(--k-primary); }
+  </style>
+</head>
+<body>
+
+<nav class="k-navbar navbar navbar-expand-lg">
+  <div class="container">
+    <a class="navbar-brand" href="../index.html">خدم<span style="color:var(--k-accent)">ة</span></a>
+    <div class="collapse navbar-collapse">
+      <ul class="navbar-nav me-auto gap-1">
+        <li class="nav-item"><a class="nav-link" href="index.html"><i class="fas fa-arrow-right ms-1"></i> المناقصات</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container py-4" style="max-width:820px" x-data="postTenderApp()">
+
+  <div class="text-center mb-4">
+    <h3 style="font-weight:900;color:var(--k-dark-2)">نشر مناقصة جديدة</h3>
+    <p style="color:var(--k-gray)">أكمل النموذج التالي لنشر مناقصتك وبدء استقبال العروض</p>
+  </div>
+
+  <!-- Wizard Progress -->
+  <div class="k-wizard-steps mb-4">
+    <div class="k-wizard-step" :class="{ active: step===1, done: step>1 }">
+      <div class="step-dot"><template x-if="step>1"><i class="fas fa-check" style="font-size:0.85rem"></i></template><template x-if="step<=1"><span>1</span></template></div>
+      <span>أساسيات المشروع</span>
+    </div>
+    <div class="k-wizard-step" :class="{ active: step===2, done: step>2 }">
+      <div class="step-dot"><template x-if="step>2"><i class="fas fa-check" style="font-size:0.85rem"></i></template><template x-if="step<=2"><span>2</span></template></div>
+      <span>المتطلبات والوثائق</span>
+    </div>
+    <div class="k-wizard-step" :class="{ active: step===3, done: step>3 }">
+      <div class="step-dot"><template x-if="step>3"><i class="fas fa-check" style="font-size:0.85rem"></i></template><template x-if="step<=3"><span>3</span></template></div>
+      <span>الميزانية والجدول</span>
+    </div>
+    <div class="k-wizard-step" :class="{ active: step===4 }">
+      <div class="step-dot"><span>4</span></div>
+      <span>المراجعة والنشر</span>
+    </div>
+  </div>
+
+  <!-- Step 1: Basics -->
+  <div x-show="step===1">
+    <div class="pt-card">
+      <div class="pt-step-header"><div class="pt-step-num">1</div><h5>أساسيات المشروع</h5></div>
+      <div class="mb-3">
+        <label class="form-label fw-600">عنوان المناقصة <span style="color:var(--k-danger)">*</span></label>
+        <input type="text" class="form-control" placeholder="مثال: إنشاء مجمع سكني في حي النرجس بالرياض" x-model="title">
+      </div>
+      <div class="mb-3">
+        <label class="form-label fw-600">فئة المشروع <span style="color:var(--k-danger)">*</span></label>
+        <div class="row g-2">
+          <div class="col-6 col-md-4 col-lg-3" x-for="cat in categories" :key="cat.id">
+            <div class="cat-btn" :class="{ active: category===cat.id }" @click="category=cat.id">
+              <i :class="cat.icon" style="display:block;font-size:1.3rem;margin-bottom:0.3rem"></i>
+              <span x-text="cat.name" style="font-size:0.82rem"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label class="form-label fw-600">وصف المشروع <span style="color:var(--k-danger)">*</span></label>
+        <textarea class="form-control" rows="4" placeholder="وصف مفصّل للمشروع ونطاق العمل المطلوب..." x-model="description" style="resize:vertical"></textarea>
+        <div class="text-end" style="font-size:0.78rem;color:var(--k-gray);margin-top:0.25rem" x-text="description.length + ' / 2000 حرف'"></div>
+      </div>
+      <div class="mb-3">
+        <label class="form-label fw-600">نطاق العمل (SOW) <span style="color:var(--k-danger)">*</span></label>
+        <textarea class="form-control" rows="3" placeholder="حدد بوضوح ما يشمله العمل المطلوب..." x-model="scope" style="resize:vertical"></textarea>
+      </div>
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label fw-600">المنطقة <span style="color:var(--k-danger)">*</span></label>
+          <select class="form-select" x-model="region">
+            <option value="">اختر المنطقة</option>
+            <option>الرياض</option><option>جدة</option><option>الدمام</option>
+            <option>مكة المكرمة</option><option>المدينة المنورة</option>
+            <option>أبها</option><option>تبوك</option><option>الجبيل</option>
+            <option>ينبع</option><option>حائل</option>
+          </select>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label fw-600">نوع الجهة الناشرة</label>
+          <select class="form-select" x-model="entityType">
+            <option>شركة خاصة</option>
+            <option>جهة حكومية</option>
+            <option>مقاول رئيسي</option>
+            <option>مؤسسة</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-primary px-5 py-2" @click="step=2" :disabled="!title || !category || !description || !region" style="border-radius:12px">
+        التالي <i class="fas fa-arrow-left ms-2"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Step 2: Requirements & Docs -->
+  <div x-show="step===2">
+    <div class="pt-card">
+      <div class="pt-step-header"><div class="pt-step-num">2</div><h5>المتطلبات والوثائق</h5></div>
+      <div class="mb-3">
+        <label class="form-label fw-600">المؤهلات المطلوبة للمقاول</label>
+        <div class="row g-2">
+          <template x-for="q in qualifications" :key="q.id">
+            <div class="col-6 col-md-4">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" :id="'q'+q.id" x-model="q.checked">
+                <label class="form-check-label small" :for="'q'+q.id" x-text="q.label"></label>
+              </div>
+            </div>
+          </template>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label class="form-label fw-600">متطلبات إضافية</label>
+        <textarea class="form-control" rows="2" placeholder="أي شروط أو متطلبات خاصة إضافية..." style="resize:vertical"></textarea>
+      </div>
+      <div class="mb-3">
+        <label class="form-label fw-600">رفع وثائق المناقصة</label>
+        <p style="color:var(--k-gray);font-size:0.85rem;margin-bottom:0.75rem">ارفع المخططات، جداول الكميات (BOQ)، المواصفات الفنية، وأي وثائق أخرى</p>
+        <div class="doc-upload-zone" onclick="document.getElementById('docInput').click()">
+          <i class="fas fa-cloud-upload-alt fa-2x mb-2" style="color:var(--k-primary)"></i>
+          <div style="font-weight:700;color:var(--k-dark-2)">اضغط للرفع أو اسحب الملفات هنا</div>
+          <div style="font-size:0.8rem;color:var(--k-gray)">PDF, DWG, XLS, DOCX — حجم أقصى 50MB</div>
+          <input type="file" id="docInput" multiple accept=".pdf,.dwg,.xls,.xlsx,.doc,.docx" style="display:none" @change="addDocs($event)">
+        </div>
+        <div class="mt-2" id="docList">
+          <div class="doc-item"><i class="fas fa-file-pdf" style="color:#ef4444"></i><span style="font-size:0.85rem;flex:1">مخططات_المشروع.pdf</span><span style="font-size:0.78rem;color:var(--k-gray)">2.4 MB</span><i class="fas fa-times" style="color:var(--k-gray);cursor:pointer"></i></div>
+          <div class="doc-item"><i class="fas fa-file-excel" style="color:#22c55e"></i><span style="font-size:0.85rem;flex:1">جداول_الكميات.xlsx</span><span style="font-size:0.78rem;color:var(--k-gray)">890 KB</span><i class="fas fa-times" style="color:var(--k-gray);cursor:pointer"></i></div>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label class="form-label fw-600">هل المناقصة مقيّدة؟</label>
+        <div class="d-flex gap-3">
+          <div class="form-check"><input class="form-check-input" type="radio" name="restricted" id="rOpen" checked><label class="form-check-label" for="rOpen">مفتوحة للجميع</label></div>
+          <div class="form-check"><input class="form-check-input" type="radio" name="restricted" id="rLimited"><label class="form-check-label" for="rLimited">للمؤهلين فقط (بدعوة)</label></div>
+        </div>
+      </div>
+    </div>
+    <div class="d-flex justify-content-between">
+      <button class="btn btn-outline-secondary px-4 py-2" @click="step=1" style="border-radius:12px"><i class="fas fa-arrow-right ms-2"></i> السابق</button>
+      <button class="btn btn-primary px-5 py-2" @click="step=3" style="border-radius:12px">التالي <i class="fas fa-arrow-left ms-2"></i></button>
+    </div>
+  </div>
+
+  <!-- Step 3: Budget & Timeline -->
+  <div x-show="step===3">
+    <div class="pt-card">
+      <div class="pt-step-header"><div class="pt-step-num">3</div><h5>الميزانية والجدول الزمني</h5></div>
+      <!-- Budget Visibility — 3 modes per industry practice -->
+      <div class="mb-4">
+        <label class="form-label fw-600 d-block mb-2">إعداد الميزانية <span style="color:var(--k-danger)">*</span></label>
+        <div class="row g-2 mb-3">
+          <div class="col-md-4">
+            <label class="d-block" style="cursor:pointer">
+              <div class="form-check p-3 border rounded-3" :class="budgetMode==='amount'?'border-primary bg-light':''">
+                <input class="form-check-input" type="radio" name="budgetMode" value="amount" x-model="budgetMode">
+                <span class="fw-700"><i class="fas fa-eye me-1" style="color:var(--k-primary)"></i> إظهار مبلغ محدد</span>
+                <p class="mb-0 mt-1 text-muted" style="font-size:0.78rem">يرى المقاول رقماً واحداً — مناسب لمناقصات الشركات الخاصة</p>
+              </div>
+            </label>
+          </div>
+          <div class="col-md-4">
+            <label class="d-block" style="cursor:pointer">
+              <div class="form-check p-3 border rounded-3" :class="budgetMode==='range'?'border-primary bg-light':''">
+                <input class="form-check-input" type="radio" name="budgetMode" value="range" x-model="budgetMode">
+                <span class="fw-700"><i class="fas fa-arrows-alt-h me-1" style="color:var(--k-primary)"></i> إظهار نطاق الميزانية</span>
+                <p class="mb-0 mt-1 text-muted" style="font-size:0.78rem">مثال: 500,000 – 750,000 ر.س — الأكثر شيوعاً لتصفية المتقدمين</p>
+              </div>
+            </label>
+          </div>
+          <div class="col-md-4">
+            <label class="d-block" style="cursor:pointer">
+              <div class="form-check p-3 border rounded-3" :class="budgetMode==='hidden'?'border-primary bg-light':''">
+                <input class="form-check-input" type="radio" name="budgetMode" value="hidden" x-model="budgetMode">
+                <span class="fw-700"><i class="fas fa-eye-slash me-1" style="color:var(--k-gray)"></i> إخفاء الميزانية</span>
+                <p class="mb-0 mt-1 text-muted" style="font-size:0.78rem">المقاول يقدم عرضه دون معرفة الميزانية — للمناقصات السرية</p>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Budget inputs based on mode -->
+        <div x-show="budgetMode==='amount'" class="row g-2">
+          <div class="col-md-5">
+            <label class="form-label small fw-600">المبلغ التقديري</label>
+            <div class="input-group">
+              <input type="number" class="form-control" placeholder="مثال: 5000000" x-model="budget">
+              <span class="input-group-text">ر.س</span>
+            </div>
+          </div>
+        </div>
+        <div x-show="budgetMode==='range'" class="row g-2">
+          <div class="col-md-4">
+            <label class="form-label small fw-600">الحد الأدنى</label>
+            <div class="input-group">
+              <input type="number" class="form-control" placeholder="500,000" x-model="budgetMin">
+              <span class="input-group-text">ر.س</span>
+            </div>
+          </div>
+          <div class="col-md-1 d-flex align-items-end justify-content-center pb-2" style="font-size:1.2rem;color:var(--k-gray)">—</div>
+          <div class="col-md-4">
+            <label class="form-label small fw-600">الحد الأقصى</label>
+            <div class="input-group">
+              <input type="number" class="form-control" placeholder="750,000" x-model="budgetMax">
+              <span class="input-group-text">ر.س</span>
+            </div>
+          </div>
+        </div>
+        <div x-show="budgetMode==='hidden'" style="background:#f8fafc;border:1px dashed #cbd5e0;border-radius:10px;padding:0.75rem 1rem;font-size:0.85rem;color:var(--k-gray)">
+          <i class="fas fa-info-circle me-1" style="color:var(--k-primary)"></i>
+          سيقدم المقاولون عروضهم دون معرفة الميزانية. ستظهر لك قائمة العروض بعد إغلاق التقديم.
+        </div>
+      </div>
+
+      <div class="row g-3 mb-3">
+        <div class="col-md-6" style="display:none"><!-- placeholder kept for layout --></div>
+        <div class="col-md-6">
+          <label class="form-label fw-600">آخر موعد لتقديم العروض <span style="color:var(--k-danger)">*</span></label>
+          <input type="date" class="form-control" x-model="deadline">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label fw-600">تاريخ بدء المشروع المتوقع</label>
+          <input type="date" class="form-control" x-model="startDate">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label fw-600">مدة تنفيذ المشروع</label>
+          <div class="input-group">
+            <input type="number" class="form-control" placeholder="عدد الأشهر">
+            <span class="input-group-text">شهر</span>
+          </div>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label class="form-label fw-600">المراحل الرئيسية للمشروع (Milestones)</label>
+        <div id="milestonesList">
+          <div class="d-flex gap-2 mb-2">
+            <input type="text" class="form-control form-control-sm" placeholder="اسم المرحلة" value="التصميم والمخططات">
+            <input type="number" class="form-control form-control-sm" placeholder="%" value="15" style="width:80px">
+            <button type="button" class="btn btn-outline-danger btn-sm"><i class="fas fa-times"></i></button>
+          </div>
+          <div class="d-flex gap-2 mb-2">
+            <input type="text" class="form-control form-control-sm" placeholder="اسم المرحلة" value="أعمال الهيكل الإنشائي">
+            <input type="number" class="form-control form-control-sm" placeholder="%" value="40" style="width:80px">
+            <button type="button" class="btn btn-outline-danger btn-sm"><i class="fas fa-times"></i></button>
+          </div>
+        </div>
+        <button type="button" class="btn btn-outline-primary btn-sm mt-1" onclick="addMilestone()">
+          <i class="fas fa-plus ms-1"></i> إضافة مرحلة
+        </button>
+      </div>
+      <div class="mb-3">
+        <label class="form-label fw-600">شروط الدفع</label>
+        <select class="form-select">
+          <option>دفع عند إتمام كل مرحلة</option>
+          <option>دفع مقدّم 20% + دفعات شهرية</option>
+          <option>دفع عند الانتهاء الكامل</option>
+          <option>حسب الاتفاق مع المقاول</option>
+        </select>
+      </div>
+    </div>
+    <div class="d-flex justify-content-between">
+      <button class="btn btn-outline-secondary px-4 py-2" @click="step=2" style="border-radius:12px"><i class="fas fa-arrow-right ms-2"></i> السابق</button>
+      <button class="btn btn-primary px-5 py-2" @click="step=4" :disabled="!deadline" style="border-radius:12px">مراجعة ونشر <i class="fas fa-arrow-left ms-2"></i></button>
+    </div>
+  </div>
+
+  <!-- Step 4: Review & Publish -->
+  <div x-show="step===4">
+    <div class="pt-card">
+      <div class="pt-step-header"><div class="pt-step-num">4</div><h5>مراجعة ونشر المناقصة</h5></div>
+
+      <!-- Summary Card -->
+      <div style="background:#f8fafc;border-radius:14px;padding:1.5rem;border:1px solid #e2e8f0;margin-bottom:1.5rem">
+        <div class="row g-3">
+          <div class="col-md-8">
+            <div style="font-size:0.78rem;font-weight:700;color:var(--k-primary);text-transform:uppercase;margin-bottom:0.5rem">عنوان المناقصة</div>
+            <div style="font-weight:800;color:var(--k-dark-2);font-size:1.05rem" x-text="title || 'لم يُحدد'"></div>
+          </div>
+          <div class="col-md-4 text-md-start">
+            <div style="font-size:0.78rem;font-weight:700;color:var(--k-primary);text-transform:uppercase;margin-bottom:0.5rem">الفئة</div>
+            <div style="font-weight:700" x-text="category || 'لم تُحدد'"></div>
+          </div>
+          <div class="col-md-4">
+            <div style="font-size:0.78rem;color:var(--k-gray);margin-bottom:0.25rem">الميزانية</div>
+            <div style="font-weight:700" x-text="budget ? Number(budget).toLocaleString('ar') + ' ر.س' : 'غير محدد'"></div>
+          </div>
+          <div class="col-md-4">
+            <div style="font-size:0.78rem;color:var(--k-gray);margin-bottom:0.25rem">الموقع</div>
+            <div style="font-weight:700" x-text="region || 'غير محدد'"></div>
+          </div>
+          <div class="col-md-4">
+            <div style="font-size:0.78rem;color:var(--k-gray);margin-bottom:0.25rem">موعد إغلاق التقديم</div>
+            <div style="font-weight:700" x-text="deadline || 'غير محدد'"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Visibility Options -->
+      <div class="mb-3">
+        <label class="form-label fw-600">إعدادات الرؤية</label>
+        <div class="row g-2">
+          <div class="col-md-4">
+            <div class="form-check p-3 border rounded-3">
+              <input class="form-check-input" type="radio" name="visibility" id="vPublic" checked>
+              <label class="form-check-label fw-600" for="vPublic"><i class="fas fa-globe me-1" style="color:var(--k-primary)"></i> عامة — لجميع المقاولين</label>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-check p-3 border rounded-3">
+              <input class="form-check-input" type="radio" name="visibility" id="vVerified">
+              <label class="form-check-label fw-600" for="vVerified"><i class="fas fa-shield-alt me-1" style="color:#f59e0b"></i> للمعتمدين فقط</label>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-check p-3 border rounded-3">
+              <input class="form-check-input" type="radio" name="visibility" id="vPrivate">
+              <label class="form-check-label fw-600" for="vPrivate"><i class="fas fa-lock me-1" style="color:#6366f1"></i> بدعوة خاصة</label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="agreeTerms">
+          <label class="form-check-label" for="agreeTerms" style="font-size:0.9rem">
+            أوافق على <a href="../shared/terms.html" style="color:var(--k-primary)">شروط استخدام منصة المناقصات</a> وتأكيد صحة المعلومات المُدخلة
+          </label>
+        </div>
+      </div>
+    </div>
+    <div class="d-flex justify-content-between">
+      <button class="btn btn-outline-secondary px-4 py-2" @click="step=3" style="border-radius:12px"><i class="fas fa-arrow-right ms-2"></i> السابق</button>
+      <button class="btn btn-accent btn-lg px-5" @click="publish()" :disabled="loading" style="border-radius:12px">
+        <span x-show="!loading"><i class="fas fa-paper-plane ms-2"></i> نشر المناقصة الآن</span>
+        <span x-show="loading"><i class="fas fa-spinner fa-spin ms-2"></i> جاري النشر...</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Success -->
+  <div x-show="published" style="text-align:center;padding:3rem 0">
+    <div style="width:100px;height:100px;background:linear-gradient(135deg,var(--k-primary),var(--k-accent));border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem;box-shadow:0 10px 30px rgba(2,128,144,0.4)">
+      <i class="fas fa-check fa-3x" style="color:#fff"></i>
+    </div>
+    <h3 style="font-weight:900;color:var(--k-dark-2);margin-bottom:0.5rem">تم نشر المناقصة بنجاح!</h3>
+    <p style="color:var(--k-gray);margin-bottom:2rem">ستبدأ باستقبال العروض من المقاولين قريباً. سنُشعرك عبر البريد والرسائل.</p>
+    <div class="d-flex gap-3 justify-content-center flex-wrap">
+      <a href="index.html" class="btn btn-outline-primary px-4" style="border-radius:12px">تصفح المناقصات</a>
+      <a href="tender-detail.html" class="btn btn-primary px-4" style="border-radius:12px">عرض مناقصتي</a>
+    </div>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+<script>
+  function postTenderApp() {
+    return {
+      step: 1, title: '', category: '', description: '', scope: '',
+      region: '', entityType: 'شركة خاصة',
+      budgetMode: 'range', budget: '', budgetMin: '', budgetMax: '',
+      deadline: '', startDate: '',
+      loading: false, published: false,
+      categories: [
+        { id: 'مشاريع إنشائية', name: 'إنشاء', icon: 'fas fa-building' },
+        { id: 'أعمال كهربائية', name: 'كهرباء', icon: 'fas fa-bolt' },
+        { id: 'أعمال ميكانيكية', name: 'ميكانيكا', icon: 'fas fa-cog' },
+        { id: 'صيانة صناعية', name: 'صيانة صناعية', icon: 'fas fa-wrench' },
+        { id: 'بنية تحتية', name: 'بنية تحتية', icon: 'fas fa-road' },
+        { id: 'نفط وغاز', name: 'نفط وغاز', icon: 'fas fa-oil-can' },
+        { id: 'استشارات هندسية', name: 'استشارات', icon: 'fas fa-user-tie' },
+        { id: 'إدارة مرافق', name: 'إدارة مرافق', icon: 'fas fa-building-columns' },
+      ],
+      qualifications: [
+        { id:1, label:'سجل تجاري ساري', checked:true },
+        { id:2, label:'شهادة ISO 9001', checked:false },
+        { id:3, label:'ترخيص درجة أولى', checked:true },
+        { id:4, label:'خبرة 5+ سنوات', checked:true },
+        { id:5, label:'ضمان بنكي', checked:false },
+        { id:6, label:'تصنيف حكومي', checked:false },
+        { id:7, label:'تأمين على العمال', checked:true },
+        { id:8, label:'مرجعية مشاريع سابقة', checked:true },
+      ],
+      addDocs(e) { /* In a real app, handle file uploads */ },
+      publish() {
+        this.loading = true;
+        setTimeout(() => { this.loading = false; this.published = true; this.step = 0; }, 2000);
+      }
+    };
+  }
+  function addMilestone() {
+    const list = document.getElementById('milestonesList');
+    const div = document.createElement('div');
+    div.className = 'd-flex gap-2 mb-2';
+    div.innerHTML = '<input type="text" class="form-control form-control-sm" placeholder="اسم المرحلة"><input type="number" class="form-control form-control-sm" placeholder="%" style="width:80px"><button type="button" class="btn btn-outline-danger btn-sm" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>';
+    list.appendChild(div);
+  }
+</script>
+</body>
+</html>

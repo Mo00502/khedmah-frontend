@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>خدمة — خدمات منزلية · مناقصات · معدات</title>
+  <meta name="description" content="منصة خدمة الشاملة: ابحث عن مزود خدمة منزلية، أو انشر مناقصة، أو استأجر معدات ثقيلة في السعودية.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+  <link rel="stylesheet" href="assets/css/khedmah.css">
+</head>
+<body>
+
+<!-- Skip Link (Accessibility) -->
+<a href="#main-content" class="k-skip-link">تخطى إلى المحتوى الرئيسي</a>
+
+<!-- ─────────────────────────────────────
+     NAVBAR
+───────────────────────────────────── -->
+<nav class="k-navbar navbar navbar-expand-lg" role="navigation" aria-label="التنقل الرئيسي">
+  <div class="container">
+    <a class="navbar-brand" href="index.html" aria-label="خدمة — الصفحة الرئيسية">
+      خدم<span style="color:var(--k-accent)">ة</span>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+            data-bs-target="#navMain" aria-controls="navMain"
+            aria-expanded="false" aria-label="فتح القائمة">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navMain">
+      <ul class="navbar-nav me-auto gap-1" role="list">
+        <li class="nav-item"><a class="nav-link active" href="index.html" aria-current="page">الرئيسية</a></li>
+        <li class="nav-item"><a class="nav-link" href="customer/home-services.html">خدمات المنازل</a></li>
+        <li class="nav-item"><a class="nav-link" href="services/professional-services.html">الخدمات المهنية</a></li>
+        <li class="nav-item"><a class="nav-link" href="tenders/index.html">المناقصات</a></li>
+        <li class="nav-item"><a class="nav-link" href="equipment/index.html">المعدات</a></li>
+        <li class="nav-item"><a class="nav-link" href="shared/faq.html">المساعدة</a></li>
+      </ul>
+      <div class="d-flex gap-2 align-items-center">
+        <a href="customer/ai-chat.html" class="btn btn-sm" style="min-height:44px;display:flex;align-items:center;gap:0.4rem;background:linear-gradient(135deg,var(--k-primary),var(--k-accent));color:#fff;border:none">
+          <i class="fas fa-robot" style="font-size:0.85rem"></i> المساعد الذكي
+        </a>
+        <a href="auth/login.html"  class="btn btn-outline-light btn-sm" style="min-height:44px;display:flex;align-items:center">دخول</a>
+        <a href="auth/signup.html" class="btn btn-accent btn-sm"         style="min-height:44px;display:flex;align-items:center">سجّل الآن</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ─────────────────────────────────────
+     HERO — Simple, Clear, One Message
+───────────────────────────────────── -->
+<main id="main-content">
+<section class="k-hero" aria-label="قسم الترحيب">
+  <div class="k-hero-shape"></div>
+  <div class="k-hero-shape"></div>
+
+  <div class="container k-hero-content">
+    <div class="row justify-content-center text-center">
+      <div class="col-lg-8" data-aos="fade-up">
+
+        <span class="badge mb-4 px-3 py-2"
+              style="background:rgba(2,195,154,0.15);color:var(--k-accent);border:1px solid rgba(2,195,154,0.3);font-size:0.88rem;font-weight:600">
+          <i class="fas fa-map-marker-alt me-1"></i> المملكة العربية السعودية
+        </span>
+
+        <h1 class="mb-3" style="font-size:clamp(2rem,5vw,3.2rem);font-weight:900;color:#fff;line-height:1.25">
+          كل ما تحتاجه<br>
+          <span style="color:var(--k-accent)">في مكان واحد</span>
+        </h1>
+
+        <p class="mb-5" style="font-size:1.05rem;color:rgba(255,255,255,0.72);max-width:540px;margin-inline:auto;line-height:1.75">
+          خدمات منزلية، مناقصات مشاريع، وتأجير معدات ثقيلة —
+          بدفع آمن وعقود إلكترونية لجميع المستخدمين.
+        </p>
+
+        <!-- Global Search -->
+        <div class="mb-4" style="max-width:580px;margin-inline:auto" role="search" aria-label="البحث في المنصة">
+          <div style="background:rgba(255,255,255,0.08);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.18);border-radius:16px;padding:6px;display:flex;align-items:center;gap:6px">
+            <select id="heroCategory" aria-label="اختر الفئة"
+                    style="background:rgba(255,255,255,0.12);border:none;outline:none;color:#fff;font-family:'Tajawal',sans-serif;font-size:0.88rem;padding:0.6rem 0.8rem;border-radius:10px;min-height:44px;flex-shrink:0;max-width:150px">
+              <option value="home"   style="color:#000">خدمات المنازل</option>
+              <option value="tender" style="color:#000">المناقصات</option>
+              <option value="equip"  style="color:#000">المعدات</option>
+            </select>
+            <input type="search" id="heroSearch" placeholder="ابحث عن أي شيء…"
+                   aria-label="ما الذي تبحث عنه؟"
+                   style="flex:1;background:transparent;border:none;outline:none;color:#fff;font-family:'Tajawal',sans-serif;font-size:0.95rem;padding:0.6rem 0.5rem;min-height:44px"
+                   onkeydown="if(event.key==='Enter')doHeroSearch()">
+            <button onclick="doHeroSearch()"
+                    style="background:var(--k-accent);color:#fff;border:none;border-radius:10px;padding:0.65rem 1.4rem;font-family:'Tajawal',sans-serif;font-weight:700;font-size:0.9rem;min-height:44px;cursor:pointer;white-space:nowrap;transition:background 0.2s"
+                    aria-label="ابحث">
+              <i class="fas fa-search ms-1"></i> بحث
+            </button>
+          </div>
+          <p style="font-size:0.78rem;color:rgba(255,255,255,0.45);margin-top:0.6rem">
+            الأكثر بحثاً:
+            <a href="customer/search.html?cat=سباكة"  style="color:rgba(255,255,255,0.65);text-decoration:none;margin-inline:0.3rem">سباكة</a>·
+            <a href="customer/search.html?cat=تكييف"  style="color:rgba(255,255,255,0.65);text-decoration:none;margin-inline:0.3rem">تكييف</a>·
+            <a href="tenders/index.html"               style="color:rgba(255,255,255,0.65);text-decoration:none;margin-inline:0.3rem">مناقصات</a>·
+            <a href="equipment/index.html?cat=excavator" style="color:rgba(255,255,255,0.65);text-decoration:none;margin-inline:0.3rem">حفارات</a>
+          </p>
+        </div>
+
+        <!-- Platform trust signals -->
+        <div class="d-flex flex-wrap gap-3 justify-content-center" style="font-size:0.82rem;color:rgba(255,255,255,0.55)">
+          <span><i class="fas fa-shield-alt me-1" style="color:var(--k-accent)"></i> دفع آمن</span>
+          <span><i class="fas fa-file-signature me-1" style="color:var(--k-accent)"></i> عقود إلكترونية</span>
+          <span><i class="fas fa-star me-1" style="color:#fbbf24"></i> تقييم موثوق</span>
+          <span><i class="fas fa-language me-1" style="color:var(--k-accent)"></i> 6 لغات</span>
+          <span><i class="fas fa-headset me-1" style="color:var(--k-accent)"></i> دعم 24/7</span>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────────────────────────
+     ENTRY CARDS — "اختر وجهتك"
+     The most important UX element.
+     Answers: What can I do? Where do I go?
+───────────────────────────────────── -->
+<section aria-label="اختر القسم المناسب لك" style="background:#f8fafc;padding:4rem 0">
+  <div class="container">
+
+    <div class="text-center mb-4" data-aos="fade-up">
+      <p style="font-size:0.82rem;font-weight:700;color:#94a3b8;letter-spacing:1px;text-transform:uppercase;margin-bottom:0.5rem">من أين تبدأ؟</p>
+      <h2 style="font-weight:900;color:#1e293b;font-size:1.9rem;margin:0">اختر ما يناسبك</h2>
+    </div>
+
+    <div class="row g-4" data-aos="fade-up" data-aos-delay="100">
+
+      <!-- Card 1: Home Services -->
+      <div class="col-md-4">
+        <a href="customer/home-services.html" class="k-entry-card k-entry-home" aria-label="انتقل إلى قسم خدمات المنازل">
+          <div class="k-entry-icon">
+            <i class="fas fa-home" aria-hidden="true"></i>
+          </div>
+          <h3 class="k-entry-title">خدمات المنازل</h3>
+          <p class="k-entry-desc">سباكة · كهرباء · تكييف · تنظيف · نجارة وأكثر</p>
+          <p class="k-entry-for"><i class="fas fa-user me-1"></i> للأفراد وأصحاب المنازل</p>
+          <span class="k-entry-cta">ابحث عن مزود <i class="fas fa-arrow-left ms-1"></i></span>
+        </a>
+      </div>
+
+      <!-- Card 2: Tenders -->
+      <div class="col-md-4">
+        <a href="tenders/index.html" class="k-entry-card k-entry-tender" aria-label="انتقل إلى قسم المناقصات">
+          <div class="k-entry-icon">
+            <i class="fas fa-file-contract" aria-hidden="true"></i>
+          </div>
+          <h3 class="k-entry-title">مناقصات ومشاريع</h3>
+          <p class="k-entry-desc">إنشاء · بنية تحتية · كهرباء · نفط وغاز وأكثر</p>
+          <p class="k-entry-for"><i class="fas fa-building me-1"></i> للشركات والجهات الحكومية</p>
+          <span class="k-entry-cta">تصفح المناقصات <i class="fas fa-arrow-left ms-1"></i></span>
+        </a>
+      </div>
+
+      <!-- Card 3: Equipment -->
+      <div class="col-md-4">
+        <a href="equipment/index.html" class="k-entry-card k-entry-equip" aria-label="انتقل إلى قسم تأجير المعدات">
+          <div class="k-entry-icon">
+            <i class="fas fa-truck-monster" aria-hidden="true"></i>
+          </div>
+          <h3 class="k-entry-title">تأجير المعدات</h3>
+          <p class="k-entry-desc">حفارات · رافعات · خلاطات · بلدوزرات وأكثر</p>
+          <p class="k-entry-for"><i class="fas fa-hard-hat me-1"></i> للمقاولين وشركات البناء</p>
+          <span class="k-entry-cta">استعرض المعدات <i class="fas fa-arrow-left ms-1"></i></span>
+        </a>
+      </div>
+
+    </div>
+
+    <!-- Are you a provider? Secondary CTA -->
+    <div class="text-center mt-4" data-aos="fade-up" data-aos-delay="200">
+      <p style="color:#64748b;font-size:0.9rem;margin-bottom:0.75rem">هل تريد تقديم خدماتك أو معداتك؟</p>
+      <a href="auth/signup.html" class="btn btn-outline-primary px-4" style="min-height:44px;display:inline-flex;align-items:center;gap:0.5rem">
+        <i class="fas fa-plus-circle"></i> سجّل كمزود أو مقاول
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<!-- ─────────────────────────────────────
+     TRUST STRIP
+───────────────────────────────────── -->
+<div style="background:#fff;border-top:1px solid #f1f5f9;border-bottom:1px solid #f1f5f9;padding:1.25rem 0" aria-label="مؤشرات الثقة">
+  <div class="container">
+    <div class="row g-3 text-center">
+      <div class="col-6 col-md-3">
+        <div class="k-trust-item">
+          <span class="k-trust-num k-counter" data-target="500" data-suffix="+">0</span>
+          <span class="k-trust-lbl">مزود معتمد</span>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="k-trust-item">
+          <span class="k-trust-num k-counter" data-target="1200" data-suffix="+">0</span>
+          <span class="k-trust-lbl">مناقصة نشطة</span>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="k-trust-item">
+          <span class="k-trust-num k-counter" data-target="850" data-suffix="+">0</span>
+          <span class="k-trust-lbl">معدة متاحة</span>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="k-trust-item">
+          <span class="k-trust-num">4.8<span style="font-size:1rem">★</span></span>
+          <span class="k-trust-lbl">متوسط تقييم المنصة</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────────────────────────────
+     HOME SERVICES — Preview
+───────────────────────────────────── -->
+<section aria-labelledby="home-svc-heading" style="background:#fff;padding:4.5rem 0">
+  <div class="container">
+
+    <div class="k-section-header" data-aos="fade-up">
+      <div>
+        <span class="k-section-label" style="color:var(--k-primary);background:rgba(2,128,144,0.08)">
+          <i class="fas fa-home"></i> خدمات المنازل
+        </span>
+        <h2 id="home-svc-heading" class="k-section-title mt-2 mb-1">كل ما يحتاجه بيتك</h2>
+        <p style="color:#64748b;margin:0">11 فئة · مئات المحترفين · دفع آمن</p>
+      </div>
+      <a href="customer/home-services.html" class="btn btn-outline-primary k-section-link" aria-label="عرض جميع خدمات المنازل">
+        عرض الكل <i class="fas fa-arrow-left ms-1"></i>
+      </a>
+    </div>
+
+    <div class="row g-3 mt-3">
+      <div class="col-6 col-md-4 col-lg-2" data-aos="fade-up" data-aos-delay="0">
+        <a href="customer/search.html?cat=سباكة" class="k-svc-link" aria-label="سباكة">
+          <div class="k-svc-tile"><i class="fas fa-faucet" aria-hidden="true"></i><span>سباكة</span></div>
+        </a>
+      </div>
+      <div class="col-6 col-md-4 col-lg-2" data-aos="fade-up" data-aos-delay="40">
+        <a href="customer/search.html?cat=كهرباء" class="k-svc-link" aria-label="كهرباء">
+          <div class="k-svc-tile"><i class="fas fa-bolt" aria-hidden="true"></i><span>كهرباء</span></div>
+        </a>
+      </div>
+      <div class="col-6 col-md-4 col-lg-2" data-aos="fade-up" data-aos-delay="80">
+        <a href="customer/search.html?cat=تكييف" class="k-svc-link" aria-label="تكييف">
+          <div class="k-svc-tile"><i class="fas fa-wind" aria-hidden="true"></i><span>تكييف</span></div>
+        </a>
+      </div>
+      <div class="col-6 col-md-4 col-lg-2" data-aos="fade-up" data-aos-delay="120">
+        <a href="customer/search.html?cat=تنظيف" class="k-svc-link" aria-label="تنظيف">
+          <div class="k-svc-tile"><i class="fas fa-broom" aria-hidden="true"></i><span>تنظيف</span></div>
+        </a>
+      </div>
+      <div class="col-6 col-md-4 col-lg-2" data-aos="fade-up" data-aos-delay="160">
+        <a href="customer/search.html?cat=دهانات" class="k-svc-link" aria-label="دهانات">
+          <div class="k-svc-tile"><i class="fas fa-paint-roller" aria-hidden="true"></i><span>دهانات</span></div>
+        </a>
+      </div>
+      <div class="col-6 col-md-4 col-lg-2" data-aos="fade-up" data-aos-delay="200">
+        <a href="customer/search.html?cat=نجارة" class="k-svc-link" aria-label="نجارة">
+          <div class="k-svc-tile"><i class="fas fa-hammer" aria-hidden="true"></i><span>نجارة</span></div>
+        </a>
+      </div>
+      <div class="col-6 col-md-4 col-lg-2" data-aos="fade-up" data-aos-delay="0">
+        <a href="customer/search.html?cat=أجهزة" class="k-svc-link" aria-label="إصلاح أجهزة">
+          <div class="k-svc-tile"><i class="fas fa-tv" aria-hidden="true"></i><span>أجهزة</span></div>
+        </a>
+      </div>
+      <div class="col-6 col-md-4 col-lg-2" data-aos="fade-up" data-aos-delay="40">
+        <a href="customer/search.html?cat=تصميم" class="k-svc-link" aria-label="تصميم داخلي">
+          <div class="k-svc-tile"><i class="fas fa-couch" aria-hidden="true"></i><span>تصميم</span></div>
+        </a>
+      </div>
+      <div class="col-6 col-md-4 col-lg-2" data-aos="fade-up" data-aos-delay="80">
+        <a href="customer/search.html?cat=تجديد" class="k-svc-link" aria-label="تجديد منازل">
+          <div class="k-svc-tile"><i class="fas fa-hard-hat" aria-hidden="true"></i><span>تجديد</span></div>
+        </a>
+      </div>
+      <div class="col-6 col-md-4 col-lg-2" data-aos="fade-up" data-aos-delay="120">
+        <a href="customer/search.html?cat=حدائق" class="k-svc-link" aria-label="تنسيق حدائق">
+          <div class="k-svc-tile"><i class="fas fa-seedling" aria-hidden="true"></i><span>حدائق</span></div>
+        </a>
+      </div>
+      <div class="col-6 col-md-4 col-lg-2" data-aos="fade-up" data-aos-delay="160">
+        <a href="customer/search.html?cat=صيانة" class="k-svc-link" aria-label="صيانة عامة">
+          <div class="k-svc-tile"><i class="fas fa-tools" aria-hidden="true"></i><span>صيانة</span></div>
+        </a>
+      </div>
+      <div class="col-6 col-md-4 col-lg-2" data-aos="fade-up" data-aos-delay="200">
+        <a href="customer/home-services.html" class="k-svc-link" aria-label="عرض جميع الفئات">
+          <div class="k-svc-tile" style="border-color:var(--k-primary);background:rgba(2,128,144,0.04)">
+            <i class="fas fa-th-large" style="color:var(--k-primary)" aria-hidden="true"></i>
+            <span style="color:var(--k-primary);font-weight:700">عرض الكل</span>
+          </div>
+        </a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ─────────────────────────────────────
+     TENDERS — Preview
+───────────────────────────────────── -->
+<section aria-labelledby="tenders-heading" style="background:#f8fafc;padding:4.5rem 0">
+  <div class="container">
+
+    <div class="k-section-header" data-aos="fade-up">
+      <div>
+        <span class="k-section-label" style="color:#0369a1;background:rgba(3,105,161,0.08)">
+          <i class="fas fa-file-contract"></i> المناقصات والمشاريع
+        </span>
+        <h2 id="tenders-heading" class="k-section-title mt-2 mb-1">مشاريع ضخمة تنتظرك</h2>
+        <p style="color:#64748b;margin:0">1,200+ مناقصة نشطة · شركات وجهات حكومية</p>
+      </div>
+      <div class="d-flex gap-2 flex-wrap">
+        <a href="tenders/post-tender.html" class="btn btn-sm k-btn-tender-outline" style="min-height:40px;display:inline-flex;align-items:center">+ نشر مناقصة</a>
+        <a href="tenders/index.html"       class="btn btn-sm k-btn-tender"         style="min-height:40px;display:inline-flex;align-items:center">عرض الكل <i class="fas fa-arrow-left ms-1"></i></a>
+      </div>
+    </div>
+
+    <div class="row g-3 mt-3">
+      <!-- Tender Card -->
+      <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="0">
+        <a href="tenders/tender-detail.html" class="k-tender-card" aria-label="تفاصيل مناقصة توسعة شبكة المياه بالرياض">
+          <div class="d-flex justify-content-between align-items-start mb-2">
+            <span class="k-badge-tender">بنية تحتية</span>
+            <span class="k-badge-urgent"><i class="fas fa-clock me-1" aria-hidden="true"></i>14 يوم</span>
+          </div>
+          <h3 class="k-tender-title">توسعة شبكة المياه — الرياض</h3>
+          <p class="k-tender-org"><i class="fas fa-building me-1" aria-hidden="true"></i> أمانة منطقة الرياض</p>
+          <div class="d-flex justify-content-between align-items-center mt-3">
+            <span class="k-tender-budget">8.5M ر.س</span>
+            <span style="font-size:0.8rem;color:#64748b"><i class="fas fa-gavel me-1" aria-hidden="true"></i>12 عطاء</span>
+          </div>
+        </a>
+      </div>
+      <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="80">
+        <a href="tenders/index.html" class="k-tender-card" aria-label="مناقصة مجمع سكني 500 وحدة بجدة">
+          <div class="d-flex justify-content-between align-items-start mb-2">
+            <span class="k-badge-tender">إنشائي</span>
+            <span style="background:#f0fdf4;color:#16a34a;border-radius:6px;padding:0.2rem 0.6rem;font-size:0.75rem;font-weight:700">28 يوم</span>
+          </div>
+          <h3 class="k-tender-title">مجمع سكني 500 وحدة — جدة</h3>
+          <p class="k-tender-org"><i class="fas fa-building me-1" aria-hidden="true"></i> شركة الإسكان الوطني</p>
+          <div class="d-flex justify-content-between align-items-center mt-3">
+            <span class="k-tender-budget">22M ر.س</span>
+            <span style="font-size:0.8rem;color:#64748b"><i class="fas fa-gavel me-1" aria-hidden="true"></i>7 عطاءات</span>
+          </div>
+        </a>
+      </div>
+      <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="160">
+        <a href="tenders/index.html" class="k-tender-card" aria-label="مناقصة محطة طاقة شمسية بتبوك">
+          <div class="d-flex justify-content-between align-items-start mb-2">
+            <span class="k-badge-tender">كهربائي</span>
+            <span style="background:#f0fdf4;color:#16a34a;border-radius:6px;padding:0.2rem 0.6rem;font-size:0.75rem;font-weight:700">35 يوم</span>
+          </div>
+          <h3 class="k-tender-title">محطة طاقة شمسية — تبوك</h3>
+          <p class="k-tender-org"><i class="fas fa-building me-1" aria-hidden="true"></i> وزارة الطاقة</p>
+          <div class="d-flex justify-content-between align-items-center mt-3">
+            <span class="k-tender-budget">45M ر.س</span>
+            <span style="font-size:0.8rem;color:#64748b"><i class="fas fa-gavel me-1" aria-hidden="true"></i>5 عطاءات</span>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <!-- Tender CTA Banner -->
+    <div class="k-cta-banner k-cta-tender mt-4" data-aos="fade-up">
+      <div class="row align-items-center g-3">
+        <div class="col-lg-7">
+          <h3 style="font-weight:900;margin-bottom:0.35rem;font-size:1.2rem">هل تمتلك مشروعاً يحتاج مقاولاً؟</h3>
+          <p style="opacity:0.85;margin:0;font-size:0.9rem">انشر مناقصتك مجاناً وتلقَّ عطاءات من أفضل الشركات خلال 48 ساعة</p>
+        </div>
+        <div class="col-lg-5 d-flex gap-2 justify-content-lg-end flex-wrap">
+          <a href="tenders/post-tender.html"    class="btn k-btn-white-tender">+ نشر مناقصة</a>
+          <a href="tenders/company-profile.html" class="btn k-btn-ghost-tender">ملف الشركة</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ─────────────────────────────────────
+     EQUIPMENT — Preview
+───────────────────────────────────── -->
+<section aria-labelledby="equip-heading" style="background:#fff;padding:4.5rem 0">
+  <div class="container">
+
+    <div class="k-section-header" data-aos="fade-up">
+      <div>
+        <span class="k-section-label" style="color:#b45309;background:rgba(180,83,9,0.08)">
+          <i class="fas fa-truck-monster"></i> تأجير المعدات
+        </span>
+        <h2 id="equip-heading" class="k-section-title mt-2 mb-1">أجّر أي معدة تحتاجها</h2>
+        <p style="color:#64748b;margin:0">850+ معدة · 13 منطقة · بالساعة أو اليوم أو الشهر</p>
+      </div>
+      <div class="d-flex gap-2 flex-wrap">
+        <a href="equipment/list-equipment.html" class="btn btn-sm k-btn-equip-outline" style="min-height:40px;display:inline-flex;align-items:center">+ إضافة معدة</a>
+        <a href="equipment/index.html"          class="btn btn-sm k-btn-equip"         style="min-height:40px;display:inline-flex;align-items:center">عرض الكل <i class="fas fa-arrow-left ms-1"></i></a>
+      </div>
+    </div>
+
+    <!-- Category tiles -->
+    <div class="row g-2 mt-3 mb-4">
+      <div class="col-4 col-md-2" data-aos="fade-up" data-aos-delay="0">
+        <a href="equipment/index.html?cat=excavator" class="k-equip-cat" aria-label="حفارات">
+          <span aria-hidden="true">🏗️</span><span>حفارات</span>
+        </a>
+      </div>
+      <div class="col-4 col-md-2" data-aos="fade-up" data-aos-delay="40">
+        <a href="equipment/index.html?cat=crane" class="k-equip-cat" aria-label="رافعات">
+          <span aria-hidden="true">🏗</span><span>رافعات</span>
+        </a>
+      </div>
+      <div class="col-4 col-md-2" data-aos="fade-up" data-aos-delay="80">
+        <a href="equipment/index.html?cat=mixer" class="k-equip-cat" aria-label="خلاطات">
+          <span aria-hidden="true">🚚</span><span>خلاطات</span>
+        </a>
+      </div>
+      <div class="col-4 col-md-2" data-aos="fade-up" data-aos-delay="120">
+        <a href="equipment/index.html?cat=bulldozer" class="k-equip-cat" aria-label="بلدوزرات">
+          <span aria-hidden="true">🚜</span><span>بلدوزرات</span>
+        </a>
+      </div>
+      <div class="col-4 col-md-2" data-aos="fade-up" data-aos-delay="160">
+        <a href="equipment/index.html?cat=generator" class="k-equip-cat" aria-label="مولدات">
+          <span aria-hidden="true">⚡</span><span>مولدات</span>
+        </a>
+      </div>
+      <div class="col-4 col-md-2" data-aos="fade-up" data-aos-delay="200">
+        <a href="equipment/index.html" class="k-equip-cat k-equip-cat-more" aria-label="عرض جميع المعدات">
+          <span aria-hidden="true">⚙️</span><span>عرض الكل</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Equipment Cards -->
+    <div class="row g-3">
+      <div class="col-md-4" data-aos="fade-up" data-aos-delay="0">
+        <a href="equipment/equipment-detail.html" class="k-equip-card" aria-label="تفاصيل حفار CAT 320">
+          <div class="k-equip-img" style="background:linear-gradient(135deg,#fef3c7,#fed7aa)" aria-hidden="true">🏗️</div>
+          <div class="k-equip-body">
+            <div class="d-flex justify-content-between align-items-start">
+              <h3 class="k-equip-title">حفار CAT 320 — 2022</h3>
+              <span class="k-badge-avail">متاح</span>
+            </div>
+            <p class="k-equip-meta">Caterpillar · 20 طن · مع مشغل · الرياض</p>
+            <div class="d-flex justify-content-between align-items-center mt-2">
+              <span class="k-equip-price">850 ر.س/يوم</span>
+              <span style="font-size:0.8rem;color:#64748b"><i class="fas fa-star" style="color:#f59e0b" aria-hidden="true"></i> 4.9</span>
+            </div>
+          </div>
+        </a>
+      </div>
+      <div class="col-md-4" data-aos="fade-up" data-aos-delay="80">
+        <a href="equipment/equipment-detail.html" class="k-equip-card" aria-label="تفاصيل رافعة Liebherr 280">
+          <div class="k-equip-img" style="background:linear-gradient(135deg,#dbeafe,#bfdbfe)" aria-hidden="true">🏗</div>
+          <div class="k-equip-body">
+            <div class="d-flex justify-content-between align-items-start">
+              <h3 class="k-equip-title">رافعة Liebherr 280</h3>
+              <span class="k-badge-avail">متاح</span>
+            </div>
+            <p class="k-equip-meta">Liebherr · ذراع 60م · مع مشغل · جدة</p>
+            <div class="d-flex justify-content-between align-items-center mt-2">
+              <span class="k-equip-price">2,400 ر.س/يوم</span>
+              <span style="font-size:0.8rem;color:#64748b"><i class="fas fa-star" style="color:#f59e0b" aria-hidden="true"></i> 4.8</span>
+            </div>
+          </div>
+        </a>
+      </div>
+      <div class="col-md-4" data-aos="fade-up" data-aos-delay="160">
+        <a href="equipment/equipment-detail.html" class="k-equip-card" aria-label="تفاصيل مولد CAT 500KVA">
+          <div class="k-equip-img" style="background:linear-gradient(135deg,#fef9c3,#fef08a)" aria-hidden="true">⚡</div>
+          <div class="k-equip-body">
+            <div class="d-flex justify-content-between align-items-start">
+              <h3 class="k-equip-title">مولد CAT 500KVA</h3>
+              <span class="k-badge-avail">متاح</span>
+            </div>
+            <p class="k-equip-meta">Caterpillar · 2024 · توصيل مجاني · الدمام</p>
+            <div class="d-flex justify-content-between align-items-center mt-2">
+              <span class="k-equip-price">380 ر.س/يوم</span>
+              <span style="font-size:0.8rem;color:#64748b"><i class="fas fa-star" style="color:#f59e0b" aria-hidden="true"></i> 4.9</span>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <!-- Equipment Owner CTA -->
+    <div class="k-cta-banner k-cta-equip mt-4" data-aos="fade-up">
+      <div class="row align-items-center g-3">
+        <div class="col-lg-7">
+          <h3 style="font-weight:900;margin-bottom:0.35rem;font-size:1.2rem">تمتلك معدات ثقيلة؟</h3>
+          <p style="opacity:0.85;margin:0;font-size:0.9rem">حوّل معداتك إلى دخل ثابت — أضف معدتك الآن واستقبل حجوزات خلال 24 ساعة</p>
+        </div>
+        <div class="col-lg-5 d-flex gap-2 justify-content-lg-end flex-wrap">
+          <a href="equipment/list-equipment.html" class="btn k-btn-white-equip">+ أضف معدتك</a>
+          <a href="equipment/index.html"           class="btn k-btn-ghost-equip">تصفح المعدات</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ─────────────────────────────────────
+     HOW IT WORKS — Simple & Visual
+───────────────────────────────────── -->
+<section aria-labelledby="hiw-heading" style="background:#f8fafc;padding:4.5rem 0">
+  <div class="container">
+    <div class="text-center mb-5" data-aos="fade-up">
+      <h2 id="hiw-heading" class="k-section-title">كيف تعمل المنصة؟</h2>
+      <div class="k-divider mx-auto"></div>
+      <p style="color:#64748b">ثلاث خطوات بسيطة في كل قسم</p>
+    </div>
+
+    <!-- Tab selector -->
+    <div class="d-flex justify-content-center gap-2 mb-5" role="tablist" aria-label="اختر القسم">
+      <button class="k-hiw-tab active" role="tab" aria-selected="true"  aria-controls="hiw-home"   onclick="switchHiw('home',this)">
+        <i class="fas fa-home me-1" aria-hidden="true"></i> خدمات المنازل
+      </button>
+      <button class="k-hiw-tab"        role="tab" aria-selected="false" aria-controls="hiw-tender" onclick="switchHiw('tender',this)">
+        <i class="fas fa-file-contract me-1" aria-hidden="true"></i> المناقصات
+      </button>
+      <button class="k-hiw-tab"        role="tab" aria-selected="false" aria-controls="hiw-equip"  onclick="switchHiw('equip',this)">
+        <i class="fas fa-truck-monster me-1" aria-hidden="true"></i> المعدات
+      </button>
+    </div>
+
+    <div id="hiw-home" role="tabpanel" data-aos="fade-up">
+      <div class="row g-4">
+        <div class="col-md-4 text-center"><div class="k-step-num" style="background:var(--k-primary)">1</div><h4 style="font-weight:800;margin:.75rem 0 .5rem">اختر الخدمة</h4><p style="color:#64748b;font-size:.9rem">تصفح 11 فئة واختر ما تحتاجه، من سباكة إلى تصميم داخلي.</p></div>
+        <div class="col-md-4 text-center"><div class="k-step-num" style="background:var(--k-primary)">2</div><h4 style="font-weight:800;margin:.75rem 0 .5rem">قارن وأختر</h4><p style="color:#64748b;font-size:.9rem">قارن عروض الأسعار والتقييمات والتوفر من عدة مزودين.</p></div>
+        <div class="col-md-4 text-center"><div class="k-step-num" style="background:var(--k-primary)">3</div><h4 style="font-weight:800;margin:.75rem 0 .5rem">ادفع بأمان</h4><p style="color:#64748b;font-size:.9rem">المبلغ محجوز في نظام الضمان ويُحرَّر بعد تأكيدك لإتمام الخدمة.</p></div>
+      </div>
+      <div class="text-center mt-4"><a href="customer/search.html" class="btn btn-primary px-5" style="min-height:48px;display:inline-flex;align-items:center;font-size:1rem">ابحث عن مزود الآن</a></div>
+    </div>
+
+    <div id="hiw-tender" role="tabpanel" style="display:none" data-aos="fade-up">
+      <div class="row g-4">
+        <div class="col-md-4 text-center"><div class="k-step-num" style="background:#0369a1">1</div><h4 style="font-weight:800;margin:.75rem 0 .5rem">انشر مناقصتك</h4><p style="color:#64748b;font-size:.9rem">أضف تفاصيل مشروعك والميزانية والمتطلبات في 4 خطوات بسيطة.</p></div>
+        <div class="col-md-4 text-center"><div class="k-step-num" style="background:#0369a1">2</div><h4 style="font-weight:800;margin:.75rem 0 .5rem">استقبل العطاءات</h4><p style="color:#64748b;font-size:.9rem">يتنافس مقاولون معتمدون ويقدمون عروضاً مفصلة خلال أيام.</p></div>
+        <div class="col-md-4 text-center"><div class="k-step-num" style="background:#0369a1">3</div><h4 style="font-weight:800;margin:.75rem 0 .5rem">وقّع العقد</h4><p style="color:#64748b;font-size:.9rem">اختر أفضل عطاء ووقّع العقد إلكترونياً بالكامل.</p></div>
+      </div>
+      <div class="text-center mt-4"><a href="tenders/post-tender.html" class="btn k-btn-tender px-5" style="min-height:48px;display:inline-flex;align-items:center;font-size:1rem">انشر مناقصتك الآن</a></div>
+    </div>
+
+    <div id="hiw-equip" role="tabpanel" style="display:none" data-aos="fade-up">
+      <div class="row g-4">
+        <div class="col-md-4 text-center"><div class="k-step-num" style="background:#b45309">1</div><h4 style="font-weight:800;margin:.75rem 0 .5rem">ابحث عن معدة</h4><p style="color:#64748b;font-size:.9rem">تصفح 850+ معدة في منطقتك مع الأسعار والتقييمات والتوفر.</p></div>
+        <div class="col-md-4 text-center"><div class="k-step-num" style="background:#b45309">2</div><h4 style="font-weight:800;margin:.75rem 0 .5rem">احجز التواريخ</h4><p style="color:#64748b;font-size:.9rem">اختر الفترة من التقويم — بالساعة أو اليوم أو الأسبوع أو الشهر.</p></div>
+        <div class="col-md-4 text-center"><div class="k-step-num" style="background:#b45309">3</div><h4 style="font-weight:800;margin:.75rem 0 .5rem">استلم بموقعك</h4><p style="color:#64748b;font-size:.9rem">توصيل المعدة لموقعك مع مشغل متخصص إن أردت — بدفع آمن.</p></div>
+      </div>
+      <div class="text-center mt-4"><a href="equipment/index.html" class="btn k-btn-equip px-5" style="min-height:48px;display:inline-flex;align-items:center;font-size:1rem">تصفح المعدات الآن</a></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ─────────────────────────────────────
+     PLATFORM FEATURES — Why Khedmah
+───────────────────────────────────── -->
+<section aria-labelledby="why-heading" style="background:#fff;padding:4.5rem 0">
+  <div class="container">
+    <div class="text-center mb-5" data-aos="fade-up">
+      <h2 id="why-heading" class="k-section-title">لماذا تختار خدمة؟</h2>
+      <div class="k-divider mx-auto"></div>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="0">
+        <div class="k-feature-card" style="border:2px solid #f1f5f9">
+          <div class="k-feature-icon" style="background:linear-gradient(135deg,var(--k-primary),var(--k-accent));width:60px;height:60px;border-radius:16px;font-size:1.5rem;box-shadow:0 6px 20px rgba(2,128,144,0.3)">
+            <i class="fas fa-shield-alt" aria-hidden="true"></i>
+          </div>
+          <h3 style="font-weight:800;font-size:1rem;color:#1e293b;margin-bottom:.5rem">دفع آمن مضمون</h3>
+          <p style="color:#64748b;font-size:.88rem;line-height:1.7">المبلغ محجوز ولا يُحرَّر للمزود إلا بعد تأكيدك لإتمام الخدمة. حمايتك مضمونة دائماً.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="80">
+        <div class="k-feature-card" style="border:2px solid #f1f5f9">
+          <div class="k-feature-icon" style="background:linear-gradient(135deg,#0369a1,#0284c7);width:60px;height:60px;border-radius:16px;font-size:1.5rem;box-shadow:0 6px 20px rgba(3,105,161,0.3)">
+            <i class="fas fa-file-signature" aria-hidden="true"></i>
+          </div>
+          <h3 style="font-weight:800;font-size:1rem;color:#1e293b;margin-bottom:.5rem">عقود إلكترونية</h3>
+          <p style="color:#64748b;font-size:.88rem;line-height:1.7">كل اتفاقية موثقة رقمياً وملزمة قانونياً. لا حاجة لأوراق أو توقيعات يدوية.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="160">
+        <div class="k-feature-card" style="border:2px solid #f1f5f9">
+          <div class="k-feature-icon" style="background:linear-gradient(135deg,#7c3aed,#6d28d9);width:60px;height:60px;border-radius:16px;font-size:1.5rem;box-shadow:0 6px 20px rgba(124,58,237,0.3)">
+            <i class="fas fa-language" aria-hidden="true"></i>
+          </div>
+          <h3 style="font-weight:800;font-size:1rem;color:#1e293b;margin-bottom:.5rem">دعم 6 لغات</h3>
+          <p style="color:#64748b;font-size:.88rem;line-height:1.7">ترجمة تلقائية للمحادثات بالعربية والإنجليزية والأردية والهندية والبنغالية والفلبينية.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="240">
+        <div class="k-feature-card" style="border:2px solid #f1f5f9">
+          <div class="k-feature-icon" style="background:linear-gradient(135deg,#f59e0b,#d97706);width:60px;height:60px;border-radius:16px;font-size:1.5rem;box-shadow:0 6px 20px rgba(245,158,11,0.3)">
+            <i class="fas fa-star" aria-hidden="true"></i>
+          </div>
+          <h3 style="font-weight:800;font-size:1rem;color:#1e293b;margin-bottom:.5rem">تقييم مزدوج</h3>
+          <p style="color:#64748b;font-size:.88rem;line-height:1.7">يقيّم كل طرف الآخر بعد كل خدمة. شفافية كاملة تبني ثقة حقيقية للجميع.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────────────────────────
+     TESTIMONIALS
+───────────────────────────────────── -->
+<section aria-labelledby="reviews-heading" style="background:#f8fafc;padding:4.5rem 0">
+  <div class="container">
+    <div class="text-center mb-5" data-aos="fade-up">
+      <h2 id="reviews-heading" class="k-section-title">ماذا يقول مستخدمونا</h2>
+      <div class="k-divider mx-auto"></div>
+    </div>
+    <div class="swiper testimonialSwiper" style="padding-bottom:3rem">
+      <div class="swiper-wrapper">
+        <div class="swiper-slide">
+          <div class="k-testimonial">
+            <div class="quote" aria-hidden="true"><i class="fas fa-quote-right"></i></div>
+            <p>وجدت سباك محترف في أقل من ساعة. نظام الضمان أعطاني راحة بال كاملة. أنصح بها بشدة لكل أصحاب المنازل.</p>
+            <div class="k-rating-stars mb-3" aria-label="5 نجوم"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+            <div class="avatar" aria-hidden="true"><i class="fas fa-user"></i></div>
+            <strong>أحمد الغامدي</strong>
+            <small class="d-block">عميل · الرياض</small>
+          </div>
+        </div>
+        <div class="swiper-slide">
+          <div class="k-testimonial">
+            <div class="quote" aria-hidden="true"><i class="fas fa-quote-right"></i></div>
+            <p>نشرنا مناقصة مشروع ضخم وتلقينا 15 عطاءً خلال يومين فقط. المنصة وفّرت علينا وقتاً وجهداً هائلاً.</p>
+            <div class="k-rating-stars mb-3" aria-label="5 نجوم"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+            <div class="avatar" style="background:linear-gradient(135deg,#0369a1,#0284c7)" aria-hidden="true"><i class="fas fa-user"></i></div>
+            <strong>م. محمد الشمري</strong>
+            <small class="d-block">مدير مشاريع · جدة</small>
+          </div>
+        </div>
+        <div class="swiper-slide">
+          <div class="k-testimonial">
+            <div class="quote" aria-hidden="true"><i class="fas fa-quote-right"></i></div>
+            <p>أجّرت حفاري عبر المنصة وحصلت على حجوزات منتظمة. الدفع يصلني مباشرة والعملية شفافة تماماً.</p>
+            <div class="k-rating-stars mb-3" aria-label="4 نجوم ونصف"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></div>
+            <div class="avatar" style="background:linear-gradient(135deg,#b45309,#92400e)" aria-hidden="true"><i class="fas fa-user"></i></div>
+            <strong>خالد العنزي</strong>
+            <small class="d-block">مالك معدات · الدمام</small>
+          </div>
+        </div>
+        <div class="swiper-slide">
+          <div class="k-testimonial">
+            <div class="quote" aria-hidden="true"><i class="fas fa-quote-right"></i></div>
+            <p>الدردشة بالترجمة التلقائية رائعة. لا أتحدث إلا الأردية ومع ذلك أتواصل مع العملاء بسهولة تامة.</p>
+            <div class="k-rating-stars mb-3" aria-label="5 نجوم"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+            <div class="avatar" style="background:linear-gradient(135deg,#6366f1,#4f46e5)" aria-hidden="true"><i class="fas fa-user"></i></div>
+            <strong>Raheem Khan</strong>
+            <small class="d-block">فني تكييف · الرياض</small>
+          </div>
+        </div>
+      </div>
+      <div class="swiper-pagination" aria-label="تنقل بين التقييمات"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────────────────────────
+     CTA — Sign Up + Referral
+───────────────────────────────────── -->
+<section aria-label="دعوة للتسجيل" style="background:#fff;padding:4.5rem 0">
+  <div class="container">
+    <div class="row g-4 align-items-stretch">
+
+      <!-- Sign Up CTA -->
+      <div class="col-lg-7" data-aos="fade-right">
+        <div style="background:linear-gradient(135deg,#0f172a,var(--k-primary-dk));border-radius:20px;padding:2.5rem;color:#fff;height:100%;display:flex;flex-direction:column;justify-content:center">
+          <span style="font-size:0.82rem;font-weight:700;color:var(--k-accent);margin-bottom:.75rem;display:block">انضم لأكثر من 15,000 مستخدم</span>
+          <h3 style="font-weight:900;font-size:1.6rem;margin-bottom:.75rem">سجّل مجاناً وابدأ الآن</h3>
+          <p style="opacity:.8;font-size:.9rem;line-height:1.7;margin-bottom:1.5rem">سواء كنت عميلاً يبحث عن خدمة، أو مزوداً يريد كسب دخل إضافي، أو شركة تحتاج مقاولاً — خدمة هي المكان الصحيح.</p>
+          <div class="d-flex gap-2 flex-wrap">
+            <a href="auth/signup.html" class="btn btn-accent px-5"       style="min-height:48px;display:inline-flex;align-items:center;font-size:1rem;font-weight:700"><i class="fas fa-user-plus me-2" aria-hidden="true"></i> سجّل الآن مجاناً</a>
+            <a href="auth/login.html"  class="btn btn-outline-light px-4" style="min-height:48px;display:inline-flex;align-items:center">لديك حساب؟ ادخل</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Referral CTA -->
+      <div class="col-lg-5" data-aos="fade-left">
+        <div style="background:linear-gradient(135deg,var(--k-primary),var(--k-accent));border-radius:20px;padding:2.5rem;color:#fff;height:100%;display:flex;flex-direction:column;justify-content:center;text-align:center;position:relative;overflow:hidden">
+          <div style="position:absolute;font-size:8rem;font-weight:900;color:rgba(255,255,255,0.05);top:50%;transform:translateY(-50%);left:-10px;line-height:1;user-select:none" aria-hidden="true">50</div>
+          <div style="position:relative;z-index:1">
+            <i class="fas fa-gift fa-2x mb-3" style="color:rgba(255,255,255,0.85)" aria-hidden="true"></i>
+            <h3 style="font-weight:900;font-size:1.4rem;margin-bottom:.5rem">ادعُ صديقاً واكسب</h3>
+            <p style="font-size:2rem;font-weight:900;margin:.5rem 0">50 + 50 ريال</p>
+            <p style="opacity:.85;font-size:.88rem;margin-bottom:1.5rem">50 ريال لك عند تسجيل صديقك + 50 ريال له كهدية ترحيب</p>
+            <a href="rewards/referral-program.html" class="btn" style="background:#fff;color:var(--k-primary);font-weight:800;border-radius:10px;min-height:44px;display:inline-flex;align-items:center;padding:.6rem 2rem">
+              <i class="fas fa-share-alt me-2" aria-hidden="true"></i> ابدأ الإحالة
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────────────────────────
+     FOOTER
+───────────────────────────────────── -->
+<footer class="k-footer" role="contentinfo">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-lg-4">
+        <div class="footer-brand mb-2" aria-label="خدمة">خدم<span>ة</span></div>
+        <p style="font-size:.88rem;max-width:280px;color:rgba(255,255,255,.55);line-height:1.7">
+          منصة سعودية شاملة للخدمات المنزلية والمناقصات وتأجير المعدات الثقيلة.
+        </p>
+        <nav aria-label="وسائل التواصل الاجتماعي" class="mt-3">
+          <a href="#" class="social-icon" aria-label="تويتر"><i class="fab fa-twitter" aria-hidden="true"></i></a>
+          <a href="#" class="social-icon" aria-label="إنستغرام"><i class="fab fa-instagram" aria-hidden="true"></i></a>
+          <a href="#" class="social-icon" aria-label="واتساب"><i class="fab fa-whatsapp" aria-hidden="true"></i></a>
+          <a href="#" class="social-icon" aria-label="لينكدإن"><i class="fab fa-linkedin" aria-hidden="true"></i></a>
+        </nav>
+      </div>
+      <div class="col-lg-2 col-6">
+        <h2 style="font-size:0.95rem;font-weight:700;color:#fff;margin-bottom:.75rem">الأقسام</h2>
+        <nav aria-label="روابط الأقسام">
+          <a href="customer/home-services.html">خدمات المنازل</a>
+          <a href="tenders/index.html">المناقصات</a>
+          <a href="equipment/index.html">تأجير المعدات</a>
+          <a href="rewards/referral-program.html">برنامج الإحالة</a>
+        </nav>
+      </div>
+      <div class="col-lg-2 col-6">
+        <h2 style="font-size:0.95rem;font-weight:700;color:#fff;margin-bottom:.75rem">للمزودين</h2>
+        <nav aria-label="روابط المزودين">
+          <a href="auth/signup.html">انضم كمزود</a>
+          <a href="provider/dashboard.html">لوحة المزود</a>
+          <a href="tenders/post-tender.html">نشر مناقصة</a>
+          <a href="equipment/list-equipment.html">إضافة معدة</a>
+        </nav>
+      </div>
+      <div class="col-lg-4">
+        <h2 style="font-size:0.95rem;font-weight:700;color:#fff;margin-bottom:.75rem">تواصل ومساعدة</h2>
+        <nav aria-label="روابط الدعم">
+          <a href="shared/faq.html"><i class="fas fa-question-circle me-2" aria-hidden="true"></i>مركز المساعدة</a>
+          <a href="legal/terms.html"><i class="fas fa-file-alt me-2" aria-hidden="true"></i>الشروط والأحكام</a>
+          <a href="legal/privacy.html"><i class="fas fa-lock me-2" aria-hidden="true"></i>سياسة الخصوصية</a>
+          <a href="mailto:support@khedmah.sa"><i class="fas fa-envelope me-2" aria-hidden="true"></i>support@khedmah.sa</a>
+          <a href="tel:920000000"><i class="fas fa-phone me-2" aria-hidden="true"></i>920-000-000</a>
+        </nav>
+      </div>
+    </div>
+    <hr class="footer-divider">
+    <p class="copyright" style="color:rgba(255,255,255,.3)">© 2026 خدمة. جميع الحقوق محفوظة.</p>
+  </div>
+</footer>
+
+<!-- Sticky Mobile CTA -->
+<div class="k-mobile-cta" aria-label="أزرار سريعة" role="navigation">
+  <a href="customer/search.html" class="k-mob-btn k-mob-home" aria-label="ابحث عن خدمة منزلية">
+    <i class="fas fa-home" aria-hidden="true"></i><span>خدمات</span>
+  </a>
+  <a href="tenders/index.html" class="k-mob-btn k-mob-tender" aria-label="تصفح المناقصات">
+    <i class="fas fa-file-contract" aria-hidden="true"></i><span>مناقصات</span>
+  </a>
+  <a href="equipment/index.html" class="k-mob-btn k-mob-equip" aria-label="تصفح المعدات">
+    <i class="fas fa-truck-monster" aria-hidden="true"></i><span>معدات</span>
+  </a>
+  <a href="auth/signup.html" class="k-mob-btn k-mob-signup" aria-label="سجّل الآن">
+    <i class="fas fa-user-plus" aria-hidden="true"></i><span>سجّل</span>
+  </a>
+</div>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script src="assets/js/khedmah.js"></script>
+<script>
+  AOS.init({ duration: 600, once: true, offset: 60 });
+
+  new Swiper('.testimonialSwiper', {
+    slidesPerView: 1, spaceBetween: 24, loop: true,
+    autoplay: { delay: 5000, disableOnInteraction: false },
+    pagination: { el: '.swiper-pagination', clickable: true },
+    breakpoints: { 768: { slidesPerView: 2 }, 1024: { slidesPerView: 3 } }
+  });
+
+  /* Hero search routing */
+  function doHeroSearch() {
+    const cat = document.getElementById('heroCategory').value;
+    const q   = document.getElementById('heroSearch').value.trim();
+    const map = {
+      home:   'customer/search.html',
+      tender: 'tenders/index.html',
+      equip:  'equipment/index.html'
+    };
+    const base = map[cat] || 'customer/search.html';
+    window.location.href = q ? `${base}?q=${encodeURIComponent(q)}` : base;
+  }
+
+  /* How It Works tab switcher */
+  function switchHiw(id, btn) {
+    ['home','tender','equip'].forEach(k => {
+      const el = document.getElementById('hiw-' + k);
+      if (el) el.style.display = 'none';
+    });
+    document.querySelectorAll('.k-hiw-tab').forEach(b => {
+      b.classList.remove('active');
+      b.setAttribute('aria-selected','false');
+    });
+    const panel = document.getElementById('hiw-' + id);
+    if (panel) panel.style.display = 'block';
+    btn.classList.add('active');
+    btn.setAttribute('aria-selected','true');
+  }
+
+  /* Animated counters */
+  document.querySelectorAll('.k-counter').forEach(el => {
+    const target = +el.dataset.target;
+    const suffix = el.dataset.suffix || '';
+    const obs = new IntersectionObserver(entries => {
+      if (!entries[0].isIntersecting) return;
+      obs.disconnect();
+      let n = 0;
+      const step = target / 55;
+      const t = setInterval(() => {
+        n = Math.min(n + step, target);
+        el.textContent = Math.floor(n).toLocaleString('ar-SA') + suffix;
+        if (n >= target) clearInterval(t);
+      }, 22);
+    }, { threshold: 0.5 });
+    obs.observe(el);
+  });
+</script>
+
+<!-- ── Floating AI Assistant Button ── -->
+<a href="customer/ai-chat.html"
+   title="المساعد الذكي — متاح للجميع"
+   style="position:fixed;bottom:1.75rem;left:1.75rem;z-index:999;display:flex;align-items:center;gap:0.6rem;background:linear-gradient(135deg,var(--k-primary),var(--k-accent));color:#fff;border-radius:50px;padding:0.75rem 1.25rem 0.75rem 1rem;text-decoration:none;box-shadow:0 8px 28px rgba(2,128,144,0.45);font-family:'Tajawal',sans-serif;font-weight:800;font-size:0.92rem;transition:all 0.3s"
+   onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 14px 36px rgba(2,128,144,0.55)'"
+   onmouseout="this.style.transform='';this.style.boxShadow='0 8px 28px rgba(2,128,144,0.45)'">
+  <span style="position:relative">
+    <i class="fas fa-robot" style="font-size:1.15rem"></i>
+    <span style="position:absolute;top:-5px;right:-5px;width:10px;height:10px;background:#10b981;border-radius:50%;border:2px solid #fff"></span>
+  </span>
+  <span>المساعد الذكي</span>
+  <span style="font-size:0.72rem;background:rgba(255,255,255,0.2);border-radius:50px;padding:0.1rem 0.5rem;font-weight:600">مجاناً</span>
+</a>
+</body>
+</html>

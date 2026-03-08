@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>دخول الإدارة — خدمة</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="../assets/css/khedmah.css">
+  <style>
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #01606e 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Tajawal', sans-serif;
+      padding: 1.5rem;
+    }
+    @keyframes shake {
+      0%,100%{transform:translateX(0)} 20%{transform:translateX(-8px)} 40%{transform:translateX(8px)} 60%{transform:translateX(-5px)} 80%{transform:translateX(5px)}
+    }
+    @keyframes fadeIn {
+      from { opacity:0; transform:translateY(20px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+    .shake { animation: shake 0.5s ease; }
+    .admin-card {
+      width: 100%;
+      max-width: 440px;
+      background: #fff;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.4);
+      animation: fadeIn 0.5s ease;
+    }
+    .admin-header {
+      background: linear-gradient(135deg, var(--k-dark-2) 0%, var(--k-primary-dk) 100%);
+      padding: 2.5rem 2rem;
+      text-align: center;
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+    }
+    .admin-header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23fff' fill-opacity='0.03'%3E%3Cpath d='M0 40L40 0H20L0 20M40 40V20L20 40'/%3E%3C/g%3E%3C/svg%3E");
+    }
+    .admin-icon-ring {
+      width: 88px; height: 88px;
+      background: rgba(255,255,255,0.12);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 1.25rem;
+      border: 2px solid rgba(255,255,255,0.25);
+      position: relative; z-index: 1;
+    }
+    .admin-body { padding: 2rem; }
+    .input-icon-wrap { position: relative; }
+    .input-icon-wrap .icon {
+      position: absolute; right: 1rem; top: 50%;
+      transform: translateY(-50%); color: var(--k-gray); pointer-events: none;
+    }
+    .input-icon-wrap input { padding-right: 2.75rem; }
+    .attempt-dots { display: flex; gap: 6px; justify-content: center; margin-top: 1rem; }
+    .attempt-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #e2e8f0; transition: background 0.3s;
+    }
+    .attempt-dot.used { background: var(--k-danger); }
+  </style>
+</head>
+<body>
+
+<div class="admin-card" x-data="adminLoginApp()">
+
+  <!-- Header -->
+  <div class="admin-header">
+    <div class="admin-icon-ring">
+      <i class="fas fa-shield-halved fa-2x"></i>
+    </div>
+    <h4 style="font-weight:900;margin-bottom:0.5rem;position:relative;z-index:1">لوحة التحكم الإدارية</h4>
+    <div style="position:relative;z-index:1">
+      <span style="background:rgba(239,68,68,0.85);color:#fff;font-size:0.72rem;padding:0.25rem 0.85rem;border-radius:50px;font-weight:700;letter-spacing:1.5px">RESTRICTED ACCESS</span>
+    </div>
+  </div>
+
+  <div class="admin-body">
+
+    <!-- Security Notice -->
+    <div style="background:rgba(239,68,68,0.05);border:1px solid rgba(239,68,68,0.2);border-right:3px solid var(--k-danger);border-radius:10px;padding:0.75rem 1rem;margin-bottom:1.5rem;font-size:0.84rem;color:#7f1d1d;display:flex;align-items:center;gap:0.75rem">
+      <i class="fas fa-triangle-exclamation" style="color:var(--k-danger);flex-shrink:0"></i>
+      <span>منطقة مقيدة — للمسؤولين المعتمدين فقط. جميع محاولات الدخول مسجّلة.</span>
+    </div>
+
+    <!-- Error Box -->
+    <div x-show="error" x-transition :class="{ shake: shake }" style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.25);border-radius:10px;padding:0.75rem 1rem;margin-bottom:1rem;font-size:0.85rem;display:flex;align-items:center;gap:0.75rem">
+      <i class="fas fa-circle-xmark" style="color:var(--k-danger);flex-shrink:0"></i>
+      <span style="color:#7f1d1d" x-text="error"></span>
+    </div>
+
+    <!-- Success -->
+    <div x-show="success" x-transition style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.25);border-radius:10px;padding:0.75rem 1rem;margin-bottom:1rem;font-size:0.85rem;display:flex;align-items:center;gap:0.75rem">
+      <i class="fas fa-circle-check" style="color:var(--k-success);flex-shrink:0"></i>
+      <span style="color:#064e3b">تم التحقق بنجاح. جاري التوجيه...</span>
+    </div>
+
+    <!-- Form -->
+    <form @submit.prevent="login()">
+      <div class="mb-3">
+        <label class="form-label fw-600" style="font-size:0.9rem">اسم المستخدم</label>
+        <div class="input-icon-wrap">
+          <i class="fas fa-user icon"></i>
+          <input
+            type="text"
+            class="form-control"
+            x-model="username"
+            placeholder="أدخل اسم المستخدم"
+            :disabled="locked || success"
+            autocomplete="username"
+          >
+        </div>
+      </div>
+      <div class="mb-4">
+        <label class="form-label fw-600" style="font-size:0.9rem">كلمة المرور</label>
+        <div class="input-icon-wrap" style="position:relative">
+          <i class="fas fa-lock icon"></i>
+          <input
+            :type="showPass ? 'text' : 'password'"
+            class="form-control"
+            x-model="password"
+            placeholder="أدخل كلمة المرور"
+            :disabled="locked || success"
+            autocomplete="current-password"
+            style="padding-left:2.75rem"
+          >
+          <button type="button" @click="showPass=!showPass" style="position:absolute;left:0.75rem;top:50%;transform:translateY(-50%);background:none;border:none;padding:0;cursor:pointer">
+            <i :class="showPass ? 'fas fa-eye-slash' : 'fas fa-eye'" style="color:var(--k-gray)"></i>
+          </button>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary w-100 py-3" :disabled="locked || loading || success" style="border-radius:12px;font-size:1rem">
+        <span x-show="locked"><i class="fas fa-ban ms-2"></i> تم تجميد الحساب مؤقتاً</span>
+        <span x-show="success"><i class="fas fa-check ms-2"></i> تم الدخول</span>
+        <span x-show="!locked && !loading && !success"><i class="fas fa-sign-in-alt ms-2"></i> تسجيل الدخول</span>
+        <span x-show="loading && !success"><i class="fas fa-spinner fa-spin ms-2"></i> جاري التحقق...</span>
+      </button>
+    </form>
+
+    <!-- Attempt indicators -->
+    <div class="attempt-dots" x-show="attempts > 0">
+      <template x-for="i in maxAttempts" :key="i">
+        <div class="attempt-dot" :class="{ used: i <= attempts }"></div>
+      </template>
+    </div>
+    <p x-show="attempts > 0" style="text-align:center;font-size:0.78rem;color:var(--k-danger);margin-top:0.5rem" x-text="'محاولات متبقية: ' + (maxAttempts - attempts)"></p>
+
+    <p style="text-align:center;color:var(--k-gray);font-size:0.78rem;margin-top:1.5rem;margin-bottom:0">
+      <i class="fas fa-circle-dot ms-1" style="color:var(--k-success)"></i>
+      اتصال آمن مشفّر
+    </p>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+<script>
+  if (sessionStorage.getItem('adminLoggedIn') === 'true') {
+    window.location.href = 'dashboard.html';
+  }
+
+  function adminLoginApp() {
+    return {
+      username: '',
+      password: '',
+      attempts: 0,
+      maxAttempts: 3,
+      locked: false,
+      loading: false,
+      success: false,
+      error: '',
+      shake: false,
+      showPass: false,
+
+      login() {
+        if (this.locked || this.loading || this.success) return;
+        if (!this.username || !this.password) {
+          this.showError('يرجى إدخال اسم المستخدم وكلمة المرور');
+          return;
+        }
+        this.loading = true;
+        this.error = '';
+
+        // Simulate network delay (replace with real API call)
+        setTimeout(() => {
+          this.loading = false;
+          if (this.username === 'admin' && this.password === 'Khedmah@2026') {
+            this.success = true;
+            sessionStorage.setItem('adminLoggedIn', 'true');
+            sessionStorage.setItem('adminUsername', this.username);
+            setTimeout(() => { window.location.href = 'dashboard.html'; }, 800);
+          } else {
+            this.attempts++;
+            this.password = '';
+            if (this.attempts >= this.maxAttempts) {
+              this.locked = true;
+              this.showError('تم تجميد الحساب بعد 3 محاولات فاشلة. يرجى التواصل مع الدعم الفني.');
+            } else {
+              this.showError('بيانات الدخول غير صحيحة');
+            }
+          }
+        }, 1200);
+      },
+
+      showError(msg) {
+        this.error = msg;
+        this.shake = true;
+        setTimeout(() => this.shake = false, 600);
+      }
+    };
+  }
+</script>
+</body>
+</html>

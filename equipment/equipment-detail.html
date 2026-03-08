@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تفاصيل المعدة — خدمة</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="../assets/css/khedmah.css">
+  <style>
+    body { background: #f0f4f8; font-family: 'Tajawal', sans-serif; }
+    .eq-accent { color: #b45309; }
+    .detail-card { background: #fff; border-radius: 16px; box-shadow: 0 2px 16px rgba(0,0,0,0.07); padding: 1.5rem; margin-bottom: 1.25rem; }
+    .img-gallery { background: linear-gradient(135deg, #fef3c7, #fed7aa); border-radius: 16px; height: 340px; display: flex; align-items: center; justify-content: center; font-size: 8rem; position: relative; overflow: hidden; }
+    .img-thumb { width: 70px; height: 70px; border-radius: 10px; border: 2px solid #e2e8f0; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; transition: all 0.2s; flex-shrink: 0; }
+    .img-thumb:hover, .img-thumb.active { border-color: #b45309; }
+    .spec-row { display: flex; justify-content: space-between; padding: 0.65rem 0; border-bottom: 1px solid #f1f5f9; font-size: 0.88rem; }
+    .spec-row:last-child { border-bottom: none; }
+    .spec-row span:first-child { color: #64748b; }
+    .spec-row span:last-child { font-weight: 700; color: #1e293b; }
+    .btn-eq { background: #b45309; color: #fff; border: none; border-radius: 10px; padding: 0.75rem 1.5rem; font-weight: 700; font-family: 'Tajawal', sans-serif; transition: all 0.2s; }
+    .btn-eq:hover { background: #92400e; color: #fff; }
+    .btn-eq-outline { background: transparent; color: #b45309; border: 2px solid #b45309; border-radius: 10px; padding: 0.75rem 1.5rem; font-weight: 700; font-family: 'Tajawal', sans-serif; transition: all 0.2s; }
+    .btn-eq-outline:hover { background: #b45309; color: #fff; }
+    .price-period { border: 2px solid #e2e8f0; border-radius: 12px; padding: 0.75rem; text-align: center; cursor: pointer; transition: all 0.2s; }
+    .price-period:hover, .price-period.active { border-color: #b45309; background: #fff7ed; }
+    .price-period .val { font-size: 1.2rem; font-weight: 900; color: #b45309; }
+    .price-period .lbl { font-size: 0.78rem; color: #64748b; }
+    .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+    .cal-day { height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.82rem; font-weight: 600; cursor: pointer; border: 1px solid transparent; transition: all 0.15s; }
+    .cal-day:hover { border-color: #b45309; }
+    .cal-day.booked { background: #fef2f2; color: #dc2626; cursor: not-allowed; }
+    .cal-day.available { background: #f0fdf4; color: #16a34a; }
+    .cal-day.selected { background: #b45309; color: #fff; border-color: #b45309; }
+    .cal-day.today { border-color: #b45309; font-weight: 900; }
+    .cal-day.empty { cursor: default; }
+    .cal-header { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 4px; }
+    .cal-header span { text-align: center; font-size: 0.75rem; font-weight: 700; color: #64748b; padding: 0.25rem; }
+    .owner-card { background: linear-gradient(135deg, #1c0a00, #78350f); border-radius: 16px; padding: 1.5rem; color: #fff; }
+    .tag { background: #fff7ed; color: #b45309; border: 1px solid #fed7aa; border-radius: 20px; padding: 0.25rem 0.7rem; font-size: 0.8rem; font-weight: 600; display: inline-block; margin: 0.15rem; }
+    .review-row { border-bottom: 1px solid #f1f5f9; padding: 1rem 0; }
+    .review-row:last-child { border-bottom: none; }
+    .booking-summary-row { display: flex; justify-content: space-between; font-size: 0.9rem; padding: 0.4rem 0; }
+  </style>
+</head>
+<body>
+
+<nav class="k-navbar navbar navbar-expand-lg">
+  <div class="container">
+    <a class="navbar-brand" href="../index.html">خدم<span style="color:var(--k-accent)">ة</span></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navMain">
+      <ul class="navbar-nav me-auto gap-1">
+        <li class="nav-item"><a class="nav-link" href="../index.html">الرئيسية</a></li>
+        <li class="nav-item"><a class="nav-link" href="../tenders/index.html">المناقصات</a></li>
+        <li class="nav-item"><a class="nav-link active" href="index.html">المعدات</a></li>
+        <li class="nav-item"><a class="nav-link" href="../customer/home-services.html">خدمات المنازل</a></li>
+      </ul>
+      <div class="d-flex gap-2">
+        <a href="list-equipment.html" class="btn btn-sm btn-eq">+ إضافة معدة</a>
+        <a href="../auth/login.html" class="btn btn-sm btn-eq-outline">دخول</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="container py-4" style="max-width:1100px" x-data="equipmentDetailApp()">
+
+  <!-- Breadcrumb -->
+  <nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb" style="font-size:0.85rem">
+      <li class="breadcrumb-item"><a href="../index.html" style="color:#b45309">الرئيسية</a></li>
+      <li class="breadcrumb-item"><a href="index.html" style="color:#b45309">المعدات</a></li>
+      <li class="breadcrumb-item active">حفار هيدروليكي CAT 320</li>
+    </ol>
+  </nav>
+
+  <!-- Success State -->
+  <div x-show="booked" style="text-align:center;padding:4rem 1rem">
+    <div style="width:100px;height:100px;background:linear-gradient(135deg,#b45309,#92400e);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem;box-shadow:0 10px 30px rgba(180,83,9,0.4)">
+      <i class="fas fa-check fa-3x" style="color:#fff"></i>
+    </div>
+    <h3 style="font-weight:900;color:#1e293b">تم تأكيد الحجز!</h3>
+    <p style="color:#64748b">سيتواصل معك المالك خلال ساعة لتأكيد التفاصيل</p>
+    <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:12px;padding:1.25rem;max-width:400px;margin:1rem auto;text-align:right">
+      <div class="booking-summary-row"><span style="color:#64748b">رقم الحجز</span><span style="font-weight:800">#EQ-2026-4821</span></div>
+      <div class="booking-summary-row"><span style="color:#64748b">المعدة</span><span style="font-weight:700">حفار CAT 320</span></div>
+      <div class="booking-summary-row"><span style="color:#64748b">الفترة</span><span style="font-weight:700" x-text="startDate + ' ← ' + endDate"></span></div>
+      <div class="booking-summary-row"><span style="color:#64748b">الإجمالي</span><span style="font-weight:900;color:#b45309" x-text="totalPrice + ' ر.س'"></span></div>
+    </div>
+    <a href="index.html" class="btn btn-eq mt-2">استعرض معدات أخرى</a>
+  </div>
+
+  <div x-show="!booked">
+  <div class="row g-4">
+
+    <!-- Main Content -->
+    <div class="col-lg-8">
+
+      <!-- Image Gallery -->
+      <div class="img-gallery mb-3">
+        🏗️
+        <div style="position:absolute;top:12px;right:12px">
+          <span style="background:#dcfce7;color:#16a34a;border-radius:20px;padding:0.3rem 0.85rem;font-size:0.82rem;font-weight:700">متاح الآن</span>
+        </div>
+        <div style="position:absolute;top:12px;left:12px;display:flex;gap:0.5rem">
+          <button style="background:rgba(255,255,255,0.9);border:none;border-radius:8px;padding:0.4rem 0.65rem;font-size:0.85rem;cursor:pointer">
+            <i class="fas fa-heart" style="color:#dc2626"></i>
+          </button>
+          <button style="background:rgba(255,255,255,0.9);border:none;border-radius:8px;padding:0.4rem 0.65rem;font-size:0.85rem;cursor:pointer">
+            <i class="fas fa-share-alt" style="color:#64748b"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Thumbnails -->
+      <div class="d-flex gap-2 mb-4 overflow-auto">
+        <div class="img-thumb active" style="background:#fef3c7">🏗️</div>
+        <div class="img-thumb" style="background:#dbeafe">🔧</div>
+        <div class="img-thumb" style="background:#d1fae5">⚙️</div>
+        <div class="img-thumb" style="background:#fae8ff">📋</div>
+      </div>
+
+      <!-- Title & Badges -->
+      <div class="detail-card">
+        <div class="d-flex flex-wrap gap-2 mb-2">
+          <span style="background:#fff7ed;color:#b45309;border:1px solid #fed7aa;border-radius:8px;padding:0.2rem 0.6rem;font-size:0.78rem;font-weight:700">حفارات</span>
+          <span style="background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;border-radius:8px;padding:0.2rem 0.6rem;font-size:0.78rem;font-weight:700"><i class="fas fa-check-circle ms-1"></i> معتمد</span>
+          <span style="background:#fffbeb;color:#d97706;border:1px solid #fde68a;border-radius:8px;padding:0.2rem 0.6rem;font-size:0.78rem;font-weight:700"><i class="fas fa-shield-alt ms-1"></i> مؤمن</span>
+        </div>
+        <h2 style="font-weight:900;color:#1e293b;margin-bottom:0.5rem">حفار هيدروليكي Caterpillar 320</h2>
+        <div class="d-flex flex-wrap gap-3 mb-3" style="color:#64748b;font-size:0.88rem">
+          <span><i class="fas fa-map-marker-alt ms-1 eq-accent"></i> الرياض — حي العليا</span>
+          <span><i class="fas fa-star ms-1 text-warning"></i> 4.9 (32 تقييم)</span>
+          <span><i class="fas fa-calendar ms-1 eq-accent"></i> نُشر: 5 مارس 2026</span>
+          <span><i class="fas fa-eye ms-1 eq-accent"></i> 218 مشاهدة</span>
+        </div>
+        <div class="d-flex flex-wrap gap-2">
+          <span class="tag">Caterpillar</span>
+          <span class="tag">موديل 2022</span>
+          <span class="tag">3,200 ساعة</span>
+          <span class="tag">20 طن</span>
+          <span class="tag">مع مشغل</span>
+          <span class="tag">توصيل مجاني</span>
+          <span class="tag">عقد إلكتروني</span>
+        </div>
+      </div>
+
+      <!-- Description -->
+      <div class="detail-card">
+        <h6 style="font-weight:800;color:#1e293b;margin-bottom:0.75rem">وصف المعدة</h6>
+        <p style="color:#475569;line-height:1.8">
+          حفار هيدروليكي Caterpillar 320 موديل 2022 في حالة ممتازة، مناسب لأعمال الحفر المتوسطة والكبيرة في مشاريع البناء والبنية التحتية. الجهاز محافظ عليه بشكل دوري ومفحوص من وكيل Caterpillar المعتمد.
+        </p>
+        <p style="color:#475569;line-height:1.8">
+          السعر يشمل المشغل المرخص وتوصيل المعدة لموقعك في نطاق 80 كم من الرياض مجاناً. التأمين الشامل مدرج في السعر. متاح للتأجير بالساعة أو اليوم أو الأسبوع أو الشهر.
+        </p>
+
+        <h6 style="font-weight:800;color:#1e293b;margin:1.25rem 0 0.75rem">المواصفات التقنية</h6>
+        <div class="row g-0">
+          <div class="col-md-6">
+            <div class="spec-row"><span>الماركة</span><span>Caterpillar (CAT)</span></div>
+            <div class="spec-row"><span>الموديل</span><span>320 GC</span></div>
+            <div class="spec-row"><span>سنة الصنع</span><span>2022</span></div>
+            <div class="spec-row"><span>ساعات التشغيل</span><span>3,200 ساعة</span></div>
+            <div class="spec-row"><span>الوزن التشغيلي</span><span>20,400 كجم</span></div>
+          </div>
+          <div class="col-md-6">
+            <div class="spec-row"><span>قوة المحرك</span><span>107 كيلوواط</span></div>
+            <div class="spec-row"><span>عمق الحفر الأقصى</span><span>6.53 م</span></div>
+            <div class="spec-row"><span>سعة الدلو</span><span>0.93 م³</span></div>
+            <div class="spec-row"><span>ارتفاع التفريغ</span><span>5.9 م</span></div>
+            <div class="spec-row"><span>نوع الوقود</span><span>ديزل</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Availability Calendar -->
+      <div class="detail-card">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h6 style="font-weight:800;color:#1e293b;margin:0">التقويم — مارس 2026</h6>
+          <div class="d-flex gap-3" style="font-size:0.78rem">
+            <span style="display:flex;align-items:center;gap:0.3rem"><span style="width:12px;height:12px;background:#f0fdf4;border-radius:3px;border:1px solid #bbf7d0;display:inline-block"></span> متاح</span>
+            <span style="display:flex;align-items:center;gap:0.3rem"><span style="width:12px;height:12px;background:#fef2f2;border-radius:3px;border:1px solid #fecaca;display:inline-block"></span> محجوز</span>
+            <span style="display:flex;align-items:center;gap:0.3rem"><span style="width:12px;height:12px;background:#b45309;border-radius:3px;display:inline-block"></span> مختار</span>
+          </div>
+        </div>
+        <div class="cal-header">
+          <span>أح</span><span>إث</span><span>ث</span><span>أر</span><span>خ</span><span>ج</span><span>س</span>
+        </div>
+        <div class="calendar-grid" id="calGrid"></div>
+        <div class="mt-3 d-flex gap-3" style="font-size:0.88rem">
+          <div><span style="color:#64748b">من:</span> <strong id="startDateDisplay">—</strong></div>
+          <div><span style="color:#64748b">إلى:</span> <strong id="endDateDisplay">—</strong></div>
+          <div><span style="color:#64748b">الأيام:</span> <strong id="daysDisplay" style="color:#b45309">0</strong></div>
+        </div>
+      </div>
+
+      <!-- Reviews -->
+      <div class="detail-card">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h6 style="font-weight:800;color:#1e293b;margin:0">التقييمات (32)</h6>
+          <div style="display:flex;align-items:center;gap:0.5rem">
+            <span style="font-size:1.5rem;font-weight:900;color:#1e293b">4.9</span>
+            <div style="color:#f59e0b"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></div>
+          </div>
+        </div>
+        <div>
+          <div class="review-row">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <div class="d-flex align-items-center gap-2">
+                <div style="width:38px;height:38px;background:linear-gradient(135deg,#b45309,#92400e);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:0.85rem">أ</div>
+                <div>
+                  <div style="font-weight:700;font-size:0.88rem">أحمد العمري</div>
+                  <div style="font-size:0.75rem;color:#64748b">فبراير 2026</div>
+                </div>
+              </div>
+              <div style="color:#f59e0b"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+            </div>
+            <p style="font-size:0.87rem;color:#475569;margin:0">معدة ممتازة ومشغل محترف. الحفار في حالة رائعة وانتهينا من المشروع قبل الموعد المحدد. سنتعامل معهم مجدداً.</p>
+          </div>
+          <div class="review-row">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <div class="d-flex align-items-center gap-2">
+                <div style="width:38px;height:38px;background:linear-gradient(135deg,#6366f1,#4f46e5);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:0.85rem">ف</div>
+                <div>
+                  <div style="font-weight:700;font-size:0.88rem">فيصل الشهري</div>
+                  <div style="font-size:0.75rem;color:#64748b">يناير 2026</div>
+                </div>
+              </div>
+              <div style="color:#f59e0b"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+            </div>
+            <p style="font-size:0.87rem;color:#475569;margin:0">التوصيل كان في الموعد تماماً والمشغل ذو خبرة عالية. سعر عادل جداً مقارنة بالسوق.</p>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /col-lg-8 -->
+
+    <!-- Booking Sidebar -->
+    <div class="col-lg-4">
+
+      <!-- Pricing -->
+      <div class="detail-card" style="position:sticky;top:80px">
+        <h6 style="font-weight:800;color:#1e293b;margin-bottom:1rem">أسعار التأجير</h6>
+        <div class="row g-2 mb-3">
+          <div class="col-4">
+            <div class="price-period" :class="{'active': period==='hour'}" @click="period='hour';calcPrice()">
+              <div class="val">120</div>
+              <div class="lbl">ر.س/ساعة</div>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="price-period active" :class="{'active': period==='day'}" @click="period='day';calcPrice()">
+              <div class="val">850</div>
+              <div class="lbl">ر.س/يوم</div>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="price-period" :class="{'active': period==='week'}" @click="period='week';calcPrice()">
+              <div class="val">4,500</div>
+              <div class="lbl">ر.س/أسبوع</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="background:#f8fafc;border-radius:12px;padding:1rem;margin-bottom:1rem">
+          <div class="booking-summary-row">
+            <span style="color:#64748b">من تاريخ</span>
+            <input type="date" x-model="startDate" @change="calcPrice()" style="border:none;background:transparent;font-family:'Tajawal',sans-serif;font-weight:700;color:#1e293b;text-align:left">
+          </div>
+          <div class="booking-summary-row">
+            <span style="color:#64748b">إلى تاريخ</span>
+            <input type="date" x-model="endDate" @change="calcPrice()" style="border:none;background:transparent;font-family:'Tajawal',sans-serif;font-weight:700;color:#1e293b;text-align:left">
+          </div>
+          <div class="booking-summary-row">
+            <span style="color:#64748b">مع مشغل</span>
+            <div class="form-check form-switch mb-0">
+              <input class="form-check-input" type="checkbox" x-model="withOperator" @change="calcPrice()" style="cursor:pointer">
+            </div>
+          </div>
+        </div>
+
+        <div style="border-top:2px solid #f1f5f9;padding-top:1rem;margin-bottom:1rem">
+          <div class="booking-summary-row"><span style="color:#64748b">أيام الإيجار</span><span style="font-weight:700" x-text="days + ' يوم'"></span></div>
+          <div class="booking-summary-row"><span style="color:#64748b">إيجار المعدة</span><span style="font-weight:700" x-text="basePrice + ' ر.س'"></span></div>
+          <div class="booking-summary-row" x-show="withOperator"><span style="color:#64748b">رسوم المشغل</span><span style="font-weight:700" x-text="operatorFee + ' ر.س'"></span></div>
+          <div class="booking-summary-row"><span style="color:#64748b">رسوم التوصيل</span><span style="font-weight:700;color:#16a34a">مجاني</span></div>
+          <div class="booking-summary-row"><span style="color:#64748b">ضمان (مسترد)</span><span style="font-weight:700">2,000 ر.س</span></div>
+          <div style="border-top:1px solid #f1f5f9;margin-top:0.5rem;padding-top:0.5rem" class="booking-summary-row">
+            <span style="font-weight:800;color:#1e293b">الإجمالي</span>
+            <span style="font-weight:900;color:#b45309;font-size:1.1rem" x-text="totalPrice + ' ر.س'"></span>
+          </div>
+        </div>
+
+        <button class="btn btn-eq w-100 py-3 mb-2" :disabled="days===0||loading" @click="book()" style="font-size:1rem">
+          <span x-show="!loading"><i class="fas fa-calendar-check ms-2"></i> تأكيد الحجز</span>
+          <span x-show="loading"><i class="fas fa-spinner fa-spin ms-2"></i> جاري التأكيد...</span>
+        </button>
+        <button class="btn btn-eq-outline w-100">
+          <i class="fas fa-comments ms-2"></i> تواصل مع المالك
+        </button>
+
+        <div style="margin-top:1rem;font-size:0.8rem;color:#64748b;text-align:center">
+          <i class="fas fa-shield-alt ms-1" style="color:#b45309"></i>
+          الدفع محمي بنظام الضمان — لن يُحوَّل للمالك حتى تأكيد الاستلام
+        </div>
+      </div>
+
+      <!-- Owner Card -->
+      <div class="owner-card mt-3">
+        <h6 style="font-weight:800;margin-bottom:1rem">مالك المعدة</h6>
+        <div class="d-flex align-items-center gap-3 mb-3">
+          <div style="width:52px;height:52px;background:rgba(255,255,255,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.3rem;font-weight:800">خ</div>
+          <div>
+            <div style="font-weight:800;font-size:1rem">خالد العنزي</div>
+            <div style="opacity:0.8;font-size:0.82rem">مالك معدات — 8 سنوات</div>
+            <div style="font-size:0.8rem;color:#fbbf24"><i class="fas fa-star ms-1"></i> 4.9 — 32 تقييم</div>
+          </div>
+        </div>
+        <div class="d-flex flex-column gap-1" style="font-size:0.82rem;opacity:0.85;margin-bottom:1rem">
+          <div><i class="fas fa-truck ms-1"></i> 6 معدات مدرجة</div>
+          <div><i class="fas fa-clock ms-1"></i> يرد خلال ساعة عادةً</div>
+          <div><i class="fas fa-calendar ms-1"></i> عضو منذ 2018</div>
+        </div>
+        <button class="btn w-100" style="background:rgba(255,255,255,0.15);color:#fff;font-weight:700;border-radius:10px;font-family:'Tajawal',sans-serif">
+          عرض معداته الأخرى
+        </button>
+      </div>
+
+    </div>
+  </div>
+  </div><!-- /x-show=!booked -->
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+<script src="../assets/js/khedmah.js"></script>
+<script>
+  // Generate calendar
+  const bookedDays = [8, 9, 10, 11, 18, 19, 25];
+  const calGrid = document.getElementById('calGrid');
+
+  // March 2026 starts on Sunday (0), 31 days
+  const firstDay = 0; // Sunday
+  const totalDays = 31;
+  for (let i = 0; i < firstDay; i++) {
+    const el = document.createElement('div');
+    el.className = 'cal-day empty';
+    calGrid.appendChild(el);
+  }
+
+  let selStart = null, selEnd = null;
+  for (let d = 1; d <= totalDays; d++) {
+    const el = document.createElement('div');
+    el.textContent = d;
+    const booked = bookedDays.includes(d);
+    const today = d === 6;
+    el.className = 'cal-day ' + (booked ? 'booked' : 'available') + (today ? ' today' : '');
+    if (!booked) {
+      el.onclick = () => selectDay(d, el);
+    }
+    calGrid.appendChild(el);
+  }
+
+  function selectDay(d, el) {
+    if (!selStart || (selStart && selEnd)) {
+      // reset
+      document.querySelectorAll('.cal-day.selected').forEach(e => {
+        e.classList.remove('selected');
+        e.classList.add('available');
+      });
+      selStart = d; selEnd = null;
+      el.classList.remove('available'); el.classList.add('selected');
+    } else {
+      if (d < selStart) { selEnd = selStart; selStart = d; }
+      else { selEnd = d; }
+      // highlight range
+      document.querySelectorAll('.cal-day.selected').forEach(e => {
+        e.classList.remove('selected'); e.classList.add('available');
+      });
+      const allDays = document.querySelectorAll('.cal-day:not(.empty)');
+      allDays.forEach((e, idx) => {
+        const day = idx - firstDay + 1;
+        if (day >= selStart && day <= selEnd && !bookedDays.includes(day)) {
+          e.classList.remove('available'); e.classList.add('selected');
+        }
+      });
+      const days = selEnd - selStart + 1;
+      document.getElementById('startDateDisplay').textContent = `${selStart} مارس`;
+      document.getElementById('endDateDisplay').textContent = `${selEnd} مارس`;
+      document.getElementById('daysDisplay').textContent = days;
+    }
+  }
+
+  function equipmentDetailApp() {
+    return {
+      period: 'day',
+      startDate: '2026-03-12',
+      endDate: '2026-03-14',
+      withOperator: true,
+      days: 3,
+      basePrice: 2550,
+      operatorFee: 450,
+      totalPrice: 5000,
+      loading: false,
+      booked: false,
+
+      calcPrice() {
+        if (!this.startDate || !this.endDate) { this.days = 0; return; }
+        const s = new Date(this.startDate), e = new Date(this.endDate);
+        if (e < s) { this.days = 0; return; }
+        const diff = Math.round((e - s) / 86400000) + 1;
+        this.days = diff;
+        const dayRate = this.period === 'hour' ? 120*8 : this.period === 'week' ? 4500/7 : 850;
+        this.basePrice = Math.round(dayRate * diff);
+        this.operatorFee = this.withOperator ? Math.round(150 * diff) : 0;
+        this.totalPrice = this.basePrice + this.operatorFee + 2000; // +2000 deposit
+      },
+
+      book() {
+        this.loading = true;
+        setTimeout(() => { this.loading = false; this.booked = true; }, 1800);
+      }
+    };
+  }
+</script>
+</body>
+</html>

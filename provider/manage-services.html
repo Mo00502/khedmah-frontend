@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>خدماتي — خدمة</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="../assets/css/khedmah.css">
+  <style>
+    body{background:#f1f5f9;}
+    @media(max-width:991px){.k-sidebar{display:none}.k-main-content{margin-right:0}}
+    .svc-card{background:#fff;border-radius:16px;padding:1.5rem;border:1px solid #e2e8f0;transition:all 0.2s;position:relative;overflow:hidden;}
+    .svc-card::before{content:'';position:absolute;top:0;right:0;left:0;height:4px;background:linear-gradient(135deg,var(--k-primary),var(--k-accent));}
+    .svc-card.inactive::before{background:#e2e8f0;}
+    .svc-card:hover{border-color:var(--k-primary);box-shadow:0 8px 24px rgba(2,128,144,0.1);}
+    .form-switch .form-check-input{width:44px;height:24px;cursor:pointer;}
+    .form-check-input:checked{background-color:var(--k-success);border-color:var(--k-success);}
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../assets/js/supabase-client.js"></script>
+</head>
+<body>
+<script>
+  (function(){
+    if(localStorage.getItem('khedmah_demo')) return;
+    var has=Object.keys(localStorage).some(function(k){return k.indexOf('auth-token')!==-1||k.indexOf('supabase')!==-1;});
+    if(!has) window.location.replace('../auth/login.html');
+  })();
+</script>
+
+<nav class="k-navbar navbar navbar-expand-lg" style="position:sticky;top:0;z-index:200">
+  <div class="container-fluid px-4">
+    <a class="navbar-brand" href="../index.html">خدم<span style="color:var(--k-accent)">ة</span></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navMain">
+      <ul class="navbar-nav me-auto gap-1">
+        <li class="nav-item"><a class="nav-link" href="dashboard.html">لوحة المزود</a></li>
+        <li class="nav-item"><a class="nav-link active" href="manage-services.html">خدماتي</a></li>
+        <li class="nav-item"><a class="nav-link" href="availability.html">التوفر</a></li>
+        <li class="nav-item"><a class="nav-link" href="chat-translation.html">المحادثات</a></li>
+      </ul>
+      <div class="d-flex gap-2 align-items-center">
+        <span class="badge" style="background:rgba(16,185,129,0.2);color:#059669;font-size:0.78rem;padding:0.35rem 0.75rem">مزود معتمد</span>
+        <span style="color:rgba(255,255,255,0.75);font-size:0.9rem">محمد الكهربائي</span>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="d-flex">
+  <div class="k-sidebar">
+    <div class="k-sidebar-brand mb-4">خدم<span>ة</span></div>
+    <div style="font-size:0.72rem;font-weight:700;color:rgba(255,255,255,0.35);letter-spacing:1px;text-transform:uppercase;margin-bottom:0.5rem;padding-right:0.75rem">الرئيسية</div>
+    <nav class="nav flex-column gap-1 mb-3">
+      <a href="dashboard.html" class="nav-link"><i class="fas fa-th-large"></i> لوحة التحكم</a>
+      <a href="profile.html" class="nav-link"><i class="fas fa-user-circle"></i> ملفي الشخصي</a>
+      <a href="chat-translation.html" class="nav-link"><i class="fas fa-comments"></i> المحادثات</a>
+    </nav>
+    <div style="font-size:0.72rem;font-weight:700;color:rgba(255,255,255,0.35);letter-spacing:1px;text-transform:uppercase;margin-bottom:0.5rem;padding-right:0.75rem">الإدارة</div>
+    <nav class="nav flex-column gap-1 mb-3">
+      <a href="manage-services.html" class="nav-link active"><i class="fas fa-tools"></i> خدماتي</a>
+      <a href="availability.html" class="nav-link"><i class="fas fa-calendar-check"></i> التوفر</a>
+      <a href="bank-settings.html" class="nav-link"><i class="fas fa-university"></i> إعدادات البنك</a>
+      <a href="rate-customer.html" class="nav-link"><i class="fas fa-star"></i> تقييم العملاء</a>
+    </nav>
+    <a href="#" onclick="localStorage.removeItem('khedmah_demo');sessionStorage.clear();window.location.href='../auth/login.html'" class="nav-link" style="color:rgba(239,68,68,0.8)!important;margin-top:2rem"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</a>
+  </div>
+
+  <div class="k-main-content flex-grow-1">
+
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+      <div>
+        <h4 style="font-weight:900;color:var(--k-dark-2);margin-bottom:0.25rem">خدماتي</h4>
+        <p style="color:var(--k-gray);font-size:0.9rem;margin:0">أدر الخدمات التي تقدمها وحدد أسعارها</p>
+      </div>
+      <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#svcModal" onclick="openAddModal()">
+        <i class="fas fa-plus ms-2"></i> إضافة خدمة جديدة
+      </button>
+    </div>
+
+    <!-- Stats -->
+    <div class="row g-3 mb-4">
+      <div class="col-auto">
+        <div class="card border-0 shadow-sm px-4 py-3" style="border-radius:12px">
+          <div style="font-size:1.6rem;font-weight:900;color:var(--k-primary)" id="totalCount">4</div>
+          <div style="font-size:0.82rem;color:var(--k-gray)">خدمة مسجلة</div>
+        </div>
+      </div>
+      <div class="col-auto">
+        <div class="card border-0 shadow-sm px-4 py-3" style="border-radius:12px">
+          <div style="font-size:1.6rem;font-weight:900;color:var(--k-success)" id="activeCount">3</div>
+          <div style="font-size:0.82rem;color:var(--k-gray)">نشطة</div>
+        </div>
+      </div>
+      <div class="col-auto">
+        <div class="card border-0 shadow-sm px-4 py-3" style="border-radius:12px">
+          <div style="font-size:1.6rem;font-weight:900;color:var(--k-gray)" id="inactiveCount">1</div>
+          <div style="font-size:0.82rem;color:var(--k-gray)">موقوفة</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Grid -->
+    <div class="row g-3" id="servicesGrid">
+
+      <div class="col-md-6 col-xl-4">
+        <div class="svc-card" id="svc1">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <div style="width:50px;height:50px;background:rgba(2,128,144,0.1);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.5rem">🔧</div>
+            <div class="form-check form-switch mb-0">
+              <input class="form-check-input" type="checkbox" checked id="tog1" onchange="toggleSvc('svc1','tog1','lbl1')">
+              <label class="form-check-label" id="lbl1" for="tog1" style="font-size:0.82rem;color:var(--k-gray)">نشط</label>
+            </div>
+          </div>
+          <div style="font-weight:700;font-size:1rem;margin-bottom:0.2rem">إصلاح السباكة</div>
+          <div style="font-size:0.82rem;color:var(--k-gray);margin-bottom:0.75rem">السباكة والتمديدات</div>
+          <div style="font-size:1.3rem;font-weight:900;color:var(--k-primary);margin-bottom:0.25rem">150 <span style="font-size:0.85rem;font-weight:400;color:var(--k-gray)">ر.س / ساعة</span></div>
+          <div style="font-size:0.8rem;color:var(--k-gray);margin-bottom:1rem">⏱ مدة متوقعة: 1–3 ساعات</div>
+          <p style="font-size:0.85rem;color:var(--k-gray);margin-bottom:1rem">إصلاح تسريبات المياه وتبديل الخراطيم والصنابير وأعمال السباكة العامة</p>
+          <div class="d-flex gap-2">
+            <button class="btn btn-outline-primary btn-sm flex-fill" data-bs-toggle="modal" data-bs-target="#svcModal" onclick="openEditModal('إصلاح السباكة')"><i class="fas fa-edit ms-1"></i> تعديل</button>
+            <button class="btn btn-outline-danger btn-sm flex-fill" data-bs-toggle="modal" data-bs-target="#deleteModal" onclick="setDeleteTarget('svc1')"><i class="fas fa-trash ms-1"></i> حذف</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-xl-4">
+        <div class="svc-card" id="svc2">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <div style="width:50px;height:50px;background:rgba(245,158,11,0.1);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.5rem">🚿</div>
+            <div class="form-check form-switch mb-0">
+              <input class="form-check-input" type="checkbox" checked id="tog2" onchange="toggleSvc('svc2','tog2','lbl2')">
+              <label class="form-check-label" id="lbl2" for="tog2" style="font-size:0.82rem;color:var(--k-gray)">نشط</label>
+            </div>
+          </div>
+          <div style="font-weight:700;font-size:1rem;margin-bottom:0.2rem">تركيب سخانات</div>
+          <div style="font-size:0.82rem;color:var(--k-gray);margin-bottom:0.75rem">السباكة والتمديدات</div>
+          <div style="font-size:1.3rem;font-weight:900;color:var(--k-primary);margin-bottom:0.25rem">200 <span style="font-size:0.85rem;font-weight:400;color:var(--k-gray)">ر.س / زيارة</span></div>
+          <div style="font-size:0.8rem;color:var(--k-gray);margin-bottom:1rem">⏱ مدة متوقعة: 2–4 ساعات</div>
+          <p style="font-size:0.85rem;color:var(--k-gray);margin-bottom:1rem">تركيب وصيانة سخانات المياه الكهربائية والغازية بجميع أنواعها</p>
+          <div class="d-flex gap-2">
+            <button class="btn btn-outline-primary btn-sm flex-fill" data-bs-toggle="modal" data-bs-target="#svcModal" onclick="openEditModal('تركيب سخانات')"><i class="fas fa-edit ms-1"></i> تعديل</button>
+            <button class="btn btn-outline-danger btn-sm flex-fill" data-bs-toggle="modal" data-bs-target="#deleteModal" onclick="setDeleteTarget('svc2')"><i class="fas fa-trash ms-1"></i> حذف</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-xl-4">
+        <div class="svc-card" id="svc3">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <div style="width:50px;height:50px;background:rgba(16,185,129,0.1);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.5rem">🪠</div>
+            <div class="form-check form-switch mb-0">
+              <input class="form-check-input" type="checkbox" checked id="tog3" onchange="toggleSvc('svc3','tog3','lbl3')">
+              <label class="form-check-label" id="lbl3" for="tog3" style="font-size:0.82rem;color:var(--k-gray)">نشط</label>
+            </div>
+          </div>
+          <div style="font-weight:700;font-size:1rem;margin-bottom:0.2rem">تسليك المجاري</div>
+          <div style="font-size:0.82rem;color:var(--k-gray);margin-bottom:0.75rem">السباكة والتمديدات</div>
+          <div style="font-size:1.3rem;font-weight:900;color:var(--k-primary);margin-bottom:0.25rem">حسب الاتفاق</div>
+          <div style="font-size:0.8rem;color:var(--k-gray);margin-bottom:1rem">⏱ مدة متوقعة: 1–2 ساعات</div>
+          <p style="font-size:0.85rem;color:var(--k-gray);margin-bottom:1rem">تسليك وتنظيف المجاري والأحواض باستخدام أحدث المعدات</p>
+          <div class="d-flex gap-2">
+            <button class="btn btn-outline-primary btn-sm flex-fill" data-bs-toggle="modal" data-bs-target="#svcModal" onclick="openEditModal('تسليك المجاري')"><i class="fas fa-edit ms-1"></i> تعديل</button>
+            <button class="btn btn-outline-danger btn-sm flex-fill" data-bs-toggle="modal" data-bs-target="#deleteModal" onclick="setDeleteTarget('svc3')"><i class="fas fa-trash ms-1"></i> حذف</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-xl-4">
+        <div class="svc-card inactive" id="svc4">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <div style="width:50px;height:50px;background:#f1f5f9;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.5rem">🏗️</div>
+            <div class="form-check form-switch mb-0">
+              <input class="form-check-input" type="checkbox" id="tog4" onchange="toggleSvc('svc4','tog4','lbl4')">
+              <label class="form-check-label" id="lbl4" for="tog4" style="font-size:0.82rem;color:var(--k-gray)">موقوف</label>
+            </div>
+          </div>
+          <div style="font-weight:700;font-size:1rem;margin-bottom:0.2rem">تمديد شبكات المياه</div>
+          <div style="font-size:0.82rem;color:var(--k-gray);margin-bottom:0.75rem">السباكة والتمديدات</div>
+          <div style="font-size:1.3rem;font-weight:900;color:var(--k-gray);margin-bottom:0.25rem">حسب الاتفاق</div>
+          <div style="font-size:0.8rem;color:var(--k-gray);margin-bottom:1rem">⏱ مدة متوقعة: يوم كامل+</div>
+          <p style="font-size:0.85rem;color:var(--k-gray);margin-bottom:1rem">تمديد وتركيب شبكات المياه للمشاريع السكنية والتجارية</p>
+          <div class="d-flex gap-2">
+            <button class="btn btn-outline-primary btn-sm flex-fill" data-bs-toggle="modal" data-bs-target="#svcModal" onclick="openEditModal('تمديد شبكات المياه')"><i class="fas fa-edit ms-1"></i> تعديل</button>
+            <button class="btn btn-outline-danger btn-sm flex-fill" data-bs-toggle="modal" data-bs-target="#deleteModal" onclick="setDeleteTarget('svc4')"><i class="fas fa-trash ms-1"></i> حذف</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Add/Edit Modal -->
+<div class="modal fade" id="svcModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="border-radius:20px;border:none">
+      <div class="modal-header border-0 pb-0">
+        <h5 class="modal-title fw-bold" id="modalTitle">إضافة خدمة جديدة</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body pt-3">
+        <div class="mb-3">
+          <label class="form-label fw-semibold">تصنيف الخدمة</label>
+          <select class="form-select" id="catSelect">
+            <option value="">-- اختر التصنيف --</option>
+            <option>السباكة والتمديدات</option><option>الكهرباء والإضاءة</option>
+            <option>تكييف وتبريد</option><option>نجارة وأثاث</option>
+            <option>دهانات وديكور</option><option>تنظيف المنازل</option>
+            <option>صيانة الأجهزة المنزلية</option><option>مكافحة الحشرات</option>
+            <option>حدائق ومسابح</option><option>نقل الأثاث</option>
+            <option>تركيب الأبواب والنوافذ</option><option>رعاية الأطفال</option>
+            <option>رعاية المسنين</option><option>تعليم خصوصي</option>
+            <option>تصوير فوتوغرافي</option><option>برمجة وتقنية</option>
+            <option>تصميم جرافيك</option><option>أخرى</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-semibold">اسم الخدمة</label>
+          <input type="text" class="form-control" id="svcName" placeholder="مثال: إصلاح تسريب مياه">
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-semibold">نوع السعر</label>
+          <div class="d-flex gap-2">
+            <button type="button" class="btn btn-primary btn-sm px-3" id="pt-hour" onclick="setPriceType('hour')">بالساعة</button>
+            <button type="button" class="btn btn-outline-secondary btn-sm px-3" id="pt-visit" onclick="setPriceType('visit')">بالزيارة</button>
+            <button type="button" class="btn btn-outline-secondary btn-sm px-3" id="pt-agree" onclick="setPriceType('agree')">حسب الاتفاق</button>
+          </div>
+        </div>
+        <div class="mb-3" id="priceGroup">
+          <label class="form-label fw-semibold">السعر (ر.س)</label>
+          <input type="number" class="form-control" id="svcPrice" placeholder="مثال: 150" min="0">
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-semibold">وصف الخدمة</label>
+          <textarea class="form-control" id="svcDesc" rows="3" placeholder="اشرح ما تشمله هذه الخدمة..."></textarea>
+        </div>
+        <div class="mb-1">
+          <label class="form-label fw-semibold">المدة المتوقعة</label>
+          <select class="form-select" id="svcDur">
+            <option>أقل من ساعة</option><option>1–2 ساعات</option>
+            <option>2–4 ساعات</option><option>نصف يوم</option>
+            <option>يوم كامل</option><option>أكثر من يوم</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer border-0 pt-0">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">إلغاء</button>
+        <button type="button" class="btn btn-primary px-4" onclick="saveService()"><i class="fas fa-save ms-2"></i> حفظ الخدمة</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Confirm Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-sm">
+    <div class="modal-content" style="border-radius:20px;border:none;text-align:center">
+      <div class="modal-body py-4">
+        <div style="font-size:3rem;margin-bottom:1rem">🗑️</div>
+        <h5 class="fw-bold mb-2">حذف الخدمة</h5>
+        <p style="color:var(--k-gray);font-size:0.9rem">هل أنت متأكد؟ لا يمكن التراجع عن هذا الإجراء.</p>
+        <div class="d-flex gap-2 mt-3">
+          <button class="btn btn-danger flex-fill" onclick="confirmDelete()">نعم، احذف</button>
+          <button class="btn btn-outline-secondary flex-fill" data-bs-dismiss="modal">إلغاء</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../assets/js/khedmah.js"></script>
+<script>
+  var priceType='hour', deleteTarget=null;
+
+  function setPriceType(t){
+    priceType=t;
+    ['hour','visit','agree'].forEach(function(x){
+      document.getElementById('pt-'+x).className='btn btn-'+(x===t?'primary':'outline-secondary')+' btn-sm px-3';
+    });
+    document.getElementById('priceGroup').style.display=t==='agree'?'none':'block';
+  }
+
+  function openAddModal(){
+    document.getElementById('modalTitle').textContent='إضافة خدمة جديدة';
+    document.getElementById('svcName').value='';
+    document.getElementById('svcPrice').value='';
+    document.getElementById('svcDesc').value='';
+    setPriceType('hour');
+  }
+
+  function openEditModal(name){
+    document.getElementById('modalTitle').textContent='تعديل الخدمة';
+    document.getElementById('svcName').value=name;
+  }
+
+  function saveService(){
+    var name=document.getElementById('svcName').value.trim();
+    var cat=document.getElementById('catSelect').value;
+    if(!name||!cat){ alert('يرجى ملء الحقول الإلزامية'); return; }
+    bootstrap.Modal.getInstance(document.getElementById('svcModal')).hide();
+    if(typeof kToast==='function') kToast('✓ تم حفظ الخدمة بنجاح');
+  }
+
+  function setDeleteTarget(id){ deleteTarget=id; }
+
+  function confirmDelete(){
+    if(deleteTarget){
+      var card=document.getElementById(deleteTarget);
+      if(card) card.closest('.col-md-6').remove();
+      updateStats();
+    }
+    bootstrap.Modal.getInstance(document.getElementById('deleteModal')).hide();
+    if(typeof kToast==='function') kToast('تم حذف الخدمة');
+  }
+
+  function toggleSvc(cardId, togId, lblId){
+    var card=document.getElementById(cardId);
+    var checked=document.getElementById(togId).checked;
+    document.getElementById(lblId).textContent=checked?'نشط':'موقوف';
+    card.classList.toggle('inactive',!checked);
+    updateStats();
+    if(typeof kToast==='function') kToast(checked?'✓ تم تفعيل الخدمة':'⏸ تم إيقاف الخدمة');
+  }
+
+  function updateStats(){
+    var total=document.querySelectorAll('.svc-card').length;
+    var inactive=document.querySelectorAll('.svc-card.inactive').length;
+    document.getElementById('totalCount').textContent=total;
+    document.getElementById('activeCount').textContent=total-inactive;
+    document.getElementById('inactiveCount').textContent=inactive;
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الأسئلة الشائعة — خدمة</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="../assets/css/khedmah.css">
+  <style>
+    body { background: #f8fafc; }
+    .faq-hero { background: linear-gradient(135deg, var(--k-dark), var(--k-primary-dk)); padding: 4rem 0; }
+    .faq-category-btn { border: 2px solid #e2e8f0; border-radius: 50px; padding: 0.5rem 1.25rem; font-weight: 700; font-size: 0.88rem; cursor: pointer; transition: all 0.2s; background: #fff; color: var(--k-dark-2); }
+    .faq-category-btn.active, .faq-category-btn:hover { border-color: var(--k-primary); background: var(--k-primary); color: #fff; }
+    .faq-item { border: 1px solid #e2e8f0; border-radius: 14px; margin-bottom: 0.75rem; background: #fff; overflow: hidden; transition: box-shadow 0.2s; }
+    .faq-item:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.06); }
+    .faq-question { padding: 1.1rem 1.25rem; font-weight: 700; color: var(--k-dark-2); cursor: pointer; display: flex; justify-content: space-between; align-items: center; user-select: none; }
+    .faq-question:hover { color: var(--k-primary); }
+    .faq-question .chevron { transition: transform 0.3s; color: var(--k-gray); flex-shrink: 0; }
+    .faq-question.open .chevron { transform: rotate(180deg); color: var(--k-primary); }
+    .faq-answer { display: none; padding: 0 1.25rem 1.1rem; color: var(--k-gray); font-size: 0.92rem; line-height: 1.8; border-top: 1px solid #f1f5f9; }
+    .faq-answer.open { display: block; }
+    .contact-card { background: linear-gradient(135deg, var(--k-primary), var(--k-accent)); border-radius: 20px; padding: 2.5rem; color: #fff; text-align: center; }
+  </style>
+</head>
+<body>
+
+<nav class="k-navbar navbar navbar-expand-lg">
+  <div class="container">
+    <a class="navbar-brand" href="../index.html">خدم<span style="color:var(--k-accent)">ة</span></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navMain">
+      <ul class="navbar-nav me-auto gap-1">
+        <li class="nav-item"><a class="nav-link" href="../index.html">الرئيسية</a></li>
+        <li class="nav-item"><a class="nav-link" href="../customer/search.html">الخدمات</a></li>
+        <li class="nav-item"><a class="nav-link active" href="faq.html">مركز المساعدة</a></li>
+      </ul>
+      <div class="d-flex gap-2">
+        <a href="../auth/login.html" class="btn btn-outline-light btn-sm">تسجيل الدخول</a>
+        <a href="../auth/signup.html" class="btn btn-accent btn-sm">سجّل الآن</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="faq-hero">
+  <div class="container text-center">
+    <h1 style="color:#fff;font-weight:900;margin-bottom:1rem">مركز المساعدة</h1>
+    <p style="color:rgba(255,255,255,0.75);margin-bottom:2rem;font-size:1.05rem">كل الإجابات في مكان واحد</p>
+    <div style="max-width:500px;margin:0 auto">
+      <div class="input-group" style="border-radius:12px;overflow:hidden;box-shadow:0 8px 30px rgba(0,0,0,0.2)">
+        <span class="input-group-text" style="background:#fff;border:none"><i class="fas fa-search" style="color:var(--k-primary)"></i></span>
+        <input type="text" class="form-control" placeholder="ابحث عن سؤال..." style="border:none;padding:0.9rem" id="faqSearch" oninput="filterFaq(this.value)">
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="container py-5">
+  <!-- Category Filters -->
+  <div class="d-flex flex-wrap gap-2 mb-4 justify-content-center" data-aos="fade-up">
+    <button class="faq-category-btn active" onclick="setCategory('all', this)">الكل</button>
+    <button class="faq-category-btn" onclick="setCategory('account', this)"><i class="fas fa-user me-1"></i> الحساب</button>
+    <button class="faq-category-btn" onclick="setCategory('payment', this)"><i class="fas fa-credit-card me-1"></i> الدفع والضمان</button>
+    <button class="faq-category-btn" onclick="setCategory('booking', this)"><i class="fas fa-calendar me-1"></i> الحجز والطلبات</button>
+    <button class="faq-category-btn" onclick="setCategory('provider', this)"><i class="fas fa-briefcase me-1"></i> للمزودين</button>
+    <button class="faq-category-btn" onclick="setCategory('ratings', this)"><i class="fas fa-star me-1"></i> التقييمات</button>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-lg-8" data-aos="fade-up">
+
+      <!-- Account -->
+      <div class="mb-4" data-cat="account">
+        <h5 style="font-weight:800;color:var(--k-dark-2);margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem">
+          <span style="width:32px;height:32px;background:var(--k-primary);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.85rem"><i class="fas fa-user"></i></span>
+          الحساب والتسجيل
+        </h5>
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">كيف أسجّل في خدمة؟<i class="fas fa-chevron-down chevron ms-2"></i></div>
+          <div class="faq-answer">انقر على "سجّل الآن" في أي صفحة، اختر نوع حسابك (عميل أو مزود خدمة)، أدخل بياناتك الشخصية، اختر لغتك المفضلة، ثم أكّد رقم جوالك برمز OTP. العملية تستغرق أقل من دقيقتين.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">ما الفرق بين حساب العميل وحساب المزود؟<i class="fas fa-chevron-down chevron ms-2"></i></div>
+          <div class="faq-answer">العميل يبحث عن مزودي خدمة ويطلب عروض أسعار، بينما المزود يقدم خدماته ويستلم طلبات من العملاء. يمكنك التسجيل بنوع واحد فقط، ولكن يمكنك التواصل معنا لتغيير نوع حسابك.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">كيف أستعيد كلمة مرور حسابي؟<i class="fas fa-chevron-down chevron ms-2"></i></div>
+          <div class="faq-answer">انقر على "نسيت كلمة المرور؟" في صفحة تسجيل الدخول، أدخل رقم جوالك، وسنرسل لك رمز تحقق. بعد التحقق يمكنك إعداد كلمة مرور جديدة.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">هل يمكنني تغيير رقم جوالي؟<i class="fas fa-chevron-down chevron ms-2"></i></div>
+          <div class="faq-answer">نعم، من خلال صفحة الإعدادات ثم "الملف الشخصي". ستحتاج إلى التحقق من رقم الجوال الجديد برمز OTP قبل تطبيق التغيير.</div>
+        </div>
+      </div>
+
+      <!-- Payment -->
+      <div class="mb-4" data-cat="payment">
+        <h5 style="font-weight:800;color:var(--k-dark-2);margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem">
+          <span style="width:32px;height:32px;background:var(--k-primary);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.85rem"><i class="fas fa-shield-alt"></i></span>
+          الدفع والضمان المالي
+        </h5>
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">كيف يعمل نظام الضمان المالي؟<i class="fas fa-chevron-down chevron ms-2"></i></div>
+          <div class="faq-answer">عند قبولك لعرض سعر، يتم حجز مبلغ الخدمة في حساب ضمان آمن. لا يصل المبلغ للمزود إلا بعد تأكيدك أن الخدمة اكتملت بشكل صحيح. إذا لم تكتمل الخدمة أو لم تكن مُرضية، يمكنك تقديم شكوى خلال 48 ساعة ويُعاد فحص الأمر.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">ما طرق الدفع المتاحة؟<i class="fas fa-chevron-down chevron ms-2"></i></div>
+          <div class="faq-answer">نقبل بطاقات مدى، STC Pay، Apple Pay، بالإضافة إلى بطاقات الائتمان (Visa, Mastercard). جميع المدفوعات مشفرة وآمنة بمعيار PCI DSS.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">متى يصل المبلغ للمزود بعد إتمام الخدمة؟<i class="fas fa-chevron-down chevron ms-2"></i></div>
+          <div class="faq-answer">يُحرَّر المبلغ للمزود فور تأكيدك إتمام الخدمة. إذا لم تؤكد خلال 48 ساعة، يُحرَّر المبلغ تلقائياً (مع إمكانية تقديم شكوى خلال تلك المدة).</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">هل يمكنني استرداد المبلغ في حالة عدم رضائي؟<i class="fas fa-chevron-down chevron ms-2"></i></div>
+          <div class="faq-answer">نعم، إذا كانت الخدمة لم تكتمل أو كانت دون المستوى المتفق عليه، يمكنك تقديم شكوى من صفحة "تأكيد الخدمة" خلال 48 ساعة. سيقوم فريق دعمنا بمراجعة الشكوى واتخاذ الإجراء المناسب.</div>
+        </div>
+      </div>
+
+      <!-- Booking -->
+      <div class="mb-4" data-cat="booking">
+        <h5 style="font-weight:800;color:var(--k-dark-2);margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem">
+          <span style="width:32px;height:32px;background:var(--k-primary);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.85rem"><i class="fas fa-calendar"></i></span>
+          الحجز والطلبات
+        </h5>
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">كيف أطلب عرض سعر؟<i class="fas fa-chevron-down chevron ms-2"></i></div>
+          <div class="faq-answer">ابحث عن مزود خدمة مناسب، انقر على "طلب عرض"، أدخل تفاصيل الخدمة ورفع صور إن أمكن، وحدد موعدك المفضل. سيصلك عرض سعر من المزود خلال وقت قصير.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">هل يمكنني إلغاء الطلب؟<i class="fas fa-chevron-down chevron ms-2"></i></div>
+          <div class="faq-answer">نعم، يمكنك إلغاء الطلب مجاناً قبل 24 ساعة من موعد الخدمة. في حالة الإلغاء بعد ذلك قد يُطبَّق رسم إلغاء بحسب سياسة المزود.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">ماذا أفعل إذا لم يحضر المزود في الموعد؟<i class="fas fa-chevron-down chevron ms-2"></i></div>
+          <div class="faq-answer">تواصل مع المزود عبر المحادثة في التطبيق أولاً. إذا لم يستجب، تواصل مع فريق الدعم وسنتدخل فوراً لإيجاد بديل أو استرداد مبلغك كاملاً.</div>
+        </div>
+      </div>
+
+      <!-- Provider -->
+      <div class="mb-4" data-cat="provider">
+        <h5 style="font-weight:800;color:var(--k-dark-2);margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem">
+          <span style="width:32px;height:32px;background:var(--k-primary);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.85rem"><i class="fas fa-briefcase"></i></span>
+          للمزودين
+        </h5>
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">كيف أنضم كمزود خدمة؟<i class="fas fa-chevron-down chevron ms-2"></i></div>
+          <div class="faq-answer">سجّل حسابك واختر "مزود خدمة"، أكمل ملفك الشخصي مع تحديد تخصصاتك، ارفع صورة هوية للتحقق. بعد مراجعة بسيطة من فريقنا (عادةً خلال 24 ساعة) ستصبح حسابك نشطاً.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">متى وكيف أستلم أرباحي؟<i class="fas fa-chevron-down chevron ms-2"></i></div>
+          <div class="faq-answer">تُحوَّل الأرباح إلى حسابك البنكي المسجل فور تأكيد العميل إتمام الخدمة. يمكنك طلب تحويل فوري أو الانتظار حتى نهاية الأسبوع. عمولة المنصة 10% فقط.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">كيف أرفع تقييمي على المنصة؟<i class="fas fa-chevron-down chevron ms-2"></i></div>
+          <div class="faq-answer">الالتزام بالمواعيد، جودة العمل، والتواصل الجيد مع العملاء هي أسرع طريقة لرفع تقييمك. العملاء الراضون يتركون تقييمات إيجابية تجذب طلبات أكثر.</div>
+        </div>
+      </div>
+
+      <!-- Ratings -->
+      <div class="mb-4" data-cat="ratings">
+        <h5 style="font-weight:800;color:var(--k-dark-2);margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem">
+          <span style="width:32px;height:32px;background:var(--k-primary);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.85rem"><i class="fas fa-star"></i></span>
+          التقييمات
+        </h5>
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">كيف يعمل نظام التقييم المزدوج؟<i class="fas fa-chevron-down chevron ms-2"></i></div>
+          <div class="faq-answer">بعد إتمام كل خدمة، يقيّم العميل المزود (1-5 نجوم + تعليق) ويقيّم المزود العميل في نفس الوقت. التقييمات مرئية للطرفين وتظهر على الملفات الشخصية لبناء ثقة متبادلة.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">هل يمكنني تعديل تقييمي؟<i class="fas fa-chevron-down chevron ms-2"></i></div>
+          <div class="faq-answer">يمكن تعديل التقييم خلال 24 ساعة من تقديمه. بعد ذلك يصبح نهائياً. هذا يضمن مصداقية التقييمات وعدم التلاعب بها.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">ماذا يحدث إذا رفضت تقييم المزود؟<i class="fas fa-chevron-down chevron ms-2"></i></div>
+          <div class="faq-answer">التقييم إلزامي للعملاء قبل فتح طلب جديد — هذا يضمن توفر تقييمات حقيقية لمساعدة بقية العملاء. التقييم لا يستغرق أكثر من دقيقة.</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Sidebar -->
+    <div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
+      <div class="contact-card mb-3">
+        <i class="fas fa-headset fa-2x mb-3"></i>
+        <h5 style="font-weight:800;margin-bottom:0.5rem">لم تجد إجابتك؟</h5>
+        <p style="color:rgba(255,255,255,0.85);font-size:0.9rem;margin-bottom:1.5rem">فريق الدعم متاح 7 أيام في الأسبوع من 8 صباحاً حتى 12 منتصف الليل</p>
+        <a href="tel:920000000" class="btn btn-light btn-sm w-100 mb-2" style="border-radius:10px;font-weight:700;color:var(--k-primary)">
+          <i class="fas fa-phone ms-2"></i> 920-000-000
+        </a>
+        <a href="mailto:support@khedmah.sa" class="btn btn-light btn-sm w-100 mb-2" style="border-radius:10px;font-weight:700;color:var(--k-primary)">
+          <i class="fas fa-envelope ms-2"></i> support@khedmah.sa
+        </a>
+        <a href="https://wa.me/966920000000" class="btn btn-success btn-sm w-100" style="border-radius:10px;font-weight:700">
+          <i class="fab fa-whatsapp ms-2"></i> واتساب
+        </a>
+      </div>
+      <div style="background:#fff;border-radius:16px;padding:1.5rem;border:1px solid #e2e8f0">
+        <h6 style="font-weight:800;color:var(--k-dark-2);margin-bottom:1rem">روابط سريعة</h6>
+        <a href="../auth/signup.html" class="d-flex align-items-center gap-2 py-2 text-decoration-none" style="color:var(--k-dark-2);border-bottom:1px solid #f1f5f9"><i class="fas fa-user-plus" style="color:var(--k-primary);width:20px"></i> إنشاء حساب</a>
+        <a href="../auth/forgot-password.html" class="d-flex align-items-center gap-2 py-2 text-decoration-none" style="color:var(--k-dark-2);border-bottom:1px solid #f1f5f9"><i class="fas fa-key" style="color:var(--k-primary);width:20px"></i> استعادة كلمة المرور</a>
+        <a href="../customer/search.html" class="d-flex align-items-center gap-2 py-2 text-decoration-none" style="color:var(--k-dark-2);border-bottom:1px solid #f1f5f9"><i class="fas fa-search" style="color:var(--k-primary);width:20px"></i> البحث عن خدمة</a>
+        <a href="../shared/payment-escrow.html" class="d-flex align-items-center gap-2 py-2 text-decoration-none" style="color:var(--k-dark-2);border-bottom:1px solid #f1f5f9"><i class="fas fa-shield-alt" style="color:var(--k-primary);width:20px"></i> نظام الضمان</a>
+        <a href="terms.html" class="d-flex align-items-center gap-2 py-2 text-decoration-none" style="color:var(--k-dark-2)"><i class="fas fa-file-contract" style="color:var(--k-primary);width:20px"></i> الشروط والخصوصية</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="k-footer">
+  <div class="container">
+    <div class="row g-3">
+      <div class="col-lg-6"><div class="footer-brand mb-2">خدم<span>ة</span></div><p style="color:rgba(255,255,255,0.6);font-size:0.88rem">منصة الخدمات المنزلية الآمنة</p></div>
+      <div class="col-lg-3 col-6"><h6>روابط</h6><a href="../index.html">الرئيسية</a><a href="../customer/search.html">الخدمات</a><a href="about.html">من نحن</a></div>
+      <div class="col-lg-3 col-6"><h6>المساعدة</h6><a href="faq.html">الأسئلة الشائعة</a><a href="terms.html">الشروط والأحكام</a><a href="terms.html#privacy">سياسة الخصوصية</a></div>
+    </div>
+    <hr class="footer-divider">
+    <p style="color:rgba(255,255,255,0.4);text-align:center;font-size:0.85rem">© 2026 خدمة. جميع الحقوق محفوظة.</p>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+<script src="../assets/js/khedmah.js"></script>
+<script>
+  function toggleFaq(el) {
+    const answer = el.nextElementSibling;
+    const isOpen = answer.classList.contains('open');
+    document.querySelectorAll('.faq-answer.open').forEach(a => { a.classList.remove('open'); a.previousElementSibling.classList.remove('open'); });
+    if (!isOpen) { answer.classList.add('open'); el.classList.add('open'); }
+  }
+  function setCategory(cat, btn) {
+    document.querySelectorAll('.faq-category-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('[data-cat]').forEach(el => {
+      el.style.display = (cat === 'all' || el.dataset.cat === cat) ? '' : 'none';
+    });
+  }
+  function filterFaq(q) {
+    const query = q.toLowerCase();
+    document.querySelectorAll('.faq-item').forEach(item => {
+      const text = item.textContent.toLowerCase();
+      item.style.display = text.includes(query) ? '' : 'none';
+    });
+  }
+</script>
+</body>
+</html>

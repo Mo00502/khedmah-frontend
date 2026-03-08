@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="الشروط والأحكام — خدمة | Terms and Conditions — Khedmah">
+  <title>الشروط والأحكام — خدمة</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="../assets/css/khedmah.css">
+  <style>
+    body { background: #f8fafc; font-family: 'Tajawal', sans-serif; }
+
+    /* Hero */
+    .legal-hero {
+      background: linear-gradient(135deg, var(--k-dark) 0%, var(--k-dark-2) 50%, var(--k-primary-dk) 100%);
+      padding: 3.5rem 0 2.5rem;
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+    }
+    .legal-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 20% 50%, rgba(2,195,154,0.15), transparent 60%);
+    }
+
+    /* TOC Sidebar */
+    .legal-sidebar {
+      position: sticky;
+      top: 80px;
+      max-height: calc(100vh - 100px);
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--k-primary) transparent;
+    }
+    .legal-sidebar::-webkit-scrollbar { width: 4px; }
+    .legal-sidebar::-webkit-scrollbar-thumb { background: var(--k-primary); border-radius: 2px; }
+
+    .toc-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 1.25rem;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+    .toc-card h6 {
+      font-weight: 800;
+      color: var(--k-dark-2);
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--k-primary);
+    }
+    .toc-link {
+      display: block;
+      padding: 0.35rem 0.5rem;
+      font-size: 0.82rem;
+      color: var(--k-gray);
+      text-decoration: none;
+      border-radius: 6px;
+      transition: all 0.2s;
+      margin-bottom: 0.1rem;
+    }
+    .toc-link:hover, .toc-link.active {
+      background: rgba(2,128,144,0.08);
+      color: var(--k-primary);
+      font-weight: 600;
+      padding-right: 1rem;
+    }
+
+    /* Content */
+    .legal-content {
+      background: #fff;
+      border-radius: 16px;
+      padding: 2.5rem;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+
+    .legal-section {
+      margin-bottom: 3rem;
+      scroll-margin-top: 90px;
+    }
+    .section-number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--k-primary), var(--k-accent));
+      border-radius: 50%;
+      color: #fff;
+      font-size: 0.85rem;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+    .section-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--k-dark-2);
+      margin: 0;
+    }
+    .section-body {
+      color: #374151;
+      line-height: 1.9;
+      font-size: 0.95rem;
+    }
+    .section-body ol, .section-body ul {
+      padding-right: 1.5rem;
+      margin-top: 0.75rem;
+    }
+    .section-body li {
+      margin-bottom: 0.4rem;
+    }
+    .section-body strong {
+      color: var(--k-dark-2);
+    }
+
+    /* Callout boxes */
+    .callout-info {
+      background: rgba(2,128,144,0.06);
+      border: 1px solid rgba(2,128,144,0.2);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      font-size: 0.88rem;
+      color: var(--k-dark-2);
+    }
+    .callout-warn {
+      background: rgba(245,158,11,0.06);
+      border: 1px solid rgba(245,158,11,0.25);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      font-size: 0.88rem;
+      color: #92400e;
+    }
+    .callout-placeholder {
+      background: rgba(148,163,184,0.1);
+      border: 1px dashed #94a3b8;
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+      margin: 0.5rem 0;
+      font-size: 0.85rem;
+      color: #64748b;
+      font-style: italic;
+    }
+
+    /* Divider between sections */
+    .legal-divider {
+      border: none;
+      border-top: 1px solid #f1f5f9;
+      margin: 2rem 0;
+    }
+
+    /* Sub-section heading */
+    .sub-heading {
+      font-weight: 700;
+      color: var(--k-primary);
+      font-size: 0.95rem;
+      margin: 1.25rem 0 0.5rem;
+    }
+
+    /* Lang toggle */
+    .lang-pill {
+      display: inline-flex;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 50px;
+      padding: 0.2rem;
+    }
+    .lang-pill button {
+      background: transparent;
+      border: none;
+      color: rgba(255,255,255,0.7);
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 0.3rem 1rem;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'Tajawal', sans-serif;
+    }
+    .lang-pill button.active {
+      background: #fff;
+      color: var(--k-primary);
+    }
+
+    /* Policy links footer */
+    .policy-links {
+      background: #fff;
+      border-radius: 16px;
+      padding: 1.75rem;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+    .policy-link-card {
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      text-decoration: none;
+      color: var(--k-dark-2);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      transition: all 0.25s;
+    }
+    .policy-link-card:hover {
+      border-color: var(--k-primary);
+      background: rgba(2,128,144,0.04);
+      transform: translateY(-2px);
+    }
+    .policy-link-card .icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 1.1rem;
+    }
+
+    @media print {
+      .legal-sidebar, .k-navbar, .legal-hero .lang-pill, footer { display: none !important; }
+      .col-lg-9 { width: 100% !important; }
+      .legal-content { box-shadow: none; padding: 0; }
+    }
+  </style>
+</head>
+<body x-data="legalApp()" :dir="lang === 'ar' ? 'rtl' : 'ltr'" :lang="lang">
+
+<!-- Navbar -->
+<nav class="k-navbar navbar navbar-expand-lg">
+  <div class="container">
+    <a class="navbar-brand" href="../index.html">خدم<span style="color:var(--k-accent)">ة</span></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navMain">
+      <ul class="navbar-nav me-auto gap-1">
+        <li class="nav-item"><a class="nav-link" href="../index.html" x-text="lang==='ar'?'الرئيسية':'Home'"></a></li>
+        <li class="nav-item"><a class="nav-link" href="../customer/search.html" x-text="lang==='ar'?'الخدمات':'Services'"></a></li>
+        <li class="nav-item"><a class="nav-link active" href="terms.html" x-text="lang==='ar'?'الشروط والأحكام':'Terms'"></a></li>
+        <li class="nav-item"><a class="nav-link" href="privacy.html" x-text="lang==='ar'?'سياسة الخصوصية':'Privacy'"></a></li>
+      </ul>
+      <div class="d-flex gap-2">
+        <a href="../auth/login.html" class="btn btn-outline-light btn-sm" x-text="lang==='ar'?'تسجيل الدخول':'Login'"></a>
+        <a href="../auth/signup.html" class="btn btn-accent btn-sm" x-text="lang==='ar'?'سجّل الآن':'Sign Up'"></a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="legal-hero">
+  <div class="container" style="position:relative">
+    <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+      <div>
+        <div style="display:inline-flex;align-items:center;gap:0.5rem;background:rgba(2,195,154,0.15);border:1px solid rgba(2,195,154,0.3);border-radius:50px;padding:0.3rem 1rem;margin-bottom:1rem">
+          <i class="fas fa-file-contract" style="color:var(--k-accent);font-size:0.85rem"></i>
+          <span style="font-size:0.8rem;color:var(--k-accent);font-weight:600" x-text="lang==='ar'?'وثيقة قانونية':'Legal Document'"></span>
+        </div>
+        <h1 style="font-size:clamp(1.6rem,3vw,2.4rem);font-weight:900;margin-bottom:0.5rem" x-text="lang==='ar'?'الشروط والأحكام':'Terms and Conditions'"></h1>
+        <p style="opacity:0.75;font-size:0.9rem;margin:0">
+          <span x-text="lang==='ar'?'آخر تحديث:':'Last Updated:'"></span>
+          <strong style="color:var(--k-accent)"> [أدخل التاريخ / Insert Date]</strong>
+          &nbsp;·&nbsp;
+          <span x-text="lang==='ar'?'تاريخ السريان:':'Effective Date:'"></span>
+          <strong style="color:var(--k-accent)"> [أدخل التاريخ / Insert Date]</strong>
+        </p>
+      </div>
+      <div>
+        <div class="lang-pill">
+          <button :class="lang==='ar'?'active':''" @click="setLang('ar')">العربية</button>
+          <button :class="lang==='en'?'active':''" @click="setLang('en')">English</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="container py-4">
+  <div class="row g-4">
+
+    <!-- TOC Sidebar -->
+    <div class="col-lg-3 d-none d-lg-block">
+      <div class="legal-sidebar">
+        <div class="toc-card">
+          <h6 x-text="lang==='ar'?'محتويات الوثيقة':'Contents'"></h6>
+          <a class="toc-link" href="#s1" x-text="lang==='ar'?'1. التعريفات':'1. Definitions'"></a>
+          <a class="toc-link" href="#s2" x-text="lang==='ar'?'2. القبول':'2. Acceptance'"></a>
+          <a class="toc-link" href="#s3" x-text="lang==='ar'?'3. أهلية الاستخدام':'3. Eligibility'"></a>
+          <a class="toc-link" href="#s4" x-text="lang==='ar'?'4. طبيعة المنصة':'4. Nature of Platform'"></a>
+          <a class="toc-link" href="#s5" x-text="lang==='ar'?'5. التسجيل والأمان':'5. Account & Security'"></a>
+          <a class="toc-link" href="#s6" x-text="lang==='ar'?'6. الاستخدام المقبول':'6. Acceptable Use'"></a>
+          <a class="toc-link" href="#s7" x-text="lang==='ar'?'7. الطلبات والحجوزات':'7. Orders & Bookings'"></a>
+          <a class="toc-link" href="#s8" x-text="lang==='ar'?'8. مزودو الخدمة':'8. Providers'"></a>
+          <a class="toc-link" href="#s9" x-text="lang==='ar'?'9. الأسعار والضرائب':'9. Pricing & Taxes'"></a>
+          <a class="toc-link" href="#s10" x-text="lang==='ar'?'10. المدفوعات':'10. Payments'"></a>
+          <a class="toc-link" href="#s11" x-text="lang==='ar'?'11. الإلغاء والاسترداد':'11. Cancellation & Refunds'"></a>
+          <a class="toc-link" href="#s12" x-text="lang==='ar'?'12. الشكاوى والنزاعات':'12. Complaints'"></a>
+          <a class="toc-link" href="#s13" x-text="lang==='ar'?'13. الخصوصية والبيانات':'13. Privacy & Data'"></a>
+          <a class="toc-link" href="#s14" x-text="lang==='ar'?'14. حقوق البيانات':'14. Data Rights'"></a>
+          <a class="toc-link" href="#s15" x-text="lang==='ar'?'15. التواصل':'15. Communications'"></a>
+          <a class="toc-link" href="#s16" x-text="lang==='ar'?'16. المحتوى والتقييمات':'16. User Content'"></a>
+          <a class="toc-link" href="#s17" x-text="lang==='ar'?'17. الملكية الفكرية':'17. Intellectual Property'"></a>
+          <a class="toc-link" href="#s18" x-text="lang==='ar'?'18. السلوك المحظور':'18. Prohibited Conduct'"></a>
+          <a class="toc-link" href="#s19" x-text="lang==='ar'?'19. الإيقاف والإنهاء':'19. Suspension & Termination'"></a>
+          <a class="toc-link" href="#s20" x-text="lang==='ar'?'20. التوافر التقني':'20. Availability'"></a>
+          <a class="toc-link" href="#s21" x-text="lang==='ar'?'21. خدمات الأطراف الثالثة':'21. Third Parties'"></a>
+          <a class="toc-link" href="#s22" x-text="lang==='ar'?'22. إخلاء المسؤولية':'22. Disclaimer'"></a>
+          <a class="toc-link" href="#s23" x-text="lang==='ar'?'23. حدود المسؤولية':'23. Liability'"></a>
+          <a class="toc-link" href="#s24" x-text="lang==='ar'?'24. التعويض':'24. Indemnity'"></a>
+          <a class="toc-link" href="#s25" x-text="lang==='ar'?'25. القوة القاهرة':'25. Force Majeure'"></a>
+          <a class="toc-link" href="#s26" x-text="lang==='ar'?'26. القانون الحاكم':'26. Governing Law'"></a>
+          <a class="toc-link" href="#s27" x-text="lang==='ar'?'27. التعديلات':'27. Changes'"></a>
+          <a class="toc-link" href="#s28" x-text="lang==='ar'?'28. قابلية التجزئة':'28. Severability'"></a>
+          <a class="toc-link" href="#s29" x-text="lang==='ar'?'29. الاتفاقية الكاملة':'29. Entire Agreement'"></a>
+          <a class="toc-link" href="#s30" x-text="lang==='ar'?'30. التواصل معنا':'30. Contact'"></a>
+
+          <div style="margin-top:1.25rem;padding-top:1rem;border-top:1px solid #f1f5f9">
+            <button onclick="window.print()" class="btn btn-outline-secondary w-100 btn-sm" style="border-radius:8px">
+              <i class="fas fa-print ms-1"></i>
+              <span x-text="lang==='ar'?'طباعة':'Print'"></span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="col-lg-9">
+      <div class="legal-content">
+
+        <!-- Intro -->
+        <div class="callout-info mb-4">
+          <i class="fas fa-info-circle ms-2" style="color:var(--k-primary)"></i>
+          <span x-show="lang==='ar'">
+            مرحباً بك في خدمة. تحكم هذه الشروط والأحكام وصولك واستخدامك لموقعنا الإلكتروني وتطبيقاتنا وخدماتنا ذات الصلة. بالوصول إلى المنصة أو استخدامها، فإنك تؤكد أنك قرأت هذه الشروط وفهمتها ووافقت على الالتزام بها.
+          </span>
+          <span x-show="lang==='en'">
+            Welcome to Khedmah. These Terms and Conditions govern your access to and use of our website, mobile applications, and related services. By accessing or using the Platform, you confirm that you have read, understood, and agree to be bound by these Terms. If you do not agree, you must not access or use the Platform.
+          </span>
+        </div>
+
+        <div class="callout-placeholder">
+          <i class="fas fa-edit ms-2"></i>
+          <span x-show="lang==='ar'">قبل النشر: استبدل جميع الحقول المُعلَّمة بـ [أدخل...] بالبيانات الفعلية للشركة. راجع هذه الوثيقة مع محامٍ سعودي مرخص قبل الإطلاق.</span>
+          <span x-show="lang==='en'">Before publishing: replace all [Insert...] fields with your actual company data. Have this reviewed by a licensed Saudi lawyer before launch.</span>
+        </div>
+
+        <hr class="legal-divider">
+
+        <!-- Section 1 -->
+        <div class="legal-section" id="s1">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="section-number">1</div>
+            <h2 class="section-title" x-text="lang==='ar'?'التعريفات':'Definitions'"></h2>
+          </div>
+          <div class="section-body">
+            <p x-show="lang==='ar'">لأغراض هذه الشروط:</p>
+            <p x-show="lang==='en'">For the purposes of these Terms:</p>
+            <ul>
+              <li x-show="lang==='ar'"><strong>"المنصة"</strong> تعني الموقع الإلكتروني وتطبيقات الهاتف والأنظمة والأدوات والخدمات التي تشغّلها [الاسم القانوني للشركة].</li>
+              <li x-show="lang==='en'"><strong>"Platform"</strong> means the website, mobile applications, systems, tools, and services operated by [Company Legal Name].</li>
+              <li x-show="lang==='ar'"><strong>"الشركة" أو "نحن" أو "لنا"</strong> تعني [الاسم القانوني للشركة]، شركة مؤسسة وفق نظام المملكة العربية السعودية.</li>
+              <li x-show="lang==='en'"><strong>"Company", "we", "us", or "our"</strong> means [Company Legal Name], a company established under the laws of the Kingdom of Saudi Arabia.</li>
+              <li x-show="lang==='ar'"><strong>"المستخدم"</strong> يعني أي شخص يصل إلى المنصة أو يستخدمها.</li>
+              <li x-show="lang==='en'"><strong>"User"</strong> means any person who accesses or uses the Platform.</li>
+              <li x-show="lang==='ar'"><strong>"العميل"</strong> يعني مستخدماً يطلب خدمات أو يحجزها أو يتلقاها من خلال المنصة.</li>
+              <li x-show="lang==='en'"><strong>"Customer"</strong> means a User who requests, books, purchases, or receives services through the Platform.</li>
+              <li x-show="lang==='ar'"><strong>"مزود الخدمة"</strong> يعني أي مقدّم خدمة مستقل أو تاجر أو مقاول أو شريك مدرج على المنصة.</li>
+              <li x-show="lang==='en'"><strong>"Provider"</strong> means any independent service provider, merchant, contractor, partner, or professional listed on or using the Platform to offer services.</li>
+              <li x-show="lang==='ar'"><strong>"الخدمات"</strong> تعني أي خدمات أو مهام أو منتجات أو استشارات متاحة من خلال المنصة.</li>
+              <li x-show="lang==='en'"><strong>"Services"</strong> means any services, tasks, products, consultations, or other offerings made available through the Platform.</li>
+              <li x-show="lang==='ar'"><strong>"الطلب" أو "الحجز"</strong> يعني طلباً يقدّمه العميل للحصول على خدمة عبر المنصة.</li>
+              <li x-show="lang==='en'"><strong>"Order" or "Booking"</strong> means a request submitted by a Customer for a service through the Platform.</li>
+              <li x-show="lang==='ar'"><strong>"المحتوى"</strong> يعني النصوص والبيانات والصور والمقاطع المرئية والمستندات والمراجعات والتقييمات.</li>
+              <li x-show="lang==='en'"><strong>"Content"</strong> means text, data, images, audio, video, documents, reviews, ratings, logos, graphics, and other materials on the Platform.</li>
+              <li x-show="lang==='ar'"><strong>"الشكوى"</strong> تعني أي نزاع أو تقرير مشكلة أو مطالبة باسترداد أو شكوى مقدَّمة عبر المنصة.</li>
+              <li x-show="lang==='en'"><strong>"Complaint"</strong> means any dispute, issue report, refund claim, misconduct report, technical problem, or grievance submitted through the Platform.</li>
+              <li x-show="lang==='ar'"><strong>"القانون المعمول به"</strong> يعني جميع الأنظمة والتشريعات والمتطلبات السارية في المملكة العربية السعودية.</li>
+              <li x-show="lang==='en'"><strong>"Applicable Law"</strong> means all laws, regulations, rules, and official requirements applicable in the Kingdom of Saudi Arabia.</li>
+            </ul>
+          </div>
+        </div>
+
+        <hr class="legal-divider">
+
+        <!-- Section 2 -->
+        <div class="legal-section" id="s2">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="section-number">2</div>
+            <h2 class="section-title" x-text="lang==='ar'?'القبول والموافقة':'Acceptance of Terms'"></h2>
+          </div>
+          <div class="section-body">
+            <p x-show="lang==='ar'">بإنشاء حساب أو تصفح المنصة أو تقديم طلب أو حجز خدمة أو إجراء دفع أو استخدام المنصة بأي شكل، فإنك توافق على هذه الشروط وجميع السياسات ذات الصلة المنشورة على المنصة، بما فيها سياسة الخصوصية وسياسة الشكاوى وسياسة الإلغاء والاسترداد.</p>
+            <p x-show="lang==='en'">By creating an account, browsing the Platform, submitting a request, booking a service, making a payment, or otherwise using the Platform, you agree to these Terms and all related policies published on the Platform, including our Privacy Policy, Complaint Policy, and Refund/Cancellation Policy.</p>
+            <p x-show="lang==='ar'">إذا كنت تستخدم المنصة نيابة عن شركة أو منظمة أو شخص آخر، فإنك تُقرّ وتضمن أن لديك صلاحية إلزام تلك الجهة بهذه الشروط.</p>
+            <p x-show="lang==='en'">If you use the Platform on behalf of a company, organization, or another person, you represent and warrant that you have the authority to bind that party to these Terms.</p>
+          </div>
+        </div>
+
+        <hr class="legal-divider">
+
+        <!-- Section 3 -->
+        <div class="legal-section" id="s3">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="section-number">3</div>
+            <h2 class="section-title" x-text="lang==='ar'?'أهلية الاستخدام':'Eligibility'"></h2>
+          </div>
+          <div class="section-body">
+            <p x-show="lang==='ar'">لاستخدام المنصة يجب أن:</p>
+            <p x-show="lang==='en'">To use the Platform, you must:</p>
+            <ol>
+              <li x-show="lang==='ar'">تكون أهلاً قانونياً لإبرام عقود ملزمة وفق القانون المعمول به؛</li>
+              <li x-show="lang==='en'">be legally capable of entering into binding agreements under Applicable Law;</li>
+              <li x-show="lang==='ar'">تقدّم معلومات صحيحة وحديثة وكاملة؛</li>
+              <li x-show="lang==='en'">provide true, current, and complete information;</li>
+              <li x-show="lang==='ar'">تستخدم المنصة لأغراض مشروعة فقط؛ و</li>
+              <li x-show="lang==='en'">use the Platform only for lawful purposes; and</li>
+              <li x-show="lang==='ar'">تمتثل لهذه الشروط وجميع الأنظمة المعمول بها.</li>
+              <li x-show="lang==='en'">comply with these Terms and all applicable regulations.</li>
+            </ol>
+            <p x-show="lang==='ar'">نحتفظ بالحق في رفض التسجيل أو تعليق الوصول أو إنهاء الحسابات التي لا تستوفي شروط الأهلية.</p>
+            <p x-show="lang==='en'">We reserve the right to refuse registration, suspend access, or terminate accounts that do not meet eligibility requirements.</p>
+          </div>
+        </div>
+
+        <hr class="legal-divider">
+
+        <!-- Section 4 -->
+        <div class="legal-section" id="s4">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="section-number">4</div>
+            <h2 class="section-title" x-text="lang==='ar'?'طبيعة المنصة':'Nature of the Platform'"></h2>
+          </div>
+          <div class="section-body">
+            <p x-show="lang==='ar'">تعمل المنصة كسوق رقمي يربط العملاء بمزودي خدمة مستقلين. قد تُقدَّم بعض الخدمات مباشرة من الشركة، بينما تُقدَّم خدمات أخرى من مزودين مستقلين عبر المنصة. وتُوضّح طبيعة كل خدمة في صفحة الخدمة أو شاشة الحجز أو تأكيد الطلب.</p>
+            <p x-show="lang==='en'">The Platform operates as a digital marketplace connecting Customers with independent Providers. Some services may be provided directly by the Company, while others may be provided by independent Providers through the Platform. The nature of each service may be stated on the relevant service page, booking screen, or order confirmation.</p>
+            <div class="callout-info">
+              <i class="fas fa-shield-alt ms-1" style="color:var(--k-primary)"></i>
+              <span x-show="lang==='ar'"> يتوافق هذا النموذج مع متطلبات نظام التجارة الإلكترونية السعودي الداعي إلى الشفافية في كيفية عمل المتاجر الإلكترونية وتقديمها للمعلومات للمستهلك.</span>
+              <span x-show="lang==='en'"> This model aligns with the Saudi e-commerce framework's emphasis on transparency in how online businesses operate and present consumer-facing information.</span>
+            </div>
+          </div>
+        </div>
+
+        <hr class="legal-divider">
+
+        <!-- Section 5 -->
+        <div class="legal-section" id="s5">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="section-number">5</div>
+            <h2 class="section-title" x-text="lang==='ar'?'التسجيل وأمان الحساب':'Account Registration and Security'"></h2>
+          </div>
+          <div class="section-body">
+            <p x-show="lang==='ar'">للوصول إلى بعض الميزات، قد يُطلب منك إنشاء حساب. أنت توافق على:</p>
+            <p x-show="lang==='en'">To access certain features, you may be required to create an account. You agree to:</p>
+            <ol>
+              <li x-show="lang==='ar'">الحفاظ على سرية بيانات تسجيل الدخول وكلمات المرور ورموز التحقق؛</li>
+              <li x-show="lang==='en'">maintain the confidentiality of your login credentials, passwords, and verification codes;</li>
+              <li x-show="lang==='ar'">ضمان دقة معلومات حسابك وتحديثها باستمرار؛</li>
+              <li x-show="lang==='en'">ensure that your account information remains accurate and up to date;</li>
+              <li x-show="lang==='ar'">إخطارنا فوراً بأي استخدام غير مصرح به لحسابك؛ و</li>
+              <li x-show="lang==='en'">notify us immediately of any unauthorized use of your account; and</li>
+              <li x-show="lang==='ar'">تحمّل مسؤولية الأنشطة التي تجري عبر حسابك إلا في حالة ثبوت خطأ من جانبنا.</li>
+              <li x-show="lang==='en'">accept responsibility for activities conducted through your account unless caused by our proven fault.</li>
+            </ol>
+            <p x-show="lang==='ar'">يحظر عليك انتحال هوية شخص آخر أو إنشاء حسابات بمعلومات مزيفة أو مشاركة رموز التحقق مع أطراف غير مصرح بها.</p>
+            <p x-show="lang==='en'">You must not impersonate another person, create accounts using false information, or share verification codes with unauthorized parties.</p>
+          </div>
+        </div>
+
+        <hr class="legal-divider">
+
+        <!-- Section 6 -->
+        <div class="legal-section" id="s6">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="section-number">6</div>
+            <h2 class="section-title" x-text="lang==='ar'?'الاستخدام المقبول':'Use of the Platform'"></h2>
+          </div>
+          <div class="section-body">
+            <p x-show="lang==='ar'">توافق على استخدام المنصة بشكل قانوني ومحترم وبحسن نية. يحظر عليك:</p>
+            <p x-show="lang==='en'">You agree to use the Platform lawfully, respectfully, and in good faith. You must not:</p>
+            <ol>
+              <li x-show="lang==='ar'">استخدام المنصة لأغراض غير قانونية أو احتيالية أو مضللة؛</li>
+              <li x-show="lang==='en'">use the Platform for unlawful, fraudulent, deceptive, or abusive purposes;</li>
+              <li x-show="lang==='ar'">التدخل في تشغيل المنصة أو أمانها أو سلامتها؛</li>
+              <li x-show="lang==='en'">interfere with the Platform's operation, security, or integrity;</li>
+              <li x-show="lang==='ar'">تقديم طلبات مزيفة أو شكاوى كاذبة أو أدلة مضللة؛</li>
+              <li x-show="lang==='en'">submit false requests, fake complaints, or misleading evidence;</li>
+              <li x-show="lang==='ar'">رفع فيروسات أو برمجيات خبيثة؛</li>
+              <li x-show="lang==='en'">upload viruses, malware, or malicious code;</li>
+              <li x-show="lang==='ar'">استخراج بيانات المنصة دون إذن؛</li>
+              <li x-show="lang==='en'">scrape, copy, harvest, or extract Platform data without authorization;</li>
+              <li x-show="lang==='ar'">مضايقة أو تهديد الموظفين أو مزودي الخدمة أو المستخدمين الآخرين؛ أو</li>
+              <li x-show="lang==='en'">harass, threaten, or abuse staff, Providers, or other Users; or</li>
+              <li x-show="lang==='ar'">استخدام المنصة بأي طريقة تنتهك القانون المعمول به.</li>
+              <li x-show="lang==='en'">use the Platform in a way that violates any Applicable Law.</li>
+            </ol>
+          </div>
+        </div>
+
+        <hr class="legal-divider">
+
+        <!-- Section 7 -->
+        <div class="legal-section" id="s7">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="section-number">7</div>
+            <h2 class="section-title" x-text="lang==='ar'?'الخدمات والطلبات والحجوزات':'Services, Orders, and Bookings'"></h2>
+          </div>
+          <div class="section-body">
+            <p x-show="lang==='ar'">قد تتيح المنصة للعملاء تصفح الخدمات وطلب عروض الأسعار وتقديم الطلبات وجدولة المواعيد. بتقديم الطلب، تقرّ بأن:</p>
+            <p x-show="lang==='en'">The Platform may allow Customers to browse services, request quotations, place orders, and schedule appointments. By placing an Order or Booking, you agree that:</p>
+            <ol>
+              <li x-show="lang==='ar'">المعلومات المقدَّمة صحيحة وكاملة؛</li>
+              <li x-show="lang==='en'">the information you provide is accurate and complete;</li>
+              <li x-show="lang==='ar'">توافر الخدمة يعتمد على الموقع والتوقيت وقبول مزود الخدمة؛</li>
+              <li x-show="lang==='en'">service availability may depend on location, timing, and Provider acceptance;</li>
+              <li x-show="lang==='ar'">الطلب لا يكتسب صفة النهائية حتى تأكيده عبر المنصة؛ و</li>
+              <li x-show="lang==='en'">an Order is not final until confirmed through the Platform; and</li>
+              <li x-show="lang==='ar'">قد تسري شروط خاصة على بعض الخدمات وستُعرض عند الدفع أو تأكيد الحجز.</li>
+              <li x-show="lang==='en'">special conditions may apply to certain services and will be shown at checkout or booking confirmation.</li>
+            </ol>
+            <p x-show="lang==='ar'">نحتفظ بالحق في رفض الطلبات أو إلغائها أو تقييدها لأسباب تتعلق بالأمان أو الامتثال أو منع الاحتيال.</p>
+            <p x-show="lang==='en'">We reserve the right to reject, cancel, or limit orders where necessary for security, compliance, fraud prevention, or violation of these Terms.</p>
+          </div>
+        </div>
+
+        <hr class="legal-divider">
+
+        <!-- Section 8 -->
+        <div class="legal-section" id="s8">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="section-number">8</div>
+            <h2 class="section-title" x-text="lang==='ar'?'مزودو الخدمة':'Providers'"></h2>
+          </div>
+          <div class="section-body">
+            <p x-show="lang==='ar'">حيث تضم المنصة مزودي خدمة من أطراف ثالثة، فإن هؤلاء المزودين مسؤولون عن الخدمات التي يقدمونها وينفذونها. يلتزم مزودو الخدمة بما يلي:</p>
+            <p x-show="lang==='en'">Where the Platform includes third-party Providers, such Providers are responsible for the services they offer and perform. Providers must:</p>
+            <ol>
+              <li x-show="lang==='ar'">الحفاظ على دقة ملفاتهم الشخصية ومعلومات خدماتهم ومؤهلاتهم؛</li>
+              <li x-show="lang==='en'">maintain accurate profile, service, and qualification information;</li>
+              <li x-show="lang==='ar'">امتلاك أي تراخيص أو تصاريح أو موافقات مهنية مطلوبة؛</li>
+              <li x-show="lang==='en'">hold any required licenses, permits, or professional authorizations;</li>
+              <li x-show="lang==='ar'">تنفيذ الخدمات باحترافية ووفق القانون؛ و</li>
+              <li x-show="lang==='en'">perform services professionally and lawfully; and</li>
+              <li x-show="lang==='ar'">الامتثال لسياسات ومعايير المنصة.</li>
+              <li x-show="lang==='en'">comply with the policies and standards set by the Platform.</li>
+            </ol>
+            <p x-show="lang==='ar'">يجوز لنا مراجعة مزودي الخدمة أو تعليقهم أو تقييدهم أو شطبهم إذا أخفقوا في استيفاء المعايير المطلوبة.</p>
+            <p x-show="lang==='en'">We may review, suspend, restrict, delist, or terminate Providers who fail to meet required standards.</p>
+          </div>
+        </div>
+
+        <hr class="legal-divider">
+
+        <!-- Section 9 -->
+        <div class="legal-section" id="s9">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="section-number">9</div>
+            <h2 class="section-title" x-text="lang==='ar'?'الأسعار والرسوم والضرائب':'Pricing, Fees, and Taxes'"></h2>
+          </div>
+          <div class="section-body">
+            <p x-show="lang==='ar'">قد تشمل الأسعار المعروضة على المنصة أو تستثني الضرائب والرسوم وتكاليف الخدمة والمبالغ الأخرى المطبّقة، وفق ما هو محدد عند الدفع أو الحجز. بتقديم الطلب، توافق على:</p>
+            <p x-show="lang==='en'">Prices displayed may include or exclude taxes, fees, and other applicable amounts, as specified during checkout or booking. By placing an order, you agree that:</p>
+            <ol>
+              <li x-show="lang==='ar'">تفويض رسوم الدفع المطبقة؛</li>
+              <li x-show="lang==='en'">you authorize the applicable payment charge;</li>
+              <li x-show="lang==='ar'">تحمّل مسؤولية المبالغ المعلنة قبل التأكيد النهائي؛</li>
+              <li x-show="lang==='en'">you are responsible for all applicable amounts stated before final confirmation;</li>
+              <li x-show="lang==='ar'">العروض الترويجية والخصومات قد تخضع لشروط منفصلة؛ و</li>
+              <li x-show="lang==='en'">promotional offers and discounts may be subject to separate conditions; and</li>
+              <li x-show="lang==='ar'">قد تُصدر الفواتير والإيصالات والمستندات الضريبية إلكترونياً.</li>
+              <li x-show="lang==='en'">invoices, receipts, or tax documents may be issued electronically.</li>
+            </ol>
+            <p x-show="lang==='ar'">يُطبَّق ضريبة القيمة المضافة وفق المتطلبات النظامية المعمول بها في المملكة العربية السعودية.</p>
+            <p x-show="lang==='en'">VAT and other taxes will be applied in accordance with applicable requirements in the Kingdom of Saudi Arabia.</p>
+          </div>
+        </div>
+
+        <hr class="legal-divider">
+
+        <!-- Section 10 -->
+        <div class="legal-section" id="s10">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="section-number">10</div>
+            <h2 class="section-title" x-text="lang==='ar'?'المدفوعات':'Payments'"></h2>
+          </div>
+          <div class="section-body">
+            <p x-show="lang==='ar'">تتم معالجة المدفوعات عبر مزودي خدمة دفع من أطراف ثالثة معتمدين من المنصة. تُقرّ وتوافق على أن:</p>
+            <p x-show="lang==='en'">Payments may be processed through third-party payment service providers approved by the Platform. You acknowledge and agree that:</p>
+            <ol>
+              <li x-show="lang==='ar'">معالجة الدفع قد تخضع لشروط شركاء الدفع الخارجيين؛</li>
+              <li x-show="lang==='en'">payment processing may be subject to the terms of external payment partners;</li>
+              <li x-show="lang==='ar'">لا نحتفظ ببيانات البطاقة الكاملة إلا إذا كان ذلك مذكوراً صراحة ومسموحاً به قانونياً؛</li>
+              <li x-show="lang==='en'">we do not store full payment card details unless expressly stated and lawfully permitted;</li>
+              <li x-show="lang==='ar'">المدفوعات الفاشلة أو المعكوسة قد تؤدي إلى الإلغاء أو التعليق؛ و</li>
+              <li x-show="lang==='en'">failed, reversed, or unauthorized payments may result in cancellation or suspension; and</li>
+              <li x-show="lang==='ar'">تُعالَج المبالغ المستردة وفق سياسة الإلغاء والاسترداد وطرق الدفع المطبّقة.</li>
+              <li x-show="lang==='en'">refunds, where approved, will be processed according to the Refund/Cancellation Policy and applicable payment methods.</li>
+            </ol>
+          </div>
+        </div>
+
+        <hr class="legal-divider">
+
+        <!-- Section 11 -->
+        <div class="legal-section" id="s11">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="section-number">11</div>
+            <h2 class="section-title" x-text="lang==='ar'?'الإلغاء وإعادة الجدولة والاسترداد':'Cancellation, Rescheduling, and Refunds'"></h2>
+          </div>
+          <div class="section-body">
+            <p x-show="lang==='ar'">تخضع قواعد الإلغاء وإعادة الجدولة والاسترداد والتعويض لسياسة الإلغاء والاسترداد التي تُشكّل جزءاً من هذه الشروط. وما لم تُنص على خلافه في سياسة خدمة محددة:</p>
+            <p x-show="lang==='en'">Cancellation, rescheduling, refund, and compensation rules are governed by our Refund/Cancellation Policy, which forms part of these Terms. Unless otherwise stated:</p>
+            <ol>
+              <li x-show="lang==='ar'">يجوز للعملاء إلغاء حجوزات معينة قبل موعد بدء الخدمة وفق الشروط المحددة؛</li>
+              <li x-show="lang==='en'">Customers may cancel certain bookings before the service start time, subject to stated conditions;</li>
+              <li x-show="lang==='ar'">قد يُلغي مزودو الخدمة في الحالات المسموح بها فقط؛</li>
+              <li x-show="lang==='en'">Providers may cancel only in permitted circumstances;</li>
+              <li x-show="lang==='ar'">قد تؤثر حالات عدم الحضور أو التأخير أو عدم اكتمال الخدمة على أحقية الاسترداد؛</li>
+              <li x-show="lang==='en'">no-show, late arrival, or incomplete service may affect refund eligibility;</li>
+              <li x-show="lang==='ar'">قد تكون المبالغ المستردة كاملة أو جزئية أو مرفوضة أو على شكل رصيد في المنصة؛ و</li>
+              <li x-show="lang==='en'">refunds may be full, partial, denied, or issued as Platform credit; and</li>
+              <li x-show="lang==='ar'">قد تتباين مدد المعالجة تبعاً لقناة الدفع ومتطلبات المراجعة.</li>
+              <li x-show="lang==='en'">processing times may vary depending on the payment channel and review requirements.</li>
+            </ol>
+          </div>
+        </div>
+
+        <hr class="legal-divider">
+
+        <!-- Section 12 -->
+        <div class="legal-section" id="s12">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="section-number">12</div>
+            <h2 class="section-title" x-text="lang==='ar'?'الشكاوى ومعالجة النزاعات':'Complaints and Dispute Handling'"></h2>
+          </div>
+          <div class="section-body">
+            <p x-show="lang==='ar'">نوفر قنوات للتعامل مع الشكاوى عبر المنصة ليتمكن المستخدمون من الإبلاغ عن المشكلات وطلب المراجعة والحصول على الحلول. يجوز للمستخدمين تقديم شكاوى تتعلق بما يلي:</p>
+            <p x-show="lang==='en'">We provide complaint-handling channels through the Platform for Users to report issues, request review, and seek resolution. Users may submit Complaints relating to:</p>
+            <ul>
+              <li x-show="lang==='ar'">جودة الخدمة؛ وعدم التنفيذ أو التنفيذ الناقص؛ وسلوك مزودي الخدمة؛ وأخطاء الفواتير أو الدفع؛ وطلبات الاسترداد؛ والمشكلات التقنية؛ ومخاوف الخصوصية؛ والحوادث المتعلقة بالسلامة.</li>
+              <li x-show="lang==='en'">service quality; non-performance; Provider misconduct; billing errors; refund requests; technical issues; privacy/data concerns; and safety-related incidents.</li>
+            </ul>
+            <p x-show="lang==='ar'">بتقديم شكوى، توافق على أن المعلومات والأدلة المقدَّمة دقيقة في حدود علمك، وأننا قد نطلب مستندات إضافية، وقد نتصل بالطرف الآخر المعني للمراجعة والرد. قد تشمل نتائج الحل الإغلاق أو التوضيح أو مراجعة الاسترداد أو التحذير أو التعليق.</p>
+            <p x-show="lang==='en'">By submitting a Complaint, you agree that the information provided is accurate to the best of your knowledge, we may request further documentation, and we may contact the other party involved. Resolution outcomes may include closure, clarification, refund review, warning, or suspension.</p>
+            <div class="callout-warn">
+              <i class="fas fa-exclamation-triangle ms-1"></i>
+              <span x-show="lang==='ar'"> الشكاوى الكاذبة أو الاحتيالية أو المتعسفة تستوجب اتخاذ إجراءات في الحساب.</span>
+              <span x-show="lang==='en'"> Abusive, fraudulent, or knowingly false complaints may result in account action.</span>
+            </div>
+          </div>
+        </div>
+
+        <hr class="legal-divider">
+
+        <!-- Section 13 -->
+        <div class="legal-section" id="s13">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="section-number">13</div>
+            <h2 class="section-title" x-text="lang==='ar'?'الخصوصية والبيانات الشخصية':'Privacy and Personal Data'"></h2>
+          </div>
+          <div class="section-body">
+            <p x-show="lang==='ar'">نعالج البيانات الشخصية وفق سياسة الخصوصية لدينا ومتطلبات حماية البيانات الشخصية السارية في المملكة العربية السعودية، بما فيها نظام حماية البيانات الشخصية (PDPL). لمزيد من المعلومات حول حقوق البيانات والاحتفاظ بها والنقل عبر الحدود وطلبات الخصوصية، يُرجى الرجوع إلى <a href="privacy.html" style="color:var(--k-primary)">سياسة الخصوصية</a>.</p>
+            <p x-show="lang==='en'">We process personal data in accordance with our Privacy Policy and applicable Saudi personal data protection requirements, including the Personal Data Protection Law (PDPL). For information about data rights, retention, transfers, and privacy requests, please refer to our <a href="privacy.html" style="color:var(--k-primary)">Privacy Policy</a>.</p>
+            <p x-show="lang==='ar'">نطبّق ضمانات تنظيمية وإدارية وتقنية معقولة لحماية البيانات الشخصية.</p>
+            <p x-show="lang==='en'">We implement reasonable organizational, administrative, and technical safeguards to protect personal data.</p>
+          </div>
+        </div>
+
+        <hr class="legal-divider">
+
+        <!-- Section 14 -->
+        <div class="legal-section" id="s14">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="section-number">14</div>
+            <h2 class="section-title" x-text="lang==='ar'?'طلبات الخصوصية وحقوق البيانات':'Privacy Requests and Data Rights'"></h2>
+          </div>
+          <div class="section-body">
+            <p x-show="lang==='ar'">رهناً بالقانون المعمول به، قد تتمتع بحقوق تتعلق ببياناتك الشخصية. يجوز للمستخدمين تقديم طلبات للوصول إلى البيانات الشخصية، أو تصحيح البيانات غير الدقيقة، أو طلب الحذف حيث ينطبق القانون، أو سحب الموافقة حيثما استندت المعالجة إليها، أو الاعتراض على المعالجة حيثما ينطبق القانون.</p>
+            <p x-show="lang==='en'">Subject to Applicable Law, Users may have rights regarding their personal data. Where applicable, Users may submit requests to access personal data, correct inaccurate data, request deletion where legally applicable, withdraw consent where processing is based on consent, or object to certain processing where legally applicable.</p>
+            <p x-show="lang==='ar'">قد نطلب التحقق من الهوية قبل معالجة هذه الطلبات.</p>
+            <p x-show="lang==='en'">We may require identity verification before processing such requests.</p>
+          </div>
+        </div>
+
+        <hr class="legal-divider">
+
+        <!-- Section 15 -->
+        <div class="legal-section" id="s15">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="section-number">15</div>
+            <h2 class="section-title" x-text="lang==='ar'?'التواصل':'Communications'"></h2>
+          </div>
+          <div class="section-body">
+            <p x-show="lang==='ar'">باستخدامك للمنصة، تمنح موافقتك على تواصلنا معك عبر الرسائل النصية القصيرة (SMS) والبريد الإلكتروني والإشعارات داخل التطبيق وإشعارات الدفع والمكالمات الهاتفية وقنوات المراسلة المعتمدة الأخرى. أنت مسؤول عن التأكد من أن معلومات الاتصال لديك حديثة ودقيقة.</p>
+            <p x-show="lang==='en'">By using the Platform, you agree that we may communicate with you through SMS, email, in-app notifications, push notifications, phone calls, and other approved messaging channels. You are responsible for ensuring your contact details remain current.</p>
+          </div>
+        </div>
+
+        <hr class="legal-divider">
+
+        <!-- Section 16 -->
+        <div class="legal-section" id="s16">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="section-number">16</div>
+            <h2 class="section-title" x-text="lang==='ar'?'محتوى المستخدم والتقييمات والمراجعات':'User Content, Ratings, and Reviews'"></h2>
+          </div>
+          <div class="section-body">
+            <p x-show="lang==='ar'">بتقديم محتوى، تُقرّ وتضمن أن المحتوى دقيق وغير مضلل ولا ينتهك حقوق الآخرين وليس غير قانوني أو تشهيري أو ضاراً. تمنحنا ترخيصاً غير حصري وعالمي ومجانياً لاستخدام هذا المحتوى وإدارته لأغراض تشغيل المنصة والدعم والامتثال.</p>
+            <p x-show="lang==='en'">By submitting Content, you represent and warrant that the Content is accurate, non-misleading, does not violate others' rights, and is not unlawful, defamatory, or harmful. You grant us a non-exclusive, worldwide, royalty-free license to use, host, store, reproduce, display, and process such Content for Platform operation, support, dispute handling, and compliance.</p>
+            <p x-show="lang==='ar'">يحق لنا إزالة أو تقييد أي محتوى يخالف هذه الشروط أو القانون المعمول به.</p>
+            <p x-show="lang==='en'">We may remove or restrict Content that violates these Terms or Applicable Law.</p>
+          </div>
+        </div>
+
+        <hr class="legal-divider">
+
+        <!-- Section 17 -->
+        <div class="legal-section" id="s17">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="section-number">17</div>
+            <h2 class="section-title" x-text="lang==='ar'?'الملكية الفكرية':'Intellectual Property'"></h2>
+          </div>
+          <div class="section-body">
+            <p x-show="lang==='ar'">جميع الحقوق والملكية والمصلحة في المنصة -بما فيها البرمجيات والتصاميم والعلامات التجارية والشعارات والنصوص والرسوم والميزات وقواعد البيانات والتقنيات الأساسية- مملوكة أو مرخَّصة للشركة إلا ما نُص على خلافه. لا يجوز لك دون موافقتنا الكتابية المسبقة: نسخ أو تعديل أو توزيع أو بيع أو ترخيص أو إجراء هندسة عكسية لأي جزء من المنصة.</p>
+            <p x-show="lang==='en'">All rights, title, and interest in and to the Platform, including its software, design, trademarks, logos, text, graphics, features, layouts, databases, and underlying technology, are owned by or licensed to the Company. You may not, without our prior written consent, reproduce, modify, distribute, publish, sell, sublicense, or reverse engineer any part of the Platform.</p>
+            <p x-show="lang==='ar'">لا يُستفاد من هذه الشروط نقل ملكية أي حقوق فكرية إليك.</p>
+            <p x-show="lang==='en'">Nothing in these Terms transfers ownership of intellectual property rights to you.</p>
+          </div>
+        </div>
+
+        <hr class="legal-divider">
+
+        <!-- Section 18 -->
+        <div class="legal-section" id="s18">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="section-number">18</div>
+            <h2 class="section-title" x-text="lang==='ar'?'السلوك المحظور':'Prohibited Conduct'"></h2>
+          </div>
+          <div class="section-body">
+            <p x-show="lang==='ar'">فضلاً عن القيود الأخرى الواردة في هذه الشروط، يحظر عليك:</p>
+            <p x-show="lang==='en'">In addition to other restrictions in these Terms, you must not:</p>
+            <ol>
+              <li x-show="lang==='ar'">تقديم حجوزات أو شكاوى مزيفة؛</li>
+              <li x-show="lang==='en'">submit fake bookings or fake complaints;</li>
+              <li x-show="lang==='ar'">التلاعب في المراجعات أو التقييمات أو ترتيب مزودي الخدمة؛</li>
+              <li x-show="lang==='en'">manipulate reviews, ratings, or provider rankings;</li>
+              <li x-show="lang==='ar'">إساءة استخدام خيارات الاسترداد أو العروض الترويجية أو القسائم؛</li>
+              <li x-show="lang==='en'">misuse refunds, promotions, or coupons;</li>
+              <li x-show="lang==='ar'">الضغط على المزودين أو العملاء لإجراء معاملات خارج المنصة في مخالفة لقواعدها؛</li>
+              <li x-show="lang==='en'">pressure Providers or Customers into off-platform transactions in violation of Platform rules;</li>
+              <li x-show="lang==='ar'">جمع بيانات المستخدمين الآخرين أو إساءة استخدامها؛ أو</li>
+              <li x-show="lang==='en'">collect or misuse other Users' data; or</li>
+              <li x-show="lang==='ar'">الانخراط في الاحتيال أو الانتحال أو الطلب التجاري غير المصرح به.</li>
+              <li x-show="lang==='en'">engage in fraud, scams, extortion, impersonation, or unauthorized commercial solicitation.</li>
+            </ol>
+          </div>
+        </div>
+
+        <hr class="legal-divider">
+
+        <!-- Section 19 -->
+        <div class="legal-section" id="s19">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="section-number">19</div>
+            <h2 class="section-title" x-text="lang==='ar'?'الإيقاف والإنهاء':'Suspension and Termination'"></h2>
+          </div>
+          <div class="section-body">
+            <p x-show="lang==='ar'">يجوز لنا -مع الإشعار أو دونه حيثما يُسمح بذلك- تعليق وصولك إلى المنصة أو تقييده أو التحقيق فيه أو إنهائه إذا رأينا بصورة معقولة أنك انتهكت هذه الشروط، أو مارست الاحتيال أو الإساءة أو السلوك الإجرامي، أو أن حسابك يشكّل مخاطر أمنية أو امتثالية.</p>
+            <p x-show="lang==='en'">We may, with or without prior notice where permitted, suspend, restrict, investigate, or terminate access to the Platform if we reasonably believe that you violated these Terms, engaged in fraud, abuse, or illegal conduct, or your account presents security or compliance risks.</p>
+            <p x-show="lang==='ar'">لا يُعفيك الإنهاء أو التعليق من الالتزامات المترتبة قبل تاريخ نفاذ ذلك الإجراء.</p>
+            <p x-show="lang==='en'">Termination or suspension does not remove your responsibility for obligations incurred before the effective date of the action.</p>
+          </div>
+        </div>
+
+        <hr class="legal-divider">
+
+        <!-- Section 20 -->
+        <div class="legal-section" id="s20">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="section-number">20</div>
+            <h2 class="section-title" x-text="lang==='ar'?'التوافر والمشكلات التقنية':'Availability and Technical Issues'"></h2>
+          </div>
+          <div class="section-body">
+            <p x-show="lang==='ar'">نسعى إلى إبقاء المنصة متاحة وتعمل على النحو الصحيح، غير أننا لا نضمن الوصول المستمر أو الخالي من الأخطاء في كل الأوقات. قد تتأثر المنصة بالصيانة أو التحديثات أو انقطاعات الإنترنت أو أعطال الأنظمة أو حوادث الأمن السيبراني أو القوة القاهرة.</p>
+            <p x-show="lang==='en'">We aim to keep the Platform available and functioning properly, but we do not guarantee uninterrupted or error-free access at all times. The Platform may be affected by maintenance, updates, internet failures, third-party system outages, cyber incidents, or force majeure.</p>
+          </div>
+        </div>
+
+        <hr class="legal-divider">
+
+        <!-- Section 21 -->
+        <div class="legal-section" id="s21">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="section-number">21</div>
+            <h2 class="section-title" x-text="lang==='ar'?'خدمات الأطراف الثالثة والروابط':'Third-Party Services and Links'"></h2>
+          </div>
+          <div class="section-body">
+            <p x-show="lang==='ar'">قد تتكامل المنصة مع خدمات أطراف ثالثة أو توفر الوصول إليها، كبوابات الدفع والخرائط وأدوات التحليل وقنوات المراسلة والاستضافة السحابية. لسنا مسؤولين عن الأفعال المستقلة أو السياسات أو محتوى هذه الأطراف الثالثة إلا بالقدر الذي يوجبه القانون المعمول به.</p>
+            <p x-show="lang==='en'">The Platform may integrate with or provide access to third-party services, such as payment gateways, maps, analytics, messaging tools, and cloud hosting. We are not responsible for the independent acts, omissions, policies, or content of third parties, except to the extent required by Applicable Law.</p>
+          </div>
+        </div>
+
+        <hr class="legal-divider">
+
+        <!-- Section 22 -->
+        <div class="legal-section" id="s22">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="section-number">22</div>
+            <h2 class="section-title" x-text="lang==='ar'?'إخلاء المسؤولية':'Disclaimer'"></h2>
+          </div>
+          <div class="section-body">
+            <p x-show="lang==='ar'">بالقدر الذي يُجيزه القانون المعمول به، تُقدَّم المنصة والخدمات ذات الصلة "كما هي" و"كما هي متاحة". لا نضمن أن المنصة ستكون خالية من الانقطاع أو الأخطاء، أو أن كل المحتوى سيكون دائماً دقيقاً وكاملاً، أو أن كل مزود خدمة سيكون متاحاً في جميع الأوقات. لا يُستثنى بهذا البند أي حق لا يجوز قانوناً استثناؤه.</p>
+            <p x-show="lang==='en'">To the extent permitted by Applicable Law, the Platform and related services are provided on an "as is" and "as available" basis. We do not guarantee that the Platform will be uninterrupted or error-free, all content will always be complete or accurate, or every Provider will be available at all times. Nothing in this clause excludes rights that cannot lawfully be excluded.</p>
+          </div>
+        </div>
+
+        <hr class="legal-divider">
+
+        <!-- Section 23 -->
+        <div class="legal-section" id="s23">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="section-number">23</div>
+            <h2 class="section-title" x-text="lang==='ar'?'حدود المسؤولية':'Limitation of Liability'"></h2>
+          </div>
+          <div class="section-body">
+            <p x-show="lang==='ar'">بالقدر الأقصى الذي يُجيزه القانون المعمول به، لن تكون الشركة مسؤولة عن أي أضرار غير مباشرة أو عرضية أو تبعية أو خاصة أو عقابية أو خسائر في الأرباح ناجمة عن أو مرتبطة بالمنصة أو استخدامها أو عدم القدرة على استخدامها، أو أفعال مزودي الخدمة من أطراف ثالثة، أو النزاعات بين المستخدمين والمزودين.</p>
+            <p x-show="lang==='en'">To the fullest extent permitted by Applicable Law, the Company shall not be liable for any indirect, incidental, consequential, special, punitive, or loss-of-profit damages arising from or related to use of or inability to use the Platform, acts or omissions of third-party Providers, or disputes between Users and Providers.</p>
+            <div class="callout-warn">
+              <i class="fas fa-gavel ms-1"></i>
+              <span x-show="lang==='ar'"> يجب مراجعة هذا البند مع محامٍ سعودي متخصص وفق النموذج التشغيلي الفعلي للمنصة قبل النشر.</span>
+              <span x-show="lang==='en'"> This clause should be finalized with Saudi legal counsel for your exact operating model before publishing.</span>
+            </div>
+          </div>
+        </div>
+
+        <hr class="legal-divider">
+
+        <!-- Section 24 -->
+        <div class="legal-section" id="s24">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="section-number">24</div>
+            <h2 class="section-title" x-text="lang==='ar'?'التعويض':'Indemnity'"></h2>
+          </div>
+          <div class="section-body">
+            <p x-show="lang==='ar'">توافق على تعويض الشركة وشركاتها التابعة ومسؤوليها وموظفيها ووكلائها وشركائها والدفاع عنهم وإبراء ذمتهم من أي مطالبات أو التزامات أو خسائر أو أضرار أو تكاليف أو نفقات ناشئة عن انتهاكك لهذه الشروط أو إساءة استخدامك للمنصة أو انتهاكك لحقوق أي طرف آخر أو سلوكك غير القانوني.</p>
+            <p x-show="lang==='en'">You agree to indemnify, defend, and hold harmless the Company, its affiliates, officers, employees, agents, and partners from and against any claims, liabilities, losses, damages, costs, or expenses arising out of or related to your violation of these Terms, your misuse of the Platform, your infringement of any rights of another person, or your unlawful conduct.</p>
+          </div>
+        </div>
+
+        <hr class="legal-divider">
+
+        <!-- Section 25 -->
+        <div class="legal-section" id="s25">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="section-number">25</div>
+            <h2 class="section-title" x-text="lang==='ar'?'القوة القاهرة':'Force Majeure'"></h2>
+          </div>
+          <div class="section-body">
+            <p x-show="lang==='ar'">لن نكون مسؤولين عن أي تأخير أو إخفاق في الأداء ناتج عن أسباب خارجة عن إرادتنا المعقولة، تشمل الكوارث الطبيعية والأوبئة والحروب والاضطرابات المدنية وانقطاعات الإنترنت وأعطال الاتصالات وإجراءات الحكومة والحوادث الإلكترونية.</p>
+            <p x-show="lang==='en'">We shall not be liable for delay or failure to perform resulting from causes beyond our reasonable control, including acts of God, natural disasters, epidemics, war, civil unrest, internet outages, telecommunications failures, government actions, or cyber incidents.</p>
+          </div>
+        </div>
+
+        <hr class="legal-divider">
+
+        <!-- Section 26 -->
+        <div class="legal-section" id="s26">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="section-number">26</div>
+            <h2 class="section-title" x-text="lang==='ar'?'القانون الحاكم والاختصاص القضائي':'Governing Law and Jurisdiction'"></h2>
+          </div>
+          <div class="section-body">
+            <p x-show="lang==='ar'">تخضع هذه الشروط لأنظمة المملكة العربية السعودية وتُفسَّر وفقاً لها. تختص محاكم المملكة العربية السعودية أو هيئاتها المختصة بالنظر في أي نزاع ينشأ من هذه الشروط أو المنصة أو أي معاملة ذات صلة، ما لم يُشترط طريقة أخرى لفض النزاعات بموجب القانون المعمول به أو يُتفق عليها كتابة.</p>
+            <p x-show="lang==='en'">These Terms shall be governed by and construed in accordance with the laws and regulations of the Kingdom of Saudi Arabia. Any dispute arising out of or relating to these Terms, the Platform, or any related transaction shall be subject to the jurisdiction of the competent courts or authorities in the Kingdom of Saudi Arabia, unless another dispute-resolution method is expressly required by Applicable Law or agreed in writing.</p>
+          </div>
+        </div>
+
+        <hr class="legal-divider">
+
+        <!-- Section 27 -->
+        <div class="legal-section" id="s27">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="section-number">27</div>
+            <h2 class="section-title" x-text="lang==='ar'?'التعديلات على هذه الشروط':'Changes to These Terms'"></h2>
+          </div>
+          <div class="section-body">
+            <p x-show="lang==='ar'">قد نحدّث هذه الشروط أو نعدّلها من وقت لآخر. حيثما كان ذلك مناسباً، قد نُخطر المستخدمين بالتغييرات الجوهرية عبر المنصة أو البريد الإلكتروني أو الرسائل النصية أو إشعارات التطبيق. يُعدّ استمرار استخدامك للمنصة بعد تاريخ نفاذ الشروط المعدَّلة قبولاً للشروط المحدَّثة.</p>
+            <p x-show="lang==='en'">We may update or amend these Terms from time to time. Where required or appropriate, we may notify Users of material changes through the Platform, email, SMS, or app notification. Your continued use of the Platform after the effective date of revised Terms constitutes acceptance of the updated Terms, to the extent permitted by law.</p>
+          </div>
+        </div>
+
+        <hr class="legal-divider">
+
+        <!-- Section 28 -->
+        <div class="legal-section" id="s28">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="section-number">28</div>
+            <h2 class="section-title" x-text="lang==='ar'?'قابلية التجزئة':'Severability'"></h2>
+          </div>
+          <div class="section-body">
+            <p x-show="lang==='ar'">إذا قُضي بأن أي بند من هذه الشروط باطل أو مخالف للنظام أو غير قابل للتطبيق، فإن ذلك البند يُطبَّق إلى أقصى حد ممكن، وتبقى سائر الأحكام سارية المفعول كاملاً.</p>
+            <p x-show="lang==='en'">If any provision of these Terms is held to be invalid, unlawful, or unenforceable, that provision shall be enforced to the maximum extent permitted, and the remaining provisions shall remain in full force and effect.</p>
+          </div>
+        </div>
+
+        <hr class="legal-divider">
+
+        <!-- Section 29 -->
+        <div class="legal-section" id="s29">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="section-number">29</div>
+            <h2 class="section-title" x-text="lang==='ar'?'الاتفاقية الكاملة':'Entire Agreement'"></h2>
+          </div>
+          <div class="section-body">
+            <p x-show="lang==='ar'">تُشكّل هذه الشروط مع السياسات المدرجة صراحة بالإشارة إليها الاتفاقية الكاملة بينك وبين الشركة بشأن استخدامك للمنصة، وتحل محل أي تفاهمات سابقة تتعلق بالموضوع ذاته.</p>
+            <p x-show="lang==='en'">These Terms, together with any policies expressly incorporated by reference, constitute the entire agreement between you and the Company regarding your use of the Platform and supersede prior understandings relating to the same subject matter.</p>
+          </div>
+        </div>
+
+        <hr class="legal-divider">
+
+        <!-- Section 30 -->
+        <div class="legal-section" id="s30">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="section-number">30</div>
+            <h2 class="section-title" x-text="lang==='ar'?'معلومات التواصل':'Contact Information'"></h2>
+          </div>
+          <div class="section-body">
+            <p x-show="lang==='ar'">للاستفسارات أو الشكاوى أو الإشعارات القانونية أو الدعم، يُرجى التواصل معنا:</p>
+            <p x-show="lang==='en'">For questions, complaints, legal notices, or support, please contact:</p>
+            <div class="callout-placeholder">
+              <div class="row g-2" style="font-style:normal">
+                <div class="col-sm-6">
+                  <div style="font-weight:700;color:var(--k-dark-2);margin-bottom:0.5rem" x-text="lang==='ar'?'معلومات الشركة':'Company Information'"></div>
+                  <div><i class="fas fa-building ms-1 text-muted" style="width:18px"></i> [الاسم القانوني للشركة / Company Legal Name]</div>
+                  <div><i class="fas fa-id-card ms-1 text-muted" style="width:18px"></i> <span x-text="lang==='ar'?'س.ت:':'CR:'"></span> [أدخل رقم السجل التجاري]</div>
+                  <div><i class="fas fa-receipt ms-1 text-muted" style="width:18px"></i> <span x-text="lang==='ar'?'ض.ق.م:':'VAT:'"></span> [أدخل الرقم الضريبي]</div>
+                  <div><i class="fas fa-map-marker-alt ms-1 text-muted" style="width:18px"></i> [أدخل العنوان المسجّل]</div>
+                </div>
+                <div class="col-sm-6">
+                  <div style="font-weight:700;color:var(--k-dark-2);margin-bottom:0.5rem" x-text="lang==='ar'?'قنوات التواصل':'Contact Channels'"></div>
+                  <div><i class="fas fa-envelope ms-1 text-muted" style="width:18px"></i> [أدخل البريد الإلكتروني للدعم]</div>
+                  <div><i class="fas fa-phone ms-1 text-muted" style="width:18px"></i> [أدخل رقم الهاتف]</div>
+                  <div><i class="fas fa-flag ms-1 text-muted" style="width:18px"></i> [بريد إلكتروني للشكاوى]</div>
+                  <div><i class="fas fa-shield-alt ms-1 text-muted" style="width:18px"></i> [بريد إلكتروني للخصوصية]</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- end .legal-content -->
+
+      <!-- Related Policies -->
+      <div class="policy-links mt-4">
+        <h6 style="font-weight:800;color:var(--k-dark-2);margin-bottom:1.25rem">
+          <i class="fas fa-link ms-2" style="color:var(--k-primary)"></i>
+          <span x-text="lang==='ar'?'السياسات المرتبطة':'Related Policies'"></span>
+        </h6>
+        <div class="row g-3">
+          <div class="col-md-4">
+            <a href="privacy.html" class="policy-link-card">
+              <div class="icon" style="background:rgba(2,128,144,0.1);color:var(--k-primary)"><i class="fas fa-shield-alt"></i></div>
+              <div>
+                <div style="font-weight:700;font-size:0.9rem" x-text="lang==='ar'?'سياسة الخصوصية':'Privacy Policy'"></div>
+                <div style="font-size:0.78rem;color:var(--k-gray)" x-text="lang==='ar'?'كيف نتعامل مع بياناتك':'How we handle your data'"></div>
+              </div>
+            </a>
+          </div>
+          <div class="col-md-4">
+            <a href="#" class="policy-link-card">
+              <div class="icon" style="background:rgba(245,158,11,0.1);color:#d97706"><i class="fas fa-undo-alt"></i></div>
+              <div>
+                <div style="font-weight:700;font-size:0.9rem" x-text="lang==='ar'?'سياسة الإلغاء والاسترداد':'Refund & Cancellation'"></div>
+                <div style="font-size:0.78rem;color:var(--k-gray)" x-text="lang==='ar'?'شروط الاسترداد والإلغاء':'Cancellation conditions'"></div>
+              </div>
+            </a>
+          </div>
+          <div class="col-md-4">
+            <a href="#" class="policy-link-card">
+              <div class="icon" style="background:rgba(16,185,129,0.1);color:#059669"><i class="fas fa-comment-dots"></i></div>
+              <div>
+                <div style="font-weight:700;font-size:0.9rem" x-text="lang==='ar'?'سياسة الشكاوى':'Complaints Policy'"></div>
+                <div style="font-size:0.78rem;color:var(--k-gray)" x-text="lang==='ar'?'كيفية رفع شكوى':'How to file a complaint'"></div>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end col-lg-9 -->
+  </div><!-- end row -->
+</div><!-- end container -->
+
+<!-- Footer -->
+<footer style="background:var(--k-dark);color:rgba(255,255,255,0.6);padding:2rem 0;margin-top:3rem;text-align:center;font-size:0.85rem">
+  <div class="container">
+    <div class="mb-2">
+      <a href="terms.html" style="color:rgba(255,255,255,0.6);text-decoration:none;margin:0 0.75rem" x-text="lang==='ar'?'الشروط والأحكام':'Terms'"></a>
+      <a href="privacy.html" style="color:rgba(255,255,255,0.6);text-decoration:none;margin:0 0.75rem" x-text="lang==='ar'?'الخصوصية':'Privacy'"></a>
+      <a href="../index.html" style="color:rgba(255,255,255,0.6);text-decoration:none;margin:0 0.75rem" x-text="lang==='ar'?'الرئيسية':'Home'"></a>
+    </div>
+    <div x-text="lang==='ar'?'© 2026 خدمة. جميع الحقوق محفوظة.':'© 2026 Khedmah. All rights reserved.'"></div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+<script>
+  function legalApp() {
+    return {
+      lang: localStorage.getItem('khedmah_lang') || 'ar',
+      setLang(l) {
+        this.lang = l;
+        localStorage.setItem('khedmah_lang', l);
+        document.documentElement.dir = l === 'ar' ? 'rtl' : 'ltr';
+        document.documentElement.lang = l;
+      },
+      init() {
+        document.documentElement.dir = this.lang === 'ar' ? 'rtl' : 'ltr';
+        // TOC active link on scroll
+        const sections = document.querySelectorAll('.legal-section');
+        const links = document.querySelectorAll('.toc-link');
+        const obs = new IntersectionObserver((entries) => {
+          entries.forEach(e => {
+            if (e.isIntersecting) {
+              links.forEach(l => l.classList.remove('active'));
+              const active = document.querySelector('.toc-link[href="#' + e.target.id + '"]');
+              if (active) active.classList.add('active');
+            }
+          });
+        }, { rootMargin: '-80px 0px -70% 0px' });
+        sections.forEach(s => obs.observe(s));
+      }
+    };
+  }
+</script>
+</body>
+</html>

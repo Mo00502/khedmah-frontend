@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تفاصيل المناقصة — خدمة</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="../assets/css/khedmah.css">
+  <style>
+    body { background: #f0f4f8; font-family: 'Tajawal', sans-serif; }
+    .t-accent { color: #0369a1; }
+    .t-badge { background: #0369a1; color: #fff; border-radius: 8px; padding: 0.25rem 0.75rem; font-size: 0.8rem; font-weight: 700; display: inline-block; }
+    .t-badge-outline { background: transparent; border: 1.5px solid #0369a1; color: #0369a1; border-radius: 8px; padding: 0.25rem 0.75rem; font-size: 0.8rem; font-weight: 700; display: inline-block; }
+    .detail-card { background: #fff; border-radius: 16px; box-shadow: 0 2px 16px rgba(0,0,0,0.07); padding: 1.75rem; margin-bottom: 1.25rem; }
+    .stat-pill { background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 10px; padding: 0.6rem 1rem; text-align: center; }
+    .stat-pill .val { font-size: 1.3rem; font-weight: 900; color: #0369a1; }
+    .stat-pill .lbl { font-size: 0.75rem; color: #64748b; }
+    .doc-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; background: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0; cursor: pointer; transition: all 0.2s; }
+    .doc-item:hover { border-color: #0369a1; background: #f0f9ff; }
+    .qual-tag { background: #e0f2fe; color: #0369a1; border-radius: 20px; padding: 0.3rem 0.85rem; font-size: 0.82rem; font-weight: 600; display: inline-block; margin: 0.2rem; }
+    .milestone-row { display: flex; align-items: center; gap: 1rem; padding: 0.75rem 0; border-bottom: 1px solid #f1f5f9; }
+    .milestone-row:last-child { border-bottom: none; }
+    .milestone-num { width: 32px; height: 32px; background: #0369a1; border-radius: 50%; color: #fff; font-weight: 700; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0; }
+    .bid-card { border: 2px solid #e2e8f0; border-radius: 14px; padding: 1.25rem; transition: all 0.2s; }
+    .bid-card:hover { border-color: #0369a1; }
+    .bid-card.best { border-color: #22c55e; background: rgba(34,197,94,0.04); }
+    .btn-tender { background: #0369a1; color: #fff; border: none; border-radius: 10px; padding: 0.75rem 1.5rem; font-weight: 700; font-size: 0.95rem; transition: all 0.2s; }
+    .btn-tender:hover { background: #025484; color: #fff; transform: translateY(-1px); }
+    .btn-tender-outline { background: transparent; color: #0369a1; border: 2px solid #0369a1; border-radius: 10px; padding: 0.75rem 1.5rem; font-weight: 700; font-size: 0.95rem; transition: all 0.2s; }
+    .btn-tender-outline:hover { background: #0369a1; color: #fff; }
+    .urgency-high { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; border-radius: 8px; padding: 0.2rem 0.6rem; font-size: 0.78rem; font-weight: 700; }
+    .urgency-med { background: #fffbeb; color: #d97706; border: 1px solid #fde68a; border-radius: 8px; padding: 0.2rem 0.6rem; font-size: 0.78rem; font-weight: 700; }
+    .tab-btn { background: transparent; border: none; padding: 0.6rem 1.25rem; font-weight: 700; color: #64748b; border-bottom: 3px solid transparent; font-family: 'Tajawal', sans-serif; font-size: 0.95rem; }
+    .tab-btn.active { color: #0369a1; border-bottom-color: #0369a1; }
+    .progress-tender { height: 8px; border-radius: 4px; background: #e2e8f0; overflow: hidden; }
+    .progress-tender-fill { height: 100%; background: linear-gradient(90deg, #0369a1, #0ea5e9); border-radius: 4px; }
+    .company-mini { display: flex; align-items: center; gap: 0.75rem; padding: 1rem; background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0; }
+    .bid-form-section { background: linear-gradient(135deg, #0369a1, #0284c7); border-radius: 16px; padding: 2rem; color: #fff; }
+  </style>
+</head>
+<body>
+
+<nav class="k-navbar navbar navbar-expand-lg">
+  <div class="container">
+    <a class="navbar-brand" href="../index.html">خدم<span style="color:var(--k-accent)">ة</span></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navMain">
+      <ul class="navbar-nav me-auto gap-1">
+        <li class="nav-item"><a class="nav-link" href="../index.html">الرئيسية</a></li>
+        <li class="nav-item"><a class="nav-link active" href="index.html">المناقصات</a></li>
+        <li class="nav-item"><a class="nav-link" href="../equipment/index.html">المعدات</a></li>
+        <li class="nav-item"><a class="nav-link" href="../customer/home-services.html">خدمات المنازل</a></li>
+      </ul>
+      <div class="d-flex gap-2">
+        <a href="post-tender.html" class="btn btn-sm btn-tender">+ نشر مناقصة</a>
+        <a href="../auth/login.html" class="btn btn-sm btn-tender-outline">دخول</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="container py-4" style="max-width:1100px" x-data="tenderDetailApp()">
+
+  <!-- Breadcrumb -->
+  <nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb" style="font-size:0.85rem">
+      <li class="breadcrumb-item"><a href="../index.html" style="color:#0369a1">الرئيسية</a></li>
+      <li class="breadcrumb-item"><a href="index.html" style="color:#0369a1">المناقصات</a></li>
+      <li class="breadcrumb-item active">توسعة شبكة المياه — الرياض</li>
+    </ol>
+  </nav>
+
+  <div class="row g-4">
+
+    <!-- Main Content -->
+    <div class="col-lg-8">
+
+      <!-- Header Card -->
+      <div class="detail-card">
+        <div class="d-flex flex-wrap gap-2 mb-3">
+          <span class="t-badge">بنية تحتية</span>
+          <span class="urgency-high"><i class="fas fa-fire ms-1"></i> عاجل</span>
+          <span style="background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;border-radius:8px;padding:0.2rem 0.6rem;font-size:0.78rem;font-weight:700">مفتوح للعطاءات</span>
+        </div>
+        <h2 style="font-weight:900;color:#1e293b;margin-bottom:0.5rem">توسعة وتحديث شبكة المياه والصرف الصحي — الرياض</h2>
+        <div class="d-flex flex-wrap gap-3 mb-4" style="color:#64748b;font-size:0.9rem">
+          <span><i class="fas fa-building ms-1 t-accent"></i> أمانة منطقة الرياض</span>
+          <span><i class="fas fa-map-marker-alt ms-1 t-accent"></i> الرياض — حي النخيل</span>
+          <span><i class="fas fa-calendar ms-1 t-accent"></i> نُشر: 28 فبراير 2026</span>
+          <span><i class="fas fa-eye ms-1 t-accent"></i> 348 مشاهدة</span>
+        </div>
+
+        <!-- Stats Row -->
+        <div class="row g-3 mb-4">
+          <div class="col-6 col-md-3">
+            <div class="stat-pill">
+              <div class="val">8.5M</div>
+              <div class="lbl">الميزانية (ر.س)</div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="stat-pill">
+              <div class="val">18</div>
+              <div class="lbl">شهر مدة</div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="stat-pill">
+              <div class="val">12</div>
+              <div class="lbl">عطاء مقدم</div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="stat-pill">
+              <div class="val">14</div>
+              <div class="lbl">يوم متبقٍ</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Deadline Progress -->
+        <div class="mb-2" style="font-size:0.85rem;color:#64748b">
+          <span>تقدم المهلة</span>
+          <span class="float-start" style="color:#dc2626;font-weight:700">14 يوم متبقٍ — 20 مارس 2026</span>
+        </div>
+        <div class="progress-tender mb-4">
+          <div class="progress-tender-fill" style="width:70%"></div>
+        </div>
+
+        <!-- Tabs -->
+        <div style="border-bottom:2px solid #f1f5f9;margin-bottom:1.5rem">
+          <button class="tab-btn active" onclick="switchTab('overview',this)">نظرة عامة</button>
+          <button class="tab-btn" onclick="switchTab('requirements',this)">المتطلبات</button>
+          <button class="tab-btn" onclick="switchTab('docs',this)">الوثائق</button>
+          <button class="tab-btn" onclick="switchTab('bids',this)">العطاءات (12)</button>
+          <button class="tab-btn" onclick="switchTab('milestones',this)">المراحل</button>
+        </div>
+
+        <!-- Overview Tab -->
+        <div id="tab-overview">
+          <h6 style="font-weight:800;color:#1e293b;margin-bottom:0.75rem">وصف المشروع</h6>
+          <p style="color:#475569;line-height:1.8">
+            يشمل المشروع توسعة شبكة المياه والصرف الصحي في حي النخيل بالرياض لخدمة 12,000 وحدة سكنية جديدة. يتضمن العمل مد أنابيب بطول إجمالي 45 كيلومتراً، وتركيب 8 محطات ضخ، وإنشاء خزانات تخزين بطاقة 50,000 متر مكعب، بالإضافة إلى شبكة صرف صحي متكاملة مع محطة معالجة.
+          </p>
+          <p style="color:#475569;line-height:1.8">
+            يجب أن تتوافق جميع المواد والمعدات مع المواصفات السعودية SASO ومعايير أمانة الرياض. المقاول مسؤول عن الحصول على جميع التصاريح اللازمة من الجهات الحكومية المختصة.
+          </p>
+
+          <h6 style="font-weight:800;color:#1e293b;margin:1.5rem 0 0.75rem">نطاق العمل</h6>
+          <ul style="color:#475569;line-height:2">
+            <li>مد خطوط المياه الرئيسية (قطر 600-1200 مم) — 20 كم</li>
+            <li>مد خطوط التوزيع الفرعية (قطر 150-400 مم) — 25 كم</li>
+            <li>إنشاء 8 محطات ضخ مع لوحات تحكم ذكية</li>
+            <li>بناء خزانين أرضيين سعة 25,000 م³ لكل منهما</li>
+            <li>شبكة صرف صحي منفصلة بطول 30 كم</li>
+            <li>محطة معالجة مياه الصرف بطاقة 15,000 م³/يوم</li>
+            <li>ربط الشبكة بمنظومة SCADA لمراقبة مركزية</li>
+          </ul>
+        </div>
+
+        <!-- Requirements Tab -->
+        <div id="tab-requirements" style="display:none">
+          <h6 style="font-weight:800;color:#1e293b;margin-bottom:1rem">المتطلبات التأهيلية</h6>
+          <div class="d-flex flex-wrap gap-2 mb-4">
+            <span class="qual-tag"><i class="fas fa-check-circle ms-1"></i> تصنيف G9 إنشائي</span>
+            <span class="qual-tag"><i class="fas fa-check-circle ms-1"></i> تصنيف M7 ميكانيكي</span>
+            <span class="qual-tag"><i class="fas fa-check-circle ms-1"></i> خبرة 10+ سنوات</span>
+            <span class="qual-tag"><i class="fas fa-check-circle ms-1"></i> مشاريع مماثلة 5+</span>
+            <span class="qual-tag"><i class="fas fa-check-circle ms-1"></i> سعودة 40%+</span>
+            <span class="qual-tag"><i class="fas fa-check-circle ms-1"></i> شهادة ISO 9001</span>
+            <span class="qual-tag"><i class="fas fa-check-circle ms-1"></i> ضمان مصرفي 5%</span>
+          </div>
+
+          <h6 style="font-weight:800;color:#1e293b;margin-bottom:0.75rem">الشروط المالية</h6>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <div style="padding:1rem;background:#f8fafc;border-radius:10px;border:1px solid #e2e8f0">
+                <div style="font-size:0.82rem;color:#64748b">نوع السعر</div>
+                <div style="font-weight:700;color:#1e293b">سعر إجمالي مقطوع</div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div style="padding:1rem;background:#f8fafc;border-radius:10px;border:1px solid #e2e8f0">
+                <div style="font-size:0.82rem;color:#64748b">شروط الدفع</div>
+                <div style="font-weight:700;color:#1e293b">دفعات حسب المراحل</div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div style="padding:1rem;background:#f8fafc;border-radius:10px;border:1px solid #e2e8f0">
+                <div style="font-size:0.82rem;color:#64748b">دفعة التعبئة</div>
+                <div style="font-weight:700;color:#1e293b">20% عند توقيع العقد</div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div style="padding:1rem;background:#f8fafc;border-radius:10px;border:1px solid #e2e8f0">
+                <div style="font-size:0.82rem;color:#64748b">غرامة التأخير</div>
+                <div style="font-weight:700;color:#1e293b">0.5% أسبوعياً — حد 10%</div>
+              </div>
+            </div>
+          </div>
+
+          <h6 style="font-weight:800;color:#1e293b;margin:1.5rem 0 0.75rem">الضمانات المطلوبة</h6>
+          <div class="d-flex flex-column gap-2">
+            <div style="padding:0.75rem 1rem;background:#fffbeb;border:1px solid #fde68a;border-radius:10px;font-size:0.9rem">
+              <i class="fas fa-shield-alt ms-2" style="color:#d97706"></i>
+              <strong>ضمان الابتدائي:</strong> 2% من قيمة العطاء (ضمان مصرفي أو نقد)
+            </div>
+            <div style="padding:0.75rem 1rem;background:#f0f9ff;border:1px solid #bae6fd;border-radius:10px;font-size:0.9rem">
+              <i class="fas fa-shield-alt ms-2" style="color:#0369a1"></i>
+              <strong>ضمان حسن التنفيذ:</strong> 5% من قيمة العقد
+            </div>
+            <div style="padding:0.75rem 1rem;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;font-size:0.9rem">
+              <i class="fas fa-shield-alt ms-2" style="color:#16a34a"></i>
+              <strong>ضمان الصيانة:</strong> 24 شهراً بعد الاستلام
+            </div>
+          </div>
+        </div>
+
+        <!-- Documents Tab -->
+        <div id="tab-docs" style="display:none">
+          <h6 style="font-weight:800;color:#1e293b;margin-bottom:1rem">وثائق المناقصة</h6>
+          <div class="d-flex flex-column gap-3">
+            <div class="doc-item">
+              <div style="width:42px;height:42px;background:#fef2f2;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                <i class="fas fa-file-pdf" style="color:#dc2626;font-size:1.2rem"></i>
+              </div>
+              <div style="flex:1">
+                <div style="font-weight:700;font-size:0.9rem">كراسة الشروط والمواصفات</div>
+                <div style="font-size:0.8rem;color:#64748b">PDF — 4.2 MB</div>
+              </div>
+              <button class="btn btn-sm" style="background:#f0f9ff;color:#0369a1;border:1px solid #bae6fd;font-size:0.82rem;font-weight:600">
+                <i class="fas fa-download ms-1"></i> تحميل
+              </button>
+            </div>
+            <div class="doc-item">
+              <div style="width:42px;height:42px;background:#eff6ff;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                <i class="fas fa-file-alt" style="color:#3b82f6;font-size:1.2rem"></i>
+              </div>
+              <div style="flex:1">
+                <div style="font-weight:700;font-size:0.9rem">المخططات الهندسية (Autocad)</div>
+                <div style="font-size:0.8rem;color:#64748b">ZIP — 78.5 MB</div>
+              </div>
+              <button class="btn btn-sm" style="background:#f0f9ff;color:#0369a1;border:1px solid #bae6fd;font-size:0.82rem;font-weight:600">
+                <i class="fas fa-download ms-1"></i> تحميل
+              </button>
+            </div>
+            <div class="doc-item">
+              <div style="width:42px;height:42px;background:#f0fdf4;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                <i class="fas fa-file-excel" style="color:#16a34a;font-size:1.2rem"></i>
+              </div>
+              <div style="flex:1">
+                <div style="font-weight:700;font-size:0.9rem">جداول الكميات (BOQ)</div>
+                <div style="font-size:0.8rem;color:#64748b">XLSX — 1.8 MB</div>
+              </div>
+              <button class="btn btn-sm" style="background:#f0f9ff;color:#0369a1;border:1px solid #bae6fd;font-size:0.82rem;font-weight:600">
+                <i class="fas fa-download ms-1"></i> تحميل
+              </button>
+            </div>
+            <div class="doc-item">
+              <div style="width:42px;height:42px;background:#faf5ff;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                <i class="fas fa-file-word" style="color:#7c3aed;font-size:1.2rem"></i>
+              </div>
+              <div style="flex:1">
+                <div style="font-weight:700;font-size:0.9rem">نموذج العطاء الرسمي</div>
+                <div style="font-size:0.8rem;color:#64748b">DOCX — 0.5 MB</div>
+              </div>
+              <button class="btn btn-sm" style="background:#f0f9ff;color:#0369a1;border:1px solid #bae6fd;font-size:0.82rem;font-weight:600">
+                <i class="fas fa-download ms-1"></i> تحميل
+              </button>
+            </div>
+          </div>
+          <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:12px;padding:1rem;margin-top:1rem;font-size:0.85rem;color:#92400e">
+            <i class="fas fa-exclamation-triangle ms-2"></i>
+            يلزم التسجيل وسداد رسوم الوثائق (500 ر.س) للوصول إلى الملفات الكاملة.
+          </div>
+        </div>
+
+        <!-- Bids Tab -->
+        <div id="tab-bids" style="display:none">
+          <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+            <h6 style="font-weight:800;color:#1e293b;margin:0">العطاءات المقدمة (12)</h6>
+            <div class="d-flex align-items-center gap-2">
+              <span style="font-size:0.82rem;color:#64748b">متوسط العطاءات: 7.8M ر.س</span>
+              <a href="bid-comparison.html" class="btn btn-sm" style="background:#0369a1;color:#fff;border:none;border-radius:8px;font-weight:700;min-height:36px;display:inline-flex;align-items:center;gap:0.3rem">
+                <i class="fas fa-balance-scale"></i> مقارنة العطاءات
+              </a>
+            </div>
+          </div>
+          <div class="d-flex flex-column gap-3">
+            <div class="bid-card best">
+              <div class="d-flex justify-content-between align-items-start">
+                <div class="d-flex align-items-center gap-2">
+                  <div style="width:40px;height:40px;background:linear-gradient(135deg,#22c55e,#16a34a);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:0.85rem">م</div>
+                  <div>
+                    <div style="font-weight:800;font-size:0.9rem">مجموعة المشاريع الكبرى</div>
+                    <div style="font-size:0.78rem;color:#64748b">تصنيف G9 — 15 سنة خبرة</div>
+                  </div>
+                </div>
+                <div class="text-start">
+                  <div style="font-size:1.1rem;font-weight:900;color:#16a34a">7.2M ر.س</div>
+                  <span style="background:#dcfce7;color:#16a34a;border-radius:6px;padding:0.1rem 0.5rem;font-size:0.75rem;font-weight:700">أفضل عطاء</span>
+                </div>
+              </div>
+              <div class="d-flex gap-3 mt-2" style="font-size:0.82rem;color:#64748b">
+                <span><i class="fas fa-clock ms-1"></i> 16 شهراً</span>
+                <span><i class="fas fa-star ms-1 text-warning"></i> 4.9</span>
+                <span><i class="fas fa-check-circle ms-1" style="color:#16a34a"></i> مؤهل</span>
+              </div>
+            </div>
+
+            <div class="bid-card">
+              <div class="d-flex justify-content-between align-items-start">
+                <div class="d-flex align-items-center gap-2">
+                  <div style="width:40px;height:40px;background:linear-gradient(135deg,#6366f1,#4f46e5);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:0.85rem">ب</div>
+                  <div>
+                    <div style="font-weight:800;font-size:0.9rem">البنية المتكاملة للمقاولات</div>
+                    <div style="font-size:0.78rem;color:#64748b">تصنيف G8 — 11 سنة خبرة</div>
+                  </div>
+                </div>
+                <div class="text-start">
+                  <div style="font-size:1.1rem;font-weight:900;color:#0369a1">7.8M ر.س</div>
+                </div>
+              </div>
+              <div class="d-flex gap-3 mt-2" style="font-size:0.82rem;color:#64748b">
+                <span><i class="fas fa-clock ms-1"></i> 18 شهراً</span>
+                <span><i class="fas fa-star ms-1 text-warning"></i> 4.7</span>
+                <span><i class="fas fa-check-circle ms-1" style="color:#16a34a"></i> مؤهل</span>
+              </div>
+            </div>
+
+            <div class="bid-card">
+              <div class="d-flex justify-content-between align-items-start">
+                <div class="d-flex align-items-center gap-2">
+                  <div style="width:40px;height:40px;background:linear-gradient(135deg,#f59e0b,#d97706);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:0.85rem">ع</div>
+                  <div>
+                    <div style="font-weight:800;font-size:0.9rem">العربية للمشاريع الكبرى</div>
+                    <div style="font-size:0.78rem;color:#64748b">تصنيف G9 — 20 سنة خبرة</div>
+                  </div>
+                </div>
+                <div class="text-start">
+                  <div style="font-size:1.1rem;font-weight:900;color:#0369a1">8.1M ر.س</div>
+                </div>
+              </div>
+              <div class="d-flex gap-3 mt-2" style="font-size:0.82rem;color:#64748b">
+                <span><i class="fas fa-clock ms-1"></i> 17 شهراً</span>
+                <span><i class="fas fa-star ms-1 text-warning"></i> 4.8</span>
+                <span><i class="fas fa-check-circle ms-1" style="color:#16a34a"></i> مؤهل</span>
+              </div>
+            </div>
+          </div>
+          <div style="text-align:center;margin-top:1rem;color:#64748b;font-size:0.85rem">
+            <i class="fas fa-lock ms-1"></i> سجل دخول لعرض جميع العطاءات وتفاصيل المقاولين
+          </div>
+        </div>
+
+        <!-- Milestones Tab -->
+        <div id="tab-milestones" style="display:none">
+          <h6 style="font-weight:800;color:#1e293b;margin-bottom:1rem">مراحل المشروع</h6>
+          <div class="milestone-row">
+            <div class="milestone-num">1</div>
+            <div style="flex:1">
+              <div style="font-weight:700;font-size:0.9rem">التصاميم التفصيلية والتراخيص</div>
+              <div style="font-size:0.8rem;color:#64748b">الأشهر 1-2</div>
+            </div>
+            <div style="font-weight:700;color:#0369a1;font-size:0.9rem">15%</div>
+          </div>
+          <div class="milestone-row">
+            <div class="milestone-num">2</div>
+            <div style="flex:1">
+              <div style="font-weight:700;font-size:0.9rem">أعمال الحفر وتمهيد الأرض</div>
+              <div style="font-size:0.8rem;color:#64748b">الأشهر 2-5</div>
+            </div>
+            <div style="font-weight:700;color:#0369a1;font-size:0.9rem">20%</div>
+          </div>
+          <div class="milestone-row">
+            <div class="milestone-num">3</div>
+            <div style="flex:1">
+              <div style="font-weight:700;font-size:0.9rem">تمديد خطوط المياه الرئيسية</div>
+              <div style="font-size:0.8rem;color:#64748b">الأشهر 4-10</div>
+            </div>
+            <div style="font-weight:700;color:#0369a1;font-size:0.9rem">25%</div>
+          </div>
+          <div class="milestone-row">
+            <div class="milestone-num">4</div>
+            <div style="flex:1">
+              <div style="font-weight:700;font-size:0.9rem">إنشاء محطات الضخ والخزانات</div>
+              <div style="font-size:0.8rem;color:#64748b">الأشهر 8-14</div>
+            </div>
+            <div style="font-weight:700;color:#0369a1;font-size:0.9rem">25%</div>
+          </div>
+          <div class="milestone-row">
+            <div class="milestone-num">5</div>
+            <div style="flex:1">
+              <div style="font-weight:700;font-size:0.9rem">الاختبار والتشغيل التجريبي</div>
+              <div style="font-size:0.8rem;color:#64748b">الأشهر 15-17</div>
+            </div>
+            <div style="font-weight:700;color:#0369a1;font-size:0.9rem">10%</div>
+          </div>
+          <div class="milestone-row">
+            <div class="milestone-num">6</div>
+            <div style="flex:1">
+              <div style="font-weight:700;font-size:0.9rem">التسليم والاستلام النهائي</div>
+              <div style="font-size:0.8rem;color:#64748b">الشهر 18</div>
+            </div>
+            <div style="font-weight:700;color:#0369a1;font-size:0.9rem">5%</div>
+          </div>
+        </div>
+
+      </div><!-- /detail-card -->
+
+      <!-- Submit Bid Section -->
+      <div class="bid-form-section" x-data="bidApp()">
+        <div x-show="!bidSubmitted">
+          <h5 style="font-weight:900;margin-bottom:0.25rem"><i class="fas fa-gavel ms-2"></i> تقديم عطاء</h5>
+          <p style="opacity:0.85;font-size:0.9rem;margin-bottom:1.5rem">أنت تتنافس مع 12 عطاء مقدم. متوسط العطاءات: 7.8M ر.س</p>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label style="font-weight:700;margin-bottom:0.4rem;font-size:0.9rem">قيمة العطاء (ر.س)</label>
+              <input type="number" class="form-control" placeholder="مثال: 7,500,000" x-model="amount" style="border-radius:10px;font-family:'Tajawal',sans-serif">
+            </div>
+            <div class="col-md-6">
+              <label style="font-weight:700;margin-bottom:0.4rem;font-size:0.9rem">مدة التنفيذ (شهور)</label>
+              <input type="number" class="form-control" placeholder="مثال: 18" x-model="duration" style="border-radius:10px;font-family:'Tajawal',sans-serif">
+            </div>
+            <div class="col-12">
+              <label style="font-weight:700;margin-bottom:0.4rem;font-size:0.9rem">نبذة عن كفاءتكم</label>
+              <textarea class="form-control" rows="3" placeholder="اذكر أبرز مشاريعكم المماثلة وسبب تميزكم..." x-model="note" style="border-radius:10px;font-family:'Tajawal',sans-serif"></textarea>
+            </div>
+            <div class="col-12">
+              <label style="font-weight:700;margin-bottom:0.4rem;font-size:0.9rem">ملفات داعمة (اختياري)</label>
+              <div style="border:2px dashed rgba(255,255,255,0.4);border-radius:10px;padding:1.5rem;text-align:center;cursor:pointer;opacity:0.9">
+                <i class="fas fa-cloud-upload-alt fa-2x mb-2"></i>
+                <div style="font-size:0.85rem">اسحب الملفات أو انقر للرفع (PDF, DOCX, XLSX)</div>
+              </div>
+            </div>
+            <div class="col-12">
+              <button class="btn w-100 py-3" style="background:#fff;color:#0369a1;font-weight:800;border-radius:10px;font-size:1rem"
+                      :disabled="!amount||!duration" @click="submitBid()">
+                <span x-show="!loading"><i class="fas fa-paper-plane ms-2"></i> إرسال العطاء</span>
+                <span x-show="loading"><i class="fas fa-spinner fa-spin ms-2"></i> جاري الإرسال...</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div x-show="bidSubmitted" style="text-align:center;padding:2rem">
+          <div style="width:80px;height:80px;background:rgba(255,255,255,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:2rem">
+            <i class="fas fa-check"></i>
+          </div>
+          <h4 style="font-weight:900">تم إرسال عطاؤك بنجاح!</h4>
+          <p style="opacity:0.85">سيتم مراجعة عطاؤك والرد عليك خلال 48 ساعة</p>
+          <a href="index.html" style="color:#fff;text-decoration:underline">استعرض مناقصات أخرى</a>
+        </div>
+      </div>
+
+    </div><!-- /col-lg-8 -->
+
+    <!-- Sidebar -->
+    <div class="col-lg-4">
+
+      <!-- Company Card -->
+      <div class="detail-card">
+        <h6 style="font-weight:800;color:#1e293b;margin-bottom:1rem">جهة الإصدار</h6>
+        <div class="company-mini mb-3">
+          <div style="width:52px;height:52px;background:linear-gradient(135deg,#0369a1,#0284c7);border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:1.1rem;flex-shrink:0">أ</div>
+          <div>
+            <div style="font-weight:800;color:#1e293b">أمانة منطقة الرياض</div>
+            <div style="font-size:0.82rem;color:#64748b">جهة حكومية مُعتمدة</div>
+            <div style="font-size:0.78rem;color:#16a34a"><i class="fas fa-check-circle ms-1"></i> موثقة</div>
+          </div>
+        </div>
+        <div class="d-flex flex-column gap-2" style="font-size:0.85rem">
+          <div class="d-flex justify-content-between">
+            <span style="color:#64748b">مناقصات منشورة</span>
+            <span style="font-weight:700;color:#1e293b">47</span>
+          </div>
+          <div class="d-flex justify-content-between">
+            <span style="color:#64748b">مشاريع مكتملة</span>
+            <span style="font-weight:700;color:#1e293b">38</span>
+          </div>
+          <div class="d-flex justify-content-between">
+            <span style="color:#64748b">متوسط التقييم</span>
+            <span style="font-weight:700;color:#1e293b"><i class="fas fa-star text-warning ms-1"></i> 4.6</span>
+          </div>
+        </div>
+        <a href="company-profile.html" class="btn w-100 mt-3" style="background:#f0f9ff;color:#0369a1;font-weight:700;border-radius:10px;border:1px solid #bae6fd">
+          عرض الملف الكامل
+        </a>
+      </div>
+
+      <!-- Quick Info -->
+      <div class="detail-card">
+        <h6 style="font-weight:800;color:#1e293b;margin-bottom:1rem">معلومات سريعة</h6>
+        <div class="d-flex flex-column gap-3" style="font-size:0.88rem">
+          <div class="d-flex justify-content-between align-items-center">
+            <span style="color:#64748b"><i class="fas fa-tag ms-1 t-accent"></i> الفئة</span>
+            <span class="t-badge" style="font-size:0.75rem">بنية تحتية</span>
+          </div>
+          <div class="d-flex justify-content-between">
+            <span style="color:#64748b"><i class="fas fa-map-marker-alt ms-1 t-accent"></i> المنطقة</span>
+            <span style="font-weight:700">الرياض</span>
+          </div>
+          <div class="d-flex justify-content-between">
+            <span style="color:#64748b"><i class="fas fa-dollar-sign ms-1 t-accent"></i> الميزانية</span>
+            <span style="font-weight:700">8.5M ر.س</span>
+          </div>
+          <div class="d-flex justify-content-between">
+            <span style="color:#64748b"><i class="fas fa-calendar ms-1 t-accent"></i> الإغلاق</span>
+            <span style="font-weight:700;color:#dc2626">20 مارس 2026</span>
+          </div>
+          <div class="d-flex justify-content-between">
+            <span style="color:#64748b"><i class="fas fa-lock ms-1 t-accent"></i> الوصول</span>
+            <span style="font-weight:700">مفتوح</span>
+          </div>
+          <div class="d-flex justify-content-between">
+            <span style="color:#64748b"><i class="fas fa-file-alt ms-1 t-accent"></i> وثائق</span>
+            <span style="font-weight:700">4 ملفات</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Similar Tenders -->
+      <div class="detail-card">
+        <h6 style="font-weight:800;color:#1e293b;margin-bottom:1rem">مناقصات مشابهة</h6>
+        <div class="d-flex flex-column gap-3">
+          <a href="#" style="text-decoration:none">
+            <div style="padding:0.85rem;background:#f8fafc;border-radius:10px;border:1px solid #e2e8f0;transition:all 0.2s" onmouseover="this.style.borderColor='#0369a1'" onmouseout="this.style.borderColor='#e2e8f0'">
+              <div style="font-weight:700;color:#1e293b;font-size:0.88rem;margin-bottom:0.25rem">صيانة شبكة الطرق — جدة</div>
+              <div class="d-flex justify-content-between" style="font-size:0.8rem;color:#64748b">
+                <span>3.2M ر.س</span>
+                <span style="color:#dc2626">8 أيام</span>
+              </div>
+            </div>
+          </a>
+          <a href="#" style="text-decoration:none">
+            <div style="padding:0.85rem;background:#f8fafc;border-radius:10px;border:1px solid #e2e8f0;transition:all 0.2s" onmouseover="this.style.borderColor='#0369a1'" onmouseout="this.style.borderColor='#e2e8f0'">
+              <div style="font-weight:700;color:#1e293b;font-size:0.88rem;margin-bottom:0.25rem">إنشاء خزان مياه — الدمام</div>
+              <div class="d-flex justify-content-between" style="font-size:0.8rem;color:#64748b">
+                <span>5.8M ر.س</span>
+                <span style="color:#d97706">22 يوم</span>
+              </div>
+            </div>
+          </a>
+          <a href="#" style="text-decoration:none">
+            <div style="padding:0.85rem;background:#f8fafc;border-radius:10px;border:1px solid #e2e8f0;transition:all 0.2s" onmouseover="this.style.borderColor='#0369a1'" onmouseout="this.style.borderColor='#e2e8f0'">
+              <div style="font-weight:700;color:#1e293b;font-size:0.88rem;margin-bottom:0.25rem">محطة معالجة مياه — القصيم</div>
+              <div class="d-flex justify-content-between" style="font-size:0.8rem;color:#64748b">
+                <span>12M ر.س</span>
+                <span>31 يوم</span>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <!-- Share -->
+      <div class="detail-card">
+        <h6 style="font-weight:800;color:#1e293b;margin-bottom:1rem">مشاركة المناقصة</h6>
+        <div class="d-flex gap-2">
+          <button class="btn flex-1" style="background:#25d366;color:#fff;border-radius:10px;font-weight:700;font-size:0.85rem;flex:1">
+            <i class="fab fa-whatsapp ms-1"></i> واتساب
+          </button>
+          <button class="btn flex-1" style="background:#1da1f2;color:#fff;border-radius:10px;font-weight:700;font-size:0.85rem;flex:1">
+            <i class="fab fa-twitter ms-1"></i> تويتر
+          </button>
+          <button class="btn" style="background:#f1f5f9;color:#64748b;border-radius:10px;font-weight:700;font-size:0.85rem" onclick="navigator.clipboard.writeText(window.location.href)">
+            <i class="fas fa-link"></i>
+          </button>
+        </div>
+      </div>
+
+    </div><!-- /sidebar -->
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+<script src="../assets/js/khedmah.js"></script>
+<script>
+  function switchTab(id, btn) {
+    document.querySelectorAll('[id^="tab-"]').forEach(el => el.style.display = 'none');
+    document.getElementById('tab-' + id).style.display = 'block';
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+
+  function bidApp() {
+    return {
+      amount: '', duration: '', note: '', loading: false, bidSubmitted: false,
+      submitBid() {
+        this.loading = true;
+        setTimeout(() => { this.loading = false; this.bidSubmitted = true; }, 1500);
+      }
+    };
+  }
+
+  function tenderDetailApp() { return {}; }
+</script>
+</body>
+</html>

@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لوحة تحكم المزود — خدمة</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="../assets/css/khedmah.css">
+  <style>
+    body { background: #f1f5f9; }
+    @media (max-width:991px) { .k-sidebar { display:none; } .k-main-content { margin-right:0; } }
+    .req-card { background:#fff; border-radius:14px; padding:1.25rem; border:1px solid #e2e8f0; margin-bottom:0.75rem; }
+    .req-card:hover { border-color:var(--k-primary); box-shadow:0 4px 16px rgba(2,128,144,0.08); }
+    .earnings-row { display:flex; justify-content:space-between; align-items:center; padding:0.85rem 0; border-bottom:1px solid #f1f5f9; font-size:0.9rem; }
+    .earnings-row:last-child { border-bottom:none; }
+    .badge-new { background:rgba(239,68,68,0.1); color:#dc2626; font-weight:700; font-size:0.72rem; padding:0.25rem 0.6rem; border-radius:50px; }
+    .badge-active { background:rgba(16,185,129,0.1); color:#059669; font-weight:700; font-size:0.72rem; padding:0.25rem 0.6rem; border-radius:50px; }
+    .badge-done { background:rgba(2,128,144,0.1); color:var(--k-primary); font-weight:700; font-size:0.72rem; padding:0.25rem 0.6rem; border-radius:50px; }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../assets/js/supabase-client.js"></script>
+</head>
+<body>
+<script>
+  /* ── Auth guard ── */
+  (function() {
+    if (localStorage.getItem('khedmah_demo')) return;
+    var hasSession = Object.keys(localStorage).some(function(k) {
+      return k.indexOf('auth-token') !== -1 || k.indexOf('supabase') !== -1;
+    });
+    if (!hasSession) { window.location.replace('../auth/login.html'); }
+  })();
+</script>
+
+
+<nav class="k-navbar navbar navbar-expand-lg" style="position:sticky;top:0;z-index:200">
+  <div class="container-fluid px-4">
+    <a class="navbar-brand" href="../index.html">خدم<span style="color:var(--k-accent)">ة</span></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navMain">
+      <ul class="navbar-nav me-auto gap-1">
+        <li class="nav-item"><a class="nav-link active" href="dashboard.html">لوحة المزود</a></li>
+        <li class="nav-item"><a class="nav-link" href="chat-translation.html">المحادثات</a></li>
+      </ul>
+      <div class="d-flex gap-2 align-items-center">
+        <span class="badge" style="background:rgba(16,185,129,0.2);color:#059669;font-size:0.78rem;padding:0.35rem 0.75rem">مزود معتمد</span>
+        <span style="color:rgba(255,255,255,0.75);font-size:0.9rem">محمد الكهربائي</span>
+        <div style="width:36px;height:36px;background:linear-gradient(135deg,#f59e0b,#d97706);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:0.9rem">م</div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="d-flex">
+  <!-- Sidebar -->
+  <div class="k-sidebar">
+    <div class="k-sidebar-brand mb-4">خدم<span>ة</span></div>
+    <div style="font-size:0.72rem;font-weight:700;color:rgba(255,255,255,0.35);letter-spacing:1px;text-transform:uppercase;margin-bottom:0.5rem;padding-right:0.75rem">الرئيسية</div>
+    <nav class="nav flex-column gap-1 mb-3">
+      <a href="dashboard.html" class="nav-link active"><i class="fas fa-th-large"></i> لوحة التحكم</a>
+      <a href="profile.html" class="nav-link"><i class="fas fa-user-circle"></i> ملفي الشخصي</a>
+      <a href="chat-translation.html" class="nav-link"><i class="fas fa-comments"></i> المحادثات <span style="background:#ef4444;color:#fff;font-size:0.65rem;padding:0.15rem 0.45rem;border-radius:50px;margin-right:0.3rem">3</span></a>
+    </nav>
+    <div style="font-size:0.72rem;font-weight:700;color:rgba(255,255,255,0.35);letter-spacing:1px;text-transform:uppercase;margin-bottom:0.5rem;padding-right:0.75rem">الإدارة</div>
+    <nav class="nav flex-column gap-1 mb-3">
+      <a href="manage-services.html" class="nav-link"><i class="fas fa-tools"></i> خدماتي</a>
+      <a href="availability.html" class="nav-link"><i class="fas fa-calendar-check"></i> التوفر</a>
+      <a href="bank-settings.html" class="nav-link"><i class="fas fa-university"></i> إعدادات البنك</a>
+      <a href="rate-customer.html" class="nav-link"><i class="fas fa-star"></i> تقييم العملاء</a>
+      <a href="../customer/settings.html" class="nav-link"><i class="fas fa-cog"></i> الإعدادات</a>
+    </nav>
+    <a href="#" onclick="localStorage.removeItem('khedmah_demo');sessionStorage.clear();window.location.href='../auth/login.html'" class="nav-link" style="color:rgba(239,68,68,0.8)!important;margin-top:2rem"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</a>
+  </div>
+
+  <!-- Main -->
+  <div class="k-main-content flex-grow-1">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+      <div>
+        <h4 style="font-weight:900;color:var(--k-dark-2);margin-bottom:0.25rem">مرحباً، محمد</h4>
+        <p style="color:var(--k-gray);font-size:0.9rem;margin:0">الخميس، 5 مارس 2026 — حالتك: <span style="color:#059669;font-weight:700">متاح</span></p>
+      </div>
+      <div class="d-flex gap-2">
+        <button class="btn btn-outline-success btn-sm px-3" onclick="toggleStatus(this)">
+          <i class="fas fa-circle me-1" style="font-size:0.6rem;color:#059669"></i> متاح
+        </button>
+        <a href="profile.html" class="btn btn-primary btn-sm px-3">
+          <i class="fas fa-eye ms-1"></i> عرض ملفي
+        </a>
+      </div>
+    </div>
+
+    <!-- KPIs -->
+    <div class="row g-3 mb-4">
+      <div class="col-6 col-lg-3">
+        <div class="k-kpi k-kpi-danger">
+          <div class="d-flex align-items-center gap-3">
+            <div class="k-kpi-icon" style="background:rgba(239,68,68,0.1)"><i class="fas fa-inbox" style="color:var(--k-danger)"></i></div>
+            <div><h3>4</h3><p>طلبات جديدة</p></div>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="k-kpi k-kpi-success">
+          <div class="d-flex align-items-center gap-3">
+            <div class="k-kpi-icon" style="background:rgba(16,185,129,0.1)"><i class="fas fa-tools" style="color:var(--k-success)"></i></div>
+            <div><h3>2</h3><p>مهام نشطة</p></div>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="k-kpi k-kpi-warning">
+          <div class="d-flex align-items-center gap-3">
+            <div class="k-kpi-icon" style="background:rgba(245,158,11,0.1)"><i class="fas fa-wallet" style="color:var(--k-warning)"></i></div>
+            <div><h3 style="font-size:1.3rem">3,750</h3><p>أرباح الشهر (ر.س)</p></div>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="k-kpi">
+          <div class="d-flex align-items-center gap-3">
+            <div class="k-kpi-icon" style="background:rgba(2,128,144,0.1)"><i class="fas fa-star" style="color:var(--k-primary)"></i></div>
+            <div><h3>4.9</h3><p>تقييمك العام</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="row g-4">
+
+      <!-- Tabs -->
+      <div class="col-lg-8">
+        <div class="card border-0 shadow-sm" style="border-radius:16px">
+          <div class="card-body p-0">
+            <div class="k-tabs">
+              <ul class="nav nav-tabs px-3 pt-3" id="provTabs">
+                <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#tabNew">الجديدة <span class="badge bg-danger ms-1">4</span></a></li>
+                <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tabActive">النشطة <span class="badge bg-success ms-1">2</span></a></li>
+                <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tabDone">المكتملة</a></li>
+                <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tabEarnings">الأرباح</a></li>
+              </ul>
+              <div class="tab-content p-3">
+
+                <!-- New Requests -->
+                <div class="tab-pane fade show active" id="tabNew">
+                  <div class="req-card">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                      <div class="d-flex gap-3">
+                        <div style="width:44px;height:44px;background:linear-gradient(135deg,#f59e0b,#d97706);border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff"><i class="fas fa-bolt"></i></div>
+                        <div>
+                          <div style="font-weight:700;color:var(--k-dark-2)">إصلاح لوحة كهربائية</div>
+                          <div style="font-size:0.82rem;color:var(--k-gray)">عبدالله الزهراني · الرياض — حي النزهة</div>
+                          <div style="font-size:0.78rem;color:var(--k-gray);margin-top:0.2rem"><i class="fas fa-calendar me-1"></i> الأحد 8 مارس · 10 صباحاً</div>
+                        </div>
+                      </div>
+                      <span class="badge-new">جديد</span>
+                    </div>
+                    <div style="font-size:0.85rem;color:var(--k-gray);margin-bottom:1rem;background:#f8fafc;padding:0.6rem 0.75rem;border-radius:8px">
+                      "انقطع التيار في غرفتين والمفاتيح لا تستجيب منذ أمس"
+                    </div>
+                    <div class="d-flex gap-2">
+                      <button class="btn btn-success btn-sm flex-fill" onclick="acceptReq(this)"><i class="fas fa-check ms-1"></i> قبول</button>
+                      <a href="chat-translation.html" class="btn btn-outline-primary btn-sm flex-fill"><i class="fas fa-comments ms-1"></i> تواصل</a>
+                      <button class="btn btn-outline-danger btn-sm flex-fill" onclick="rejectReq(this)"><i class="fas fa-times ms-1"></i> رفض</button>
+                    </div>
+                  </div>
+                  <div class="req-card">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                      <div class="d-flex gap-3">
+                        <div style="width:44px;height:44px;background:linear-gradient(135deg,var(--k-primary),var(--k-accent));border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff"><i class="fas fa-lightbulb"></i></div>
+                        <div>
+                          <div style="font-weight:700;color:var(--k-dark-2)">تركيب إضاءة LED</div>
+                          <div style="font-size:0.82rem;color:var(--k-gray)">سارة العمري · جدة — حي الروضة</div>
+                          <div style="font-size:0.78rem;color:var(--k-gray);margin-top:0.2rem"><i class="fas fa-calendar me-1"></i> الاثنين 9 مارس · 2 عصراً</div>
+                        </div>
+                      </div>
+                      <span class="badge-new">جديد</span>
+                    </div>
+                    <div class="d-flex gap-2">
+                      <button class="btn btn-success btn-sm flex-fill" onclick="acceptReq(this)"><i class="fas fa-check ms-1"></i> قبول</button>
+                      <a href="chat-translation.html" class="btn btn-outline-primary btn-sm flex-fill"><i class="fas fa-comments ms-1"></i> تواصل</a>
+                      <button class="btn btn-outline-danger btn-sm flex-fill" onclick="rejectReq(this)"><i class="fas fa-times ms-1"></i> رفض</button>
+                    </div>
+                  </div>
+                  <div class="req-card">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                      <div class="d-flex gap-3">
+                        <div style="width:44px;height:44px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff"><i class="fas fa-plug"></i></div>
+                        <div>
+                          <div style="font-weight:700;color:var(--k-dark-2)">تركيب كاميرات مراقبة</div>
+                          <div style="font-size:0.82rem;color:var(--k-gray)">خالد المطيري · الدمام</div>
+                          <div style="font-size:0.78rem;color:var(--k-gray);margin-top:0.2rem"><i class="fas fa-calendar me-1"></i> الثلاثاء 10 مارس · 9 صباحاً</div>
+                        </div>
+                      </div>
+                      <span class="badge-new">جديد</span>
+                    </div>
+                    <div class="d-flex gap-2">
+                      <button class="btn btn-success btn-sm flex-fill" onclick="acceptReq(this)"><i class="fas fa-check ms-1"></i> قبول</button>
+                      <a href="chat-translation.html" class="btn btn-outline-primary btn-sm flex-fill"><i class="fas fa-comments ms-1"></i> تواصل</a>
+                      <button class="btn btn-outline-danger btn-sm flex-fill" onclick="rejectReq(this)"><i class="fas fa-times ms-1"></i> رفض</button>
+                    </div>
+                  </div>
+                  <div class="req-card">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                      <div class="d-flex gap-3">
+                        <div style="width:44px;height:44px;background:linear-gradient(135deg,#10b981,#059669);border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff"><i class="fas fa-video"></i></div>
+                        <div>
+                          <div style="font-weight:700;color:var(--k-dark-2)">صيانة نظام إنذار</div>
+                          <div style="font-size:0.82rem;color:var(--k-gray)">نورة القحطاني · مكة المكرمة</div>
+                          <div style="font-size:0.78rem;color:var(--k-gray);margin-top:0.2rem"><i class="fas fa-calendar me-1"></i> الأربعاء 11 مارس · 11 صباحاً</div>
+                        </div>
+                      </div>
+                      <span class="badge-new">جديد</span>
+                    </div>
+                    <div class="d-flex gap-2">
+                      <button class="btn btn-success btn-sm flex-fill" onclick="acceptReq(this)"><i class="fas fa-check ms-1"></i> قبول</button>
+                      <a href="chat-translation.html" class="btn btn-outline-primary btn-sm flex-fill"><i class="fas fa-comments ms-1"></i> تواصل</a>
+                      <button class="btn btn-outline-danger btn-sm flex-fill" onclick="rejectReq(this)"><i class="fas fa-times ms-1"></i> رفض</button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Active Jobs -->
+                <div class="tab-pane fade" id="tabActive">
+                  <div class="req-card">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                      <div class="d-flex gap-3 align-items-center">
+                        <div style="width:44px;height:44px;background:linear-gradient(135deg,var(--k-primary),var(--k-accent));border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff"><i class="fas fa-bolt"></i></div>
+                        <div>
+                          <div style="font-weight:700;color:var(--k-dark-2)">تركيب إضاءة خارجية</div>
+                          <div style="font-size:0.82rem;color:var(--k-gray)">أحمد الغامدي · الرياض</div>
+                        </div>
+                      </div>
+                      <span class="badge-active">قيد التنفيذ</span>
+                    </div>
+                    <div style="margin-bottom:0.75rem">
+                      <div class="d-flex justify-content-between mb-1" style="font-size:0.8rem;color:var(--k-gray)">
+                        <span>التقدم</span><span>75%</span>
+                      </div>
+                      <div style="height:6px;background:#e2e8f0;border-radius:3px">
+                        <div style="width:75%;height:100%;background:linear-gradient(90deg,var(--k-primary),var(--k-accent));border-radius:3px"></div>
+                      </div>
+                    </div>
+                    <div class="d-flex gap-2">
+                      <a href="chat-translation.html" class="btn btn-outline-primary btn-sm flex-fill"><i class="fas fa-comments ms-1"></i> محادثة</a>
+                      <button class="btn btn-success btn-sm flex-fill" onclick="completeJob(this)"><i class="fas fa-check-double ms-1"></i> إنهاء المهمة</button>
+                    </div>
+                  </div>
+                  <div class="req-card">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                      <div class="d-flex gap-3 align-items-center">
+                        <div style="width:44px;height:44px;background:linear-gradient(135deg,#f59e0b,#d97706);border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff"><i class="fas fa-tools"></i></div>
+                        <div>
+                          <div style="font-weight:700;color:var(--k-dark-2)">إصلاح مفاتيح كهربائية</div>
+                          <div style="font-size:0.82rem;color:var(--k-gray)">فاطمة العتيبي · جدة</div>
+                        </div>
+                      </div>
+                      <span class="badge-active">قيد التنفيذ</span>
+                    </div>
+                    <div class="d-flex gap-2">
+                      <a href="chat-translation.html" class="btn btn-outline-primary btn-sm flex-fill"><i class="fas fa-comments ms-1"></i> محادثة</a>
+                      <button class="btn btn-success btn-sm flex-fill" onclick="completeJob(this)"><i class="fas fa-check-double ms-1"></i> إنهاء المهمة</button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Completed -->
+                <div class="tab-pane fade" id="tabDone">
+                  <div class="d-flex flex-column gap-2">
+                    <div class="req-card d-flex justify-content-between align-items-center">
+                      <div class="d-flex gap-3 align-items-center">
+                        <div style="width:40px;height:40px;background:rgba(16,185,129,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center"><i class="fas fa-bolt" style="color:var(--k-success)"></i></div>
+                        <div>
+                          <div style="font-weight:700;color:var(--k-dark-2);font-size:0.92rem">لوحة تحكم رئيسية</div>
+                          <div style="font-size:0.78rem;color:var(--k-gray)">20 يناير 2026 · 650 ر.س</div>
+                          <div class="k-rating-stars" style="font-size:0.75rem"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                        </div>
+                      </div>
+                      <span class="badge-done">مكتمل ✓</span>
+                    </div>
+                    <div class="req-card d-flex justify-content-between align-items-center">
+                      <div class="d-flex gap-3 align-items-center">
+                        <div style="width:40px;height:40px;background:rgba(16,185,129,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center"><i class="fas fa-lightbulb" style="color:var(--k-success)"></i></div>
+                        <div>
+                          <div style="font-weight:700;color:var(--k-dark-2);font-size:0.92rem">إضاءة فيلا كاملة</div>
+                          <div style="font-size:0.78rem;color:var(--k-gray)">10 يناير 2026 · 1,200 ر.س</div>
+                          <div class="k-rating-stars" style="font-size:0.75rem"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                        </div>
+                      </div>
+                      <span class="badge-done">مكتمل ✓</span>
+                    </div>
+                    <div class="req-card d-flex justify-content-between align-items-center">
+                      <div class="d-flex gap-3 align-items-center">
+                        <div style="width:40px;height:40px;background:rgba(16,185,129,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center"><i class="fas fa-plug" style="color:var(--k-success)"></i></div>
+                        <div>
+                          <div style="font-weight:700;color:var(--k-dark-2);font-size:0.92rem">تركيب مخارج كهرباء</div>
+                          <div style="font-size:0.78rem;color:var(--k-gray)">2 يناير 2026 · 320 ر.س</div>
+                          <div class="k-rating-stars" style="font-size:0.75rem"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i></div>
+                        </div>
+                      </div>
+                      <a href="rate-customer.html" class="btn btn-outline-primary btn-sm">قيّم العميل</a>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Earnings -->
+                <div class="tab-pane fade" id="tabEarnings">
+                  <div class="row g-3 mb-3">
+                    <div class="col-4 text-center">
+                      <div style="background:#f8fafc;border-radius:12px;padding:1rem;border:1px solid #e2e8f0">
+                        <div style="font-size:1.4rem;font-weight:900;color:var(--k-primary)">3,750</div>
+                        <div style="font-size:0.8rem;color:var(--k-gray)">هذا الشهر (ر.س)</div>
+                      </div>
+                    </div>
+                    <div class="col-4 text-center">
+                      <div style="background:#f8fafc;border-radius:12px;padding:1rem;border:1px solid #e2e8f0">
+                        <div style="font-size:1.4rem;font-weight:900;color:#059669">2,900</div>
+                        <div style="font-size:0.8rem;color:var(--k-gray)">متاح للسحب (ر.س)</div>
+                      </div>
+                    </div>
+                    <div class="col-4 text-center">
+                      <div style="background:#f8fafc;border-radius:12px;padding:1rem;border:1px solid #e2e8f0">
+                        <div style="font-size:1.4rem;font-weight:900;color:var(--k-dark-2)">850</div>
+                        <div style="font-size:0.8rem;color:var(--k-gray)">قيد الانتظار (ر.س)</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="earnings-row"><span style="color:var(--k-dark-2);font-weight:600">إضاءة فيلا كاملة</span><span style="color:#059669;font-weight:700">+1,200 ر.س</span></div>
+                  <div class="earnings-row"><span style="color:var(--k-dark-2);font-weight:600">لوحة تحكم رئيسية</span><span style="color:#059669;font-weight:700">+650 ر.س</span></div>
+                  <div class="earnings-row"><span style="color:var(--k-dark-2);font-weight:600">تركيب مخارج كهرباء</span><span style="color:#059669;font-weight:700">+320 ر.س</span></div>
+                  <div class="earnings-row"><span style="color:var(--k-dark-2);font-weight:600">إصلاح لوحة منزل</span><span style="color:#059669;font-weight:700">+480 ر.س</span></div>
+                  <div class="earnings-row"><span style="color:var(--k-dark-2);font-weight:600">كاميرات مراقبة</span><span style="color:#059669;font-weight:700">+1,100 ر.س</span></div>
+                  <div class="mt-3 d-flex gap-2">
+                    <a href="bank-settings.html" class="btn btn-primary btn-sm flex-fill"><i class="fas fa-university ms-1"></i> سحب الأرباح</a>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chart + Quick Stats -->
+      <div class="col-lg-4 d-flex flex-column gap-3">
+        <div class="card border-0 shadow-sm" style="border-radius:16px">
+          <div class="card-body">
+            <h6 style="font-weight:800;color:var(--k-dark-2);margin-bottom:1.25rem">أرباح آخر 6 أشهر</h6>
+            <canvas id="earningsChart" height="200"></canvas>
+          </div>
+        </div>
+        <div class="card border-0 shadow-sm" style="border-radius:16px">
+          <div class="card-body">
+            <h6 style="font-weight:800;color:var(--k-dark-2);margin-bottom:1rem">الخدمات المقدمة</h6>
+            <canvas id="servicesPie" height="160"></canvas>
+          </div>
+        </div>
+        <div style="background:linear-gradient(135deg,var(--k-primary),var(--k-accent));border-radius:16px;padding:1.25rem;color:#fff;text-align:center">
+          <div style="font-size:2rem;margin-bottom:0.5rem"><i class="fas fa-star"></i></div>
+          <div style="font-size:2rem;font-weight:900">4.9 / 5</div>
+          <div style="font-size:0.85rem;color:rgba(255,255,255,0.8);margin-bottom:1rem">تقييمك من 89 عميل</div>
+          <a href="profile.html" class="btn btn-light btn-sm px-4" style="border-radius:50px;font-weight:700;color:var(--k-primary)">عرض التقييمات</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="../assets/js/khedmah.js"></script>
+<script>
+  new Chart(document.getElementById('earningsChart'), {
+    type: 'bar',
+    data: {
+      labels: ['أكتوبر','نوفمبر','ديسمبر','يناير','فبراير','مارس'],
+      datasets: [{
+        label: 'الأرباح (ر.س)',
+        data: [2100, 2800, 3200, 2600, 3100, 3750],
+        backgroundColor: 'rgba(2,128,144,0.15)',
+        borderColor: 'var(--k-primary)',
+        borderWidth: 2,
+        borderRadius: 6,
+        borderSkipped: false
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: { family: 'Tajawal' } } },
+        x: { grid: { display: false }, ticks: { font: { family: 'Tajawal', size: 11 } } }
+      }
+    }
+  });
+  new Chart(document.getElementById('servicesPie'), {
+    type: 'doughnut',
+    data: {
+      labels: ['كهرباء عامة','إضاءة','كاميرات','لوحات','أخرى'],
+      datasets: [{ data: [35, 25, 20, 12, 8], backgroundColor: ['#028090','#00A896','#02C39A','#f59e0b','#6366f1'], borderWidth: 0 }]
+    },
+    options: { responsive: true, cutout: '62%', plugins: { legend: { position: 'bottom', labels: { font: { family: 'Tajawal', size: 11 }, padding: 10 } } } }
+  });
+
+  function acceptReq(btn) {
+    const card = btn.closest('.req-card');
+    card.style.background = 'rgba(16,185,129,0.05)';
+    card.style.borderColor = '#10b981';
+    card.querySelector('.badge-new').textContent = 'تم القبول ✓';
+    card.querySelector('.badge-new').style.cssText = 'background:rgba(16,185,129,0.1);color:#059669;font-weight:700;font-size:0.72rem;padding:0.25rem 0.6rem;border-radius:50px';
+    btn.closest('.d-flex').innerHTML = '<span style="color:#059669;font-size:0.85rem;font-weight:600"><i class="fas fa-check-circle me-1"></i>تم قبول الطلب</span>';
+  }
+  function rejectReq(btn) {
+    const card = btn.closest('.req-card');
+    card.style.opacity = '0.5';
+    setTimeout(() => card.remove(), 400);
+  }
+  function completeJob(btn) {
+    const card = btn.closest('.req-card');
+    card.querySelector('.badge-active').textContent = 'مكتمل ✓';
+    card.querySelector('.badge-active').className = 'badge-done';
+    btn.closest('.d-flex').innerHTML = '<span style="color:var(--k-primary);font-size:0.85rem;font-weight:600"><i class="fas fa-check-double me-1"></i>تم إنهاء المهمة</span>';
+  }
+  function toggleStatus(btn) {
+    const isAvailable = btn.textContent.trim().startsWith('متاح');
+    if (isAvailable) {
+      btn.innerHTML = '<i class="fas fa-circle me-1" style="font-size:0.6rem;color:#ef4444"></i> مشغول';
+      btn.className = 'btn btn-outline-danger btn-sm px-3';
+    } else {
+      btn.innerHTML = '<i class="fas fa-circle me-1" style="font-size:0.6rem;color:#059669"></i> متاح';
+      btn.className = 'btn btn-outline-success btn-sm px-3';
+    }
+  }
+</script>
+</body>
+</html>

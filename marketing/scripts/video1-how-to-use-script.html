@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>سكريبت — فيديو 1: كيف تستخدم خدمة</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Tajawal', sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+    .page-header {
+      max-width: 960px; margin: 0 auto 3rem;
+      text-align: center;
+    }
+    .page-header .brand { font-size: 2.5rem; font-weight: 900; color: #fff; }
+    .page-header .brand span { color: #02C39A; }
+    .page-header h1 { font-size: 1.4rem; color: rgba(255,255,255,0.6); margin-top: 0.5rem; font-weight: 500; }
+    .meta-row {
+      display: flex; gap: 1rem; justify-content: center; margin-top: 1.25rem; flex-wrap: wrap;
+    }
+    .meta-badge {
+      background: rgba(2,195,154,0.1); border: 1px solid rgba(2,195,154,0.25);
+      color: #02C39A; border-radius: 50px; padding: 0.35rem 1rem;
+      font-size: 0.82rem; font-weight: 700;
+      display: flex; align-items: center; gap: 0.4rem;
+    }
+
+    .container { max-width: 960px; margin: 0 auto; }
+
+    .scene-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px;
+      margin-bottom: 2rem;
+      overflow: hidden;
+    }
+    .scene-header {
+      padding: 1rem 1.5rem;
+      display: flex; align-items: center; gap: 1rem;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .scene-num {
+      width: 44px; height: 44px; border-radius: 12px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; font-weight: 900; color: #fff;
+    }
+    .scene-title { font-size: 1rem; font-weight: 800; color: #fff; }
+    .scene-duration {
+      margin-right: auto;
+      background: rgba(255,255,255,0.08); border-radius: 50px;
+      padding: 0.2rem 0.75rem; font-size: 0.75rem; font-weight: 700;
+      color: rgba(255,255,255,0.5);
+    }
+
+    .scene-body { padding: 1.5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    @media (max-width: 700px) { .scene-body { grid-template-columns: 1fr; } }
+
+    .section-label {
+      font-size: 0.65rem; font-weight: 900; letter-spacing: 1.5px;
+      text-transform: uppercase; margin-bottom: 0.6rem; padding-bottom: 0.4rem;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .visual-block { }
+    .visual-block .section-label { color: #818cf8; }
+    .visual-item {
+      display: flex; gap: 0.6rem; align-items: flex-start;
+      padding: 0.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.04);
+      font-size: 0.88rem; color: rgba(255,255,255,0.75); line-height: 1.6;
+    }
+    .visual-item:last-child { border-bottom: none; }
+    .visual-item i { color: #818cf8; margin-top: 3px; flex-shrink: 0; font-size: 0.8rem; }
+
+    .voice-block { }
+    .voice-block .section-label { color: #02C39A; }
+    .voice-ar {
+      background: rgba(2,195,154,0.07); border: 1px solid rgba(2,195,154,0.15);
+      border-radius: 12px; padding: 1rem;
+      font-size: 0.95rem; font-weight: 600; color: #fff; line-height: 1.9;
+      margin-bottom: 0.75rem;
+    }
+    .voice-en {
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px; padding: 1rem;
+      font-size: 0.88rem; color: rgba(255,255,255,0.55); line-height: 1.8;
+      font-style: italic; direction: ltr; text-align: left;
+    }
+
+    .ai-prompt-block {
+      grid-column: 1 / -1;
+      background: rgba(245,158,11,0.06); border: 1px solid rgba(245,158,11,0.15);
+      border-radius: 14px; padding: 1.25rem;
+    }
+    .ai-prompt-block .section-label { color: #fbbf24; }
+    .prompt-text {
+      font-size: 0.85rem; color: rgba(255,255,255,0.7); line-height: 1.8;
+      direction: ltr; text-align: left;
+      background: rgba(0,0,0,0.2); border-radius: 8px; padding: 0.75rem 1rem;
+      font-family: monospace;
+    }
+    .copy-btn {
+      background: rgba(245,158,11,0.15); border: 1px solid rgba(245,158,11,0.25);
+      color: #fbbf24; border-radius: 8px; padding: 0.3rem 0.85rem;
+      font-size: 0.78rem; font-weight: 700; cursor: pointer;
+      font-family: 'Tajawal', sans-serif;
+      float: left; margin-top: 0.6rem;
+      transition: all 0.2s;
+    }
+    .copy-btn:hover { background: rgba(245,158,11,0.25); }
+
+    .music-box {
+      background: rgba(99,102,241,0.08); border: 1px solid rgba(99,102,241,0.15);
+      border-radius: 14px; padding: 1.25rem; margin-top: 2rem;
+    }
+    .music-box .section-label { color: #818cf8; font-size: 0.7rem; margin-bottom: 0.75rem; }
+    .music-item {
+      display: flex; align-items: center; gap: 0.75rem;
+      padding: 0.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.04);
+      font-size: 0.88rem;
+    }
+    .music-item:last-child { border-bottom: none; }
+    .music-item i { color: #818cf8; }
+    .music-item strong { color: #fff; }
+    .music-item span { color: rgba(255,255,255,0.5); }
+
+    .print-btn {
+      position: fixed; bottom: 1.5rem; left: 1.5rem;
+      background: linear-gradient(135deg, #028090, #02C39A);
+      color: #fff; border: none; border-radius: 12px;
+      padding: 0.75rem 1.5rem; font-family: 'Tajawal', sans-serif;
+      font-size: 0.9rem; font-weight: 800; cursor: pointer;
+      box-shadow: 0 8px 24px rgba(2,128,144,0.35);
+      z-index: 999;
+    }
+    @media print {
+      body { background: #fff; color: #000; }
+      .print-btn { display: none; }
+      .scene-card { border: 1px solid #ccc; page-break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+
+<button class="print-btn" onclick="window.print()"><i class="fas fa-print ms-1"></i> طباعة / PDF</button>
+
+<div class="page-header">
+  <div class="brand">خدم<span>ة</span></div>
+  <h1>سكريبت الفيديو الأول — كيف تستخدم التطبيق</h1>
+  <div class="meta-row">
+    <div class="meta-badge"><i class="fas fa-clock"></i> المدة الكلية: 90 ثانية</div>
+    <div class="meta-badge"><i class="fas fa-film"></i> عدد المشاهد: 8</div>
+    <div class="meta-badge"><i class="fas fa-expand"></i> الجودة: 4K / 16:9</div>
+    <div class="meta-badge"><i class="fas fa-palette"></i> الأسلوب: واقعي — حياة يومية سعودية</div>
+    <div class="meta-badge"><i class="fas fa-user"></i> الشخصية: رجل سعودي 28–35 سنة</div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- ══ SCENE 1 ══ -->
+  <div class="scene-card">
+    <div class="scene-header">
+      <div class="scene-num" style="background:linear-gradient(135deg,#028090,#02C39A)">1</div>
+      <div>
+        <div class="scene-title">المشهد الأول — المشكلة</div>
+      </div>
+      <div class="scene-duration"><i class="fas fa-clock ms-1"></i> 8 ثوانٍ</div>
+    </div>
+    <div class="scene-body">
+      <div class="visual-block">
+        <div class="section-label"><i class="fas fa-video ms-1"></i> الصورة والحركة</div>
+        <div class="visual-item"><i class="fas fa-circle-dot"></i> رجل سعودي بثوب أبيض في مطبخ حديث — وجهه متجهم — ينظر إلى تسريب ماء من تحت الحوض</div>
+        <div class="visual-item"><i class="fas fa-circle-dot"></i> كاميرا close-up على الماء يقطر على الأرض</div>
+        <div class="visual-item"><i class="fas fa-circle-dot"></i> الرجل يفتح هاتفه ويبدأ بالبحث — تعبير القلق على وجهه</div>
+        <div class="visual-item"><i class="fas fa-circle-dot"></i> إضاءة دافئة — صباح باكر</div>
+      </div>
+      <div class="voice-block">
+        <div class="section-label"><i class="fas fa-microphone ms-1"></i> الصوت / التعليق</div>
+        <div class="voice-ar">كلنا مررنا بهذا... مشكلة في المنزل، ولا تعرف من تتصل به.</div>
+        <div class="voice-en">We've all been there... a problem at home and you don't know who to call.</div>
+      </div>
+      <div class="ai-prompt-block">
+        <div class="section-label"><i class="fas fa-robot ms-1"></i> AI Video Prompt (Runway / Kling / Sora)</div>
+        <div class="prompt-text">A worried Saudi man in a white thobe standing in a modern kitchen, looking down at water leaking from under the sink onto the marble floor. Morning light through the window. Close-up shot on the water dripping. The man pulls out his smartphone with a frustrated expression. 4K, photorealistic, cinematic lighting, shallow depth of field.</div>
+        <button class="copy-btn" onclick="copyPrompt(this)"><i class="fas fa-copy ms-1"></i> نسخ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SCENE 2 ══ -->
+  <div class="scene-card">
+    <div class="scene-header">
+      <div class="scene-num" style="background:linear-gradient(135deg,#6366f1,#4f46e5)">2</div>
+      <div>
+        <div class="scene-title">المشهد الثاني — اكتشاف خدمة</div>
+      </div>
+      <div class="scene-duration"><i class="fas fa-clock ms-1"></i> 10 ثوانٍ</div>
+    </div>
+    <div class="scene-body">
+      <div class="visual-block">
+        <div class="section-label"><i class="fas fa-video ms-1"></i> الصورة والحركة</div>
+        <div class="visual-item"><i class="fas fa-circle-dot"></i> يد الرجل تمسك الهاتف — شاشة التطبيق تظهر بوضوح</div>
+        <div class="visual-item"><i class="fas fa-circle-dot"></i> Over-the-shoulder shot — يضغط على أيقونة "سباكة"</div>
+        <div class="visual-item"><i class="fas fa-circle-dot"></i> الشاشة تضيء بألوان تيل — اللوجو "خدمة" يظهر</div>
+        <div class="visual-item"><i class="fas fa-circle-dot"></i> تعبير الارتياح يبدأ يظهر على وجهه</div>
+      </div>
+      <div class="voice-block">
+        <div class="section-label"><i class="fas fa-microphone ms-1"></i> الصوت / التعليق</div>
+        <div class="voice-ar">خدمة — ابحث عن أي خدمة منزلية وأنت في مكانك.</div>
+        <div class="voice-en">Khedmah — find any home service right where you are.</div>
+      </div>
+      <div class="ai-prompt-block">
+        <div class="section-label"><i class="fas fa-robot ms-1"></i> AI Video Prompt</div>
+        <div class="prompt-text">Over-the-shoulder shot of a Saudi man holding a smartphone showing a modern Arabic app interface with teal colors. His finger taps on a plumbing service icon. The screen glows with a clean UI. His expression shifts from worried to relieved. Soft bokeh background of a kitchen. 4K cinematic, warm lighting.</div>
+        <button class="copy-btn" onclick="copyPrompt(this)"><i class="fas fa-copy ms-1"></i> نسخ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SCENE 3 ══ -->
+  <div class="scene-card">
+    <div class="scene-header">
+      <div class="scene-num" style="background:linear-gradient(135deg,#f59e0b,#d97706)">3</div>
+      <div>
+        <div class="scene-title">المشهد الثالث — اختيار المزود</div>
+      </div>
+      <div class="scene-duration"><i class="fas fa-clock ms-1"></i> 10 ثوانٍ</div>
+    </div>
+    <div class="scene-body">
+      <div class="visual-block">
+        <div class="section-label"><i class="fas fa-video ms-1"></i> الصورة والحركة</div>
+        <div class="visual-item"><i class="fas fa-circle-dot"></i> close-up على الهاتف — يتصفح بطاقات المزودين (صور، نجوم، أسعار)</div>
+        <div class="visual-item"><i class="fas fa-circle-dot"></i> يضغط على بطاقة بتقييم 5 نجوم — ابتسامة طفيفة</div>
+        <div class="visual-item"><i class="fas fa-circle-dot"></i> يجلس على كنبة في الصالة — راحة واسترخاء</div>
+        <div class="visual-item"><i class="fas fa-circle-dot"></i> زوجته تمر في الخلفية — بيئة عائلية</div>
+      </div>
+      <div class="voice-block">
+        <div class="section-label"><i class="fas fa-microphone ms-1"></i> الصوت / التعليق</div>
+        <div class="voice-ar">قارن التقييمات، شوف الأسعار، واختر الأنسب لك — كل هذا في ثوانٍ.</div>
+        <div class="voice-en">Compare ratings, view prices, and choose what suits you — all in seconds.</div>
+      </div>
+      <div class="ai-prompt-block">
+        <div class="section-label"><i class="fas fa-robot ms-1"></i> AI Video Prompt</div>
+        <div class="prompt-text">A Saudi man in casual white thobe sitting comfortably on a modern beige sofa in a well-decorated living room. He is scrolling through a service provider app on his smartphone, smiling as he selects a 5-star rated provider. His wife walks in the background. Warm golden hour lighting. 4K, realistic, family home setting in Saudi Arabia.</div>
+        <button class="copy-btn" onclick="copyPrompt(this)"><i class="fas fa-copy ms-1"></i> نسخ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SCENE 4 ══ -->
+  <div class="scene-card">
+    <div class="scene-header">
+      <div class="scene-num" style="background:linear-gradient(135deg,#10b981,#059669)">4</div>
+      <div>
+        <div class="scene-title">المشهد الرابع — طلب عرض السعر</div>
+      </div>
+      <div class="scene-duration"><i class="fas fa-clock ms-1"></i> 10 ثوانٍ</div>
+    </div>
+    <div class="scene-body">
+      <div class="visual-block">
+        <div class="section-label"><i class="fas fa-video ms-1"></i> الصورة والحركة</div>
+        <div class="visual-item"><i class="fas fa-circle-dot"></i> يد تكتب وصف المشكلة في التطبيق</div>
+        <div class="visual-item"><i class="fas fa-circle-dot"></i> يختار تاريخ ووقت الموعد — close-up على التقويم</div>
+        <div class="visual-item"><i class="fas fa-circle-dot"></i> يضغط "إرسال الطلب" — إصبعه يلمس الشاشة</div>
+        <div class="visual-item"><i class="fas fa-circle-dot"></i> رسالة تأكيد خضراء تظهر على الشاشة</div>
+      </div>
+      <div class="voice-block">
+        <div class="section-label"><i class="fas fa-microphone ms-1"></i> الصوت / التعليق</div>
+        <div class="voice-ar">اصف المشكلة، حدد وقتك، وأرسل الطلب — في أقل من دقيقة.</div>
+        <div class="voice-en">Describe the problem, set your time, and send the request — in under a minute.</div>
+      </div>
+      <div class="ai-prompt-block">
+        <div class="section-label"><i class="fas fa-robot ms-1"></i> AI Video Prompt</div>
+        <div class="prompt-text">Close-up of male hands typing on a smartphone screen showing an Arabic service request form with teal UI. The finger selects a date on a calendar picker, then taps a glowing "Send Request" button. A green confirmation animation appears on screen. Modern marble desk background. 4K macro shot, crisp and clean.</div>
+        <button class="copy-btn" onclick="copyPrompt(this)"><i class="fas fa-copy ms-1"></i> نسخ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SCENE 5 ══ -->
+  <div class="scene-card">
+    <div class="scene-header">
+      <div class="scene-num" style="background:linear-gradient(135deg,#0ea5e9,#0284c7)">5</div>
+      <div>
+        <div class="scene-title">المشهد الخامس — الدفع الآمن</div>
+      </div>
+      <div class="scene-duration"><i class="fas fa-clock ms-1"></i> 12 ثوانٍ</div>
+    </div>
+    <div class="scene-body">
+      <div class="visual-block">
+        <div class="section-label"><i class="fas fa-video ms-1"></i> الصورة والحركة</div>
+        <div class="visual-item"><i class="fas fa-circle-dot"></i> يظهر شاشة الدفع — يختار "مدى" أو "STC Pay"</div>
+        <div class="visual-item"><i class="fas fa-circle-dot"></i> رسوم توضيحية: مبلغ يذهب إلى "صندوق آمن" بلون تيل</div>
+        <div class="visual-item"><i class="fas fa-circle-dot"></i> أيقونة قفل تضيء — نص "أموالك محفوظة"</div>
+        <div class="visual-item"><i class="fas fa-circle-dot"></i> وجه الرجل — ثقة وارتياح تام</div>
+      </div>
+      <div class="voice-block">
+        <div class="section-label"><i class="fas fa-microphone ms-1"></i> الصوت / التعليق</div>
+        <div class="voice-ar">ادفع بأمان تام — أموالك محفوظة عند خدمة ولا تصل للمزود إلا بعد رضاك الكامل.</div>
+        <div class="voice-en">Pay with complete security — your money is held safely and only released when you confirm satisfaction.</div>
+      </div>
+      <div class="ai-prompt-block">
+        <div class="section-label"><i class="fas fa-robot ms-1"></i> AI Video Prompt</div>
+        <div class="prompt-text">A Saudi man holding a smartphone showing a secure payment screen with Arabic text and teal design. He selects a payment method. A glowing padlock icon appears with green light. His face shows complete confidence and relief. Clean modern home background. 4K, cinematic, soft lighting, trust and security visual metaphor.</div>
+        <button class="copy-btn" onclick="copyPrompt(this)"><i class="fas fa-copy ms-1"></i> نسخ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SCENE 6 ══ -->
+  <div class="scene-card">
+    <div class="scene-header">
+      <div class="scene-num" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed)">6</div>
+      <div>
+        <div class="scene-title">المشهد السادس — المزود يصل</div>
+      </div>
+      <div class="scene-duration"><i class="fas fa-clock ms-1"></i> 12 ثوانٍ</div>
+    </div>
+    <div class="scene-body">
+      <div class="visual-block">
+        <div class="section-label"><i class="fas fa-video ms-1"></i> الصورة والحركة</div>
+        <div class="visual-item"><i class="fas fa-circle-dot"></i> سباك محترف بزي عمل أنيق يقرع باب منزل حديث</div>
+        <div class="visual-item"><i class="fas fa-circle-dot"></i> الرجل السعودي يفتح الباب ويرحب به</div>
+        <div class="visual-item"><i class="fas fa-circle-dot"></i> المزود يفحص المشكلة تحت الحوض — إضاءة احترافية</div>
+        <div class="visual-item"><i class="fas fa-circle-dot"></i> الإصلاح يتم بسرعة — ابتسامة الرضا</div>
+      </div>
+      <div class="voice-block">
+        <div class="section-label"><i class="fas fa-microphone ms-1"></i> الصوت / التعليق</div>
+        <div class="voice-ar">المزود يصل في الوقت المحدد — محترف، معتمد، وموثوق.</div>
+        <div class="voice-en">The provider arrives on time — professional, certified, and trusted.</div>
+      </div>
+      <div class="ai-prompt-block">
+        <div class="section-label"><i class="fas fa-robot ms-1"></i> AI Video Prompt</div>
+        <div class="prompt-text">A professional South Asian plumber in clean work uniform arriving at a modern Saudi villa door. A Saudi man in white thobe opens the door and welcomes him warmly. The plumber examines under a kitchen sink with professional tools. The repair is done efficiently. Both men smile. Bright natural daylight. 4K realistic, friendly and professional atmosphere.</div>
+        <button class="copy-btn" onclick="copyPrompt(this)"><i class="fas fa-copy ms-1"></i> نسخ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SCENE 7 ══ -->
+  <div class="scene-card">
+    <div class="scene-header">
+      <div class="scene-num" style="background:linear-gradient(135deg,#ec4899,#be185d)">7</div>
+      <div>
+        <div class="scene-title">المشهد السابع — التأكيد والتقييم</div>
+      </div>
+      <div class="scene-duration"><i class="fas fa-clock ms-1"></i> 10 ثوانٍ</div>
+    </div>
+    <div class="scene-body">
+      <div class="visual-block">
+        <div class="section-label"><i class="fas fa-video ms-1"></i> الصورة والحركة</div>
+        <div class="visual-item"><i class="fas fa-circle-dot"></i> الرجل يمسك هاتفه ويضغط "تأكيد إتمام الخدمة"</div>
+        <div class="visual-item"><i class="fas fa-circle-dot"></i> close-up — إصبعه يختار 5 نجوم بتعبير رضا</div>
+        <div class="visual-item"><i class="fas fa-circle-dot"></i> المزود يستلم إشعاراً بتحرير المبلغ على هاتفه</div>
+        <div class="visual-item"><i class="fas fa-circle-dot"></i> كلاهما يبتسم — علاقة ثقة متبادلة</div>
+      </div>
+      <div class="voice-block">
+        <div class="section-label"><i class="fas fa-microphone ms-1"></i> الصوت / التعليق</div>
+        <div class="voice-ar">أكّد الإتمام، حرّر المبلغ، وقيّم تجربتك — دائرة الثقة الكاملة.</div>
+        <div class="voice-en">Confirm completion, release payment, and rate your experience — the full circle of trust.</div>
+      </div>
+      <div class="ai-prompt-block">
+        <div class="section-label"><i class="fas fa-robot ms-1"></i> AI Video Prompt</div>
+        <div class="prompt-text">A Saudi man happily tapping "Confirm Service" on his phone, then selecting 5 stars on a rating screen. Nearby the service provider checks his phone and smiles seeing a payment notification. Both are standing in the kitchen, job complete. Clean sink visible in background. 4K, warm satisfied mood, golden lighting.</div>
+        <button class="copy-btn" onclick="copyPrompt(this)"><i class="fas fa-copy ms-1"></i> نسخ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SCENE 8 ══ -->
+  <div class="scene-card">
+    <div class="scene-header">
+      <div class="scene-num" style="background:linear-gradient(135deg,#028090,#02C39A)">8</div>
+      <div>
+        <div class="scene-title">المشهد الثامن — الخاتمة</div>
+      </div>
+      <div class="scene-duration"><i class="fas fa-clock ms-1"></i> 8 ثوانٍ</div>
+    </div>
+    <div class="scene-body">
+      <div class="visual-block">
+        <div class="section-label"><i class="fas fa-video ms-1"></i> الصورة والحركة</div>
+        <div class="visual-item"><i class="fas fa-circle-dot"></i> الرجل وعائلته في الصالة — منزل نظيف جميل — الكل سعيد</div>
+        <div class="visual-item"><i class="fas fa-circle-dot"></i> drone shot خارج المنزل — فيلا سعودية راقية</div>
+        <div class="visual-item"><i class="fas fa-circle-dot"></i> لوجو "خدمة" يظهر على الشاشة مع slogan</div>
+        <div class="visual-item"><i class="fas fa-circle-dot"></i> fade to teal gradient مع الشعار</div>
+      </div>
+      <div class="voice-block">
+        <div class="section-label"><i class="fas fa-microphone ms-1"></i> الصوت / التعليق</div>
+        <div class="voice-ar">خدمة — كل خدمة تحتاجها، في راحة يدك. جرّب الآن مجاناً.</div>
+        <div class="voice-en">Khedmah — every service you need, in the palm of your hand. Try it free now.</div>
+      </div>
+      <div class="ai-prompt-block">
+        <div class="section-label"><i class="fas fa-robot ms-1"></i> AI Video Prompt</div>
+        <div class="prompt-text">Happy Saudi family — man, wife and two children — sitting together in a beautifully decorated modern living room, laughing and relaxed. Aerial drone shot pulling back from a luxurious Saudi villa exterior in a quiet neighborhood at golden hour. The scene fades into a clean teal gradient background with the Khedmah logo. 4K, cinematic, aspirational, warm and joyful.</div>
+        <button class="copy-btn" onclick="copyPrompt(this)"><i class="fas fa-copy ms-1"></i> نسخ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ MUSIC ══ -->
+  <div class="music-box">
+    <div class="section-label"><i class="fas fa-music ms-1"></i> الموسيقى التصويرية الموصى بها</div>
+    <div class="music-item"><i class="fas fa-play-circle"></i><strong>النوع:</strong><span>Corporate / Inspirational — إيقاع هادئ ثم ينمو</span></div>
+    <div class="music-item"><i class="fas fa-volume-up"></i><strong>المزاج:</strong><span>ثقة، راحة، حداثة — لا موسيقى عربية تقليدية</span></div>
+    <div class="music-item"><i class="fas fa-search"></i><strong>ابحث عن:</strong><span>"Uplifting Corporate Background" أو "Modern App Promo Music" على Epidemic Sound أو Artlist</span></div>
+    <div class="music-item"><i class="fas fa-sliders-h"></i><strong>المستوى الصوتي:</strong><span>الموسيقى 30% — الصوت البشري 100%</span></div>
+  </div>
+
+</div>
+
+<script>
+function copyPrompt(btn) {
+  const text = btn.previousElementSibling.textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.innerHTML = '<i class="fas fa-check ms-1"></i> تم النسخ';
+    btn.style.background = 'rgba(2,195,154,0.2)';
+    btn.style.color = '#02C39A';
+    setTimeout(() => {
+      btn.innerHTML = '<i class="fas fa-copy ms-1"></i> نسخ';
+      btn.style.background = '';
+      btn.style.color = '';
+    }, 2000);
+  });
+}
+</script>
+</body>
+</html>

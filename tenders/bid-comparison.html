@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>مقارنة العطاءات — خدمة</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="../assets/css/khedmah.css">
+  <style>
+    body { background: #f1f5f9; }
+
+    /* Comparison table */
+    .cmp-table-wrap {
+      overflow-x: auto;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+    .cmp-table {
+      width: 100%;
+      min-width: 700px;
+      border-collapse: separate;
+      border-spacing: 0;
+      background: #fff;
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    .cmp-table th {
+      background: var(--k-dark);
+      color: rgba(255,255,255,0.85);
+      font-weight: 700;
+      font-size: 0.82rem;
+      padding: 0.9rem 1.25rem;
+      text-align: right;
+      white-space: nowrap;
+    }
+    .cmp-table th.bid-col {
+      background: var(--k-dark-2);
+      color: #fff;
+      text-align: center;
+      min-width: 160px;
+    }
+    .cmp-table th.bid-col.winner {
+      background: linear-gradient(135deg, var(--k-primary), var(--k-accent));
+    }
+    .cmp-table td {
+      padding: 0.85rem 1.25rem;
+      border-bottom: 1px solid #f1f5f9;
+      font-size: 0.88rem;
+      color: var(--k-dark-2);
+      vertical-align: middle;
+    }
+    .cmp-table td.bid-val {
+      text-align: center;
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+    .cmp-table tr:last-child td { border-bottom: none; }
+    .cmp-table tr:hover td { background: #f8fafc; }
+
+    .cmp-row-label {
+      font-size: 0.82rem;
+      color: var(--k-gray);
+      font-weight: 600;
+      background: #fafbfc;
+      white-space: nowrap;
+    }
+    .cmp-section-label {
+      background: #f1f5f9;
+      font-weight: 800;
+      color: var(--k-dark-2);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Score bar */
+    .score-bar-wrap { width: 100%; height: 6px; background: #e2e8f0; border-radius: 3px; margin-top: 4px; }
+    .score-bar { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--k-primary), var(--k-accent)); }
+
+    /* Bid header card */
+    .bid-header-card {
+      text-align: center;
+      padding: 0.5rem 0;
+    }
+    .bid-header-card .co-avatar {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 1rem; color: #fff; font-weight: 800;
+      margin-bottom: 0.3rem;
+    }
+    .bid-header-card .co-name {
+      font-weight: 800;
+      font-size: 0.9rem;
+      display: block;
+      white-space: nowrap;
+    }
+    .bid-header-card .co-rating {
+      font-size: 0.75rem;
+      color: #f59e0b;
+    }
+
+    /* Score card */
+    .score-card {
+      background: #fff;
+      border-radius: 14px;
+      padding: 1.25rem 1rem;
+      text-align: center;
+      border: 2px solid #e2e8f0;
+      transition: all 0.2s;
+    }
+    .score-card.winner {
+      border-color: var(--k-primary);
+      background: linear-gradient(135deg, rgba(2,128,144,0.04), rgba(2,195,154,0.04));
+    }
+    .score-card .score-num {
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--k-primary);
+    }
+    .score-card.winner .score-num { color: var(--k-primary); }
+    .score-card .score-label { font-size: 0.78rem; color: var(--k-gray); }
+
+    /* Criteria weights */
+    .weight-badge {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      background: rgba(2,128,144,0.1);
+      color: var(--k-primary);
+      border-radius: 50px;
+      padding: 0.1rem 0.5rem;
+      margin-right: 0.3rem;
+    }
+
+    /* Recommendation banner */
+    .rec-banner {
+      background: linear-gradient(135deg, var(--k-primary), var(--k-accent));
+      border-radius: 16px;
+      padding: 1.5rem 2rem;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+  </style>
+</head>
+<body>
+
+<a href="#main-content" class="k-skip-link">تخطى إلى المحتوى الرئيسي</a>
+
+<nav class="k-navbar navbar navbar-expand-lg" role="navigation">
+  <div class="container-fluid px-4">
+    <a class="navbar-brand" href="../index.html">خدم<span style="color:var(--k-accent)">ة</span></a>
+    <div class="d-flex align-items-center gap-2">
+      <a href="tender-detail.html" class="btn btn-outline-light btn-sm" style="min-height:36px;display:flex;align-items:center">
+        <i class="fas fa-arrow-right ms-1"></i> العودة للمناقصة
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main id="main-content">
+<div class="container-fluid px-4 py-4" style="max-width:1200px">
+
+  <!-- Page Header -->
+  <div class="row g-3 align-items-start mb-4">
+    <div class="col-lg-8">
+      <div style="background:#fff;border-radius:16px;padding:1.5rem;box-shadow:0 2px 12px rgba(0,0,0,0.06)">
+        <div style="display:flex;align-items:flex-start;gap:1rem;flex-wrap:wrap">
+          <div style="background:linear-gradient(135deg,var(--k-primary),var(--k-accent));width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <i class="fas fa-balance-scale fa-lg" style="color:#fff"></i>
+          </div>
+          <div style="flex:1">
+            <div style="font-size:0.75rem;font-weight:700;color:var(--k-primary);text-transform:uppercase;margin-bottom:0.25rem">مقارنة العطاءات</div>
+            <h1 style="font-weight:900;font-size:1.2rem;color:var(--k-dark-2);margin-bottom:0.25rem">توسعة شبكة المياه — الرياض</h1>
+            <div style="font-size:0.82rem;color:var(--k-gray)">
+              <i class="fas fa-building me-1"></i> أمانة منطقة الرياض
+              <span class="mx-2">·</span>
+              <i class="fas fa-gavel me-1"></i> <strong style="color:var(--k-dark-2)">4 عطاءات</strong> مقدّمة
+              <span class="mx-2">·</span>
+              <i class="fas fa-clock me-1"></i> أُغلق التقديم
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-4">
+      <div style="background:#fff;border-radius:16px;padding:1.25rem;box-shadow:0 2px 12px rgba(0,0,0,0.06)">
+        <div style="font-size:0.8rem;color:var(--k-gray);margin-bottom:0.5rem;font-weight:600">أوزان معايير التقييم</div>
+        <div class="d-flex flex-column gap-2">
+          <div class="d-flex justify-content-between align-items-center">
+            <span style="font-size:0.83rem">السعر</span>
+            <div style="display:flex;align-items:center;gap:0.5rem">
+              <div style="width:80px;height:6px;background:#e2e8f0;border-radius:3px"><div style="width:40%;height:100%;background:var(--k-primary);border-radius:3px"></div></div>
+              <span class="weight-badge">40%</span>
+            </div>
+          </div>
+          <div class="d-flex justify-content-between align-items-center">
+            <span style="font-size:0.83rem">المدة الزمنية</span>
+            <div style="display:flex;align-items:center;gap:0.5rem">
+              <div style="width:80px;height:6px;background:#e2e8f0;border-radius:3px"><div style="width:25%;height:100%;background:#0369a1;border-radius:3px"></div></div>
+              <span class="weight-badge" style="background:rgba(3,105,161,0.1);color:#0369a1">25%</span>
+            </div>
+          </div>
+          <div class="d-flex justify-content-between align-items-center">
+            <span style="font-size:0.83rem">الخبرة</span>
+            <div style="display:flex;align-items:center;gap:0.5rem">
+              <div style="width:80px;height:6px;background:#e2e8f0;border-radius:3px"><div style="width:20%;height:100%;background:#7c3aed;border-radius:3px"></div></div>
+              <span class="weight-badge" style="background:rgba(124,58,237,0.1);color:#7c3aed">20%</span>
+            </div>
+          </div>
+          <div class="d-flex justify-content-between align-items-center">
+            <span style="font-size:0.83rem">العرض الفني</span>
+            <div style="display:flex;align-items:center;gap:0.5rem">
+              <div style="width:80px;height:6px;background:#e2e8f0;border-radius:3px"><div style="width:15%;height:100%;background:#f59e0b;border-radius:3px"></div></div>
+              <span class="weight-badge" style="background:rgba(245,158,11,0.1);color:#b45309">15%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scores Summary -->
+  <div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+      <div class="score-card winner">
+        <div style="font-size:0.7rem;font-weight:700;color:var(--k-primary);text-transform:uppercase;margin-bottom:0.25rem">
+          <i class="fas fa-trophy me-1"></i> الأعلى تقييماً
+        </div>
+        <div class="score-num">92.4</div>
+        <div class="score-label">شركة البناء المتكاملة</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="score-card">
+        <div style="font-size:0.7rem;font-weight:700;color:var(--k-gray);text-transform:uppercase;margin-bottom:0.25rem">الثاني</div>
+        <div class="score-num" style="color:#0369a1">88.7</div>
+        <div class="score-label">مجموعة الخليج للإنشاء</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="score-card">
+        <div style="font-size:0.7rem;font-weight:700;color:var(--k-gray);text-transform:uppercase;margin-bottom:0.25rem">الثالث</div>
+        <div class="score-num" style="color:#7c3aed">81.2</div>
+        <div class="score-label">شركة الأفق للمقاولات</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="score-card">
+        <div style="font-size:0.7rem;font-weight:700;color:var(--k-gray);text-transform:uppercase;margin-bottom:0.25rem">الرابع</div>
+        <div class="score-num" style="color:#b45309">74.9</div>
+        <div class="score-label">مؤسسة القمة للمشاريع</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recommendation banner -->
+  <div class="rec-banner mb-4">
+    <div style="background:rgba(255,255,255,0.15);width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+      <i class="fas fa-robot fa-lg"></i>
+    </div>
+    <div style="flex:1">
+      <div style="font-weight:800;font-size:1rem;margin-bottom:0.25rem">توصية المنصة الذكية</div>
+      <p style="margin:0;opacity:0.9;font-size:0.88rem">بناءً على الأوزان المحددة، <strong>شركة البناء المتكاملة</strong> هي الخيار الأمثل — تقدم أفضل توازن بين السعر (7.2M ر.س) والمدة الزمنية (10 أشهر) مع خبرة 22 عاماً وتصنيف G9.</p>
+    </div>
+    <div>
+      <button class="btn btn-sm" style="background:#fff;color:var(--k-primary);font-weight:700;border-radius:8px;min-height:40px;white-space:nowrap">
+        <i class="fas fa-check me-1"></i> قبول هذا العطاء
+      </button>
+    </div>
+  </div>
+
+  <!-- Comparison Table -->
+  <div class="cmp-table-wrap mb-5">
+    <table class="cmp-table" role="table" aria-label="جدول مقارنة العطاءات">
+      <thead>
+        <tr>
+          <th style="width:200px">معيار التقييم</th>
+          <!-- Bid 1 — Winner -->
+          <th class="bid-col winner">
+            <div class="bid-header-card">
+              <div class="co-avatar" style="background:linear-gradient(135deg,var(--k-primary),var(--k-accent));margin:0 auto 4px">ب.م</div>
+              <span class="co-name">شركة البناء المتكاملة</span>
+              <div class="co-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i> 4.9</div>
+              <div style="font-size:0.7rem;color:var(--k-accent);margin-top:2px"><i class="fas fa-trophy me-1"></i>الأفضل</div>
+            </div>
+          </th>
+          <!-- Bid 2 -->
+          <th class="bid-col">
+            <div class="bid-header-card">
+              <div class="co-avatar" style="background:linear-gradient(135deg,#0369a1,#0284c7);margin:0 auto 4px">خ.م</div>
+              <span class="co-name">مجموعة الخليج للإنشاء</span>
+              <div class="co-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i> 4.7</div>
+            </div>
+          </th>
+          <!-- Bid 3 -->
+          <th class="bid-col">
+            <div class="bid-header-card">
+              <div class="co-avatar" style="background:linear-gradient(135deg,#7c3aed,#6d28d9);margin:0 auto 4px">أ.م</div>
+              <span class="co-name">شركة الأفق للمقاولات</span>
+              <div class="co-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i> 4.2</div>
+            </div>
+          </th>
+          <!-- Bid 4 -->
+          <th class="bid-col">
+            <div class="bid-header-card">
+              <div class="co-avatar" style="background:linear-gradient(135deg,#b45309,#92400e);margin:0 auto 4px">ق.م</div>
+              <span class="co-name">مؤسسة القمة للمشاريع</span>
+              <div class="co-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i> 3.8</div>
+            </div>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <!-- PRICE section -->
+        <tr><td colspan="5" class="cmp-section-label"><i class="fas fa-tag me-1"></i> السعر — وزن 40%</td></tr>
+        <tr>
+          <td class="cmp-row-label">السعر المقدّم</td>
+          <td class="bid-val" style="color:var(--k-primary)">
+            <strong>7,200,000 ر.س</strong>
+            <div style="font-size:0.72rem;color:var(--k-success)"><i class="fas fa-check-circle me-1"></i>الأقل سعراً</div>
+          </td>
+          <td class="bid-val">7,850,000 ر.س</td>
+          <td class="bid-val">8,100,000 ر.س</td>
+          <td class="bid-val">8,400,000 ر.س</td>
+        </tr>
+        <tr>
+          <td class="cmp-row-label">الفارق عن الأقل</td>
+          <td class="bid-val" style="color:var(--k-success)">—</td>
+          <td class="bid-val" style="color:var(--k-warning)">+ 650,000</td>
+          <td class="bid-val" style="color:var(--k-danger)">+ 900,000</td>
+          <td class="bid-val" style="color:var(--k-danger)">+ 1,200,000</td>
+        </tr>
+        <tr>
+          <td class="cmp-row-label">نقاط السعر (من 40)</td>
+          <td class="bid-val">
+            <strong style="color:var(--k-primary)">40</strong>
+            <div class="score-bar-wrap"><div class="score-bar" style="width:100%"></div></div>
+          </td>
+          <td class="bid-val">
+            36.6
+            <div class="score-bar-wrap"><div class="score-bar" style="width:91.5%;background:linear-gradient(90deg,#0369a1,#0284c7)"></div></div>
+          </td>
+          <td class="bid-val">
+            35.2
+            <div class="score-bar-wrap"><div class="score-bar" style="width:88%;background:linear-gradient(90deg,#7c3aed,#6d28d9)"></div></div>
+          </td>
+          <td class="bid-val">
+            34.1
+            <div class="score-bar-wrap"><div class="score-bar" style="width:85.3%;background:linear-gradient(90deg,#b45309,#92400e)"></div></div>
+          </td>
+        </tr>
+
+        <!-- TIMELINE section -->
+        <tr><td colspan="5" class="cmp-section-label"><i class="fas fa-calendar-alt me-1"></i> المدة الزمنية — وزن 25%</td></tr>
+        <tr>
+          <td class="cmp-row-label">مدة التنفيذ</td>
+          <td class="bid-val" style="color:var(--k-primary)">
+            <strong>10 أشهر</strong>
+            <div style="font-size:0.72rem;color:var(--k-success)"><i class="fas fa-check-circle me-1"></i>الأسرع</div>
+          </td>
+          <td class="bid-val">11 أشهر</td>
+          <td class="bid-val">13 أشهر</td>
+          <td class="bid-val">14 أشهر</td>
+        </tr>
+        <tr>
+          <td class="cmp-row-label">تاريخ التسليم المتوقع</td>
+          <td class="bid-val">يناير 2027</td>
+          <td class="bid-val">فبراير 2027</td>
+          <td class="bid-val">أبريل 2027</td>
+          <td class="bid-val">مايو 2027</td>
+        </tr>
+        <tr>
+          <td class="cmp-row-label">نقاط المدة (من 25)</td>
+          <td class="bid-val">
+            <strong style="color:var(--k-primary)">25</strong>
+            <div class="score-bar-wrap"><div class="score-bar" style="width:100%"></div></div>
+          </td>
+          <td class="bid-val">
+            22.7
+            <div class="score-bar-wrap"><div class="score-bar" style="width:90.8%;background:linear-gradient(90deg,#0369a1,#0284c7)"></div></div>
+          </td>
+          <td class="bid-val">
+            19.2
+            <div class="score-bar-wrap"><div class="score-bar" style="width:76.8%;background:linear-gradient(90deg,#7c3aed,#6d28d9)"></div></div>
+          </td>
+          <td class="bid-val">
+            17.8
+            <div class="score-bar-wrap"><div class="score-bar" style="width:71.2%;background:linear-gradient(90deg,#b45309,#92400e)"></div></div>
+          </td>
+        </tr>
+
+        <!-- EXPERIENCE section -->
+        <tr><td colspan="5" class="cmp-section-label"><i class="fas fa-briefcase me-1"></i> الخبرة — وزن 20%</td></tr>
+        <tr>
+          <td class="cmp-row-label">سنوات الخبرة</td>
+          <td class="bid-val"><strong style="color:var(--k-primary)">22 سنة</strong></td>
+          <td class="bid-val">17 سنة</td>
+          <td class="bid-val">11 سنة</td>
+          <td class="bid-val">8 سنوات</td>
+        </tr>
+        <tr>
+          <td class="cmp-row-label">التصنيف الحكومي</td>
+          <td class="bid-val"><span class="badge" style="background:var(--k-primary);color:#fff">G9</span></td>
+          <td class="bid-val"><span class="badge" style="background:#0369a1;color:#fff">G8</span></td>
+          <td class="bid-val"><span class="badge" style="background:#6b7280;color:#fff">G7</span></td>
+          <td class="bid-val"><span class="badge" style="background:#9ca3af;color:#fff">G6</span></td>
+        </tr>
+        <tr>
+          <td class="cmp-row-label">مشاريع مماثلة</td>
+          <td class="bid-val">12 مشروع</td>
+          <td class="bid-val">8 مشاريع</td>
+          <td class="bid-val">5 مشاريع</td>
+          <td class="bid-val">3 مشاريع</td>
+        </tr>
+        <tr>
+          <td class="cmp-row-label">نقاط الخبرة (من 20)</td>
+          <td class="bid-val">
+            <strong style="color:var(--k-primary)">20</strong>
+            <div class="score-bar-wrap"><div class="score-bar" style="width:100%"></div></div>
+          </td>
+          <td class="bid-val">
+            17.4
+            <div class="score-bar-wrap"><div class="score-bar" style="width:87%;background:linear-gradient(90deg,#0369a1,#0284c7)"></div></div>
+          </td>
+          <td class="bid-val">
+            14.8
+            <div class="score-bar-wrap"><div class="score-bar" style="width:74%;background:linear-gradient(90deg,#7c3aed,#6d28d9)"></div></div>
+          </td>
+          <td class="bid-val">
+            11.2
+            <div class="score-bar-wrap"><div class="score-bar" style="width:56%;background:linear-gradient(90deg,#b45309,#92400e)"></div></div>
+          </td>
+        </tr>
+
+        <!-- TECHNICAL section -->
+        <tr><td colspan="5" class="cmp-section-label"><i class="fas fa-file-alt me-1"></i> العرض الفني — وزن 15%</td></tr>
+        <tr>
+          <td class="cmp-row-label">تفصيل المنهجية</td>
+          <td class="bid-val"><span class="badge" style="background:var(--k-success);color:#fff">ممتاز</span></td>
+          <td class="bid-val"><span class="badge" style="background:var(--k-primary);color:#fff">جيد جداً</span></td>
+          <td class="bid-val"><span class="badge" style="background:var(--k-warning);color:#fff">جيد</span></td>
+          <td class="bid-val"><span class="badge" style="background:#6b7280;color:#fff">مقبول</span></td>
+        </tr>
+        <tr>
+          <td class="cmp-row-label">خطة الجودة والسلامة</td>
+          <td class="bid-val"><i class="fas fa-check-circle" style="color:var(--k-success)"></i></td>
+          <td class="bid-val"><i class="fas fa-check-circle" style="color:var(--k-success)"></i></td>
+          <td class="bid-val"><i class="fas fa-check-circle" style="color:var(--k-success)"></i></td>
+          <td class="bid-val"><i class="fas fa-times-circle" style="color:var(--k-danger)"></i></td>
+        </tr>
+        <tr>
+          <td class="cmp-row-label">ضمان بنكي</td>
+          <td class="bid-val"><i class="fas fa-check-circle" style="color:var(--k-success)"></i></td>
+          <td class="bid-val"><i class="fas fa-check-circle" style="color:var(--k-success)"></i></td>
+          <td class="bid-val"><i class="fas fa-times-circle" style="color:var(--k-danger)"></i></td>
+          <td class="bid-val"><i class="fas fa-times-circle" style="color:var(--k-danger)"></i></td>
+        </tr>
+        <tr>
+          <td class="cmp-row-label">تأمين على العمال</td>
+          <td class="bid-val"><i class="fas fa-check-circle" style="color:var(--k-success)"></i></td>
+          <td class="bid-val"><i class="fas fa-check-circle" style="color:var(--k-success)"></i></td>
+          <td class="bid-val"><i class="fas fa-check-circle" style="color:var(--k-success)"></i></td>
+          <td class="bid-val"><i class="fas fa-times-circle" style="color:var(--k-danger)"></i></td>
+        </tr>
+        <tr>
+          <td class="cmp-row-label">نقاط العرض الفني (من 15)</td>
+          <td class="bid-val">
+            <strong style="color:var(--k-primary)">14.4</strong>
+            <div class="score-bar-wrap"><div class="score-bar" style="width:96%"></div></div>
+          </td>
+          <td class="bid-val">
+            12
+            <div class="score-bar-wrap"><div class="score-bar" style="width:80%;background:linear-gradient(90deg,#0369a1,#0284c7)"></div></div>
+          </td>
+          <td class="bid-val">
+            12
+            <div class="score-bar-wrap"><div class="score-bar" style="width:80%;background:linear-gradient(90deg,#7c3aed,#6d28d9)"></div></div>
+          </td>
+          <td class="bid-val">
+            11.8
+            <div class="score-bar-wrap"><div class="score-bar" style="width:78.7%;background:linear-gradient(90deg,#b45309,#92400e)"></div></div>
+          </td>
+        </tr>
+
+        <!-- TOTAL -->
+        <tr style="background:linear-gradient(135deg,rgba(2,128,144,0.04),rgba(2,195,154,0.04))">
+          <td style="font-weight:900;color:var(--k-dark-2);padding:1rem 1.25rem">المجموع الكلي (من 100)</td>
+          <td class="bid-val" style="background:linear-gradient(135deg,rgba(2,128,144,0.08),rgba(2,195,154,0.08))">
+            <span style="font-size:1.5rem;font-weight:900;color:var(--k-primary)">92.4</span>
+            <div style="font-size:0.72rem;color:var(--k-success);margin-top:2px"><i class="fas fa-trophy me-1"></i>الأعلى</div>
+          </td>
+          <td class="bid-val">
+            <span style="font-size:1.4rem;font-weight:900;color:#0369a1">88.7</span>
+          </td>
+          <td class="bid-val">
+            <span style="font-size:1.4rem;font-weight:900;color:#7c3aed">81.2</span>
+          </td>
+          <td class="bid-val">
+            <span style="font-size:1.4rem;font-weight:900;color:#b45309">74.9</span>
+          </td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Action buttons -->
+  <div style="background:#fff;border-radius:16px;padding:1.5rem;box-shadow:0 2px 12px rgba(0,0,0,0.06);display:flex;gap:1rem;flex-wrap:wrap;align-items:center;justify-content:space-between">
+    <div>
+      <div style="font-weight:800;color:var(--k-dark-2);margin-bottom:0.25rem">هل أنت مستعد لاتخاذ القرار؟</div>
+      <div style="font-size:0.85rem;color:var(--k-gray)">بعد قبول العطاء ستُرسل إشعارات لجميع المتقدمين تلقائياً</div>
+    </div>
+    <div class="d-flex gap-2 flex-wrap">
+      <button class="btn btn-outline-secondary" style="min-height:44px;border-radius:10px">
+        <i class="fas fa-download ms-1"></i> تصدير PDF
+      </button>
+      <button class="btn btn-outline-primary" style="min-height:44px;border-radius:10px" onclick="if(confirm('طلب توضيحات إضافية من كل المتقدمين؟'))alert('تم إرسال طلبات التوضيح')">
+        <i class="fas fa-question-circle ms-1"></i> طلب توضيحات
+      </button>
+      <button class="btn btn-primary px-4" style="min-height:44px;border-radius:10px;font-size:1rem" onclick="acceptBid()">
+        <i class="fas fa-check ms-2"></i> قبول العطاء الأول — شركة البناء المتكاملة
+      </button>
+    </div>
+  </div>
+
+</div>
+</main>
+
+<!-- Accept Modal -->
+<div class="modal fade" id="acceptModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="border-radius:20px;border:none">
+      <div class="modal-body p-4 text-center">
+        <div style="width:80px;height:80px;background:linear-gradient(135deg,var(--k-success),#059669);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem">
+          <i class="fas fa-check fa-2x" style="color:#fff"></i>
+        </div>
+        <h4 style="font-weight:900;color:var(--k-dark-2);margin-bottom:0.5rem">تأكيد قبول العطاء</h4>
+        <p style="color:var(--k-gray);margin-bottom:1.5rem">سيتم إشعار شركة البناء المتكاملة وإرسال عقد إلكتروني. لا يمكن التراجع بعد التأكيد.</p>
+        <div class="d-flex gap-3 justify-content-center">
+          <button class="btn btn-outline-secondary px-4" data-bs-dismiss="modal">إلغاء</button>
+          <a href="tender-detail.html" class="btn btn-primary px-4">نعم، قبول العطاء</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  function acceptBid() {
+    new bootstrap.Modal(document.getElementById('acceptModal')).show();
+  }
+</script>
+</body>
+</html>

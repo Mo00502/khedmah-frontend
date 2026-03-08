@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>طلب عرض سعر — خدمة</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="../assets/css/khedmah.css">
+  <style>
+    body { background: #f8fafc; }
+    .service-btn { border: 2px solid #e2e8f0; border-radius: 12px; padding: 0.6rem 1rem; cursor: pointer; transition: all 0.2s; font-size: 0.85rem; font-weight: 600; background: #fff; color: var(--k-dark-2); display: flex; align-items: center; gap: 0.5rem; }
+    .service-btn:hover, .service-btn.active { border-color: var(--k-primary); background: rgba(2,128,144,0.05); color: var(--k-primary); }
+    .time-slot { border: 2px solid #e2e8f0; border-radius: 10px; padding: 0.5rem; text-align: center; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: all 0.2s; background: #fff; }
+    .time-slot:hover, .time-slot.active { border-color: var(--k-primary); background: var(--k-primary); color: #fff; }
+  </style>
+</head>
+<body>
+
+<nav class="k-navbar navbar navbar-expand-lg">
+  <div class="container">
+    <a class="navbar-brand" href="../index.html">خدم<span style="color:var(--k-accent)">ة</span></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navMain">
+      <ul class="navbar-nav me-auto gap-1">
+        <li class="nav-item"><a class="nav-link" href="search.html">العودة للبحث</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container py-4" style="max-width:780px" x-data="quoteApp()">
+
+  <div class="text-center mb-4">
+    <h3 style="font-weight:900;color:var(--k-dark-2)">طلب عرض سعر</h3>
+    <p style="color:var(--k-gray)" id="providerName">—</p>
+  </div>
+
+  <!-- Wizard -->
+  <div class="k-wizard-steps mb-4">
+    <div class="k-wizard-step" :class="{ active: step===1, done: step>1 }">
+      <div class="step-dot">
+        <template x-if="step>1"><i class="fas fa-check" style="font-size:0.85rem"></i></template>
+        <template x-if="step<=1"><span>1</span></template>
+      </div>
+      <span>نوع الخدمة</span>
+    </div>
+    <div class="k-wizard-step" :class="{ active: step===2, done: step>2 }">
+      <div class="step-dot">
+        <template x-if="step>2"><i class="fas fa-check" style="font-size:0.85rem"></i></template>
+        <template x-if="step<=2"><span>2</span></template>
+      </div>
+      <span>التفاصيل</span>
+    </div>
+    <div class="k-wizard-step" :class="{ active: step===3 }">
+      <div class="step-dot"><span>3</span></div>
+      <span>الموعد</span>
+    </div>
+  </div>
+
+  <div class="card border-0 shadow-sm" style="border-radius:20px">
+    <div class="card-body p-4">
+
+      <!-- Step 1 -->
+      <div x-show="step===1">
+        <h5 style="font-weight:800;color:var(--k-dark-2);margin-bottom:0.5rem">اختر نوع الخدمة</h5>
+        <p style="color:var(--k-gray);font-size:0.88rem;margin-bottom:1.25rem">خدمات منزلية شاملة — اختر التخصص المناسب لطلبك</p>
+
+        <!-- Category: Plumbing -->
+        <div class="mb-3">
+          <div style="font-size:0.78rem;font-weight:700;color:var(--k-primary);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.5rem;border-bottom:1px solid rgba(2,128,144,0.15);padding-bottom:0.25rem">
+            <i class="fas fa-faucet me-1"></i> سباكة
+          </div>
+          <div class="d-flex flex-wrap gap-2">
+            <button class="service-btn" :class="{ active: service==='سباكة عامة' }" @click="service='سباكة عامة'"><i class="fas fa-faucet"></i> سباكة عامة</button>
+            <button class="service-btn" :class="{ active: service==='تسريب مياه' }" @click="service='تسريب مياه'"><i class="fas fa-tint"></i> تسريب مياه</button>
+            <button class="service-btn" :class="{ active: service==='تركيب حمام' }" @click="service='تركيب حمام'"><i class="fas fa-bath"></i> تركيب حمام</button>
+            <button class="service-btn" :class="{ active: service==='تمديدات مياه' }" @click="service='تمديدات مياه'"><i class="fas fa-pipe-section"></i> تمديدات مياه</button>
+          </div>
+        </div>
+
+        <!-- Category: Electrical -->
+        <div class="mb-3">
+          <div style="font-size:0.78rem;font-weight:700;color:var(--k-primary);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.5rem;border-bottom:1px solid rgba(2,128,144,0.15);padding-bottom:0.25rem">
+            <i class="fas fa-bolt me-1"></i> خدمات كهربائية
+          </div>
+          <div class="d-flex flex-wrap gap-2">
+            <button class="service-btn" :class="{ active: service==='كهرباء عامة' }" @click="service='كهرباء عامة'"><i class="fas fa-bolt"></i> كهرباء عامة</button>
+            <button class="service-btn" :class="{ active: service==='تركيب إضاءة' }" @click="service='تركيب إضاءة'"><i class="fas fa-lightbulb"></i> تركيب إضاءة</button>
+            <button class="service-btn" :class="{ active: service==='لوحة كهربائية' }" @click="service='لوحة كهربائية'"><i class="fas fa-plug"></i> لوحة كهربائية</button>
+            <button class="service-btn" :class="{ active: service==='كاميرات مراقبة' }" @click="service='كاميرات مراقبة'"><i class="fas fa-video"></i> كاميرات مراقبة</button>
+          </div>
+        </div>
+
+        <!-- Category: AC -->
+        <div class="mb-3">
+          <div style="font-size:0.78rem;font-weight:700;color:var(--k-primary);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.5rem;border-bottom:1px solid rgba(2,128,144,0.15);padding-bottom:0.25rem">
+            <i class="fas fa-wind me-1"></i> صيانة تكييف
+          </div>
+          <div class="d-flex flex-wrap gap-2">
+            <button class="service-btn" :class="{ active: service==='تنظيف تكييف' }" @click="service='تنظيف تكييف'"><i class="fas fa-wind"></i> تنظيف تكييف</button>
+            <button class="service-btn" :class="{ active: service==='إصلاح تكييف' }" @click="service='إصلاح تكييف'"><i class="fas fa-wrench"></i> إصلاح تكييف</button>
+            <button class="service-btn" :class="{ active: service==='تركيب تكييف' }" @click="service='تركيب تكييف'"><i class="fas fa-snowflake"></i> تركيب تكييف</button>
+            <button class="service-btn" :class="{ active: service==='شحن فريون' }" @click="service='شحن فريون'"><i class="fas fa-thermometer-half"></i> شحن فريون</button>
+          </div>
+        </div>
+
+        <!-- Category: Carpentry -->
+        <div class="mb-3">
+          <div style="font-size:0.78rem;font-weight:700;color:var(--k-primary);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.5rem;border-bottom:1px solid rgba(2,128,144,0.15);padding-bottom:0.25rem">
+            <i class="fas fa-hammer me-1"></i> نجارة
+          </div>
+          <div class="d-flex flex-wrap gap-2">
+            <button class="service-btn" :class="{ active: service==='نجارة أثاث' }" @click="service='نجارة أثاث'"><i class="fas fa-couch"></i> نجارة أثاث</button>
+            <button class="service-btn" :class="{ active: service==='تركيب أبواب' }" @click="service='تركيب أبواب'"><i class="fas fa-door-open"></i> تركيب أبواب</button>
+            <button class="service-btn" :class="{ active: service==='خزائن مدمجة' }" @click="service='خزائن مدمجة'"><i class="fas fa-box"></i> خزائن مدمجة</button>
+            <button class="service-btn" :class="{ active: service==='أعمال خشبية' }" @click="service='أعمال خشبية'"><i class="fas fa-hammer"></i> أعمال خشبية</button>
+          </div>
+        </div>
+
+        <!-- Category: Painting -->
+        <div class="mb-3">
+          <div style="font-size:0.78rem;font-weight:700;color:var(--k-primary);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.5rem;border-bottom:1px solid rgba(2,128,144,0.15);padding-bottom:0.25rem">
+            <i class="fas fa-paint-roller me-1"></i> دهانات
+          </div>
+          <div class="d-flex flex-wrap gap-2">
+            <button class="service-btn" :class="{ active: service==='دهان داخلي' }" @click="service='دهان داخلي'"><i class="fas fa-paint-roller"></i> دهان داخلي</button>
+            <button class="service-btn" :class="{ active: service==='دهان خارجي' }" @click="service='دهان خارجي'"><i class="fas fa-house"></i> دهان خارجي</button>
+            <button class="service-btn" :class="{ active: service==='ورق جدران' }" @click="service='ورق جدران'"><i class="fas fa-layer-group"></i> ورق جدران</button>
+            <button class="service-btn" :class="{ active: service==='دهان جبس' }" @click="service='دهان جبس'"><i class="fas fa-brush"></i> دهان جبس</button>
+          </div>
+        </div>
+
+        <!-- Category: Cleaning -->
+        <div class="mb-3">
+          <div style="font-size:0.78rem;font-weight:700;color:var(--k-primary);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.5rem;border-bottom:1px solid rgba(2,128,144,0.15);padding-bottom:0.25rem">
+            <i class="fas fa-broom me-1"></i> خدمات تنظيف
+          </div>
+          <div class="d-flex flex-wrap gap-2">
+            <button class="service-btn" :class="{ active: service==='تنظيف منزل' }" @click="service='تنظيف منزل'"><i class="fas fa-broom"></i> تنظيف منزل</button>
+            <button class="service-btn" :class="{ active: service==='تنظيف عميق' }" @click="service='تنظيف عميق'"><i class="fas fa-spray-can"></i> تنظيف عميق</button>
+            <button class="service-btn" :class="{ active: service==='تنظيف سجاد' }" @click="service='تنظيف سجاد'"><i class="fas fa-rug"></i> تنظيف سجاد</button>
+            <button class="service-btn" :class="{ active: service==='تنظيف واجهات' }" @click="service='تنظيف واجهات'"><i class="fas fa-building"></i> تنظيف واجهات</button>
+          </div>
+        </div>
+
+        <!-- Category: Appliance Repair -->
+        <div class="mb-3">
+          <div style="font-size:0.78rem;font-weight:700;color:var(--k-primary);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.5rem;border-bottom:1px solid rgba(2,128,144,0.15);padding-bottom:0.25rem">
+            <i class="fas fa-tv me-1"></i> إصلاح أجهزة منزلية
+          </div>
+          <div class="d-flex flex-wrap gap-2">
+            <button class="service-btn" :class="{ active: service==='غسالة' }" @click="service='غسالة'"><i class="fas fa-drum"></i> غسالة</button>
+            <button class="service-btn" :class="{ active: service==='ثلاجة' }" @click="service='ثلاجة'"><i class="fas fa-temperature-low"></i> ثلاجة</button>
+            <button class="service-btn" :class="{ active: service==='فرن وطباخ' }" @click="service='فرن وطباخ'"><i class="fas fa-fire"></i> فرن وطباخ</button>
+            <button class="service-btn" :class="{ active: service==='أجهزة أخرى' }" @click="service='أجهزة أخرى'"><i class="fas fa-plug"></i> أجهزة أخرى</button>
+          </div>
+        </div>
+
+        <!-- Category: Interior Design -->
+        <div class="mb-3">
+          <div style="font-size:0.78rem;font-weight:700;color:var(--k-primary);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.5rem;border-bottom:1px solid rgba(2,128,144,0.15);padding-bottom:0.25rem">
+            <i class="fas fa-couch me-1"></i> تصميم داخلي
+          </div>
+          <div class="d-flex flex-wrap gap-2">
+            <button class="service-btn" :class="{ active: service==='تصميم غرفة' }" @click="service='تصميم غرفة'"><i class="fas fa-bed"></i> تصميم غرفة</button>
+            <button class="service-btn" :class="{ active: service==='تصميم مطبخ' }" @click="service='تصميم مطبخ'"><i class="fas fa-utensils"></i> تصميم مطبخ</button>
+            <button class="service-btn" :class="{ active: service==='تصميم صالة' }" @click="service='تصميم صالة'"><i class="fas fa-couch"></i> تصميم صالة</button>
+            <button class="service-btn" :class="{ active: service==='استشارة تصميم' }" @click="service='استشارة تصميم'"><i class="fas fa-pencil-ruler"></i> استشارة تصميم</button>
+          </div>
+        </div>
+
+        <!-- Category: Home Renovation -->
+        <div class="mb-3">
+          <div style="font-size:0.78rem;font-weight:700;color:var(--k-primary);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.5rem;border-bottom:1px solid rgba(2,128,144,0.15);padding-bottom:0.25rem">
+            <i class="fas fa-hard-hat me-1"></i> تجديد منازل
+          </div>
+          <div class="d-flex flex-wrap gap-2">
+            <button class="service-btn" :class="{ active: service==='تجديد شامل' }" @click="service='تجديد شامل'"><i class="fas fa-hard-hat"></i> تجديد شامل</button>
+            <button class="service-btn" :class="{ active: service==='تبليط وسيراميك' }" @click="service='تبليط وسيراميك'"><i class="fas fa-th-large"></i> تبليط وسيراميك</button>
+            <button class="service-btn" :class="{ active: service==='جبس وأسقف' }" @click="service='جبس وأسقف'"><i class="fas fa-border-top-left"></i> جبس وأسقف</button>
+            <button class="service-btn" :class="{ active: service==='واجهات خارجية' }" @click="service='واجهات خارجية'"><i class="fas fa-city"></i> واجهات خارجية</button>
+          </div>
+        </div>
+
+        <!-- Category: Landscaping -->
+        <div class="mb-3">
+          <div style="font-size:0.78rem;font-weight:700;color:var(--k-primary);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.5rem;border-bottom:1px solid rgba(2,128,144,0.15);padding-bottom:0.25rem">
+            <i class="fas fa-seedling me-1"></i> تنسيق حدائق
+          </div>
+          <div class="d-flex flex-wrap gap-2">
+            <button class="service-btn" :class="{ active: service==='تصميم حديقة' }" @click="service='تصميم حديقة'"><i class="fas fa-seedling"></i> تصميم حديقة</button>
+            <button class="service-btn" :class="{ active: service==='قص وتشكيل نباتات' }" @click="service='قص وتشكيل نباتات'"><i class="fas fa-cut"></i> قص وتشكيل نباتات</button>
+            <button class="service-btn" :class="{ active: service==='ري تلقائي' }" @click="service='ري تلقائي'"><i class="fas fa-tint"></i> ري تلقائي</button>
+            <button class="service-btn" :class="{ active: service==='نظافة حديقة' }" @click="service='نظافة حديقة'"><i class="fas fa-leaf"></i> نظافة حديقة</button>
+          </div>
+        </div>
+
+        <!-- Category: General Maintenance -->
+        <div class="mb-4">
+          <div style="font-size:0.78rem;font-weight:700;color:var(--k-primary);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.5rem;border-bottom:1px solid rgba(2,128,144,0.15);padding-bottom:0.25rem">
+            <i class="fas fa-tools me-1"></i> صيانة عامة
+          </div>
+          <div class="d-flex flex-wrap gap-2">
+            <button class="service-btn" :class="{ active: service==='صيانة دورية' }" @click="service='صيانة دورية'"><i class="fas fa-tools"></i> صيانة دورية</button>
+            <button class="service-btn" :class="{ active: service==='إصلاح عام' }" @click="service='إصلاح عام'"><i class="fas fa-wrench"></i> إصلاح عام</button>
+            <button class="service-btn" :class="{ active: service==='زجاج ومرايا' }" @click="service='زجاج ومرايا'"><i class="fas fa-window-maximize"></i> زجاج ومرايا</button>
+            <button class="service-btn" :class="{ active: service==='أخرى' }" @click="service='أخرى'"><i class="fas fa-ellipsis-h"></i> أخرى</button>
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label fw-600">المنطقة / المدينة</label>
+          <select class="form-select" x-model="city">
+            <optgroup label="منطقة الرياض">
+              <option>الرياض</option><option>الخرج</option><option>الدوادمي</option><option>المجمعة</option>
+            </optgroup>
+            <optgroup label="منطقة مكة المكرمة">
+              <option>جدة</option><option>مكة المكرمة</option><option>الطائف</option>
+            </optgroup>
+            <optgroup label="المنطقة الشرقية">
+              <option>الدمام</option><option>الأحساء</option><option>الجبيل</option><option>الخبر</option>
+            </optgroup>
+            <optgroup label="منطقة المدينة المنورة">
+              <option>المدينة المنورة</option><option>ينبع</option>
+            </optgroup>
+            <optgroup label="منطقة عسير">
+              <option>أبها</option><option>خميس مشيط</option>
+            </optgroup>
+            <optgroup label="منطقة القصيم">
+              <option>بريدة</option><option>عنيزة</option>
+            </optgroup>
+            <optgroup label="منطقة تبوك">
+              <option>تبوك</option>
+            </optgroup>
+            <optgroup label="منطقة حائل">
+              <option>حائل</option>
+            </optgroup>
+          </select>
+        </div>
+
+        <button class="btn btn-primary w-100 py-3" :disabled="!service" @click="step=2" style="border-radius:12px">
+          التالي <i class="fas fa-arrow-left ms-2"></i>
+        </button>
+      </div>
+
+      <!-- Step 2 -->
+      <div x-show="step===2">
+        <h5 style="font-weight:800;color:var(--k-dark-2);margin-bottom:1.25rem">تفاصيل الطلب</h5>
+
+        <div class="mb-4">
+          <label class="form-label fw-600">ماذا تحتاج؟</label>
+          <div class="row g-3">
+            <div class="col-6">
+              <div class="k-role-card" :class="{ active: !hasMaterials }" @click="hasMaterials=false" style="padding:1.25rem;text-align:center">
+                <i class="fas fa-tools fa-2x mb-2" style="color:var(--k-primary)"></i>
+                <h6 class="mb-1">عمالة فقط</h6>
+                <small style="color:var(--k-gray)">المواد على حسابك</small>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="k-role-card" :class="{ active: hasMaterials }" @click="hasMaterials=true" style="padding:1.25rem;text-align:center">
+                <i class="fas fa-boxes fa-2x mb-2" style="color:var(--k-primary)"></i>
+                <h6 class="mb-1">عمالة + مواد</h6>
+                <small style="color:var(--k-gray)">المزود يوفر كل شيء</small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label fw-600">وصف المشكلة أو الطلب <span style="color:var(--k-danger)">*</span></label>
+          <textarea class="form-control" rows="4" placeholder="اشرح المشكلة أو الخدمة المطلوبة بالتفصيل... كلما كان الوصف أوضح، كانت عروض الأسعار أدق." x-model="description" maxlength="500"></textarea>
+          <div class="d-flex justify-content-end mt-1">
+            <small style="color:var(--k-gray)" x-text="(description||'').length + '/500'">0/500</small>
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label fw-600">صور توضيحية (اختياري، حتى 3 صور)</label>
+          <div class="k-upload-zone" onclick="document.getElementById('photoInput').click()">
+            <div class="k-upload-icon"><i class="fas fa-camera"></i></div>
+            <p style="color:var(--k-gray);margin:0;font-size:0.9rem">اسحب الصور هنا أو انقر للاختيار</p>
+            <small style="color:var(--k-gray);font-size:0.8rem">JPG, PNG — حد أقصى 5MB لكل صورة</small>
+            <input type="file" id="photoInput" multiple accept="image/*" style="display:none" onchange="previewPhotos(this)">
+          </div>
+          <div id="photoPreview" class="d-flex gap-2 mt-2 flex-wrap"></div>
+        </div>
+
+        <div class="d-flex gap-3">
+          <button class="btn btn-outline-secondary flex-fill py-2" @click="step=1" style="border-radius:12px">
+            <i class="fas fa-arrow-right ms-2"></i> السابق
+          </button>
+          <button class="btn btn-primary flex-fill py-2" @click="step=3" :disabled="!description" style="border-radius:12px">
+            التالي <i class="fas fa-arrow-left ms-2"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div x-show="step===3">
+        <h5 style="font-weight:800;color:var(--k-dark-2);margin-bottom:1.25rem">اختر الموعد المناسب</h5>
+
+        <div class="mb-4">
+          <label class="form-label fw-600">التاريخ</label>
+          <input type="date" class="form-control" x-model="date" :min="new Date().toISOString().split('T')[0]">
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label fw-600">الوقت</label>
+          <div class="row g-2">
+            <div class="col-6 col-md-3"><div class="time-slot" :class="{ active: time==='9:00 ص' }" @click="time='9:00 ص'">9:00 ص</div></div>
+            <div class="col-6 col-md-3"><div class="time-slot" :class="{ active: time==='10:00 ص' }" @click="time='10:00 ص'">10:00 ص</div></div>
+            <div class="col-6 col-md-3"><div class="time-slot" :class="{ active: time==='11:00 ص' }" @click="time='11:00 ص'">11:00 ص</div></div>
+            <div class="col-6 col-md-3"><div class="time-slot" :class="{ active: time==='12:00 م' }" @click="time='12:00 م'">12:00 م</div></div>
+            <div class="col-6 col-md-3"><div class="time-slot" :class="{ active: time==='1:00 م' }" @click="time='1:00 م'">1:00 م</div></div>
+            <div class="col-6 col-md-3"><div class="time-slot" :class="{ active: time==='2:00 م' }" @click="time='2:00 م'">2:00 م</div></div>
+            <div class="col-6 col-md-3"><div class="time-slot" :class="{ active: time==='3:00 م' }" @click="time='3:00 م'">3:00 م</div></div>
+            <div class="col-6 col-md-3"><div class="time-slot" :class="{ active: time==='4:00 م' }" @click="time='4:00 م'">4:00 م</div></div>
+          </div>
+        </div>
+
+        <!-- Order Summary -->
+        <div class="k-glass" style="background:rgba(2,128,144,0.04);border:1px solid rgba(2,128,144,0.15);border-radius:16px;padding:1.25rem;margin-bottom:1.5rem">
+          <h6 style="font-weight:800;color:var(--k-dark-2);margin-bottom:0.75rem"><i class="fas fa-clipboard-list ms-2" style="color:var(--k-primary)"></i> ملخص الطلب</h6>
+          <div class="d-flex flex-column gap-1" style="font-size:0.9rem">
+            <div class="d-flex justify-content-between"><span style="color:var(--k-gray)">الخدمة:</span><strong x-text="service || '—'"></strong></div>
+            <div class="d-flex justify-content-between"><span style="color:var(--k-gray)">المدينة:</span><strong x-text="city || '—'"></strong></div>
+            <div class="d-flex justify-content-between"><span style="color:var(--k-gray)">النوع:</span><strong x-text="hasMaterials ? 'عمالة + مواد' : 'عمالة فقط'"></strong></div>
+            <div class="d-flex justify-content-between"><span style="color:var(--k-gray)">التاريخ:</span><strong x-text="date || '—'"></strong></div>
+            <div class="d-flex justify-content-between"><span style="color:var(--k-gray)">الوقت:</span><strong x-text="time || '—'"></strong></div>
+            <hr style="margin:0.5rem 0;border-color:rgba(2,128,144,0.2)">
+            <div class="d-flex justify-content-between"><span style="color:var(--k-gray)">السعر التقديري:</span><strong style="color:var(--k-primary)">200 - 400 ر.س</strong></div>
+          </div>
+        </div>
+
+        <div class="d-flex gap-3">
+          <button class="btn btn-outline-secondary flex-fill py-2" @click="step=2" style="border-radius:12px">
+            <i class="fas fa-arrow-right ms-2"></i> السابق
+          </button>
+          <button class="btn btn-accent flex-fill py-3" :disabled="!date||!time" @click="submitQuote()" style="border-radius:12px;font-size:1rem">
+            <i class="fas fa-check ms-2"></i> تأكيد الطلب وإرسال
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+<script src="../assets/js/khedmah.js"></script>
+<script>
+  // Load provider name from sessionStorage (set by search/profile pages)
+  (function () {
+    const el = document.getElementById('providerName');
+    const name = sessionStorage.getItem('quoteProvider');
+    if (el && name) el.textContent = name;
+  })();
+
+  function quoteApp() {
+    return {
+      step: 1,
+      service: '',
+      city: 'الرياض',
+      hasMaterials: false,
+      description: '',
+      date: '',
+      time: '',
+
+      submitQuote() {
+        // Persist quote data so payment page can display it
+        sessionStorage.setItem('quoteService',    this.service);
+        sessionStorage.setItem('quoteCity',       this.city);
+        sessionStorage.setItem('quoteMaterials',  this.hasMaterials ? 'عمالة + مواد' : 'عمالة فقط');
+        sessionStorage.setItem('quoteDate',       this.date);
+        sessionStorage.setItem('quoteTime',       this.time);
+        sessionStorage.setItem('quoteDescription', this.description);
+        window.location.href = '../shared/payment-escrow.html';
+      }
+    };
+  }
+  function previewPhotos(input) {
+    const preview = document.getElementById('photoPreview');
+    preview.innerHTML = '';
+    const files = Array.from(input.files).slice(0, 3);
+    files.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = e => {
+        const div = document.createElement('div');
+        div.style.cssText = 'width:80px;height:80px;border-radius:10px;overflow:hidden;border:2px solid var(--k-primary)';
+        div.innerHTML = `<img src="${e.target.result}" alt="" style="width:100%;height:100%;object-fit:cover">`;
+        preview.appendChild(div);
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الخدمات المهنية والاستشارات — خدمة</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="../assets/css/khedmah.css">
+  <style>
+    :root { --prof-color: #7c3aed; --prof-dk: #5b21b6; --prof-light: #f5f3ff; }
+    body { background: #f8fafc; }
+
+    .prof-hero {
+      background: linear-gradient(135deg, #1e1b4b 0%, #3730a3 50%, #7c3aed 100%);
+      padding: 4rem 0 5rem;
+      position: relative; overflow: hidden;
+    }
+    .prof-hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 20% 50%, rgba(124,58,237,0.3) 0%, transparent 60%),
+                  radial-gradient(ellipse at 80% 20%, rgba(99,102,241,0.2) 0%, transparent 50%);
+    }
+
+    /* Specialisation filter pills */
+    .spec-pill {
+      border: 2px solid #e2e8f0;
+      border-radius: 50px;
+      padding: 0.45rem 1.1rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--k-gray);
+      background: #fff;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+    }
+    .spec-pill:hover, .spec-pill.active {
+      border-color: var(--prof-color);
+      background: var(--prof-light);
+      color: var(--prof-color);
+    }
+
+    /* Professional card */
+    .prof-card {
+      background: #fff;
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1.5px solid #e2e8f0;
+      transition: all 0.3s ease;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+    .prof-card:hover {
+      border-color: var(--prof-color);
+      box-shadow: 0 12px 40px rgba(124,58,237,0.14);
+      transform: translateY(-5px);
+    }
+    .prof-card-header {
+      padding: 1.5rem 1.5rem 1rem;
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+    .prof-avatar {
+      width: 64px; height: 64px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.6rem; color: #fff;
+      flex-shrink: 0;
+      font-weight: 800;
+    }
+    .prof-badge {
+      display: inline-flex; align-items: center; gap: 0.3rem;
+      background: rgba(124,58,237,0.08);
+      color: var(--prof-color);
+      border: 1px solid rgba(124,58,237,0.2);
+      border-radius: 50px;
+      padding: 0.15rem 0.65rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+    .prof-verified {
+      background: rgba(16,185,129,0.08);
+      color: var(--k-success);
+      border-color: rgba(16,185,129,0.25);
+    }
+    .prof-services-list {
+      padding: 0 1.5rem 1rem;
+      flex: 1;
+    }
+    .prof-service-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid #f1f5f9;
+      font-size: 0.88rem;
+    }
+    .prof-service-item:last-child { border-bottom: none; }
+    .prof-service-name { color: var(--k-dark-2); font-weight: 600; }
+    .prof-service-price {
+      font-weight: 800;
+      color: var(--prof-color);
+      white-space: nowrap;
+      margin-right: 0.5rem;
+    }
+    .prof-service-type {
+      font-size: 0.72rem;
+      color: var(--k-gray);
+      background: #f1f5f9;
+      border-radius: 50px;
+      padding: 0.15rem 0.5rem;
+    }
+    .prof-card-footer {
+      padding: 1rem 1.5rem;
+      border-top: 1px solid #f1f5f9;
+      background: #fafbfc;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    /* Discipline category cards */
+    .disc-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 1.5rem;
+      border: 1.5px solid #e2e8f0;
+      transition: all 0.25s;
+      text-align: center;
+      cursor: pointer;
+      text-decoration: none;
+      display: block;
+      color: inherit;
+    }
+    .disc-card:hover {
+      border-color: var(--prof-color);
+      background: var(--prof-light);
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(124,58,237,0.12);
+      color: inherit;
+    }
+    .disc-card i {
+      font-size: 2rem;
+      color: var(--prof-color);
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+    .disc-card h6 {
+      font-weight: 800;
+      color: var(--k-dark-2);
+      margin-bottom: 0.25rem;
+      font-size: 0.95rem;
+    }
+    .disc-card small { color: var(--k-gray); font-size: 0.78rem; }
+
+    /* How it works */
+    .hiw-step {
+      text-align: center;
+      padding: 2rem 1.5rem;
+    }
+    .hiw-num {
+      width: 56px; height: 56px;
+      background: linear-gradient(135deg, var(--prof-color), #6366f1);
+      color: #fff;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 900; font-size: 1.3rem;
+      margin: 0 auto 1.25rem;
+      box-shadow: 0 8px 24px rgba(124,58,237,0.35);
+    }
+  </style>
+</head>
+<body>
+
+<a href="#main-content" class="k-skip-link">تخطى إلى المحتوى الرئيسي</a>
+
+<!-- Navbar -->
+<nav class="k-navbar navbar navbar-expand-lg" role="navigation" aria-label="التنقل الرئيسي">
+  <div class="container">
+    <a class="navbar-brand" href="../index.html">خدم<span style="color:var(--k-accent)">ة</span></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain" aria-label="فتح القائمة">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navMain">
+      <ul class="navbar-nav me-auto gap-1">
+        <li class="nav-item"><a class="nav-link" href="../index.html">الرئيسية</a></li>
+        <li class="nav-item"><a class="nav-link" href="../customer/home-services.html">خدمات المنازل</a></li>
+        <li class="nav-item"><a class="nav-link active" href="professional-services.html" aria-current="page">الخدمات المهنية</a></li>
+        <li class="nav-item"><a class="nav-link" href="../tenders/index.html">المناقصات</a></li>
+        <li class="nav-item"><a class="nav-link" href="../equipment/index.html">المعدات</a></li>
+      </ul>
+      <div class="d-flex gap-2 align-items-center">
+        <a href="../auth/login.html"  class="btn btn-outline-light btn-sm" style="min-height:40px;display:flex;align-items:center">دخول</a>
+        <a href="../auth/signup.html?role=engineer" class="btn btn-sm px-3" style="background:linear-gradient(135deg,var(--prof-color),#6366f1);color:#fff;border:none;min-height:40px;display:flex;align-items:center;border-radius:10px">انضم كمهندس</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<main id="main-content">
+
+<!-- ── Hero ── -->
+<section class="prof-hero" aria-label="الخدمات المهنية والاستشارات الهندسية">
+  <div class="container position-relative">
+    <div class="row align-items-center g-4">
+      <div class="col-lg-7" data-aos="fade-right">
+        <span class="badge mb-3 px-3 py-2" style="background:rgba(255,255,255,0.12);color:#c4b5fd;border:1px solid rgba(255,255,255,0.2);font-size:0.85rem">
+          <i class="fas fa-hard-hat me-1" aria-hidden="true"></i> مهندسون ومستشارون معتمدون
+        </span>
+        <h1 style="font-weight:900;color:#fff;font-size:clamp(1.8rem,4vw,2.8rem);line-height:1.3;margin-bottom:1rem">
+          خبراء هندسيون ومستشارون<br>
+          <span style="color:#c4b5fd">لكل مشروعك</span>
+        </h1>
+        <p style="color:rgba(255,255,255,0.78);font-size:1rem;line-height:1.8;margin-bottom:2rem;max-width:520px">
+          تواصل مباشرةً مع مهندسين ومستشارين معتمدين — من الاستشارة الكهربائية والمعمارية إلى إدارة المشاريع والتفتيش الهيكلي. بسعر ثابت أو بالساعة.
+        </p>
+        <!-- Search -->
+        <div class="input-group" style="max-width:520px;border-radius:14px;overflow:hidden;box-shadow:0 10px 40px rgba(0,0,0,0.3)">
+          <span class="input-group-text" style="background:#fff;border:none;padding:0 1rem"><i class="fas fa-search" style="color:var(--prof-color)"></i></span>
+          <input type="search" id="profSearch" class="form-control" placeholder="ابحث: مهندس كهربائي، معماري، استشاري..." style="border:none;padding:1rem;font-size:0.95rem" aria-label="ابحث عن خدمة مهنية">
+          <button onclick="doProfSearch()" class="btn px-4" style="background:var(--prof-color);color:#fff;border:none;border-radius:0;font-weight:700;min-height:48px">بحث</button>
+        </div>
+        <p style="color:rgba(255,255,255,0.45);font-size:0.78rem;margin-top:0.6rem">
+          الأكثر بحثاً:
+          <a href="#" onclick="filterBySpec('electrical');return false" style="color:rgba(255,255,255,0.65);text-decoration:none;margin-inline:0.3rem">كهربائي</a>·
+          <a href="#" onclick="filterBySpec('civil');return false" style="color:rgba(255,255,255,0.65);text-decoration:none;margin-inline:0.3rem">مدني</a>·
+          <a href="#" onclick="filterBySpec('arch');return false" style="color:rgba(255,255,255,0.65);text-decoration:none;margin-inline:0.3rem">معماري</a>·
+          <a href="#" onclick="filterBySpec('mep');return false" style="color:rgba(255,255,255,0.65);text-decoration:none;margin-inline:0.3rem">MEP</a>
+        </p>
+      </div>
+      <div class="col-lg-5 d-none d-lg-block" data-aos="fade-left">
+        <div class="k-glass-dark p-4 rounded-4" style="max-width:340px;margin-inline:auto">
+          <div class="row g-3 text-center">
+            <div class="col-6">
+              <div class="k-glass p-3 rounded-3">
+                <div style="font-size:1.6rem;color:#c4b5fd"><i class="fas fa-user-graduate"></i></div>
+                <div style="color:#fff;font-weight:700;font-size:0.88rem;margin-top:0.4rem">120+</div>
+                <div style="color:rgba(255,255,255,0.5);font-size:0.72rem">مهندس معتمد</div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="k-glass p-3 rounded-3">
+                <div style="font-size:1.6rem;color:#c4b5fd"><i class="fas fa-award"></i></div>
+                <div style="color:#fff;font-weight:700;font-size:0.88rem;margin-top:0.4rem">8 تخصصات</div>
+                <div style="color:rgba(255,255,255,0.5);font-size:0.72rem">هندسية</div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="k-glass p-3 rounded-3">
+                <div style="font-size:1.6rem;color:#c4b5fd"><i class="fas fa-clock"></i></div>
+                <div style="color:#fff;font-weight:700;font-size:0.88rem;margin-top:0.4rem">استجابة فورية</div>
+                <div style="color:rgba(255,255,255,0.5);font-size:0.72rem">خلال ساعة</div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="k-glass p-3 rounded-3">
+                <div style="font-size:1.6rem;color:#c4b5fd"><i class="fas fa-file-signature"></i></div>
+                <div style="color:#fff;font-weight:700;font-size:0.88rem;margin-top:0.4rem">عقد رسمي</div>
+                <div style="color:rgba(255,255,255,0.5);font-size:0.72rem">لكل خدمة</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Discipline Categories ── -->
+<section style="background:#fff;padding:3.5rem 0 2.5rem" aria-labelledby="disc-heading">
+  <div class="container">
+    <div class="text-center mb-4" data-aos="fade-up">
+      <span class="k-section-label" style="background:rgba(124,58,237,0.08);color:var(--prof-color)">التخصصات الهندسية</span>
+      <h2 id="disc-heading" class="k-section-title mt-2">اختر تخصصك</h2>
+      <p style="color:var(--k-gray)">8 تخصصات هندسية · استشارات فنية · تصميم · إشراف</p>
+    </div>
+    <div class="row g-3">
+      <div class="col-6 col-md-3 col-lg-3" data-aos="fade-up" data-aos-delay="0">
+        <a href="#prof-list" onclick="filterBySpec('electrical')" class="disc-card">
+          <i class="fas fa-bolt" aria-hidden="true"></i>
+          <h6>كهربائي</h6>
+          <small>أنظمة كهربائية · لوحات توزيع · شبكات</small>
+        </a>
+      </div>
+      <div class="col-6 col-md-3 col-lg-3" data-aos="fade-up" data-aos-delay="50">
+        <a href="#prof-list" onclick="filterBySpec('civil')" class="disc-card">
+          <i class="fas fa-hard-hat" aria-hidden="true"></i>
+          <h6>مدني وإنشائي</h6>
+          <small>هياكل إنشائية · أساسات · جسور</small>
+        </a>
+      </div>
+      <div class="col-6 col-md-3 col-lg-3" data-aos="fade-up" data-aos-delay="100">
+        <a href="#prof-list" onclick="filterBySpec('arch')" class="disc-card">
+          <i class="fas fa-drafting-compass" aria-hidden="true"></i>
+          <h6>معماري</h6>
+          <small>تصميم معماري · مخططات · ترخيص</small>
+        </a>
+      </div>
+      <div class="col-6 col-md-3 col-lg-3" data-aos="fade-up" data-aos-delay="150">
+        <a href="#prof-list" onclick="filterBySpec('mep')" class="disc-card">
+          <i class="fas fa-cog" aria-hidden="true"></i>
+          <h6>ميكانيكا وتكييف MEP</h6>
+          <small>أنظمة HVAC · سباكة هندسية · تهوية</small>
+        </a>
+      </div>
+      <div class="col-6 col-md-3 col-lg-3" data-aos="fade-up" data-aos-delay="200">
+        <a href="#prof-list" onclick="filterBySpec('pm')" class="disc-card">
+          <i class="fas fa-tasks" aria-hidden="true"></i>
+          <h6>إدارة مشاريع</h6>
+          <small>تخطيط · جدول زمني · متابعة تنفيذ</small>
+        </a>
+      </div>
+      <div class="col-6 col-md-3 col-lg-3" data-aos="fade-up" data-aos-delay="250">
+        <a href="#prof-list" onclick="filterBySpec('interior')" class="disc-card">
+          <i class="fas fa-couch" aria-hidden="true"></i>
+          <h6>تصميم داخلي</h6>
+          <small>ديكور · فراغات · مواد ومواصفات</small>
+        </a>
+      </div>
+      <div class="col-6 col-md-3 col-lg-3" data-aos="fade-up" data-aos-delay="300">
+        <a href="#prof-list" onclick="filterBySpec('survey')" class="disc-card">
+          <i class="fas fa-map-marked-alt" aria-hidden="true"></i>
+          <h6>مساحة وطبوغرافيا</h6>
+          <small>رفع مساحي · حدود قطع · GIS</small>
+        </a>
+      </div>
+      <div class="col-6 col-md-3 col-lg-3" data-aos="fade-up" data-aos-delay="350">
+        <a href="#prof-list" onclick="filterBySpec('fire')" class="disc-card">
+          <i class="fas fa-fire-extinguisher" aria-hidden="true"></i>
+          <h6>إطفاء وسلامة</h6>
+          <small>أنظمة إطفاء · مخارج طوارئ · شهادات</small>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Main Listing ── -->
+<section id="prof-list" style="background:#f8fafc;padding:3.5rem 0 4rem" aria-labelledby="prof-heading">
+  <div class="container">
+
+    <!-- Header row -->
+    <div class="k-section-header" data-aos="fade-up">
+      <div>
+        <span class="k-section-label" style="background:rgba(124,58,237,0.08);color:var(--prof-color)" id="activeSpecLabel">جميع التخصصات</span>
+        <h2 id="prof-heading" class="k-section-title mt-2">المهندسون والمستشارون المتاحون</h2>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <label class="form-label mb-0 text-nowrap" style="font-size:0.88rem;color:var(--k-gray)">ترتيب حسب:</label>
+        <select class="form-select form-select-sm" style="width:auto" id="sortSelect">
+          <option>الأعلى تقييماً</option>
+          <option>الأقل سعراً</option>
+          <option>الأكثر خبرة</option>
+          <option>الأسرع استجابة</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Spec filter pills -->
+    <div class="d-flex flex-wrap gap-2 mb-4" role="group" aria-label="تصفية حسب التخصص">
+      <button class="spec-pill active" id="pill-all"        onclick="filterBySpec('all',this)">الكل</button>
+      <button class="spec-pill" id="pill-electrical" onclick="filterBySpec('electrical',this)"><i class="fas fa-bolt me-1"></i>كهربائي</button>
+      <button class="spec-pill" id="pill-civil"      onclick="filterBySpec('civil',this)"><i class="fas fa-hard-hat me-1"></i>مدني وإنشائي</button>
+      <button class="spec-pill" id="pill-arch"       onclick="filterBySpec('arch',this)"><i class="fas fa-drafting-compass me-1"></i>معماري</button>
+      <button class="spec-pill" id="pill-mep"        onclick="filterBySpec('mep',this)"><i class="fas fa-cog me-1"></i>MEP</button>
+      <button class="spec-pill" id="pill-pm"         onclick="filterBySpec('pm',this)"><i class="fas fa-tasks me-1"></i>إدارة مشاريع</button>
+      <button class="spec-pill" id="pill-interior"   onclick="filterBySpec('interior',this)"><i class="fas fa-couch me-1"></i>تصميم داخلي</button>
+    </div>
+
+    <!-- Pricing type toggle -->
+    <div class="d-flex gap-3 mb-5 align-items-center" role="group" aria-label="نوع التسعير">
+      <span style="font-size:0.88rem;font-weight:600;color:var(--k-gray)">نوع الخدمة:</span>
+      <button class="spec-pill active" onclick="togglePricing('all',this)" id="pt-all">الكل</button>
+      <button class="spec-pill" onclick="togglePricing('fixed',this)" id="pt-fixed"><i class="fas fa-tag me-1"></i>سعر ثابت</button>
+      <button class="spec-pill" onclick="togglePricing('hourly',this)" id="pt-hourly"><i class="fas fa-clock me-1"></i>بالساعة</button>
+    </div>
+
+    <!-- Cards Grid -->
+    <div class="row g-4" id="profCards">
+
+      <!-- Card 1 — Electrical Engineer -->
+      <div class="col-md-6 col-lg-4 prof-card-wrap" data-spec="electrical" data-aos="fade-up" data-aos-delay="0">
+        <div class="prof-card">
+          <div class="prof-card-header">
+            <div class="prof-avatar" style="background:linear-gradient(135deg,#f59e0b,#d97706)">م.أ</div>
+            <div style="flex:1">
+              <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
+                <h3 style="font-weight:800;font-size:1rem;color:var(--k-dark-2);margin:0">م. أحمد الشمري</h3>
+                <span class="prof-badge prof-verified"><i class="fas fa-check-circle" aria-hidden="true"></i> موثّق</span>
+              </div>
+              <div style="font-size:0.82rem;color:var(--k-gray);margin-bottom:0.4rem">
+                <i class="fas fa-bolt me-1" style="color:#f59e0b" aria-hidden="true"></i> مهندس كهربائي — 12 سنة خبرة
+              </div>
+              <div style="font-size:0.78rem;color:var(--k-gray)">
+                <i class="fas fa-graduation-cap me-1" aria-hidden="true"></i> بكالوريوس هندسة كهربائية — جامعة الملك سعود
+              </div>
+              <div class="mt-1">
+                <span class="prof-badge" style="background:#fef3c7;color:#92400e;border-color:#fde68a">ترخيص هيئة المهندسين</span>
+              </div>
+              <div style="font-size:0.82rem;color:#f59e0b;margin-top:0.4rem" aria-label="4.9 من 5">
+                <i class="fas fa-star" aria-hidden="true"></i><i class="fas fa-star" aria-hidden="true"></i><i class="fas fa-star" aria-hidden="true"></i><i class="fas fa-star" aria-hidden="true"></i><i class="fas fa-star" aria-hidden="true"></i>
+                <span style="color:var(--k-gray)"> 4.9 (87 تقييم)</span>
+              </div>
+            </div>
+          </div>
+          <div class="prof-services-list">
+            <div class="prof-service-item" data-pricing="fixed">
+              <span class="prof-service-name">فحص وتقرير كهربائي</span>
+              <div class="d-flex align-items-center gap-1">
+                <span class="prof-service-type">ثابت</span>
+                <span class="prof-service-price">800 ر.س</span>
+              </div>
+            </div>
+            <div class="prof-service-item" data-pricing="fixed">
+              <span class="prof-service-name">تصميم لوحة كهربائية</span>
+              <div class="d-flex align-items-center gap-1">
+                <span class="prof-service-type">ثابت</span>
+                <span class="prof-service-price">1,500 ر.س</span>
+              </div>
+            </div>
+            <div class="prof-service-item" data-pricing="hourly">
+              <span class="prof-service-name">استشارة هندسية</span>
+              <div class="d-flex align-items-center gap-1">
+                <span class="prof-service-type">بالساعة</span>
+                <span class="prof-service-price">350 ر.س/س</span>
+              </div>
+            </div>
+          </div>
+          <div class="prof-card-footer">
+            <div>
+              <div style="font-size:0.75rem;color:var(--k-gray)">متاح للحجز</div>
+              <div style="font-weight:700;color:var(--k-success);font-size:0.85rem"><i class="fas fa-circle" style="font-size:0.5rem;margin-left:0.3rem" aria-hidden="true"></i>متاح الآن</div>
+            </div>
+            <div class="d-flex gap-2">
+              <a href="../customer/chat.html" class="btn btn-outline-secondary btn-sm" aria-label="راسل م. أحمد"><i class="fas fa-comment"></i></a>
+              <a href="../customer/quote-request.html?type=professional" class="btn btn-sm px-3" style="background:linear-gradient(135deg,var(--prof-color),#6366f1);color:#fff;border:none;border-radius:8px" aria-label="احجز مع م. أحمد">احجز الآن</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2 — Civil/Structural -->
+      <div class="col-md-6 col-lg-4 prof-card-wrap" data-spec="civil" data-aos="fade-up" data-aos-delay="80">
+        <div class="prof-card">
+          <div class="prof-card-header">
+            <div class="prof-avatar" style="background:linear-gradient(135deg,#0369a1,#0284c7)">م.خ</div>
+            <div style="flex:1">
+              <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
+                <h3 style="font-weight:800;font-size:1rem;color:var(--k-dark-2);margin:0">م. خالد العمر</h3>
+                <span class="prof-badge prof-verified"><i class="fas fa-check-circle" aria-hidden="true"></i> موثّق</span>
+              </div>
+              <div style="font-size:0.82rem;color:var(--k-gray);margin-bottom:0.4rem">
+                <i class="fas fa-hard-hat me-1" style="color:#0369a1" aria-hidden="true"></i> مهندس مدني وإنشائي — 18 سنة خبرة
+              </div>
+              <div style="font-size:0.78rem;color:var(--k-gray)">
+                <i class="fas fa-graduation-cap me-1" aria-hidden="true"></i> ماجستير هندسة إنشائية — جامعة الملك فهد
+              </div>
+              <div class="mt-1">
+                <span class="prof-badge" style="background:#eff6ff;color:#0369a1;border-color:#bfdbfe">G9 — تصنيف حكومي</span>
+              </div>
+              <div style="font-size:0.82rem;color:#f59e0b;margin-top:0.4rem" aria-label="4.8 من 5">
+                <i class="fas fa-star" aria-hidden="true"></i><i class="fas fa-star" aria-hidden="true"></i><i class="fas fa-star" aria-hidden="true"></i><i class="fas fa-star" aria-hidden="true"></i><i class="fas fa-star-half-alt" aria-hidden="true"></i>
+                <span style="color:var(--k-gray)"> 4.8 (143 تقييم)</span>
+              </div>
+            </div>
+          </div>
+          <div class="prof-services-list">
+            <div class="prof-service-item" data-pricing="fixed">
+              <span class="prof-service-name">تقرير فحص هيكلي</span>
+              <div class="d-flex align-items-center gap-1">
+                <span class="prof-service-type">ثابت</span>
+                <span class="prof-service-price">2,200 ر.س</span>
+              </div>
+            </div>
+            <div class="prof-service-item" data-pricing="fixed">
+              <span class="prof-service-name">مخططات أساسات</span>
+              <div class="d-flex align-items-center gap-1">
+                <span class="prof-service-type">ثابت</span>
+                <span class="prof-service-price">3,500 ر.س</span>
+              </div>
+            </div>
+            <div class="prof-service-item" data-pricing="hourly">
+              <span class="prof-service-name">إشراف ميداني</span>
+              <div class="d-flex align-items-center gap-1">
+                <span class="prof-service-type">بالساعة</span>
+                <span class="prof-service-price">500 ر.س/س</span>
+              </div>
+            </div>
+          </div>
+          <div class="prof-card-footer">
+            <div>
+              <div style="font-size:0.75rem;color:var(--k-gray)">التوفر</div>
+              <div style="font-weight:700;color:#f59e0b;font-size:0.85rem"><i class="fas fa-circle" style="font-size:0.5rem;margin-left:0.3rem" aria-hidden="true"></i>مشغول — متاح خلال 3 أيام</div>
+            </div>
+            <div class="d-flex gap-2">
+              <a href="../customer/chat.html" class="btn btn-outline-secondary btn-sm"><i class="fas fa-comment"></i></a>
+              <a href="../customer/quote-request.html?type=professional" class="btn btn-sm px-3" style="background:linear-gradient(135deg,var(--prof-color),#6366f1);color:#fff;border:none;border-radius:8px">احجز الآن</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3 — Architect -->
+      <div class="col-md-6 col-lg-4 prof-card-wrap" data-spec="arch" data-aos="fade-up" data-aos-delay="160">
+        <div class="prof-card">
+          <div class="prof-card-header">
+            <div class="prof-avatar" style="background:linear-gradient(135deg,#7c3aed,#6d28d9)">م.س</div>
+            <div style="flex:1">
+              <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
+                <h3 style="font-weight:800;font-size:1rem;color:var(--k-dark-2);margin:0">م. سارة المالكي</h3>
+                <span class="prof-badge prof-verified"><i class="fas fa-check-circle" aria-hidden="true"></i> موثّقة</span>
+              </div>
+              <div style="font-size:0.82rem;color:var(--k-gray);margin-bottom:0.4rem">
+                <i class="fas fa-drafting-compass me-1" style="color:#7c3aed" aria-hidden="true"></i> مهندسة معمارية — 9 سنوات خبرة
+              </div>
+              <div style="font-size:0.78rem;color:var(--k-gray)">
+                <i class="fas fa-graduation-cap me-1" aria-hidden="true"></i> بكالوريوس عمارة — جامعة الملك عبدالعزيز
+              </div>
+              <div class="mt-1">
+                <span class="prof-badge" style="background:#f5f3ff;color:#7c3aed;border-color:#ddd6fe">عضو هيئة المعماريين السعوديين</span>
+              </div>
+              <div style="font-size:0.82rem;color:#f59e0b;margin-top:0.4rem" aria-label="5 من 5">
+                <i class="fas fa-star" aria-hidden="true"></i><i class="fas fa-star" aria-hidden="true"></i><i class="fas fa-star" aria-hidden="true"></i><i class="fas fa-star" aria-hidden="true"></i><i class="fas fa-star" aria-hidden="true"></i>
+                <span style="color:var(--k-gray)"> 5.0 (62 تقييم)</span>
+              </div>
+            </div>
+          </div>
+          <div class="prof-services-list">
+            <div class="prof-service-item" data-pricing="fixed">
+              <span class="prof-service-name">مخططات معمارية (فيلا)</span>
+              <div class="d-flex align-items-center gap-1">
+                <span class="prof-service-type">ثابت</span>
+                <span class="prof-service-price">8,000 ر.س</span>
+              </div>
+            </div>
+            <div class="prof-service-item" data-pricing="fixed">
+              <span class="prof-service-name">تصميم واجهة وترخيص</span>
+              <div class="d-flex align-items-center gap-1">
+                <span class="prof-service-type">ثابت</span>
+                <span class="prof-service-price">3,000 ر.س</span>
+              </div>
+            </div>
+            <div class="prof-service-item" data-pricing="hourly">
+              <span class="prof-service-name">استشارة تصميمية</span>
+              <div class="d-flex align-items-center gap-1">
+                <span class="prof-service-type">بالساعة</span>
+                <span class="prof-service-price">450 ر.س/س</span>
+              </div>
+            </div>
+          </div>
+          <div class="prof-card-footer">
+            <div>
+              <div style="font-size:0.75rem;color:var(--k-gray)">متاح للحجز</div>
+              <div style="font-weight:700;color:var(--k-success);font-size:0.85rem"><i class="fas fa-circle" style="font-size:0.5rem;margin-left:0.3rem" aria-hidden="true"></i>متاحة الآن</div>
+            </div>
+            <div class="d-flex gap-2">
+              <a href="../customer/chat.html" class="btn btn-outline-secondary btn-sm"><i class="fas fa-comment"></i></a>
+              <a href="../customer/quote-request.html?type=professional" class="btn btn-sm px-3" style="background:linear-gradient(135deg,var(--prof-color),#6366f1);color:#fff;border:none;border-radius:8px">احجز الآن</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 4 — MEP -->
+      <div class="col-md-6 col-lg-4 prof-card-wrap" data-spec="mep" data-aos="fade-up" data-aos-delay="0">
+        <div class="prof-card">
+          <div class="prof-card-header">
+            <div class="prof-avatar" style="background:linear-gradient(135deg,#10b981,#059669)">م.ف</div>
+            <div style="flex:1">
+              <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
+                <h3 style="font-weight:800;font-size:1rem;color:var(--k-dark-2);margin:0">م. فهد البلوي</h3>
+                <span class="prof-badge prof-verified"><i class="fas fa-check-circle" aria-hidden="true"></i> موثّق</span>
+              </div>
+              <div style="font-size:0.82rem;color:var(--k-gray);margin-bottom:0.4rem">
+                <i class="fas fa-cog me-1" style="color:#10b981" aria-hidden="true"></i> مستشار MEP (ميكانيكي وكهربائي وسباكة) — 15 سنة
+              </div>
+              <div style="font-size:0.78rem;color:var(--k-gray)">
+                <i class="fas fa-graduation-cap me-1" aria-hidden="true"></i> ماجستير هندسة ميكانيكية — جامعة الملك سعود
+              </div>
+              <div style="font-size:0.82rem;color:#f59e0b;margin-top:0.4rem" aria-label="4.9 من 5">
+                <i class="fas fa-star" aria-hidden="true"></i><i class="fas fa-star" aria-hidden="true"></i><i class="fas fa-star" aria-hidden="true"></i><i class="fas fa-star" aria-hidden="true"></i><i class="fas fa-star" aria-hidden="true"></i>
+                <span style="color:var(--k-gray)"> 4.9 (110 تقييم)</span>
+              </div>
+            </div>
+          </div>
+          <div class="prof-services-list">
+            <div class="prof-service-item" data-pricing="fixed">
+              <span class="prof-service-name">تصميم HVAC كامل (مبنى)</span>
+              <div class="d-flex align-items-center gap-1">
+                <span class="prof-service-type">ثابت</span>
+                <span class="prof-service-price">5,500 ر.س</span>
+              </div>
+            </div>
+            <div class="prof-service-item" data-pricing="fixed">
+              <span class="prof-service-name">مراجعة مخططات MEP</span>
+              <div class="d-flex align-items-center gap-1">
+                <span class="prof-service-type">ثابت</span>
+                <span class="prof-service-price">1,800 ر.س</span>
+              </div>
+            </div>
+            <div class="prof-service-item" data-pricing="hourly">
+              <span class="prof-service-name">استشارة فنية MEP</span>
+              <div class="d-flex align-items-center gap-1">
+                <span class="prof-service-type">بالساعة</span>
+                <span class="prof-service-price">400 ر.س/س</span>
+              </div>
+            </div>
+          </div>
+          <div class="prof-card-footer">
+            <div>
+              <div style="font-size:0.75rem;color:var(--k-gray)">التوفر</div>
+              <div style="font-weight:700;color:var(--k-success);font-size:0.85rem"><i class="fas fa-circle" style="font-size:0.5rem;margin-left:0.3rem" aria-hidden="true"></i>متاح الآن</div>
+            </div>
+            <div class="d-flex gap-2">
+              <a href="../customer/chat.html" class="btn btn-outline-secondary btn-sm"><i class="fas fa-comment"></i></a>
+              <a href="../customer/quote-request.html?type=professional" class="btn btn-sm px-3" style="background:linear-gradient(135deg,var(--prof-color),#6366f1);color:#fff;border:none;border-radius:8px">احجز الآن</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 5 — Project Manager -->
+      <div class="col-md-6 col-lg-4 prof-card-wrap" data-spec="pm" data-aos="fade-up" data-aos-delay="80">
+        <div class="prof-card">
+          <div class="prof-card-header">
+            <div class="prof-avatar" style="background:linear-gradient(135deg,#0f172a,#334155)">م.ع</div>
+            <div style="flex:1">
+              <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
+                <h3 style="font-weight:800;font-size:1rem;color:var(--k-dark-2);margin:0">م. عبدالرحمن القحطاني</h3>
+                <span class="prof-badge prof-verified"><i class="fas fa-check-circle" aria-hidden="true"></i> موثّق</span>
+              </div>
+              <div style="font-size:0.82rem;color:var(--k-gray);margin-bottom:0.4rem">
+                <i class="fas fa-tasks me-1" style="color:#334155" aria-hidden="true"></i> مدير مشاريع معتمد PMP — 20 سنة
+              </div>
+              <div style="font-size:0.78rem;color:var(--k-gray)">
+                <i class="fas fa-certificate me-1" aria-hidden="true"></i> PMP — PMI · بكالوريوس هندسة مدنية
+              </div>
+              <div style="font-size:0.82rem;color:#f59e0b;margin-top:0.4rem" aria-label="4.7 من 5">
+                <i class="fas fa-star" aria-hidden="true"></i><i class="fas fa-star" aria-hidden="true"></i><i class="fas fa-star" aria-hidden="true"></i><i class="fas fa-star" aria-hidden="true"></i><i class="fas fa-star-half-alt" aria-hidden="true"></i>
+                <span style="color:var(--k-gray)"> 4.7 (95 تقييم)</span>
+              </div>
+            </div>
+          </div>
+          <div class="prof-services-list">
+            <div class="prof-service-item" data-pricing="fixed">
+              <span class="prof-service-name">خطة مشروع + جدول زمني</span>
+              <div class="d-flex align-items-center gap-1">
+                <span class="prof-service-type">ثابت</span>
+                <span class="prof-service-price">4,000 ر.س</span>
+              </div>
+            </div>
+            <div class="prof-service-item" data-pricing="hourly">
+              <span class="prof-service-name">إشراف دوري على مشروع</span>
+              <div class="d-flex align-items-center gap-1">
+                <span class="prof-service-type">بالساعة</span>
+                <span class="prof-service-price">600 ر.س/س</span>
+              </div>
+            </div>
+            <div class="prof-service-item" data-pricing="hourly">
+              <span class="prof-service-name">مراجعة عقود ومخاطر</span>
+              <div class="d-flex align-items-center gap-1">
+                <span class="prof-service-type">بالساعة</span>
+                <span class="prof-service-price">600 ر.س/س</span>
+              </div>
+            </div>
+          </div>
+          <div class="prof-card-footer">
+            <div>
+              <div style="font-size:0.75rem;color:var(--k-gray)">التوفر</div>
+              <div style="font-weight:700;color:var(--k-success);font-size:0.85rem"><i class="fas fa-circle" style="font-size:0.5rem;margin-left:0.3rem" aria-hidden="true"></i>متاح الآن</div>
+            </div>
+            <div class="d-flex gap-2">
+              <a href="../customer/chat.html" class="btn btn-outline-secondary btn-sm"><i class="fas fa-comment"></i></a>
+              <a href="../customer/quote-request.html?type=professional" class="btn btn-sm px-3" style="background:linear-gradient(135deg,var(--prof-color),#6366f1);color:#fff;border:none;border-radius:8px">احجز الآن</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 6 — Interior Designer -->
+      <div class="col-md-6 col-lg-4 prof-card-wrap" data-spec="interior" data-aos="fade-up" data-aos-delay="160">
+        <div class="prof-card">
+          <div class="prof-card-header">
+            <div class="prof-avatar" style="background:linear-gradient(135deg,#ec4899,#be185d)">م.ن</div>
+            <div style="flex:1">
+              <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
+                <h3 style="font-weight:800;font-size:1rem;color:var(--k-dark-2);margin:0">م. نورة الزهراني</h3>
+                <span class="prof-badge prof-verified"><i class="fas fa-check-circle" aria-hidden="true"></i> موثّقة</span>
+              </div>
+              <div style="font-size:0.82rem;color:var(--k-gray);margin-bottom:0.4rem">
+                <i class="fas fa-couch me-1" style="color:#ec4899" aria-hidden="true"></i> مصممة داخلية معتمدة — 7 سنوات
+              </div>
+              <div style="font-size:0.78rem;color:var(--k-gray)">
+                <i class="fas fa-graduation-cap me-1" aria-hidden="true"></i> بكالوريوس تصميم داخلي — الجامعة السعودية الإلكترونية
+              </div>
+              <div style="font-size:0.82rem;color:#f59e0b;margin-top:0.4rem" aria-label="4.9 من 5">
+                <i class="fas fa-star" aria-hidden="true"></i><i class="fas fa-star" aria-hidden="true"></i><i class="fas fa-star" aria-hidden="true"></i><i class="fas fa-star" aria-hidden="true"></i><i class="fas fa-star" aria-hidden="true"></i>
+                <span style="color:var(--k-gray)"> 4.9 (74 تقييم)</span>
+              </div>
+            </div>
+          </div>
+          <div class="prof-services-list">
+            <div class="prof-service-item" data-pricing="fixed">
+              <span class="prof-service-name">تصميم غرفة معيشة كاملة</span>
+              <div class="d-flex align-items-center gap-1">
+                <span class="prof-service-type">ثابت</span>
+                <span class="prof-service-price">3,500 ر.س</span>
+              </div>
+            </div>
+            <div class="prof-service-item" data-pricing="fixed">
+              <span class="prof-service-name">تصميم مطبخ + اختيار مواد</span>
+              <div class="d-flex align-items-center gap-1">
+                <span class="prof-service-type">ثابت</span>
+                <span class="prof-service-price">2,800 ر.س</span>
+              </div>
+            </div>
+            <div class="prof-service-item" data-pricing="hourly">
+              <span class="prof-service-name">استشارة ديكور</span>
+              <div class="d-flex align-items-center gap-1">
+                <span class="prof-service-type">بالساعة</span>
+                <span class="prof-service-price">300 ر.س/س</span>
+              </div>
+            </div>
+          </div>
+          <div class="prof-card-footer">
+            <div>
+              <div style="font-size:0.75rem;color:var(--k-gray)">التوفر</div>
+              <div style="font-weight:700;color:var(--k-success);font-size:0.85rem"><i class="fas fa-circle" style="font-size:0.5rem;margin-left:0.3rem" aria-hidden="true"></i>متاحة الآن</div>
+            </div>
+            <div class="d-flex gap-2">
+              <a href="../customer/chat.html" class="btn btn-outline-secondary btn-sm"><i class="fas fa-comment"></i></a>
+              <a href="../customer/quote-request.html?type=professional" class="btn btn-sm px-3" style="background:linear-gradient(135deg,var(--prof-color),#6366f1);color:#fff;border:none;border-radius:8px">احجز الآن</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /row -->
+
+    <!-- Load more -->
+    <div class="text-center mt-5">
+      <button class="btn btn-outline-secondary px-5 py-2" style="border-radius:12px;min-height:44px">
+        <i class="fas fa-chevron-down ms-2"></i> عرض المزيد من المهندسين
+      </button>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── How It Works ── -->
+<section style="background:#fff;padding:4rem 0" aria-labelledby="hiw-prof">
+  <div class="container">
+    <div class="text-center mb-5" data-aos="fade-up">
+      <h2 id="hiw-prof" class="k-section-title">كيف تحجز استشارة مهنية؟</h2>
+      <div class="k-divider mx-auto" style="background:linear-gradient(90deg,var(--prof-color),#6366f1)"></div>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-3 col-6" data-aos="fade-up" data-aos-delay="0">
+        <div class="hiw-step">
+          <div class="hiw-num">1</div>
+          <i class="fas fa-search fa-xl" style="color:var(--prof-color);margin-bottom:0.75rem;display:block"></i>
+          <h6 style="font-weight:800;color:var(--k-dark-2);margin-bottom:0.4rem">ابحث بالتخصص</h6>
+          <p style="color:var(--k-gray);font-size:0.85rem">اختر التخصص الهندسي وفلتر حسب نوع الخدمة</p>
+        </div>
+      </div>
+      <div class="col-md-3 col-6" data-aos="fade-up" data-aos-delay="100">
+        <div class="hiw-step">
+          <div class="hiw-num">2</div>
+          <i class="fas fa-user-check fa-xl" style="color:var(--prof-color);margin-bottom:0.75rem;display:block"></i>
+          <h6 style="font-weight:800;color:var(--k-dark-2);margin-bottom:0.4rem">راجع الملف والتقييمات</h6>
+          <p style="color:var(--k-gray);font-size:0.85rem">اطّلع على المؤهلات والتراخيص وأعمال سابقة</p>
+        </div>
+      </div>
+      <div class="col-md-3 col-6" data-aos="fade-up" data-aos-delay="200">
+        <div class="hiw-step">
+          <div class="hiw-num">3</div>
+          <i class="fas fa-calendar-alt fa-xl" style="color:var(--prof-color);margin-bottom:0.75rem;display:block"></i>
+          <h6 style="font-weight:800;color:var(--k-dark-2);margin-bottom:0.4rem">احجز الموعد وادفع</h6>
+          <p style="color:var(--k-gray);font-size:0.85rem">حدد التاريخ والوقت وادفع بنظام الضمان الآمن</p>
+        </div>
+      </div>
+      <div class="col-md-3 col-6" data-aos="fade-up" data-aos-delay="300">
+        <div class="hiw-step">
+          <div class="hiw-num">4</div>
+          <i class="fas fa-file-alt fa-xl" style="color:var(--prof-color);margin-bottom:0.75rem;display:block"></i>
+          <h6 style="font-weight:800;color:var(--k-dark-2);margin-bottom:0.4rem">استلم التقرير والنتيجة</h6>
+          <p style="color:var(--k-gray);font-size:0.85rem">تسليم التقرير أو المخططات وتأكيد الاستلام</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Join as Engineer CTA ── -->
+<section style="padding:4rem 0" aria-label="الانضمام كمهندس أو مستشار">
+  <div class="container">
+    <div style="background:linear-gradient(135deg,#1e1b4b,#3730a3,#7c3aed);border-radius:24px;padding:3rem 2.5rem;color:#fff;text-align:center;position:relative;overflow:hidden">
+      <div style="position:absolute;font-size:12rem;font-weight:900;color:rgba(255,255,255,0.03);top:50%;left:50%;transform:translate(-50%,-50%);line-height:1;pointer-events:none" aria-hidden="true">م</div>
+      <div style="position:relative;z-index:1" data-aos="fade-up">
+        <i class="fas fa-user-graduate fa-2x mb-3" style="color:#c4b5fd" aria-hidden="true"></i>
+        <h2 style="font-weight:900;font-size:1.8rem;margin-bottom:0.75rem">هل أنت مهندس أو مستشار؟</h2>
+        <p style="opacity:0.82;max-width:520px;margin:0 auto 2rem;line-height:1.7">
+          انضم إلى منصة خدمة وأعرض خدماتك الهندسية لآلاف العملاء من الأفراد والشركات. سجّل مجاناً وابدأ باستقبال الطلبات.
+        </p>
+        <div class="d-flex gap-3 justify-content-center flex-wrap">
+          <a href="../auth/signup.html?role=engineer" class="btn btn-lg px-5" style="background:#fff;color:var(--prof-color);font-weight:800;border-radius:12px;min-height:50px;display:inline-flex;align-items:center">
+            <i class="fas fa-plus-circle me-2" aria-hidden="true"></i> سجّل كمهندس الآن
+          </a>
+          <a href="../provider/profile.html" class="btn btn-lg btn-outline-light px-5" style="border-radius:12px;min-height:50px;display:inline-flex;align-items:center">
+            مشاهدة ملف نموذجي
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- Footer -->
+<footer class="k-footer" role="contentinfo">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-lg-4">
+        <div class="footer-brand mb-2">خدم<span>ة</span></div>
+        <p style="font-size:.88rem;color:rgba(255,255,255,.55);max-width:280px;line-height:1.7">منصة سعودية للخدمات المهنية والهندسية والمنزلية والمناقصات والمعدات.</p>
+      </div>
+      <div class="col-lg-2 col-6">
+        <h6 style="color:#fff;font-weight:700;margin-bottom:.75rem">التخصصات</h6>
+        <a href="#" onclick="filterBySpec('electrical')">كهربائي</a>
+        <a href="#" onclick="filterBySpec('civil')">مدني وإنشائي</a>
+        <a href="#" onclick="filterBySpec('arch')">معماري</a>
+        <a href="#" onclick="filterBySpec('mep')">MEP</a>
+      </div>
+      <div class="col-lg-2 col-6">
+        <h6 style="color:#fff;font-weight:700;margin-bottom:.75rem">روابط سريعة</h6>
+        <a href="../index.html">الرئيسية</a>
+        <a href="../customer/home-services.html">خدمات المنازل</a>
+        <a href="../tenders/index.html">المناقصات</a>
+        <a href="../equipment/index.html">المعدات</a>
+      </div>
+      <div class="col-lg-4">
+        <h6 style="color:#fff;font-weight:700;margin-bottom:.75rem">انضم كمهندس</h6>
+        <p style="font-size:.85rem;color:rgba(255,255,255,.55);margin-bottom:1rem">أعرض خدماتك الهندسية وابدأ باستقبال العملاء</p>
+        <a href="../auth/signup.html?role=engineer" class="btn btn-sm px-4" style="background:linear-gradient(135deg,var(--prof-color),#6366f1);color:#fff;border:none;border-radius:8px;min-height:40px;display:inline-flex;align-items:center">
+          <i class="fas fa-user-plus me-1" aria-hidden="true"></i> سجّل الآن
+        </a>
+      </div>
+    </div>
+    <hr style="border-color:rgba(255,255,255,0.1);margin:2rem 0 1rem">
+    <p style="color:rgba(255,255,255,.3);text-align:center;font-size:0.85rem">© 2026 خدمة. جميع الحقوق محفوظة.</p>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+<script src="../assets/js/khedmah.js"></script>
+<script>
+  AOS.init({ duration: 600, once: true, offset: 50 });
+
+  const specLabels = {
+    all: 'جميع التخصصات',
+    electrical: 'الهندسة الكهربائية',
+    civil: 'الهندسة المدنية والإنشائية',
+    arch: 'الهندسة المعمارية',
+    mep: 'أنظمة MEP',
+    pm: 'إدارة المشاريع',
+    interior: 'التصميم الداخلي',
+    survey: 'المساحة والطبوغرافيا',
+    fire: 'السلامة وأنظمة الإطفاء'
+  };
+
+  function filterBySpec(spec, btnEl) {
+    // Update label
+    document.getElementById('activeSpecLabel').textContent = specLabels[spec] || 'جميع التخصصات';
+
+    // Update pill active state
+    document.querySelectorAll('.spec-pill[id^="pill-"]').forEach(b => b.classList.remove('active'));
+    const targetPill = document.getElementById('pill-' + spec);
+    if (targetPill) targetPill.classList.add('active');
+    else document.getElementById('pill-all').classList.add('active');
+
+    // Filter cards
+    document.querySelectorAll('.prof-card-wrap').forEach(card => {
+      const show = spec === 'all' || card.dataset.spec === spec;
+      card.style.display = show ? '' : 'none';
+    });
+
+    // Scroll to list
+    const listEl = document.getElementById('prof-list');
+    if (listEl) listEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function togglePricing(type, btnEl) {
+    document.querySelectorAll('[id^="pt-"]').forEach(b => b.classList.remove('active'));
+    btnEl.classList.add('active');
+    document.querySelectorAll('.prof-service-item').forEach(item => {
+      item.style.display = (type === 'all' || item.dataset.pricing === type) ? '' : 'none';
+    });
+  }
+
+  function doProfSearch() {
+    const q = document.getElementById('profSearch').value.trim().toLowerCase();
+    if (!q) { filterBySpec('all'); return; }
+    document.querySelectorAll('.prof-card-wrap').forEach(card => {
+      const text = card.textContent.toLowerCase();
+      card.style.display = text.includes(q) ? '' : 'none';
+    });
+    document.getElementById('prof-list').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  document.getElementById('profSearch').addEventListener('keydown', e => {
+    if (e.key === 'Enter') doProfSearch();
+  });
+
+  // Check URL param on load
+  const urlSpec = new URLSearchParams(location.search).get('spec');
+  if (urlSpec) filterBySpec(urlSpec);
+</script>
+</body>
+</html>

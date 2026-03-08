@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="سياسة الخصوصية — خدمة | Privacy Policy — Khedmah">
+  <title>سياسة الخصوصية — خدمة</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="../assets/css/khedmah.css">
+  <style>
+    body { background: #f8fafc; font-family: 'Tajawal', sans-serif; }
+
+    .legal-hero {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #01606e 100%);
+      padding: 3.5rem 0 2.5rem;
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+    }
+    .legal-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 80% 50%, rgba(2,195,154,0.15), transparent 60%);
+    }
+
+    .legal-sidebar {
+      position: sticky;
+      top: 80px;
+      max-height: calc(100vh - 100px);
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--k-primary) transparent;
+    }
+    .legal-sidebar::-webkit-scrollbar { width: 4px; }
+    .legal-sidebar::-webkit-scrollbar-thumb { background: var(--k-primary); border-radius: 2px; }
+
+    .toc-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 1.25rem;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+    .toc-card h6 {
+      font-weight: 800;
+      color: var(--k-dark-2);
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--k-primary);
+    }
+    .toc-link {
+      display: block;
+      padding: 0.35rem 0.5rem;
+      font-size: 0.82rem;
+      color: var(--k-gray);
+      text-decoration: none;
+      border-radius: 6px;
+      transition: all 0.2s;
+      margin-bottom: 0.1rem;
+    }
+    .toc-link:hover, .toc-link.active {
+      background: rgba(2,128,144,0.08);
+      color: var(--k-primary);
+      font-weight: 600;
+      padding-right: 1rem;
+    }
+
+    .legal-content {
+      background: #fff;
+      border-radius: 16px;
+      padding: 2.5rem;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+
+    .legal-section {
+      margin-bottom: 3rem;
+      scroll-margin-top: 90px;
+    }
+    .section-number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--k-primary), var(--k-accent));
+      border-radius: 50%;
+      color: #fff;
+      font-size: 0.85rem;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+    .section-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--k-dark-2);
+      margin: 0;
+    }
+    .section-body {
+      color: #374151;
+      line-height: 1.9;
+      font-size: 0.95rem;
+    }
+    .section-body ul, .section-body ol {
+      padding-right: 1.5rem;
+      margin-top: 0.75rem;
+    }
+    .section-body li { margin-bottom: 0.4rem; }
+    .section-body strong { color: var(--k-dark-2); }
+
+    .sub-heading {
+      font-weight: 700;
+      color: var(--k-primary);
+      font-size: 0.95rem;
+      margin: 1.25rem 0 0.5rem;
+    }
+
+    .callout-info {
+      background: rgba(2,128,144,0.06);
+      border: 1px solid rgba(2,128,144,0.2);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      font-size: 0.88rem;
+      color: var(--k-dark-2);
+    }
+    .callout-warn {
+      background: rgba(245,158,11,0.06);
+      border: 1px solid rgba(245,158,11,0.25);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      font-size: 0.88rem;
+      color: #92400e;
+    }
+    .callout-placeholder {
+      background: rgba(148,163,184,0.1);
+      border: 1px dashed #94a3b8;
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+      margin: 0.5rem 0;
+      font-size: 0.85rem;
+      color: #64748b;
+      font-style: italic;
+    }
+    .legal-divider {
+      border: none;
+      border-top: 1px solid #f1f5f9;
+      margin: 2rem 0;
+    }
+
+    /* Data category chips */
+    .data-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: rgba(2,128,144,0.07);
+      color: var(--k-primary);
+      border: 1px solid rgba(2,128,144,0.15);
+      border-radius: 50px;
+      padding: 0.25rem 0.75rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin: 0.2rem;
+    }
+
+    /* Rights cards */
+    .right-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 1rem;
+      text-align: center;
+      transition: all 0.25s;
+    }
+    .right-card:hover {
+      border-color: var(--k-primary);
+      background: rgba(2,128,144,0.04);
+      transform: translateY(-2px);
+    }
+    .right-card .icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 0.5rem;
+      background: linear-gradient(135deg, var(--k-primary), var(--k-accent));
+      color: #fff;
+      font-size: 1.1rem;
+    }
+    .right-card p {
+      font-size: 0.82rem;
+      color: var(--k-gray);
+      margin: 0;
+    }
+
+    .lang-pill {
+      display: inline-flex;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 50px;
+      padding: 0.2rem;
+    }
+    .lang-pill button {
+      background: transparent;
+      border: none;
+      color: rgba(255,255,255,0.7);
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 0.3rem 1rem;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'Tajawal', sans-serif;
+    }
+    .lang-pill button.active {
+      background: #fff;
+      color: var(--k-primary);
+    }
+
+    .policy-links {
+      background: #fff;
+      border-radius: 16px;
+      padding: 1.75rem;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+    .policy-link-card {
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      text-decoration: none;
+      color: var(--k-dark-2);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      transition: all 0.25s;
+    }
+    .policy-link-card:hover {
+      border-color: var(--k-primary);
+      background: rgba(2,128,144,0.04);
+      transform: translateY(-2px);
+    }
+    .policy-link-card .icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 1.1rem;
+    }
+
+    @media print {
+      .legal-sidebar, .k-navbar, .legal-hero .lang-pill, footer { display: none !important; }
+      .col-lg-9 { width: 100% !important; }
+      .legal-content { box-shadow: none; padding: 0; }
+    }
+  </style>
+</head>
+<body x-data="legalApp()" :dir="lang === 'ar' ? 'rtl' : 'ltr'" :lang="lang">
+
+<!-- Navbar -->
+<nav class="k-navbar navbar navbar-expand-lg">
+  <div class="container">
+    <a class="navbar-brand" href="../index.html">خدم<span style="color:var(--k-accent)">ة</span></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navMain">
+      <ul class="navbar-nav me-auto gap-1">
+        <li class="nav-item"><a class="nav-link" href="../index.html" x-text="lang==='ar'?'الرئيسية':'Home'"></a></li>
+        <li class="nav-item"><a class="nav-link" href="../customer/search.html" x-text="lang==='ar'?'الخدمات':'Services'"></a></li>
+        <li class="nav-item"><a class="nav-link" href="terms.html" x-text="lang==='ar'?'الشروط والأحكام':'Terms'"></a></li>
+        <li class="nav-item"><a class="nav-link active" href="privacy.html" x-text="lang==='ar'?'سياسة الخصوصية':'Privacy'"></a></li>
+      </ul>
+      <div class="d-flex gap-2">
+        <a href="../auth/login.html" class="btn btn-outline-light btn-sm" x-text="lang==='ar'?'تسجيل الدخول':'Login'"></a>
+        <a href="../auth/signup.html" class="btn btn-accent btn-sm" x-text="lang==='ar'?'سجّل الآن':'Sign Up'"></a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="legal-hero">
+  <div class="container" style="position:relative">
+    <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+      <div>
+        <div style="display:inline-flex;align-items:center;gap:0.5rem;background:rgba(2,195,154,0.15);border:1px solid rgba(2,195,154,0.3);border-radius:50px;padding:0.3rem 1rem;margin-bottom:1rem">
+          <i class="fas fa-shield-alt" style="color:var(--k-accent);font-size:0.85rem"></i>
+          <span style="font-size:0.8rem;color:var(--k-accent);font-weight:600" x-text="lang==='ar'?'وثيقة قانونية':'Legal Document'"></span>
+        </div>
+        <h1 style="font-size:clamp(1.6rem,3vw,2.4rem);font-weight:900;margin-bottom:0.5rem" x-text="lang==='ar'?'سياسة الخصوصية':'Privacy Policy'"></h1>
+        <p style="opacity:0.75;font-size:0.9rem;margin:0">
+          <span x-text="lang==='ar'?'آخر تحديث:':'Last Updated:'"></span>
+          <strong style="color:var(--k-accent)"> [أدخل التاريخ / Insert Date]</strong>
+          &nbsp;·&nbsp;
+          <span x-text="lang==='ar'?'تاريخ السريان:':'Effective Date:'"></span>
+          <strong style="color:var(--k-accent)"> [أدخل التاريخ / Insert Date]</strong>
+        </p>
+      </div>
+      <div>
+        <div class="lang-pill">
+          <button :class="lang==='ar'?'active':''" @click="setLang('ar')">العربية</button>
+          <button :class="lang==='en'?'active':''" @click="setLang('en')">English</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="container py-4">
+  <div class="row g-4">
+
+    <!-- TOC Sidebar -->
+    <div class="col-lg-3 d-none d-lg-block">
+      <div class="legal-sidebar">
+        <div class="toc-card">
+          <h6 x-text="lang==='ar'?'محتويات الوثيقة':'Contents'"></h6>
+          <a class="toc-link" href="#p1" x-text="lang==='ar'?'1. من نحن':'1. Who We Are'"></a>
+          <a class="toc-link" href="#p2" x-text="lang==='ar'?'2. نطاق السياسة':'2. Scope'"></a>
+          <a class="toc-link" href="#p3" x-text="lang==='ar'?'3. البيانات التي نجمعها':'3. Data We Collect'"></a>
+          <a class="toc-link" href="#p4" x-text="lang==='ar'?'4. كيف نجمع البيانات':'4. How We Collect'"></a>
+          <a class="toc-link" href="#p5" x-text="lang==='ar'?'5. لماذا نعالج البيانات':'5. Why We Process'"></a>
+          <a class="toc-link" href="#p6" x-text="lang==='ar'?'6. الأساس القانوني':'6. Legal Basis'"></a>
+          <a class="toc-link" href="#p7" x-text="lang==='ar'?'7. مشاركة البيانات':'7. Sharing Data'"></a>
+          <a class="toc-link" href="#p8" x-text="lang==='ar'?'8. النقل الدولي':'8. Cross-Border Transfers'"></a>
+          <a class="toc-link" href="#p9" x-text="lang==='ar'?'9. الاحتفاظ بالبيانات':'9. Data Retention'"></a>
+          <a class="toc-link" href="#p10" x-text="lang==='ar'?'10. حقوقك':'10. Your Rights'"></a>
+          <a class="toc-link" href="#p11" x-text="lang==='ar'?'11. ملفات تعريف الارتباط':'11. Cookies'"></a>
+          <a class="toc-link" href="#p12" x-text="lang==='ar'?'12. تدابير الأمان':'12. Security'"></a>
+          <a class="toc-link" href="#p13" x-text="lang==='ar'?'13. الشكاوى والتسجيلات':'13. Complaints & Records'"></a>
+          <a class="toc-link" href="#p14" x-text="lang==='ar'?'14. التسويق':'14. Marketing'"></a>
+          <a class="toc-link" href="#p15" x-text="lang==='ar'?'15. بيانات الأطفال':'15. Children'"></a>
+          <a class="toc-link" href="#p16" x-text="lang==='ar'?'16. بيانات مزودي الخدمة':'16. Provider Data'"></a>
+          <a class="toc-link" href="#p17" x-text="lang==='ar'?'17. الأدوات الآلية والذكاء الاصطناعي':'17. AI Tools'"></a>
+          <a class="toc-link" href="#p18" x-text="lang==='ar'?'18. خدمات الأطراف الثالثة':'18. Third Parties'"></a>
+          <a class="toc-link" href="#p19" x-text="lang==='ar'?'19. تحديثات السياسة':'19. Policy Updates'"></a>
+          <a class="toc-link" href="#p20" x-text="lang==='ar'?'20. تواصل معنا':'20. Contact Us'"></a>
+
+          <div style="margin-top:1.25rem;padding-top:1rem;border-top:1px solid #f1f5f9">
+            <a href="terms.html" class="btn btn-outline-primary w-100 btn-sm mb-2" style="border-radius:8px">
+              <i class="fas fa-file-contract ms-1"></i>
+              <span x-text="lang==='ar'?'الشروط والأحكام':'Terms & Conditions'"></span>
+            </a>
+            <button onclick="window.print()" class="btn btn-outline-secondary w-100 btn-sm" style="border-radius:8px">
+              <i class="fas fa-print ms-1"></i>
+              <span x-text="lang==='ar'?'طباعة':'Print'"></span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="col-lg-9">
+      <div class="legal-content">
+
+        <!-- PDPL badge -->
+        <div class="callout-info mb-4">
+          <div class="d-flex align-items-start gap-2">
+            <i class="fas fa-shield-alt mt-1" style="color:var(--k-primary);flex-shrink:0"></i>
+            <div>
+              <span x-show="lang==='ar'">
+                نلتزم بمعالجة البيانات الشخصية بمسؤولية وفق أنظمة ولوائح المملكة العربية السعودية المعمول بها، بما فيها نظام حماية البيانات الشخصية (PDPL) ولوائحه التنفيذية.
+              </span>
+              <span x-show="lang==='en'">
+                We are committed to handling personal data responsibly and in accordance with applicable laws and regulations of the Kingdom of Saudi Arabia, including the Personal Data Protection Law (PDPL) and its applicable regulations.
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="callout-placeholder">
+          <i class="fas fa-edit ms-2"></i>
+          <span x-show="lang==='ar'">قبل النشر: استبدل جميع الحقول المُعلَّمة بـ [أدخل...] بالبيانات الفعلية، وراجع بنود النقل عبر الحدود وبنود ملفات الارتباط مع محامٍ سعودي مرخص قبل الإطلاق.</span>
+          <span x-show="lang==='en'">Before publishing: replace all [Insert...] fields with actual data. Review cross-border transfer and cookie clauses with a licensed Saudi lawyer before launch.</span>
+        </div>
+
+        <hr class="legal-divider">
+
+        <!-- Section 1 -->
+        <div class="legal-section" id="p1">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="section-number">1</div>
+            <h2 class="section-title" x-text="lang==='ar'?'من نحن':'Who We Are'"></h2>
+          </div>
+          <div class="section-body">
+            <p x-show="lang==='ar'">[الاسم القانوني للشركة] هي الجهة المسؤولة عن تشغيل المنصة وتعمل، حيثما ينطبق ذلك، بوصفها وحدة التحكم في البيانات الشخصية المُعالَجة عبر المنصة.</p>
+            <p x-show="lang==='en'">[Company Legal Name] is the entity responsible for operating the Platform and, where applicable, acts as the controller of personal data processed through the Platform.</p>
+            <div class="callout-placeholder" style="font-style:normal">
+              <div class="row g-2">
+                <div class="col-sm-6">
+                  <div style="font-weight:600;color:var(--k-dark-2);margin-bottom:0.4rem" x-text="lang==='ar'?'بيانات الشركة':'Company Details'"></div>
+                  <div><i class="fas fa-building ms-1 text-muted" style="width:16px"></i> [الاسم القانوني للشركة]</div>
+                  <div><i class="fas fa-id-card ms-1 text-muted" style="width:16px"></i> <span x-text="lang==='ar'?'س.ت:':'CR:'"></span> [أدخل]</div>
+                  <div><i class="fas fa-receipt ms-1 text-muted" style="width:16px"></i> <span x-text="lang==='ar'?'ض.ق.م:':'VAT:'"></span> [أدخل]</div>
+                  <div><i class="fas fa-map-marker-alt ms-1 text-muted" style="width:16px"></i> [أدخل العنوان المسجّل]</div>
+                </div>
+                <div class="col-sm-6">
+                  <div style="font-weight:600;color:var(--k-dark-2);margin-bottom:0.4rem" x-text="lang==='ar'?'التواصل':'Contact'"></div>
+                  <div><i class="fas fa-envelope ms-1 text-muted" style="width:16px"></i> [بريد إلكتروني للدعم]</div>
+                  <div><i class="fas fa-shield-alt ms-1 text-muted" style="width:16px"></i> [بريد إلكتروني للخصوصية]</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <hr class="legal-divider">
+
+        <!-- Section 2 -->
+        <div class="legal-section" id="p2">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="section-number">2</div>
+            <h2 class="section-title" x-text="lang==='ar'?'نطاق سياسة الخصوصية هذه':'Scope of This Privacy Policy'"></h2>
+          </div>
+          <div class="section-body">
+            <p x-show="lang==='ar'">تُطبَّق هذه السياسة على البيانات الشخصية المجمَّعة أو المُعالَجة عبر:</p>
+            <p x-show="lang==='en'">This Privacy Policy applies to personal data collected or processed through:</p>
+            <ul>
+              <li x-show="lang==='ar'">موقعنا الإلكتروني؛ وتطبيق iOS؛ وتطبيق Android؛ وقنوات دعم العملاء؛ وقنوات معالجة الشكاوى والنزاعات؛ وعمليات تأهيل مزودي الخدمة؛ والاتصالات المُرسَلة بالبريد الإلكتروني أو الرسائل النصية القصيرة أو الإشعارات.</li>
+              <li x-show="lang==='en'">our website; our iOS application; our Android application; customer support channels; complaint and dispute-resolution channels; provider onboarding flows; and communications sent by email, SMS, push notification, phone, or approved messaging channels.</li>
+            </ul>
+            <p x-show="lang==='ar'">يجب قراءة هذه السياسة جنباً إلى جنب مع الشروط والأحكام وسياسة الشكاوى وسياسة الإلغاء والاسترداد.</p>
+            <p x-show="lang==='en'">This Privacy Policy should be read together with our Terms & Conditions, Complaints & Suggestions Policy, and Refund/Cancellation Policy.</p>
+          </div>
+        </div>
+
+        <hr class="legal-divider">
+
+        <!-- Section 3 -->
+        <div class="legal-section" id="p3">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="section-number">3</div>
+            <h2 class="section-title" x-text="lang==='ar'?'البيانات الشخصية التي نجمعها':'The Personal Data We Collect'"></h2>
+          </div>
+          <div class="section-body">
+            <p x-show="lang==='ar'">بحسب طريقة استخدامك للمنصة، قد نجمع الفئات التالية من البيانات الشخصية:</p>
+            <p x-show="lang==='en'">Depending on how you use the Platform, we may collect the following categories of personal data:</p>
+
+            <div class="sub-heading" x-text="lang==='ar'?'3.1 معلومات الهوية والحساب':'3.1 Identity and Account Information'"></div>
+            <div>
+              <span class="data-chip"><i class="fas fa-user"></i> <span x-text="lang==='ar'?'الاسم الكامل':'Full Name'"></span></span>
+              <span class="data-chip"><i class="fas fa-mobile-alt"></i> <span x-text="lang==='ar'?'رقم الجوال':'Mobile Number'"></span></span>
+              <span class="data-chip"><i class="fas fa-envelope"></i> <span x-text="lang==='ar'?'البريد الإلكتروني':'Email Address'"></span></span>
+              <span class="data-chip"><i class="fas fa-lock"></i> <span x-text="lang==='ar'?'بيانات المصادقة':'Auth Credentials'"></span></span>
+              <span class="data-chip"><i class="fas fa-image"></i> <span x-text="lang==='ar'?'صورة الملف':'Profile Photo'"></span></span>
+              <span class="data-chip"><i class="fas fa-id-card"></i> <span x-text="lang==='ar'?'هوية/إقامة (للمزودين)':'ID/Iqama (Providers)'"></span></span>
+            </div>
+
+            <div class="sub-heading" x-text="lang==='ar'?'3.2 معلومات الحجوزات والمعاملات':'3.2 Booking and Transaction Information'"></div>
+            <div>
+              <span class="data-chip"><i class="fas fa-clipboard-list"></i> <span x-text="lang==='ar'?'تفاصيل الطلب':'Order Details'"></span></span>
+              <span class="data-chip"><i class="fas fa-wrench"></i> <span x-text="lang==='ar'?'نوع الخدمة':'Service Type'"></span></span>
+              <span class="data-chip"><i class="fas fa-calendar"></i> <span x-text="lang==='ar'?'التاريخ والوقت':'Date & Time'"></span></span>
+              <span class="data-chip"><i class="fas fa-map-marker-alt"></i> <span x-text="lang==='ar'?'عنوان الخدمة':'Service Address'"></span></span>
+              <span class="data-chip"><i class="fas fa-history"></i> <span x-text="lang==='ar'?'سجل الطلبات':'Order History'"></span></span>
+              <span class="data-chip"><i class="fas fa-file-invoice"></i> <span x-text="lang==='ar'?'تفاصيل الفاتورة':'Invoice Details'"></span></span>
+            </div>
+
+            <div class="sub-heading" x-text="lang==='ar'?'3.3 معلومات الدفع':'3.3 Payment-Related Information'"></div>
+            <div>
+              <span class="data-chip"><i class="fas fa-credit-card"></i> <span x-text="lang==='ar'?'تفاصيل الدفع المُقنَّعة':'Masked Payment Details'"></span></span>
+              <span class="data-chip"><i class="fas fa-receipt"></i> <span x-text="lang==='ar'?'مراجع المعاملات':'Transaction References'"></span></span>
+              <span class="data-chip"><i class="fas fa-check-circle"></i> <span x-text="lang==='ar'?'حالة الدفع':'Payment Status'"></span></span>
+            </div>
+            <p style="font-size:0.82rem;color:var(--k-gray);margin-top:0.5rem" x-show="lang==='ar'">لا نحتفظ ببيانات البطاقة الكاملة؛ تُعالَج عبر شركاء الدفع المرخَّصين.</p>
+            <p style="font-size:0.82rem;color:var(--k-gray);margin-top:0.5rem" x-show="lang==='en'">We do not store full card data; payments are processed through licensed payment partners.</p>
+
+            <div class="sub-heading" x-text="lang==='ar'?'3.4 بيانات الدعم والشكاوى والنزاعات':'3.4 Support, Complaint, and Dispute Data'"></div>
+            <div>
+              <span class="data-chip"><i class="fas fa-comment-dots"></i> <span x-text="lang==='ar'?'رسائل الدعم':'Support Messages'"></span></span>
+              <span class="data-chip"><i class="fas fa-comments"></i> <span x-text="lang==='ar'?'سجل المحادثات':'Chat History'"></span></span>
+              <span class="data-chip"><i class="fas fa-paperclip"></i> <span x-text="lang==='ar'?'المرفقات والصور':'Attachments & Photos'"></span></span>
+              <span class="data-chip"><i class="fas fa-gavel"></i> <span x-text="lang==='ar'?'قرارات الحل':'Resolution Decisions'"></span></span>
+              <span class="data-chip"><i class="fas fa-star"></i> <span x-text="lang==='ar'?'تقييمات الرضا':'Satisfaction Ratings'"></span></span>
+            </div>
+
+            <div class="sub-heading" x-text="lang==='ar'?'3.5 معلومات الجهاز والاستخدام':'3.5 Device, Technical, and Usage Information'"></div>
+            <div>
+              <span class="data-chip"><i class="fas fa-globe"></i> IP</span>
+              <span class="data-chip"><i class="fas fa-mobile-alt"></i> <span x-text="lang==='ar'?'معرّف الجهاز':'Device ID'"></span></span>
+              <span class="data-chip"><i class="fas fa-cog"></i> OS / <span x-text="lang==='ar'?'إصدار التطبيق':'App Version'"></span></span>
+              <span class="data-chip"><i class="fas fa-bug"></i> <span x-text="lang==='ar'?'تقارير الأخطاء':'Crash Reports'"></span></span>
+              <span class="data-chip"><i class="fas fa-mouse-pointer"></i> <span x-text="lang==='ar'?'نشاط الجلسة':'Session Activity'"></span></span>
+              <span class="data-chip"><i class="fas fa-clock"></i> <span x-text="lang==='ar'?'الطوابع الزمنية':'Timestamps'"></span></span>
+            </div>
+
+            <div class="sub-heading" x-text="lang==='ar'?'3.6 بيانات الموقع الجغرافي':'3.6 Location Data'"></div>
+            <p x-show="lang==='ar'" style="font-size:0.9rem">العنوان الحالي أو المحفوظ، والموقع التقريبي أو الدقيق حيثما لزم لمطابقة الخدمات أو توزيع المزودين أو منع الاحتيال.</p>
+            <p x-show="lang==='en'" style="font-size:0.9rem">Current or saved address; approximate or precise location where needed for service matching, provider dispatch, fraud prevention, or service delivery.</p>
+
+            <div class="sub-heading" x-text="lang==='ar'?'3.7 تفضيلات التسويق والتواصل':'3.7 Marketing and Communication Preferences'"></div>
+            <div>
+              <span class="data-chip"><i class="fas fa-toggle-on"></i> <span x-text="lang==='ar'?'الاشتراك/إلغاء الاشتراك':'Opt-in/out Preferences'"></span></span>
+              <span class="data-chip"><i class="fas fa-language"></i> <span x-text="lang==='ar'?'لغة التواصل المفضلة':'Preferred Language'"></span></span>
+              <span class="data-chip"><i class="fas fa-bell"></i> <span x-text="lang==='ar'?'إعدادات الإشعارات':'Notification Settings'"></span></span>
+            </div>
+          </div>
+        </div>
+
+        <hr class="legal-divider">
+
+        <!-- Section 4 -->
+        <div class="legal-section" id="p4">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="section-number">4</div>
+            <h2 class="section-title" x-text="lang==='ar'?'كيف نجمع البيانات الشخصية':'How We Collect Personal Data'"></h2>
+          </div>
+          <div class="section-body">
+            <p x-show="lang==='ar'">قد نجمع البيانات الشخصية:</p>
+            <p x-show="lang==='en'">We may collect personal data:</p>
+            <ul>
+              <li x-show="lang==='ar'">مباشرة منك عند التسجيل أو الحجز أو الدفع أو التواصل مع الدعم أو تقديم شكوى؛</li>
+              <li x-show="lang==='en'">directly from you when you register, book, pay, message support, or submit a complaint;</li>
+              <li x-show="lang==='ar'">تلقائياً من خلال ملفات تعريف الارتباط وحزم SDK للتطبيقات وسجلات الخادم وبيانات قياس الجهاز؛</li>
+              <li x-show="lang==='en'">automatically through cookies, app SDKs, server logs, and device telemetry;</li>
+              <li x-show="lang==='ar'">من مزودي الخدمة أو الشركاء المشاركين في تنفيذ الحجوزات؛</li>
+              <li x-show="lang==='en'">from service providers or partners involved in fulfilling a booking;</li>
+              <li x-show="lang==='ar'">من معالجي الدفع أو مزودي خدمات منع الاحتيال؛</li>
+              <li x-show="lang==='en'">from payment processors or fraud-prevention providers;</li>
+              <li x-show="lang==='ar'">من المصادر المتاحة للعموم أو خدمات التحقق حيثما كان ذلك مشروعاً وضرورياً.</li>
+              <li x-show="lang==='en'">from publicly available sources or verification services where lawful and necessary.</li>
+            </ul>
+          </div>
+        </div>
+
+        <hr class="legal-divider">
+
+        <!-- Section 5 -->
+        <div class="legal-section" id="p5">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="section-number">5</div>
+            <h2 class="section-title" x-text="lang==='ar'?'لماذا نعالج البيانات الشخصية':'Why We Process Personal Data'"></h2>
+          </div>
+          <div class="section-body">
+            <p x-show="lang==='ar'">نعالج البيانات الشخصية فقط لأغراض مشروعة ومحددة، تشمل:</p>
+            <p x-show="lang==='en'">We process personal data only for legitimate and defined purposes, including:</p>
+
+            <div class="sub-heading" x-text="lang==='ar'?'5.1 إنشاء الحساب والمصادقة':'5.1 Account Creation and Authentication'"></div>
+            <p x-show="lang==='ar'" style="font-size:0.9rem">إنشاء الحسابات والتحقق من المستخدمين وإدارة تسجيل الدخول والحفاظ على أمان الحساب.</p>
+            <p x-show="lang==='en'" style="font-size:0.9rem">To create accounts, verify users, manage sign-in, and maintain account security.</p>
+
+            <div class="sub-heading" x-text="lang==='ar'?'5.2 تقديم الخدمات وإدارة الحجوزات':'5.2 Service Delivery and Booking Management'"></div>
+            <p x-show="lang==='ar'" style="font-size:0.9rem">معالجة الحجوزات ومطابقة المستخدمين مع مزودي الخدمة وإدارة الجداول وتقديم التأكيدات والتحديثات.</p>
+            <p x-show="lang==='en'" style="font-size:0.9rem">To process bookings, match users with providers, manage schedules, and provide confirmations and updates.</p>
+
+            <div class="sub-heading" x-text="lang==='ar'?'5.3 معالجة الدفع والفواتير':'5.3 Payment Processing and Billing'"></div>
+            <p x-show="lang==='ar'" style="font-size:0.9rem">معالجة المدفوعات وإصدار الفواتير والتعامل مع الإلغاءات والمبالغ المستردة والاحتفاظ بالسجلات المالية.</p>
+            <p x-show="lang==='en'" style="font-size:0.9rem">To process payments, issue invoices, handle cancellations and refunds, and maintain financial records.</p>
+
+            <div class="sub-heading" x-text="lang==='ar'?'5.4 دعم العملاء ومعالجة الشكاوى':'5.4 Customer Support and Complaint Handling'"></div>
+            <p x-show="lang==='ar'" style="font-size:0.9rem">استلام ومراجعة وتوجيه وتوثيق وحل طلبات الدعم والنزاعات والشكاوى وتقارير سلوك مزودي الخدمة.</p>
+            <p x-show="lang==='en'" style="font-size:0.9rem">To receive, review, investigate, document, and resolve support requests, disputes, complaints, and provider misconduct reports.</p>
+
+            <div class="sub-heading" x-text="lang==='ar'?'5.5 منع الاحتيال وأمان المنصة':'5.5 Fraud Prevention and Platform Security'"></div>
+            <p x-show="lang==='ar'" style="font-size:0.9rem">مراقبة الأنشطة المشبوهة وتقليص الاحتيال وحماية المستخدمين وتأمين الأنظمة والتحقيق في الإساءة.</p>
+            <p x-show="lang==='en'" style="font-size:0.9rem">To monitor suspicious activity, reduce fraud, protect users, secure systems, and investigate misuse.</p>
+
+            <div class="sub-heading" x-text="lang==='ar'?'5.6 ضمان الجودة وتطوير الخدمات':'5.6 Quality Assurance and Service Improvement'"></div>
+            <p x-show="lang==='ar'" style="font-size:0.9rem">تحليل جودة الخدمة وتحسين تجربة المستخدم وتطوير الميزات الجديدة.</p>
+            <p x-show="lang==='en'" style="font-size:0.9rem">To analyze service quality, improve user experience, and develop new features.</p>
+
+            <div class="sub-heading" x-text="lang==='ar'?'5.7 الامتثال القانوني والتنظيمي':'5.7 Legal and Regulatory Compliance'"></div>
+            <p x-show="lang==='ar'" style="font-size:0.9rem">الامتثال للأنظمة والتشريعات والالتزامات الضريبية وأوامر المحاكم ومتطلبات التقارير في المملكة العربية السعودية.</p>
+            <p x-show="lang==='en'" style="font-size:0.9rem">To comply with applicable laws, regulations, tax obligations, court orders, and compliance requirements in the Kingdom of Saudi Arabia.</p>
+
+            <div class="sub-heading" x-text="lang==='ar'?'5.8 الاتصالات':'5.8 Communications'"></div>
+            <p x-show="lang==='ar'" style="font-size:0.9rem">إرسال التنبيهات والتذكيرات والإشعارات المتعلقة بالشكاوى والإشعارات الأمنية وتغييرات السياسة، وعند الإذن، الرسائل التسويقية.</p>
+            <p x-show="lang==='en'" style="font-size:0.9rem">To send transactional alerts, booking reminders, complaint updates, security notices, policy changes, and where permitted, marketing messages.</p>
+          </div>
+        </div>
+
+        <hr class="legal-divider">
+
+        <!-- Section 6 -->
+        <div class="legal-section" id="p6">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="section-number">6</div>
+            <h2 class="section-title" x-text="lang==='ar'?'الأساس القانوني للمعالجة':'Legal Basis / Basis for Processing'"></h2>
+          </div>
+          <div class="section-body">
+            <p x-show="lang==='ar'">حيثما يُوجبه القانون المعمول به، نستند إلى أسس قانونية وتشغيلية مناسبة لمعالجة البيانات الشخصية، قد تشمل:</p>
+            <p x-show="lang==='en'">Where required under applicable law, we rely on appropriate legal and operational bases for processing personal data, which may include:</p>
+            <ul>
+              <li x-show="lang==='ar'">موافقتك حيثما كانت الموافقة مطلوبة؛</li>
+              <li x-show="lang==='en'">your consent, where consent is required;</li>
+              <li x-show="lang==='ar'">تنفيذ عقد أو اتخاذ خطوات بناءً على طلبك قبل إبرام عقد؛</li>
+              <li x-show="lang==='en'">performance of a contract or steps requested by you before entering into a contract;</li>
+              <li x-show="lang==='ar'">الامتثال للالتزامات القانونية أو التنظيمية؛</li>
+              <li x-show="lang==='en'">compliance with legal or regulatory obligations;</li>
+              <li x-show="lang==='ar'">الأغراض التشغيلية المشروعة والضرورية، كالأمان ومنع الاحتيال ومعالجة النزاعات وإدارة الخدمات، حيثما ينطبق ذلك وفق القانون.</li>
+              <li x-show="lang==='en'">legitimate and necessary operational purposes, such as security, fraud prevention, dispute handling, and service administration, where applicable under law.</li>
+            </ul>
+            <div class="callout-warn">
+              <i class="fas fa-gavel ms-1"></i>
+              <span x-show="lang==='ar'"> يجب صياغة هذا البند بصورة نهائية مع مستشار قانوني سعودي بناءً على نموذج عملك الفعلي.</span>
+              <span x-show="lang==='en'"> Exact legal wording should be finalized with Saudi counsel based on your business model and actual processing activities.</span>
+            </div>
+          </div>
+        </div>
+
+        <hr class="legal-divider">
+
+        <!-- Section 7 -->
+        <div class="legal-section" id="p7">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="section-number">7</div>
+            <h2 class="section-title" x-text="lang==='ar'?'متى قد نشارك البيانات الشخصية':'When We May Share Personal Data'"></h2>
+          </div>
+          <div class="section-body">
+            <p x-show="lang==='ar'"><strong>لا نبيع البيانات الشخصية كممارسة تجارية عامة.</strong></p>
+            <p x-show="lang==='en'"><strong>We do not sell personal data as a general commercial practice.</strong></p>
+            <p x-show="lang==='ar'">قد نشارك البيانات الشخصية فقط عند الضرورة ومع الجهات المناسبة، مثل:</p>
+            <p x-show="lang==='en'">We may share personal data only where necessary and appropriate with:</p>
+
+            <div class="sub-heading" x-text="lang==='ar'?'7.1 مزودو الخدمات والشركاء التشغيليون':'7.1 Service Providers and Operational Partners'"></div>
+            <p x-show="lang==='ar'" style="font-size:0.9rem">كمزودي الاستضافة والسحاب الإلكتروني وبائعي التحليلات وأدوات دعم العملاء وخدمات الإشعارات وخدمات الخرائط ومزودي الرسائل النصية / البريد الإلكتروني وأدوات منع الاحتيال.</p>
+            <p x-show="lang==='en'" style="font-size:0.9rem">Such as hosting providers, cloud providers, analytics vendors, customer-support tools, notification services, mapping services, SMS/email providers, and fraud-prevention tools.</p>
+
+            <div class="sub-heading" x-text="lang==='ar'?'7.2 مزودو خدمات الدفع':'7.2 Payment Service Providers'"></div>
+            <p x-show="lang==='ar'" style="font-size:0.9rem">لمعالجة المدفوعات والمبالغ المستردة ومراجعة الرسوم والتحقق من المعاملات.</p>
+            <p x-show="lang==='en'" style="font-size:0.9rem">To process payments, refunds, charge reviews, and transaction verification.</p>
+
+            <div class="sub-heading" x-text="lang==='ar'?'7.3 مزودو الخدمة المنفِّذون للحجوزات':'7.3 Providers Fulfilling Services'"></div>
+            <p x-show="lang==='ar'" style="font-size:0.9rem">حيثما لزم لإتمام الحجوزات وتنسيق تقديم الخدمات ومعالجة النزاعات والتحقيق في الشكاوى.</p>
+            <p x-show="lang==='en'" style="font-size:0.9rem">Where necessary to complete bookings, coordinate service delivery, handle disputes, or investigate complaints.</p>
+
+            <div class="sub-heading" x-text="lang==='ar'?'7.4 الجهات الحكومية والجهات التنظيمية':'7.4 Government Authorities and Regulators'"></div>
+            <p x-show="lang==='ar'" style="font-size:0.9rem">حيثما يوجب ذلك القانون أو أمر قضائي أو طلب مشروع أو التزام تنظيمي.</p>
+            <p x-show="lang==='en'" style="font-size:0.9rem">Where required by law, court order, lawful request, or regulatory obligation.</p>
+
+            <div class="sub-heading" x-text="lang==='ar'?'7.5 المستشارون المتخصصون':'7.5 Professional Advisers'"></div>
+            <p x-show="lang==='ar'" style="font-size:0.9rem">بما فيهم المحامون والمدققون ومستشارو التأمين لأسباب قانونية أو تنظيمية أو تجارية.</p>
+            <p x-show="lang==='en'" style="font-size:0.9rem">Including lawyers, auditors, and insurers where required for legal, regulatory, or business reasons.</p>
+
+            <div class="sub-heading" x-text="lang==='ar'?'7.6 المعاملات الشركاتية':'7.6 Corporate Transactions'"></div>
+            <p x-show="lang==='ar'" style="font-size:0.9rem">في حال تورط شركتنا في اندماج أو استحواذ أو إعادة هيكلة أو تمويل، قد تُشارَك البيانات الشخصية كجزء من ذلك مع ضمانات مشروعة.</p>
+            <p x-show="lang==='en'" style="font-size:0.9rem">If our business is involved in a merger, acquisition, restructuring, or asset transfer, personal data may be shared as part of that process, subject to lawful safeguards.</p>
+          </div>
+        </div>
+
+        <hr class="legal-divider">
+
+        <!-- Section 8 -->
+        <div class="legal-section" id="p8">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="section-number">8</div>
+            <h2 class="section-title" x-text="lang==='ar'?'النقل الدولي وعبر الحدود':'International and Cross-Border Transfers'"></h2>
+          </div>
+          <div class="section-body">
+            <p x-show="lang==='ar'">إذا خزّنّا البيانات الشخصية أو وصلنا إليها أو عالجناها خارج المملكة العربية السعودية، فسنسعى إلى ذلك فقط وفق المتطلبات القانونية والتنظيمية السعودية المعمول بها ومع الضمانات الملائمة.</p>
+            <p x-show="lang==='en'">If we store, access, process, or support personal data outside the Kingdom of Saudi Arabia, we will seek to do so only in accordance with applicable Saudi legal and regulatory requirements and with appropriate safeguards.</p>
+            <div class="callout-warn">
+              <i class="fas fa-exclamation-triangle ms-1"></i>
+              <span x-show="lang==='ar'"> تتضمن الأنظمة السعودية لوائح خاصة بنقل البيانات الشخصية خارج المملكة. إذا كنت تنوي استخدام استضافة سحابية أو أدوات دعم أو بنية تحتية للبريد الإلكتروني خارج المملكة، فيجب تخصيص هذا القسم بدقة مع المستشار القانوني قبل الإطلاق.</span>
+              <span x-show="lang==='en'"> Saudi official materials include a dedicated regulation on the transfer of personal data outside the Kingdom. If you use cloud hosting, analytics, or email infrastructure outside Saudi Arabia, this section must be specifically customized by counsel before launch.</span>
+            </div>
+          </div>
+        </div>
+
+        <hr class="legal-divider">
+
+        <!-- Section 9 -->
+        <div class="legal-section" id="p9">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="section-number">9</div>
+            <h2 class="section-title" x-text="lang==='ar'?'الاحتفاظ بالبيانات':'Data Retention'"></h2>
+          </div>
+          <div class="section-body">
+            <p x-show="lang==='ar'">نحتفظ بالبيانات الشخصية فقط طوال المدة المعقولة اللازمة للأغراض الموضحة في هذه السياسة، بما فيها إدارة الحسابات وتنفيذ الحجوزات والتسوية المالية وتوثيق الشكاوى ومراقبة الاحتيال والامتثال القانوني والضريبي. تتباين فترات الاحتفاظ بحسب نوع البيانات وسبب المعالجة.</p>
+            <p x-show="lang==='en'">We retain personal data only for as long as reasonably necessary for the purposes described in this Privacy Policy, including account management, booking fulfillment, financial reconciliation, complaint documentation, fraud monitoring, and legal, tax, accounting, and regulatory compliance. Retention periods may vary depending on the type of data and the reason for processing.</p>
+            <p x-show="lang==='ar'">يجب تطبيق جدول احتفاظ داخلي أكثر دقة يشمل: بيانات الحسابات، وبيانات الحجوزات، ومراجع الدفع، وأدلة الشكاوى، وبيانات التسويق، وسجلات التحقق لمزودي الخدمة، والسجلات والنسخ الاحتياطية الأمنية.</p>
+            <p x-show="lang==='en'">A more exact retention schedule should be implemented internally by category: account data, booking data, payment references, complaint evidence, marketing data, provider verification records, and logs and security records.</p>
+          </div>
+        </div>
+
+        <hr class="legal-divider">
+
+        <!-- Section 10 -->
+        <div class="legal-section" id="p10">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="section-number">10</div>
+            <h2 class="section-title" x-text="lang==='ar'?'حقوقك':'Your Rights'"></h2>
+          </div>
+          <div class="section-body">
+            <p x-show="lang==='ar'">رهناً بالقانون المعمول به، قد تتمتع بالحقوق التالية فيما يتعلق ببياناتك الشخصية:</p>
+            <p x-show="lang==='en'">Subject to applicable law, you may have the following rights regarding your personal data:</p>
+
+            <div class="row g-3 my-3">
+              <div class="col-6 col-md-4">
+                <div class="right-card">
+                  <div class="icon"><i class="fas fa-eye"></i></div>
+                  <strong style="font-size:0.85rem" x-text="lang==='ar'?'حق الوصول':'Access'"></strong>
+                  <p x-text="lang==='ar'?'طلب الاطلاع على بياناتك':'Request your personal data'"></p>
+                </div>
+              </div>
+              <div class="col-6 col-md-4">
+                <div class="right-card">
+                  <div class="icon"><i class="fas fa-edit"></i></div>
+                  <strong style="font-size:0.85rem" x-text="lang==='ar'?'حق التصحيح':'Correction'"></strong>
+                  <p x-text="lang==='ar'?'تصحيح البيانات غير الدقيقة':'Correct inaccurate data'"></p>
+                </div>
+              </div>
+              <div class="col-6 col-md-4">
+                <div class="right-card">
+                  <div class="icon"><i class="fas fa-trash-alt"></i></div>
+                  <strong style="font-size:0.85rem" x-text="lang==='ar'?'حق الحذف':'Deletion'"></strong>
+                  <p x-text="lang==='ar'?'طلب الحذف حيث ينطبق القانون':'Where legally applicable'"></p>
+                </div>
+              </div>
+              <div class="col-6 col-md-4">
+                <div class="right-card">
+                  <div class="icon"><i class="fas fa-ban"></i></div>
+                  <strong style="font-size:0.85rem" x-text="lang==='ar'?'سحب الموافقة':'Withdraw Consent'"></strong>
+                  <p x-text="lang==='ar'?'حيثما استندت المعالجة إلى الموافقة':'Where processing is consent-based'"></p>
+                </div>
+              </div>
+              <div class="col-6 col-md-4">
+                <div class="right-card">
+                  <div class="icon"><i class="fas fa-hand-paper"></i></div>
+                  <strong style="font-size:0.85rem" x-text="lang==='ar'?'حق الاعتراض':'Objection'"></strong>
+                  <p x-text="lang==='ar'?'الاعتراض على المعالجة حيثما ينطبق':'Object to processing'"></p>
+                </div>
+              </div>
+              <div class="col-6 col-md-4">
+                <div class="right-card">
+                  <div class="icon"><i class="fas fa-question-circle"></i></div>
+                  <strong style="font-size:0.85rem" x-text="lang==='ar'?'حق الاستفسار':'Information'"></strong>
+                  <p x-text="lang==='ar'?'طلب معلومات حول كيفية معالجة بياناتك':'How your data is processed'"></p>
+                </div>
+              </div>
+            </div>
+
+            <p x-show="lang==='ar'">لممارسة حقوقك، تواصل معنا عبر:</p>
+            <p x-show="lang==='en'">To exercise your rights, contact us at:</p>
+            <div class="callout-placeholder" style="font-style:normal">
+              <div><i class="fas fa-envelope ms-1 text-muted"></i> <span x-text="lang==='ar'?'البريد الإلكتروني للخصوصية:':'Privacy Email:'"></span> [أدخل البريد الإلكتروني]</div>
+              <div><i class="fas fa-link ms-1 text-muted"></i> <span x-text="lang==='ar'?'نموذج طلب الخصوصية:':'Privacy Request Form:'"></span> [أدخل الرابط]</div>
+            </div>
+            <p x-show="lang==='ar'" style="font-size:0.88rem;color:var(--k-gray);margin-top:0.75rem">قد نطلب التحقق من هويتك قبل تنفيذ الطلب. وقد نرفض الطلب أو نقيّده حيثما يُجيز ذلك القانون أو يُوجبه.</p>
+            <p x-show="lang==='en'" style="font-size:0.88rem;color:var(--k-gray);margin-top:0.75rem">We may require identity verification before fulfilling a request. We may also decline or limit a request where the law permits or requires us to do so.</p>
+          </div>
+        </div>
+
+        <hr class="legal-divider">
+
+        <!-- Section 11 -->
+        <div class="legal-section" id="p11">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="section-number">11</div>
+            <h2 class="section-title" x-text="lang==='ar'?'ملفات تعريف الارتباط والتتبع':'Cookies, Tracking, and Similar Technologies'"></h2>
+          </div>
+          <div class="section-body">
+            <p x-show="lang==='ar'">قد نستخدم ملفات تعريف الارتباط والبيكسل وحزم SDK وتقنيات مماثلة لأغراض تشمل: إبقاءك مسجلاً الدخول، وتذكّر التفضيلات، وتحليل تصفح المستخدم للمنصة، وتحسين قابلية الاستخدام والأداء، ومنع الاحتيال والإساءة، وتشخيص المشكلات التقنية.</p>
+            <p x-show="lang==='en'">We may use cookies, pixels, SDKs, and similar technologies to: keep you signed in; remember preferences; understand how users navigate the Platform; improve usability and performance; prevent fraud and abuse; and diagnose technical issues.</p>
+            <div class="callout-info">
+              <i class="fas fa-info-circle ms-1" style="color:var(--k-primary)"></i>
+              <span x-show="lang==='ar'"> للمنصات الإلكترونية التي تستخدم أدوات التحليلات أو الإعلانات أو إعادة الاستهداف، يُوصى بإضافة بيان منفصل لملفات تعريف الارتباط أو لافتة إعدادات ملفات الارتباط.</span>
+              <span x-show="lang==='en'"> For web platforms using analytics, advertising, or retargeting tools, add a separate Cookie Policy or cookie settings banner.</span>
+            </div>
+          </div>
+        </div>
+
+        <hr class="legal-divider">
+
+        <!-- Section 12 -->
+        <div class="legal-section" id="p12">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="section-number">12</div>
+            <h2 class="section-title" x-text="lang==='ar'?'تدابير الأمان':'Security Measures'"></h2>
+          </div>
+          <div class="section-body">
+            <p x-show="lang==='ar'">نتخذ تدابير تنظيمية وإدارية وتقنية ملائمة لحماية البيانات الشخصية من الوصول غير المصرح به والإفصاح والفقدان والإساءة والتعديل أو الإتلاف. قد تشمل هذه التدابير:</p>
+            <p x-show="lang==='en'">We take appropriate organizational, administrative, and technical measures to protect personal data against unauthorized access, disclosure, loss, misuse, alteration, or destruction. These measures may include:</p>
+            <div class="row g-2 mt-2">
+              <div class="col-sm-6">
+                <ul style="font-size:0.9rem">
+                  <li x-show="lang==='ar'">تشفير HTTPS / TLS أثناء النقل؛</li>
+                  <li x-show="lang==='en'">HTTPS / TLS encryption in transit;</li>
+                  <li x-show="lang==='ar'">تشفير أو حماية البيانات الساكنة حيثما كان ذلك مناسباً؛</li>
+                  <li x-show="lang==='en'">encryption or protection of data at rest where appropriate;</li>
+                  <li x-show="lang==='ar'">ضوابط وصول مستندة إلى الأدوار ومبدأ الحد الأدنى من الصلاحيات؛</li>
+                  <li x-show="lang==='en'">role-based access controls and least-privilege internal access;</li>
+                  <li x-show="lang==='ar'">سجلات المراجعة والتدقيق؛</li>
+                  <li x-show="lang==='en'">audit logs;</li>
+                  <li x-show="lang==='ar'">مصادقة آمنة متعددة العوامل؛</li>
+                  <li x-show="lang==='en'">secure authentication;</li>
+                </ul>
+              </div>
+              <div class="col-sm-6">
+                <ul style="font-size:0.9rem">
+                  <li x-show="lang==='ar'">ضوابط تحميل الملفات وفحص البرمجيات الخبيثة؛</li>
+                  <li x-show="lang==='en'">file-upload controls and malware scanning;</li>
+                  <li x-show="lang==='ar'">آليات كشف الاحتيال؛</li>
+                  <li x-show="lang==='en'">fraud-detection mechanisms;</li>
+                  <li x-show="lang==='ar'">ضوابط النسخ الاحتياطي والتعافي من الكوارث؛</li>
+                  <li x-show="lang==='en'">backup and disaster-recovery controls;</li>
+                  <li x-show="lang==='ar'">العناية الواجبة مع البائعين؛</li>
+                  <li x-show="lang==='en'">vendor due diligence;</li>
+                  <li x-show="lang==='ar'">سياسات الأمان الداخلية والتدريب.</li>
+                  <li x-show="lang==='en'">internal security policies and training.</li>
+                </ul>
+              </div>
+            </div>
+            <p x-show="lang==='ar'" style="font-size:0.85rem;color:var(--k-gray);margin-top:0.5rem">لا يمكن ضمان أن أي نظام قائم على الإنترنت آمن تماماً، لكننا نعمل على الحفاظ على ضمانات ملائمة تتناسب مع طبيعة البيانات والمخاطر المعنية.</p>
+            <p x-show="lang==='en'" style="font-size:0.85rem;color:var(--k-gray);margin-top:0.5rem">No internet-based system can be guaranteed to be completely secure, but we work to maintain appropriate safeguards consistent with the nature of the data and the risks involved.</p>
+          </div>
+        </div>
+
+        <hr class="legal-divider">
+
+        <!-- Section 13 -->
+        <div class="legal-section" id="p13">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="section-number">13</div>
+            <h2 class="section-title" x-text="lang==='ar'?'الشكاوى والنزاعات والاتصالات المُسجَّلة':'Complaints, Disputes, and Recorded Communications'"></h2>
+          </div>
+          <div class="section-body">
+            <p x-show="lang==='ar'">عند تقديم شكوى أو نزاع أو طلب استرداد أو تقرير سلامة أو تقرير سوء سلوك، قد نعالج ونحتفظ بالبيانات الشخصية ذات الصلة والاتصالات والأدلة وسجلات التحقيق من أجل: مراجعة الأمر؛ والتواصل مع الأطراف المعنية؛ ومنع الاحتيال أو الإساءة؛ ودعم صنع القرار؛ والامتثال للالتزامات القانونية؛ والحفاظ على مسار تدقيق.</p>
+            <p x-show="lang==='en'">If you submit a complaint, dispute, refund request, safety report, or misconduct report, we may process and retain related personal data, communications, evidence, and investigation records in order to: review the matter; contact the parties involved; prevent fraud or abuse; support decision-making; comply with legal obligations; and maintain an audit trail.</p>
+            <p x-show="lang==='ar'" style="font-size:0.9rem">قد يشمل ذلك الرسائل والمرفقات والطوابع الزمنية وملاحظات المكالمات وسجلات معالجة الحالات الداخلية.</p>
+            <p x-show="lang==='en'" style="font-size:0.9rem">This may include messages, attachments, timestamps, call notes, and internal case-handling records.</p>
+          </div>
+        </div>
+
+        <hr class="legal-divider">
+
+        <!-- Section 14 -->
+        <div class="legal-section" id="p14">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="section-number">14</div>
+            <h2 class="section-title" x-text="lang==='ar'?'الاتصالات التسويقية':'Marketing Communications'"></h2>
+          </div>
+          <div class="section-body">
+            <p x-show="lang==='ar'">قد نُرسل اتصالات تشغيلية أو تعاملية ضرورية لحسابك أو حجزك أو دفعك أو شكواك أو تجربتك الأمنية. حيثما كان ذلك مسموحاً ومناسباً، قد نُرسل أيضاً اتصالات تسويقية أو ترويجية.</p>
+            <p x-show="lang==='en'">We may send service-related or transactional communications necessary for your account, booking, payment, complaint, or security experience. Where permitted and appropriate, we may also send marketing or promotional communications.</p>
+            <p x-show="lang==='ar'">يمكنك إلغاء الاشتراك في الرسائل الترويجية عبر إعدادات التطبيق أو روابط إلغاء الاشتراك أو قنوات التواصل مع الدعم. لاحظ أن إلغاء الاشتراك في التسويق لا يوقف الاتصالات الجوهرية المتعلقة بالخدمة أو القانون أو الأمان.</p>
+            <p x-show="lang==='en'">You may opt out of promotional messages through in-app settings, unsubscribe links, or support contact channels. Opting out of marketing does not stop essential service, legal, or security communications.</p>
+          </div>
+        </div>
+
+        <hr class="legal-divider">
+
+        <!-- Section 15 -->
+        <div class="legal-section" id="p15">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="section-number">15</div>
+            <h2 class="section-title" x-text="lang==='ar'?'بيانات الأطفال':'Children\'s Data'"></h2>
+          </div>
+          <div class="section-body">
+            <p x-show="lang==='ar'">المنصة غير مخصصة للأطفال. المستخدمون يجب أن يكونوا قادرين قانونياً على إبرام العقود وفق القانون المعمول به. إذا علمنا بجمع بيانات شخصية لطفل بطريقة غير متسقة مع القانون المعمول به أو قواعد المنصة، فقد نحذف تلك البيانات أو نقيّدها ونتخذ الإجراءات المناسبة للحساب.</p>
+            <p x-show="lang==='en'">The Platform is not intended for use by children. Users must be legally capable of entering into contracts under Applicable Law. If we learn that personal data was collected from a child in a manner inconsistent with applicable law or platform rules, we may delete or restrict that data and take appropriate account action.</p>
+          </div>
+        </div>
+
+        <hr class="legal-divider">
+
+        <!-- Section 16 -->
+        <div class="legal-section" id="p16">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="section-number">16</div>
+            <h2 class="section-title" x-text="lang==='ar'?'بيانات مزودي الخدمة والتجار':'Provider and Merchant Data'"></h2>
+          </div>
+          <div class="section-body">
+            <p x-show="lang==='ar'">إذا كنت مزود خدمة أو تاجراً أو مقاولاً أو شريكاً على المنصة، فقد نعالج بيانات إضافية مطلوبة للتأهيل والامتثال والعمليات ومراقبة الأداء وتسوية المدفوعات ومعالجة الشكاوى ومنع الاحتيال. قد تشمل هذه البيانات: التحقق من الهوية، والسجل التجاري / الترخيص المهني، والمؤهلات المهنية، وتقييمات الخدمة والمراجعات، ومعلومات البنك أو الصرف، ومعلومات الضريبة والفواتير، وسجل التحقيق والشكاوى.</p>
+            <p x-show="lang==='en'">If you are a provider, merchant, contractor, or partner on the Platform, we may process additional data required for onboarding, compliance, operations, performance monitoring, payment settlement, complaints handling, and fraud prevention. This may include: identity verification; commercial registration / freelance license; professional qualifications; service ratings and reviews; bank or payout information; tax and invoicing information; and investigation and complaint history.</p>
+          </div>
+        </div>
+
+        <hr class="legal-divider">
+
+        <!-- Section 17 -->
+        <div class="legal-section" id="p17">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="section-number">17</div>
+            <h2 class="section-title" x-text="lang==='ar'?'الأدوات الآلية والذكاء الاصطناعي':'Automated Tools and AI Support'"></h2>
+          </div>
+          <div class="section-body">
+            <p x-show="lang==='ar'">قد نستخدم أدوات آلية وتحليلات وأنظمة مدعومة بالذكاء الاصطناعي لتحسين الدعم وتصنيف الشكاوى والكشف عن الأنشطة المشبوهة وتحسين جودة الخدمة وتخصيص بعض تجارب المنصة. بيد أنه بالنسبة للقرارات الحساسة أو ذات الأثر البالغ -كالقيود الرئيسية على الحسابات أو استنتاجات الاحتيال أو عقوبات مزودي الخدمة الجسيمة أو رفض طلبات الخصوصية- نوصي بالحفاظ على مراجعة بشرية ذات معنى.</p>
+            <p x-show="lang==='en'">We may use automated tools, analytics, and AI-assisted systems to improve support, classify complaints, detect suspicious activity, improve service quality, or personalize certain platform experiences. However, for sensitive or high-impact decisions—such as major account restrictions, fraud conclusions, serious provider penalties, or privacy-rights denials—we recommend maintaining meaningful human review.</p>
+          </div>
+        </div>
+
+        <hr class="legal-divider">
+
+        <!-- Section 18 -->
+        <div class="legal-section" id="p18">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="section-number">18</div>
+            <h2 class="section-title" x-text="lang==='ar'?'الروابط وخدمات الأطراف الثالثة':'Third-Party Links and External Services'"></h2>
+          </div>
+          <div class="section-body">
+            <p x-show="lang==='ar'">قد تحتوي المنصة على روابط أو تكاملات مع خدمات أطراف ثالثة، كبوابات الدفع والخرائط ومزودي تسجيل الدخول الاجتماعي وأدوات التحليلات والاستضافة السحابية وقنوات المراسلة. لسنا مسؤولين عن ممارسات الخصوصية المستقلة لخدمات الأطراف الثالثة، ونشجع المستخدمين على مراجعة سياسات خصوصية تلك الجهات قبل استخدام خدماتها.</p>
+            <p x-show="lang==='en'">The Platform may contain links to or integrations with third-party services, such as payment gateways, maps, social sign-in providers, analytics providers, cloud-hosted tools, and messaging channels. We are not responsible for the independent privacy practices of third-party services. We encourage users to review the privacy policies of those providers before using their services.</p>
+          </div>
+        </div>
+
+        <hr class="legal-divider">
+
+        <!-- Section 19 -->
+        <div class="legal-section" id="p19">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="section-number">19</div>
+            <h2 class="section-title" x-text="lang==='ar'?'تحديثات سياسة الخصوصية':'Updates to This Privacy Policy'"></h2>
+          </div>
+          <div class="section-body">
+            <p x-show="lang==='ar'">قد نُحدّث هذه السياسة من وقت لآخر لتعكس التغييرات في القانون أو الأنظمة أو خدماتنا أو أنظمتنا أو الاستخدامات الجديدة للبيانات أو تكاملات جديدة. حيثما كان ذلك مناسباً، قد نُخطر المستخدمين بالتغييرات الجوهرية عبر المنصة أو البريد الإلكتروني أو الرسائل النصية أو إشعارات التطبيق.</p>
+            <p x-show="lang==='en'">We may update this Privacy Policy from time to time to reflect changes in law or regulation, changes in our services or systems, new security measures, new data uses or integrations, or operational improvements. Where appropriate, we may notify users of material changes through the Platform, email, SMS, or app notifications.</p>
+            <p x-show="lang==='ar'">يُشكّل استمرار استخدامك للمنصة بعد تاريخ نفاذ السياسة المحدَّثة إقراراً بالنسخة المعدَّلة، في حدود ما يُجيزه القانون.</p>
+            <p x-show="lang==='en'">Your continued use of the Platform after the effective date of an updated Privacy Policy may constitute acknowledgment of the revised version, to the extent permitted by law.</p>
+          </div>
+        </div>
+
+        <hr class="legal-divider">
+
+        <!-- Section 20 -->
+        <div class="legal-section" id="p20">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="section-number">20</div>
+            <h2 class="section-title" x-text="lang==='ar'?'تواصل معنا':'Contact Us'"></h2>
+          </div>
+          <div class="section-body">
+            <p x-show="lang==='ar'">لأسئلة الخصوصية أو الطلبات أو الشكاوى، يُرجى التواصل معنا:</p>
+            <p x-show="lang==='en'">For privacy questions, requests, or complaints, please contact:</p>
+            <div class="callout-placeholder" style="font-style:normal">
+              <div class="row g-2">
+                <div class="col-sm-6">
+                  <div style="font-weight:600;color:var(--k-dark-2);margin-bottom:0.4rem" x-text="lang==='ar'?'معلومات الشركة':'Company Information'"></div>
+                  <div><i class="fas fa-building ms-1 text-muted" style="width:16px"></i> [الاسم القانوني للشركة]</div>
+                  <div><i class="fas fa-id-card ms-1 text-muted" style="width:16px"></i> <span x-text="lang==='ar'?'س.ت:':'CR:'"></span> [أدخل]</div>
+                  <div><i class="fas fa-map-marker-alt ms-1 text-muted" style="width:16px"></i> [أدخل العنوان المسجّل]</div>
+                </div>
+                <div class="col-sm-6">
+                  <div style="font-weight:600;color:var(--k-dark-2);margin-bottom:0.4rem" x-text="lang==='ar'?'قنوات الخصوصية':'Privacy Channels'"></div>
+                  <div><i class="fas fa-envelope ms-1 text-muted" style="width:16px"></i> <span x-text="lang==='ar'?'بريد الخصوصية:':'Privacy Email:'"></span> [أدخل]</div>
+                  <div><i class="fas fa-envelope ms-1 text-muted" style="width:16px"></i> <span x-text="lang==='ar'?'بريد الدعم:':'Support Email:'"></span> [أدخل]</div>
+                  <div><i class="fas fa-phone ms-1 text-muted" style="width:16px"></i> <span x-text="lang==='ar'?'الهاتف:':'Phone:'"></span> [أدخل]</div>
+                  <div><i class="fas fa-link ms-1 text-muted" style="width:16px"></i> <span x-text="lang==='ar'?'صفحة طلب الخصوصية:':'Privacy Request Page:'"></span> [أدخل الرابط]</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- end .legal-content -->
+
+      <!-- Related Policies -->
+      <div class="policy-links mt-4">
+        <h6 style="font-weight:800;color:var(--k-dark-2);margin-bottom:1.25rem">
+          <i class="fas fa-link ms-2" style="color:var(--k-primary)"></i>
+          <span x-text="lang==='ar'?'السياسات المرتبطة':'Related Policies'"></span>
+        </h6>
+        <div class="row g-3">
+          <div class="col-md-4">
+            <a href="terms.html" class="policy-link-card">
+              <div class="icon" style="background:rgba(2,128,144,0.1);color:var(--k-primary)"><i class="fas fa-file-contract"></i></div>
+              <div>
+                <div style="font-weight:700;font-size:0.9rem" x-text="lang==='ar'?'الشروط والأحكام':'Terms & Conditions'"></div>
+                <div style="font-size:0.78rem;color:var(--k-gray)" x-text="lang==='ar'?'شروط الاستخدام':'Terms of use'"></div>
+              </div>
+            </a>
+          </div>
+          <div class="col-md-4">
+            <a href="#" class="policy-link-card">
+              <div class="icon" style="background:rgba(245,158,11,0.1);color:#d97706"><i class="fas fa-undo-alt"></i></div>
+              <div>
+                <div style="font-weight:700;font-size:0.9rem" x-text="lang==='ar'?'سياسة الإلغاء والاسترداد':'Refund & Cancellation'"></div>
+                <div style="font-size:0.78rem;color:var(--k-gray)" x-text="lang==='ar'?'شروط الاسترداد':'Cancellation conditions'"></div>
+              </div>
+            </a>
+          </div>
+          <div class="col-md-4">
+            <a href="#" class="policy-link-card">
+              <div class="icon" style="background:rgba(16,185,129,0.1);color:#059669"><i class="fas fa-comment-dots"></i></div>
+              <div>
+                <div style="font-weight:700;font-size:0.9rem" x-text="lang==='ar'?'سياسة الشكاوى':'Complaints Policy'"></div>
+                <div style="font-size:0.78rem;color:var(--k-gray)" x-text="lang==='ar'?'كيفية رفع شكوى':'How to file a complaint'"></div>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end col-lg-9 -->
+  </div><!-- end row -->
+</div><!-- end container -->
+
+<!-- Footer -->
+<footer style="background:var(--k-dark);color:rgba(255,255,255,0.6);padding:2rem 0;margin-top:3rem;text-align:center;font-size:0.85rem">
+  <div class="container">
+    <div class="mb-2">
+      <a href="terms.html" style="color:rgba(255,255,255,0.6);text-decoration:none;margin:0 0.75rem" x-text="lang==='ar'?'الشروط والأحكام':'Terms'"></a>
+      <a href="privacy.html" style="color:rgba(255,255,255,0.6);text-decoration:none;margin:0 0.75rem" x-text="lang==='ar'?'الخصوصية':'Privacy'"></a>
+      <a href="../index.html" style="color:rgba(255,255,255,0.6);text-decoration:none;margin:0 0.75rem" x-text="lang==='ar'?'الرئيسية':'Home'"></a>
+    </div>
+    <div x-text="lang==='ar'?'© 2026 خدمة. جميع الحقوق محفوظة.':'© 2026 Khedmah. All rights reserved.'"></div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+<script>
+  function legalApp() {
+    return {
+      lang: localStorage.getItem('khedmah_lang') || 'ar',
+      setLang(l) {
+        this.lang = l;
+        localStorage.setItem('khedmah_lang', l);
+        document.documentElement.dir = l === 'ar' ? 'rtl' : 'ltr';
+        document.documentElement.lang = l;
+      },
+      init() {
+        document.documentElement.dir = this.lang === 'ar' ? 'rtl' : 'ltr';
+        const sections = document.querySelectorAll('.legal-section');
+        const links = document.querySelectorAll('.toc-link');
+        const obs = new IntersectionObserver((entries) => {
+          entries.forEach(e => {
+            if (e.isIntersecting) {
+              links.forEach(l => l.classList.remove('active'));
+              const active = document.querySelector('.toc-link[href="#' + e.target.id + '"]');
+              if (active) active.classList.add('active');
+            }
+          });
+        }, { rootMargin: '-80px 0px -70% 0px' });
+        sections.forEach(s => obs.observe(s));
+      }
+    };
+  }
+</script>
+</body>
+</html>

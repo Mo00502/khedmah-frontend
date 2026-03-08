@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>إضافة معدة للإيجار — خدمة</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="../assets/css/khedmah.css">
+  <style>
+    body { background: #f0f4f8; font-family: 'Tajawal', sans-serif; }
+    .eq-accent { color: #b45309; }
+    .wizard-hero { background: linear-gradient(135deg, #1c0a00 0%, #78350f 50%, #b45309 100%); padding: 3rem 0 2rem; text-align: center; color: #fff; }
+    .step-indicator { display: flex; justify-content: center; align-items: center; gap: 0; margin-top: 1.5rem; }
+    .step-dot { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.85rem; flex-shrink: 0; border: 2px solid rgba(255,255,255,0.4); color: rgba(255,255,255,0.6); background: transparent; transition: all 0.3s; }
+    .step-dot.active { background: #fff; color: #b45309; border-color: #fff; }
+    .step-dot.done { background: rgba(255,255,255,0.3); border-color: rgba(255,255,255,0.6); color: #fff; }
+    .step-label { font-size: 0.72rem; margin-top: 0.4rem; opacity: 0.8; text-align: center; }
+    .step-line { flex: 1; height: 2px; background: rgba(255,255,255,0.25); max-width: 60px; }
+    .step-line.done { background: rgba(255,255,255,0.6); }
+    .form-card { background: #fff; border-radius: 20px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); padding: 2rem; max-width: 750px; margin: 0 auto; }
+    .cat-btn { border: 2px solid #e2e8f0; border-radius: 14px; padding: 1rem; text-align: center; cursor: pointer; transition: all 0.2s; }
+    .cat-btn:hover { border-color: #b45309; background: #fff7ed; }
+    .cat-btn.selected { border-color: #b45309; background: #fff7ed; }
+    .cat-btn .icon { font-size: 2rem; margin-bottom: 0.5rem; }
+    .cat-btn .name { font-weight: 700; font-size: 0.85rem; color: #1e293b; }
+    .btn-eq { background: #b45309; color: #fff; border: none; border-radius: 10px; padding: 0.75rem 1.5rem; font-weight: 700; font-family: 'Tajawal', sans-serif; font-size: 0.95rem; transition: all 0.2s; }
+    .btn-eq:hover { background: #92400e; color: #fff; }
+    .btn-back { background: #f1f5f9; color: #64748b; border: none; border-radius: 10px; padding: 0.75rem 1.5rem; font-weight: 700; font-family: 'Tajawal', sans-serif; font-size: 0.95rem; transition: all 0.2s; }
+    .btn-back:hover { background: #e2e8f0; }
+    .upload-zone { border: 2px dashed #d1d5db; border-radius: 16px; padding: 2.5rem; text-align: center; cursor: pointer; transition: all 0.2s; }
+    .upload-zone:hover { border-color: #b45309; background: #fff7ed; }
+    .pric-input-group { border: 2px solid #e2e8f0; border-radius: 12px; overflow: hidden; display: flex; align-items: center; }
+    .pric-input-group span { background: #f8fafc; padding: 0.75rem 1rem; color: #64748b; font-weight: 700; border-left: 1px solid #e2e8f0; white-space: nowrap; }
+    .pric-input-group input { border: none; outline: none; padding: 0.75rem 1rem; flex: 1; font-family: 'Tajawal', sans-serif; font-size: 0.95rem; }
+    .day-btn { width: 42px; height: 42px; border-radius: 50%; border: 2px solid #e2e8f0; background: #fff; font-weight: 700; font-size: 0.82rem; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
+    .day-btn.active { background: #b45309; border-color: #b45309; color: #fff; }
+    .summary-row { display: flex; justify-content: space-between; padding: 0.6rem 0; border-bottom: 1px solid #f1f5f9; font-size: 0.9rem; }
+    .summary-row:last-child { border-bottom: none; }
+    .photo-preview { width: 80px; height: 80px; border-radius: 10px; background: #f1f5f9; display: flex; align-items: center; justify-content: center; font-size: 2rem; position: relative; }
+    .photo-remove { position: absolute; top: -6px; left: -6px; width: 20px; height: 20px; background: #dc2626; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; cursor: pointer; border: none; }
+    .feature-toggle { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid #f1f5f9; }
+    .feature-toggle:last-child { border-bottom: none; }
+  </style>
+</head>
+<body>
+
+<nav class="k-navbar navbar navbar-expand-lg">
+  <div class="container">
+    <a class="navbar-brand" href="../index.html">خدم<span style="color:var(--k-accent)">ة</span></a>
+    <ul class="navbar-nav me-auto gap-1">
+      <li class="nav-item"><a class="nav-link" href="../index.html">الرئيسية</a></li>
+      <li class="nav-item"><a class="nav-link active" href="index.html">المعدات</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- Hero + Steps -->
+<div x-data="listApp()">
+<div class="wizard-hero">
+  <h2 style="font-weight:900;margin-bottom:0.25rem">أضف معدتك للإيجار</h2>
+  <p style="opacity:0.85;font-size:0.95rem">ابدأ بكسب دخل إضافي من معداتك الثقيلة</p>
+  <div class="step-indicator">
+    <div style="text-align:center">
+      <div class="step-dot" :class="step>=1?'active':''" x-text="step>1?'✓':'1'"></div>
+      <div class="step-label">المعدة</div>
+    </div>
+    <div class="step-line" :class="step>1?'done':''"></div>
+    <div style="text-align:center">
+      <div class="step-dot" :class="step>=2?'active':step>2?'done':''" x-text="step>2?'✓':'2'"></div>
+      <div class="step-label">التفاصيل</div>
+    </div>
+    <div class="step-line" :class="step>2?'done':''"></div>
+    <div style="text-align:center">
+      <div class="step-dot" :class="step>=3?'active':step>3?'done':''" x-text="step>3?'✓':'3'"></div>
+      <div class="step-label">التسعير</div>
+    </div>
+    <div class="step-line" :class="step>3?'done':''"></div>
+    <div style="text-align:center">
+      <div class="step-dot" :class="step>=4?'active':''">4</div>
+      <div class="step-label">نشر</div>
+    </div>
+  </div>
+</div>
+
+<div class="container py-4">
+
+  <!-- Step Progress Bar -->
+  <div style="max-width:750px;margin:0 auto 1.5rem">
+    <div style="background:#e2e8f0;border-radius:4px;height:6px;overflow:hidden">
+      <div style="height:100%;background:linear-gradient(90deg,#b45309,#f59e0b);border-radius:4px;transition:width 0.4s" :style="'width:' + (step/4*100) + '%'"></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:0.78rem;color:#64748b;margin-top:0.3rem">
+      <span>الخطوة <span x-text="step"></span> من 4</span>
+      <span x-text="Math.round(step/4*100) + '% مكتمل'"></span>
+    </div>
+  </div>
+
+  <!-- Success State -->
+  <div x-show="published" class="form-card" style="text-align:center;padding:3rem">
+    <div style="width:100px;height:100px;background:linear-gradient(135deg,#b45309,#92400e);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem;box-shadow:0 10px 30px rgba(180,83,9,0.35)">
+      <i class="fas fa-check fa-3x" style="color:#fff"></i>
+    </div>
+    <h3 style="font-weight:900;color:#1e293b">تم نشر معدتك!</h3>
+    <p style="color:#64748b;margin-bottom:1.5rem">سيتم مراجعة إعلانك خلال 24 ساعة وإخطارك بالموافقة</p>
+    <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:14px;padding:1.25rem;text-align:right;max-width:400px;margin:0 auto 1.5rem">
+      <div class="summary-row"><span style="color:#64748b">المعدة</span><span style="font-weight:700" x-text="name||'حفار CAT 320'"></span></div>
+      <div class="summary-row"><span style="color:#64748b">الفئة</span><span style="font-weight:700" x-text="catLabel[category]||'حفارات'"></span></div>
+      <div class="summary-row"><span style="color:#64748b">السعر اليومي</span><span style="font-weight:900;color:#b45309" x-text="(dayPrice||850) + ' ر.س'"></span></div>
+    </div>
+    <div class="d-flex gap-2 justify-content-center">
+      <a href="index.html" class="btn btn-eq">استعرض السوق</a>
+      <button class="btn btn-back" @click="step=1;published=false">إضافة معدة أخرى</button>
+    </div>
+  </div>
+
+  <!-- STEP 1: Equipment Type -->
+  <div class="form-card" x-show="step===1&&!published">
+    <h5 style="font-weight:900;color:#1e293b;margin-bottom:0.25rem">نوع المعدة</h5>
+    <p style="color:#64748b;font-size:0.88rem;margin-bottom:1.5rem">اختر فئة المعدة التي تريد تأجيرها</p>
+
+    <div class="row g-3 mb-4">
+      <div class="col-6 col-md-4 col-lg-3">
+        <div class="cat-btn" :class="category==='excavator'?'selected':''" @click="category='excavator'">
+          <div class="icon">🏗️</div><div class="name">حفارات</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-3">
+        <div class="cat-btn" :class="category==='crane'?'selected':''" @click="category='crane'">
+          <div class="icon">🏗</div><div class="name">رافعات</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-3">
+        <div class="cat-btn" :class="category==='mixer'?'selected':''" @click="category='mixer'">
+          <div class="icon">🚚</div><div class="name">خلاطات</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-3">
+        <div class="cat-btn" :class="category==='bulldozer'?'selected':''" @click="category='bulldozer'">
+          <div class="icon">🚜</div><div class="name">بلدوزرات</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-3">
+        <div class="cat-btn" :class="category==='loader'?'selected':''" @click="category='loader'">
+          <div class="icon">🚛</div><div class="name">لودرات</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-3">
+        <div class="cat-btn" :class="category==='truck'?'selected':''" @click="category='truck'">
+          <div class="icon">🚐</div><div class="name">شاحنات</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-3">
+        <div class="cat-btn" :class="category==='compactor'?'selected':''" @click="category='compactor'">
+          <div class="icon">🚧</div><div class="name">مدحلات</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-3">
+        <div class="cat-btn" :class="category==='forklift'?'selected':''" @click="category='forklift'">
+          <div class="icon">🏭</div><div class="name">فورك ليفت</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-3">
+        <div class="cat-btn" :class="category==='generator'?'selected':''" @click="category='generator'">
+          <div class="icon">⚡</div><div class="name">مولدات</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-3">
+        <div class="cat-btn" :class="category==='pump'?'selected':''" @click="category='pump'">
+          <div class="icon">💧</div><div class="name">مضخات</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-3">
+        <div class="cat-btn" :class="category==='scaffold'?'selected':''" @click="category='scaffold'">
+          <div class="icon">🪜</div><div class="name">سقالات</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-3">
+        <div class="cat-btn" :class="category==='other'?'selected':''" @click="category='other'">
+          <div class="icon">⚙️</div><div class="name">أخرى</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label" style="font-weight:700">اسم المعدة <span style="color:#dc2626">*</span></label>
+      <input type="text" class="form-control" placeholder="مثال: حفار هيدروليكي Caterpillar 320" x-model="name" style="border-radius:10px;font-family:'Tajawal',sans-serif">
+    </div>
+
+    <div class="row g-3 mb-3">
+      <div class="col-md-4">
+        <label class="form-label" style="font-weight:700">الماركة</label>
+        <select class="form-select" x-model="brand" style="border-radius:10px;font-family:'Tajawal',sans-serif">
+          <option value="">اختر الماركة</option>
+          <option>Caterpillar (CAT)</option>
+          <option>Komatsu</option>
+          <option>Volvo</option>
+          <option>Liebherr</option>
+          <option>JCB</option>
+          <option>Hyundai</option>
+          <option>Hitachi</option>
+          <option>Terex</option>
+          <option>Manitowoc</option>
+          <option>Grundfos</option>
+          <option>أخرى</option>
+        </select>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label" style="font-weight:700">سنة الصنع</label>
+        <input type="number" class="form-control" placeholder="مثال: 2022" x-model="year" min="2000" max="2026" style="border-radius:10px;font-family:'Tajawal',sans-serif">
+      </div>
+      <div class="col-md-4">
+        <label class="form-label" style="font-weight:700">ساعات التشغيل</label>
+        <input type="number" class="form-control" placeholder="مثال: 3200" x-model="hours" style="border-radius:10px;font-family:'Tajawal',sans-serif">
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-eq px-5" :disabled="!category||!name" @click="step=2">
+        التالي <i class="fas fa-arrow-left ms-2"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- STEP 2: Details & Photos -->
+  <div class="form-card" x-show="step===2&&!published">
+    <h5 style="font-weight:900;color:#1e293b;margin-bottom:0.25rem">التفاصيل والصور</h5>
+    <p style="color:#64748b;font-size:0.88rem;margin-bottom:1.5rem">أضف وصفاً دقيقاً ومواصفات المعدة وصور واضحة</p>
+
+    <div class="mb-3">
+      <label class="form-label" style="font-weight:700">وصف المعدة <span style="color:#dc2626">*</span></label>
+      <textarea class="form-control" rows="4" placeholder="اذكر حالة المعدة، مميزاتها، ما تناسبه من أعمال..." x-model="description" style="border-radius:10px;font-family:'Tajawal',sans-serif"></textarea>
+    </div>
+
+    <div class="row g-3 mb-3">
+      <div class="col-md-6">
+        <label class="form-label" style="font-weight:700">الموقع / المنطقة <span style="color:#dc2626">*</span></label>
+        <select class="form-select" x-model="region" style="border-radius:10px;font-family:'Tajawal',sans-serif">
+          <option value="">اختر المنطقة</option>
+          <option>الرياض</option>
+          <option>جدة</option>
+          <option>الدمام</option>
+          <option>مكة المكرمة</option>
+          <option>المدينة المنورة</option>
+          <option>القصيم</option>
+          <option>تبوك</option>
+          <option>أبها</option>
+          <option>حائل</option>
+          <option>نجران</option>
+          <option>جيزان</option>
+          <option>الجوف</option>
+          <option>الحدود الشمالية</option>
+        </select>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label" style="font-weight:700">الوزن أو السعة</label>
+        <input type="text" class="form-control" placeholder="مثال: 20 طن / 9 م³" x-model="capacity" style="border-radius:10px;font-family:'Tajawal',sans-serif">
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label" style="font-weight:700">مواصفات إضافية</label>
+      <div class="row g-2">
+        <div class="col-md-6">
+          <input type="text" class="form-control form-control-sm" placeholder="المحرك (مثال: 107 كيلوواط)" style="border-radius:8px;font-family:'Tajawal',sans-serif">
+        </div>
+        <div class="col-md-6">
+          <input type="text" class="form-control form-control-sm" placeholder="عمق الحفر / الارتفاع" style="border-radius:8px;font-family:'Tajawal',sans-serif">
+        </div>
+        <div class="col-md-6">
+          <input type="text" class="form-control form-control-sm" placeholder="سعة الدلو / الذراع" style="border-radius:8px;font-family:'Tajawal',sans-serif">
+        </div>
+        <div class="col-md-6">
+          <input type="text" class="form-control form-control-sm" placeholder="نوع الوقود" style="border-radius:8px;font-family:'Tajawal',sans-serif">
+        </div>
+      </div>
+    </div>
+
+    <!-- Photo Upload -->
+    <div class="mb-3">
+      <label class="form-label" style="font-weight:700">صور المعدة (حتى 8 صور) <span style="color:#dc2626">*</span></label>
+      <div class="upload-zone mb-2" onclick="document.getElementById('photoInput').click()">
+        <i class="fas fa-camera fa-2x mb-2" style="color:#b45309"></i>
+        <div style="font-weight:700;color:#1e293b;margin-bottom:0.25rem">انقر لرفع الصور</div>
+        <div style="font-size:0.82rem;color:#64748b">PNG, JPG — حتى 5MB لكل صورة</div>
+        <input type="file" id="photoInput" multiple accept="image/*" style="display:none">
+      </div>
+      <div class="d-flex gap-2 flex-wrap">
+        <div class="photo-preview">🏗️<button class="photo-remove"><i class="fas fa-times"></i></button></div>
+        <div class="photo-preview">🔧<button class="photo-remove"><i class="fas fa-times"></i></button></div>
+        <div style="width:80px;height:80px;border:2px dashed #d1d5db;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:#d1d5db;cursor:pointer">+</div>
+      </div>
+    </div>
+
+    <!-- Features -->
+    <div class="mb-4">
+      <label class="form-label" style="font-weight:700">المميزات المتاحة</label>
+      <div style="background:#f8fafc;border-radius:12px;padding:1rem">
+        <div class="feature-toggle">
+          <span style="font-size:0.9rem;font-weight:600">مع مشغل/سائق متخصص</span>
+          <div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" x-model="hasOperator"></div>
+        </div>
+        <div class="feature-toggle">
+          <span style="font-size:0.9rem;font-weight:600">خدمة التوصيل للموقع</span>
+          <div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" x-model="hasDelivery"></div>
+        </div>
+        <div class="feature-toggle">
+          <span style="font-size:0.9rem;font-weight:600">مؤمن (تأمين شامل)</span>
+          <div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" x-model="hasInsurance"></div>
+        </div>
+        <div class="feature-toggle">
+          <span style="font-size:0.9rem;font-weight:600">صيانة دورية معتمدة</span>
+          <div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" x-model="hasMaintenance"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-between">
+      <button class="btn btn-back px-4" @click="step=1"><i class="fas fa-arrow-right ms-2"></i> السابق</button>
+      <button class="btn btn-eq px-5" :disabled="!description||!region" @click="step=3">
+        التالي <i class="fas fa-arrow-left ms-2"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- STEP 3: Pricing & Availability -->
+  <div class="form-card" x-show="step===3&&!published">
+    <h5 style="font-weight:900;color:#1e293b;margin-bottom:0.25rem">التسعير والتوفر</h5>
+    <p style="color:#64748b;font-size:0.88rem;margin-bottom:1.5rem">حدد أسعارك وأيام توفر المعدة</p>
+
+    <!-- Pricing -->
+    <h6 style="font-weight:800;color:#1e293b;margin-bottom:0.75rem">أسعار التأجير</h6>
+    <div class="row g-3 mb-4">
+      <div class="col-md-4">
+        <label class="form-label" style="font-weight:700;font-size:0.88rem">بالساعة</label>
+        <div class="pric-input-group">
+          <input type="number" placeholder="120" x-model="hourPrice">
+          <span>ر.س</span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label" style="font-weight:700;font-size:0.88rem">باليوم <span style="color:#dc2626">*</span></label>
+        <div class="pric-input-group">
+          <input type="number" placeholder="850" x-model="dayPrice">
+          <span>ر.س</span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label" style="font-weight:700;font-size:0.88rem">بالأسبوع</label>
+        <div class="pric-input-group">
+          <input type="number" placeholder="4500" x-model="weekPrice">
+          <span>ر.س</span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label" style="font-weight:700;font-size:0.88rem">بالشهر</label>
+        <div class="pric-input-group">
+          <input type="number" placeholder="15000" x-model="monthPrice">
+          <span>ر.س</span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label" style="font-weight:700;font-size:0.88rem">تكلفة التوصيل</label>
+        <div class="pric-input-group">
+          <input type="number" placeholder="0 = مجاني" x-model="deliveryCost">
+          <span>ر.س</span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label" style="font-weight:700;font-size:0.88rem">مبلغ الضمان</label>
+        <div class="pric-input-group">
+          <input type="number" placeholder="2000" x-model="deposit">
+          <span>ر.س</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Minimum Rental -->
+    <div class="mb-4">
+      <label class="form-label" style="font-weight:700">الحد الأدنى للإيجار</label>
+      <div class="d-flex gap-2">
+        <label style="cursor:pointer;display:flex;align-items:center;gap:0.4rem"><input type="radio" name="minRent" value="4" x-model="minRent"> <span style="font-size:0.88rem">4 ساعات</span></label>
+        <label style="cursor:pointer;display:flex;align-items:center;gap:0.4rem"><input type="radio" name="minRent" value="1day" x-model="minRent"> <span style="font-size:0.88rem">يوم كامل</span></label>
+        <label style="cursor:pointer;display:flex;align-items:center;gap:0.4rem"><input type="radio" name="minRent" value="3days" x-model="minRent"> <span style="font-size:0.88rem">3 أيام</span></label>
+        <label style="cursor:pointer;display:flex;align-items:center;gap:0.4rem"><input type="radio" name="minRent" value="week" x-model="minRent"> <span style="font-size:0.88rem">أسبوع</span></label>
+      </div>
+    </div>
+
+    <!-- Available Days -->
+    <h6 style="font-weight:800;color:#1e293b;margin-bottom:0.75rem">أيام العمل المتاحة</h6>
+    <div class="d-flex gap-2 flex-wrap mb-4">
+      <button type="button" class="day-btn" :class="days.includes('أح')?'active':''" @click="toggleDay('أح')">أح</button>
+      <button type="button" class="day-btn" :class="days.includes('إث')?'active':''" @click="toggleDay('إث')">إث</button>
+      <button type="button" class="day-btn" :class="days.includes('ث')?'active':''" @click="toggleDay('ث')">ث</button>
+      <button type="button" class="day-btn" :class="days.includes('أر')?'active':''" @click="toggleDay('أر')">أر</button>
+      <button type="button" class="day-btn" :class="days.includes('خ')?'active':''" @click="toggleDay('خ')">خ</button>
+      <button type="button" class="day-btn" :class="days.includes('ج')?'active':''" @click="toggleDay('ج')">ج</button>
+      <button type="button" class="day-btn" :class="days.includes('س')?'active':''" @click="toggleDay('س')">س</button>
+    </div>
+
+    <!-- Working Hours -->
+    <div class="row g-3 mb-4">
+      <div class="col-md-6">
+        <label class="form-label" style="font-weight:700;font-size:0.88rem">ساعة بداية العمل</label>
+        <input type="time" class="form-control" value="07:00" x-model="startHour" style="border-radius:10px">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label" style="font-weight:700;font-size:0.88rem">ساعة نهاية العمل</label>
+        <input type="time" class="form-control" value="18:00" x-model="endHour" style="border-radius:10px">
+      </div>
+    </div>
+
+    <!-- Notice Period -->
+    <div class="mb-4">
+      <label class="form-label" style="font-weight:700">إشعار مسبق قبل الحجز</label>
+      <select class="form-select" x-model="notice" style="border-radius:10px;font-family:'Tajawal',sans-serif;max-width:300px">
+        <option value="2">ساعتان على الأقل</option>
+        <option value="4">4 ساعات</option>
+        <option value="24" selected>يوم كامل</option>
+        <option value="48">يومان</option>
+        <option value="72">3 أيام</option>
+      </select>
+    </div>
+
+    <div class="d-flex justify-content-between">
+      <button class="btn btn-back px-4" @click="step=2"><i class="fas fa-arrow-right ms-2"></i> السابق</button>
+      <button class="btn btn-eq px-5" :disabled="!dayPrice" @click="step=4">
+        التالي <i class="fas fa-arrow-left ms-2"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- STEP 4: Review & Publish -->
+  <div class="form-card" x-show="step===4&&!published">
+    <h5 style="font-weight:900;color:#1e293b;margin-bottom:0.25rem">مراجعة ونشر</h5>
+    <p style="color:#64748b;font-size:0.88rem;margin-bottom:1.5rem">راجع معلومات معدتك قبل النشر</p>
+
+    <!-- Summary Card -->
+    <div style="background:#fff7ed;border:2px solid #fed7aa;border-radius:16px;padding:1.5rem;margin-bottom:1.5rem">
+      <div class="d-flex align-items-center gap-3 mb-3">
+        <div style="width:60px;height:60px;background:linear-gradient(135deg,#b45309,#92400e);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.8rem">🏗️</div>
+        <div>
+          <div style="font-weight:900;color:#1e293b;font-size:1.05rem" x-text="name||'اسم المعدة'"></div>
+          <div style="font-size:0.85rem;color:#64748b" x-text="(brand||'') + ' · ' + (year||'')"></div>
+        </div>
+      </div>
+      <div class="d-flex flex-column gap-1">
+        <div class="summary-row"><span style="color:#64748b">الفئة</span><span style="font-weight:700" x-text="catLabel[category]||category||'—'"></span></div>
+        <div class="summary-row"><span style="color:#64748b">الموقع</span><span style="font-weight:700" x-text="region||'—'"></span></div>
+        <div class="summary-row"><span style="color:#64748b">ساعات التشغيل</span><span style="font-weight:700" x-text="(hours||'—') + ' ساعة'"></span></div>
+        <div class="summary-row"><span style="color:#64748b">السعر اليومي</span><span style="font-weight:900;color:#b45309;font-size:1rem" x-text="(dayPrice||'—') + ' ر.س/يوم'"></span></div>
+        <div class="summary-row"><span style="color:#64748b">مع مشغل</span><span style="font-weight:700" x-text="hasOperator?'نعم':'لا'"></span></div>
+        <div class="summary-row"><span style="color:#64748b">توصيل</span><span style="font-weight:700" x-text="hasDelivery?'متاح':'غير متاح'"></span></div>
+        <div class="summary-row"><span style="color:#64748b">تأمين</span><span style="font-weight:700" x-text="hasInsurance?'مؤمن':'—'"></span></div>
+      </div>
+    </div>
+
+    <!-- Visibility -->
+    <div class="mb-4">
+      <label class="form-label" style="font-weight:700">ظهور الإعلان</label>
+      <div class="d-flex flex-column gap-2">
+        <label style="cursor:pointer;display:flex;align-items:center;gap:0.75rem;padding:0.75rem;border-radius:10px;border:2px solid" :style="visibility==='public'?'border-color:#b45309;background:#fff7ed':'border-color:#e2e8f0'">
+          <input type="radio" name="vis" value="public" x-model="visibility">
+          <div><div style="font-weight:700">عام — يظهر للجميع</div><div style="font-size:0.8rem;color:#64748b">أعلى وصول ومشاهدات</div></div>
+        </label>
+        <label style="cursor:pointer;display:flex;align-items:center;gap:0.75rem;padding:0.75rem;border-radius:10px;border:2px solid" :style="visibility==='verified'?'border-color:#b45309;background:#fff7ed':'border-color:#e2e8f0'">
+          <input type="radio" name="vis" value="verified" x-model="visibility">
+          <div><div style="font-weight:700">للمستأجرين الموثقين فقط</div><div style="font-size:0.8rem;color:#64748b">مستأجرون لديهم سجل حجز</div></div>
+        </label>
+      </div>
+    </div>
+
+    <!-- Terms -->
+    <div class="mb-4">
+      <label style="display:flex;align-items:flex-start;gap:0.75rem;cursor:pointer">
+        <input type="checkbox" x-model="agreeTerms" style="margin-top:4px;flex-shrink:0">
+        <span style="font-size:0.88rem;color:#475569">أوافق على <a href="../shared/terms.html" style="color:#b45309;font-weight:700">شروط الاستخدام</a> وسياسة تأجير المعدات. أؤكد أن المعلومات المدخلة صحيحة وأن المعدة مرخصة وصالحة للتشغيل.</span>
+      </label>
+    </div>
+
+    <div class="d-flex justify-content-between">
+      <button class="btn btn-back px-4" @click="step=3"><i class="fas fa-arrow-right ms-2"></i> السابق</button>
+      <button class="btn btn-eq px-5" :disabled="!agreeTerms||loading" @click="publish()">
+        <span x-show="!loading"><i class="fas fa-rocket ms-2"></i> نشر المعدة</span>
+        <span x-show="loading"><i class="fas fa-spinner fa-spin ms-2"></i> جاري النشر...</span>
+      </button>
+    </div>
+
+    <div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:12px;padding:1rem;margin-top:1rem;font-size:0.83rem;color:#0369a1">
+      <i class="fas fa-info-circle ms-1"></i>
+      سيتم مراجعة إعلانك من فريق خدمة خلال 24 ساعة والموافقة عليه قبل ظهوره للمستأجرين.
+    </div>
+  </div>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+<script src="../assets/js/khedmah.js"></script>
+<script>
+  function listApp() {
+    return {
+      step: 1,
+      published: false,
+      loading: false,
+      // Step 1
+      category: '', name: '', brand: '', year: '', hours: '',
+      catLabel: {
+        excavator:'حفارات', crane:'رافعات', mixer:'خلاطات', bulldozer:'بلدوزرات',
+        loader:'لودرات', truck:'شاحنات', compactor:'مدحلات', forklift:'فورك ليفت',
+        generator:'مولدات', pump:'مضخات', scaffold:'سقالات', other:'أخرى'
+      },
+      // Step 2
+      description: '', region: '', capacity: '',
+      hasOperator: true, hasDelivery: true, hasInsurance: true, hasMaintenance: false,
+      // Step 3
+      hourPrice: '', dayPrice: '', weekPrice: '', monthPrice: '',
+      deliveryCost: 0, deposit: 2000,
+      days: ['أح','إث','ث','أر','خ'],
+      startHour: '07:00', endHour: '18:00',
+      minRent: '1day', notice: '24',
+      // Step 4
+      visibility: 'public', agreeTerms: false,
+
+      toggleDay(d) {
+        const idx = this.days.indexOf(d);
+        if (idx > -1) this.days.splice(idx, 1);
+        else this.days.push(d);
+      },
+
+      publish() {
+        this.loading = true;
+        setTimeout(() => { this.loading = false; this.published = true; }, 1800);
+      }
+    };
+  }
+</script>
+</body>
+</html>

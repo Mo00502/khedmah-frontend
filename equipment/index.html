@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تأجير المعدات الثقيلة — خدمة</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="../assets/css/khedmah.css">
+  <style>
+    body { background: #f0f4f8; font-family: 'Tajawal', sans-serif; }
+    .eq-accent { color: #b45309; }
+    .eq-hero { background: linear-gradient(135deg, #1c0a00 0%, #78350f 40%, #b45309 100%); padding: 5rem 0 3rem; position: relative; overflow: hidden; }
+    .eq-hero::before { content: ''; position: absolute; inset: 0; background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); }
+    .eq-badge { background: #b45309; color: #fff; border-radius: 8px; padding: 0.25rem 0.75rem; font-size: 0.8rem; font-weight: 700; display: inline-block; }
+    .eq-badge-outline { background: transparent; border: 1.5px solid #b45309; color: #b45309; border-radius: 8px; padding: 0.25rem 0.75rem; font-size: 0.8rem; font-weight: 700; display: inline-block; }
+    .eq-card { background: #fff; border-radius: 16px; box-shadow: 0 2px 16px rgba(0,0,0,0.07); overflow: hidden; transition: all 0.25s; }
+    .eq-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(180,83,9,0.15); }
+    .eq-card-img { height: 200px; background: linear-gradient(135deg, #fef3c7, #fed7aa); display: flex; align-items: center; justify-content: center; font-size: 5rem; position: relative; }
+    .eq-avail-badge { position: absolute; top: 12px; right: 12px; border-radius: 20px; padding: 0.25rem 0.75rem; font-size: 0.78rem; font-weight: 700; }
+    .avail-yes { background: #dcfce7; color: #16a34a; }
+    .avail-no { background: #fef2f2; color: #dc2626; }
+    .avail-partial { background: #fffbeb; color: #d97706; }
+    .eq-stat { display: flex; align-items: center; gap: 0.4rem; font-size: 0.82rem; color: #64748b; }
+    .cat-pill { background: #fff; border: 2px solid #e2e8f0; border-radius: 20px; padding: 0.4rem 1rem; font-weight: 700; font-size: 0.85rem; color: #64748b; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+    .cat-pill:hover, .cat-pill.active { border-color: #b45309; color: #b45309; background: #fff7ed; }
+    .filter-card { background: #fff; border-radius: 16px; padding: 1.25rem; box-shadow: 0 2px 12px rgba(0,0,0,0.06); margin-bottom: 1rem; }
+    .filter-label { font-weight: 800; color: #1e293b; font-size: 0.9rem; margin-bottom: 0.6rem; display: block; }
+    .btn-eq { background: #b45309; color: #fff; border: none; border-radius: 10px; padding: 0.65rem 1.25rem; font-weight: 700; font-family: 'Tajawal', sans-serif; transition: all 0.2s; }
+    .btn-eq:hover { background: #92400e; color: #fff; }
+    .btn-eq-outline { background: transparent; color: #b45309; border: 2px solid #b45309; border-radius: 10px; padding: 0.65rem 1.25rem; font-weight: 700; font-family: 'Tajawal', sans-serif; transition: all 0.2s; }
+    .btn-eq-outline:hover { background: #b45309; color: #fff; }
+    .trust-bar { background: #fff; padding: 1rem 0; border-bottom: 1px solid #f1f5f9; }
+    .trust-item { display: flex; align-items: center; gap: 0.6rem; font-size: 0.85rem; font-weight: 700; color: #475569; }
+    .price-tag { background: #fff7ed; color: #b45309; border: 1px solid #fed7aa; border-radius: 8px; padding: 0.2rem 0.6rem; font-size: 0.82rem; font-weight: 800; }
+    .search-bar-eq { background: rgba(255,255,255,0.12); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); border-radius: 50px; padding: 0.5rem 0.5rem 0.5rem 1.5rem; display: flex; align-items: center; gap: 0.5rem; max-width: 700px; margin: 0 auto; }
+    .search-bar-eq input { background: transparent; border: none; outline: none; flex: 1; color: #fff; font-family: 'Tajawal', sans-serif; font-size: 1rem; }
+    .search-bar-eq input::placeholder { color: rgba(255,255,255,0.6); }
+    .hero-stat { text-align: center; color: #fff; }
+    .hero-stat .val { font-size: 2rem; font-weight: 900; }
+    .hero-stat .lbl { font-size: 0.82rem; opacity: 0.8; }
+  </style>
+</head>
+<body>
+
+<nav class="k-navbar navbar navbar-expand-lg">
+  <div class="container">
+    <a class="navbar-brand" href="../index.html">خدم<span style="color:var(--k-accent)">ة</span></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navMain">
+      <ul class="navbar-nav me-auto gap-1">
+        <li class="nav-item"><a class="nav-link" href="../index.html">الرئيسية</a></li>
+        <li class="nav-item"><a class="nav-link" href="../tenders/index.html">المناقصات</a></li>
+        <li class="nav-item"><a class="nav-link active" href="index.html">المعدات</a></li>
+        <li class="nav-item"><a class="nav-link" href="../customer/home-services.html">خدمات المنازل</a></li>
+      </ul>
+      <div class="d-flex gap-2">
+        <a href="list-equipment.html" class="btn btn-sm btn-eq">+ إضافة معدة</a>
+        <a href="../auth/login.html" class="btn btn-sm btn-eq-outline">دخول</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero -->
+<div class="eq-hero">
+  <div class="container position-relative">
+    <div class="text-center text-white mb-4">
+      <div class="d-inline-flex align-items-center gap-2 mb-3" style="background:rgba(255,255,255,0.1);border-radius:20px;padding:0.4rem 1rem;font-size:0.85rem">
+        <i class="fas fa-truck-monster"></i> سوق المعدات الثقيلة
+      </div>
+      <h1 style="font-weight:900;font-size:2.5rem;margin-bottom:0.75rem">أجّر أي معدة ثقيلة<br><span style="color:#fbbf24">في المملكة</span></h1>
+      <p style="opacity:0.85;font-size:1.05rem;margin-bottom:2rem">حفارات · رافعات · خلاطات · بلدوزرات · شاحنات — بالساعة أو اليوم أو الشهر</p>
+
+      <div class="search-bar-eq mb-4">
+        <input type="text" id="searchInput" placeholder="ابحث عن معدة (حفار، رافعة، خلاطة...)..." oninput="filterEquipment()">
+        <select id="regionSelect" class="form-select" style="background:rgba(255,255,255,0.15);border:none;color:#fff;font-family:'Tajawal',sans-serif;border-radius:30px;max-width:150px" onchange="filterEquipment()">
+          <option value="">كل المناطق</option>
+          <option>الرياض</option>
+          <option>جدة</option>
+          <option>الدمام</option>
+          <option>مكة المكرمة</option>
+          <option>المدينة المنورة</option>
+          <option>القصيم</option>
+          <option>تبوك</option>
+        </select>
+        <button class="btn" style="background:#b45309;color:#fff;border-radius:30px;padding:0.6rem 1.5rem;font-weight:700;font-family:'Tajawal',sans-serif">
+          <i class="fas fa-search ms-1"></i> بحث
+        </button>
+      </div>
+
+      <div class="row justify-content-center g-4">
+        <div class="col-auto"><div class="hero-stat"><div class="val">850+</div><div class="lbl">معدة متاحة</div></div></div>
+        <div class="col-auto"><div style="width:1px;height:50px;background:rgba(255,255,255,0.2)"></div></div>
+        <div class="col-auto"><div class="hero-stat"><div class="val">320</div><div class="lbl">مالك معدات</div></div></div>
+        <div class="col-auto"><div style="width:1px;height:50px;background:rgba(255,255,255,0.2)"></div></div>
+        <div class="col-auto"><div class="hero-stat"><div class="val">13</div><div class="lbl">منطقة مغطاة</div></div></div>
+        <div class="col-auto"><div style="width:1px;height:50px;background:rgba(255,255,255,0.2)"></div></div>
+        <div class="col-auto"><div class="hero-stat"><div class="val">4.8★</div><div class="lbl">تقييم المستأجرين</div></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Trust Bar -->
+<div class="trust-bar">
+  <div class="container">
+    <div class="d-flex flex-wrap justify-content-center gap-4">
+      <div class="trust-item"><i class="fas fa-shield-alt" style="color:#b45309"></i> دفع آمن بالضمان</div>
+      <div class="trust-item"><i class="fas fa-file-contract" style="color:#b45309"></i> عقد إلكتروني فوري</div>
+      <div class="trust-item"><i class="fas fa-tools" style="color:#b45309"></i> صيانة مضمونة</div>
+      <div class="trust-item"><i class="fas fa-map-marker-alt" style="color:#b45309"></i> توصيل للموقع</div>
+      <div class="trust-item"><i class="fas fa-headset" style="color:#b45309"></i> دعم 24/7</div>
+    </div>
+  </div>
+</div>
+
+<!-- Category Pills -->
+<div class="container py-3">
+  <div class="d-flex gap-2 flex-nowrap overflow-auto pb-2" style="-ms-overflow-style:none;scrollbar-width:none">
+    <button class="cat-pill active" onclick="setCat('all',this)">الكل (850)</button>
+    <button class="cat-pill" onclick="setCat('excavator',this)">حفارات</button>
+    <button class="cat-pill" onclick="setCat('crane',this)">رافعات</button>
+    <button class="cat-pill" onclick="setCat('mixer',this)">خلاطات</button>
+    <button class="cat-pill" onclick="setCat('bulldozer',this)">بلدوزرات</button>
+    <button class="cat-pill" onclick="setCat('loader',this)">لودرات</button>
+    <button class="cat-pill" onclick="setCat('truck',this)">شاحنات</button>
+    <button class="cat-pill" onclick="setCat('compactor',this)">مدحلات</button>
+    <button class="cat-pill" onclick="setCat('forklift',this)">فورك ليفت</button>
+    <button class="cat-pill" onclick="setCat('generator',this)">مولدات</button>
+    <button class="cat-pill" onclick="setCat('pump',this)">مضخات</button>
+    <button class="cat-pill" onclick="setCat('scaffold',this)">سقالات</button>
+  </div>
+</div>
+
+<!-- Main Content -->
+<div class="container pb-5">
+  <div class="row g-4">
+
+    <!-- Filters Sidebar -->
+    <div class="col-lg-3">
+      <div class="filter-card">
+        <span class="filter-label">نوع التأجير</span>
+        <div class="d-flex flex-column gap-2">
+          <label class="d-flex align-items-center gap-2" style="cursor:pointer"><input type="checkbox" checked onchange="filterEquipment()"> <span style="font-size:0.88rem">بالساعة</span></label>
+          <label class="d-flex align-items-center gap-2" style="cursor:pointer"><input type="checkbox" checked onchange="filterEquipment()"> <span style="font-size:0.88rem">باليوم</span></label>
+          <label class="d-flex align-items-center gap-2" style="cursor:pointer"><input type="checkbox" checked onchange="filterEquipment()"> <span style="font-size:0.88rem">بالأسبوع</span></label>
+          <label class="d-flex align-items-center gap-2" style="cursor:pointer"><input type="checkbox" checked onchange="filterEquipment()"> <span style="font-size:0.88rem">بالشهر</span></label>
+        </div>
+      </div>
+
+      <div class="filter-card">
+        <span class="filter-label">الحالة</span>
+        <div class="d-flex flex-column gap-2">
+          <label class="d-flex align-items-center gap-2" style="cursor:pointer"><input type="radio" name="avail" value="" checked onchange="filterEquipment()"> <span style="font-size:0.88rem">الكل</span></label>
+          <label class="d-flex align-items-center gap-2" style="cursor:pointer"><input type="radio" name="avail" value="avail" onchange="filterEquipment()"> <span style="font-size:0.88rem">متاح الآن</span></label>
+          <label class="d-flex align-items-center gap-2" style="cursor:pointer"><input type="radio" name="avail" value="partial" onchange="filterEquipment()"> <span style="font-size:0.88rem">متاح جزئياً</span></label>
+        </div>
+      </div>
+
+      <div class="filter-card">
+        <span class="filter-label">نطاق السعر (ر.س/يوم)</span>
+        <input type="range" class="form-range" min="0" max="5000" value="5000" id="priceRange" oninput="document.getElementById('priceVal').textContent=this.value;filterEquipment()" style="accent-color:#b45309">
+        <div style="font-size:0.85rem;color:#64748b">حتى <span id="priceVal" style="font-weight:700;color:#b45309">5000</span> ر.س/يوم</div>
+      </div>
+
+      <div class="filter-card">
+        <span class="filter-label">موديل المعدة</span>
+        <div class="d-flex flex-column gap-2">
+          <label class="d-flex align-items-center gap-2" style="cursor:pointer"><input type="checkbox" checked> <span style="font-size:0.88rem">Caterpillar (CAT)</span></label>
+          <label class="d-flex align-items-center gap-2" style="cursor:pointer"><input type="checkbox" checked> <span style="font-size:0.88rem">Komatsu</span></label>
+          <label class="d-flex align-items-center gap-2" style="cursor:pointer"><input type="checkbox" checked> <span style="font-size:0.88rem">Volvo</span></label>
+          <label class="d-flex align-items-center gap-2" style="cursor:pointer"><input type="checkbox" checked> <span style="font-size:0.88rem">Liebherr</span></label>
+          <label class="d-flex align-items-center gap-2" style="cursor:pointer"><input type="checkbox" checked> <span style="font-size:0.88rem">JCB</span></label>
+          <label class="d-flex align-items-center gap-2" style="cursor:pointer"><input type="checkbox" checked> <span style="font-size:0.88rem">Hyundai</span></label>
+        </div>
+      </div>
+
+      <div class="filter-card">
+        <span class="filter-label">مع سائق/مشغل</span>
+        <div class="d-flex flex-column gap-2">
+          <label class="d-flex align-items-center gap-2" style="cursor:pointer"><input type="radio" name="operator" value=""> <span style="font-size:0.88rem">الكل</span></label>
+          <label class="d-flex align-items-center gap-2" style="cursor:pointer"><input type="radio" name="operator" value="with"> <span style="font-size:0.88rem">مع مشغل</span></label>
+          <label class="d-flex align-items-center gap-2" style="cursor:pointer"><input type="radio" name="operator" value="without"> <span style="font-size:0.88rem">بدون مشغل</span></label>
+        </div>
+      </div>
+
+      <button class="btn w-100 btn-eq">تطبيق الفلتر</button>
+    </div>
+
+    <!-- Equipment Grid -->
+    <div class="col-lg-9">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div style="font-weight:700;color:#1e293b">عرض <span id="resultCount">850</span> معدة</div>
+        <select class="form-select form-select-sm" style="max-width:180px;font-family:'Tajawal',sans-serif" onchange="sortEquipment(this.value)">
+          <option>الأحدث أولاً</option>
+          <option>الأقل سعراً</option>
+          <option>الأعلى تقييماً</option>
+          <option>الأقرب إليك</option>
+        </select>
+      </div>
+
+      <div class="row g-3" id="equipmentGrid">
+
+        <!-- Card 1 -->
+        <div class="col-md-6 col-xl-4 eq-item" data-cat="excavator" data-name="حفار هيدروليكي كبير" data-avail="avail">
+          <div class="eq-card">
+            <div class="eq-card-img">
+              🏗️
+              <span class="eq-avail-badge avail-yes">متاح الآن</span>
+            </div>
+            <div style="padding:1.1rem">
+              <div class="d-flex justify-content-between align-items-start mb-1">
+                <h6 style="font-weight:800;color:#1e293b;margin:0;font-size:0.95rem">حفار هيدروليكي CAT 320</h6>
+                <button onclick="toggleFav(this)" style="background:none;border:none;color:#cbd5e1;font-size:1.1rem;cursor:pointer"><i class="fas fa-heart"></i></button>
+              </div>
+              <div style="font-size:0.8rem;color:#64748b;margin-bottom:0.75rem">Caterpillar · موديل 2022 · 3,200 ساعة عمل</div>
+              <div class="d-flex flex-wrap gap-2 mb-2">
+                <span class="price-tag">850 ر.س/يوم</span>
+                <span style="background:#f0f9ff;color:#0369a1;border:1px solid #bae6fd;border-radius:6px;padding:0.15rem 0.5rem;font-size:0.75rem;font-weight:600">مع مشغل</span>
+                <span style="background:#f8fafc;color:#64748b;border:1px solid #e2e8f0;border-radius:6px;padding:0.15rem 0.5rem;font-size:0.75rem;font-weight:600">توصيل مجاني</span>
+              </div>
+              <div class="d-flex gap-3 mb-3">
+                <div class="eq-stat"><i class="fas fa-map-marker-alt eq-accent"></i> الرياض</div>
+                <div class="eq-stat"><i class="fas fa-star text-warning"></i> 4.9 (32)</div>
+                <div class="eq-stat"><i class="fas fa-weight-hanging"></i> 20 طن</div>
+              </div>
+              <a href="equipment-detail.html" class="btn btn-eq w-100" style="font-size:0.88rem">احجز الآن</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="col-md-6 col-xl-4 eq-item" data-cat="crane" data-name="رافعة برجية" data-avail="avail">
+          <div class="eq-card">
+            <div class="eq-card-img" style="background:linear-gradient(135deg,#dbeafe,#bfdbfe)">
+              🏗
+              <span class="eq-avail-badge avail-yes">متاح الآن</span>
+            </div>
+            <div style="padding:1.1rem">
+              <div class="d-flex justify-content-between align-items-start mb-1">
+                <h6 style="font-weight:800;color:#1e293b;margin:0;font-size:0.95rem">رافعة برجية Liebherr 280</h6>
+                <button onclick="toggleFav(this)" style="background:none;border:none;color:#cbd5e1;font-size:1.1rem;cursor:pointer"><i class="fas fa-heart"></i></button>
+              </div>
+              <div style="font-size:0.8rem;color:#64748b;margin-bottom:0.75rem">Liebherr · موديل 2021 · ذراع 60م</div>
+              <div class="d-flex flex-wrap gap-2 mb-2">
+                <span class="price-tag">2,400 ر.س/يوم</span>
+                <span style="background:#f0f9ff;color:#0369a1;border:1px solid #bae6fd;border-radius:6px;padding:0.15rem 0.5rem;font-size:0.75rem;font-weight:600">مع مشغل</span>
+              </div>
+              <div class="d-flex gap-3 mb-3">
+                <div class="eq-stat"><i class="fas fa-map-marker-alt eq-accent"></i> جدة</div>
+                <div class="eq-stat"><i class="fas fa-star text-warning"></i> 4.8 (18)</div>
+                <div class="eq-stat"><i class="fas fa-weight-hanging"></i> 16 طن رفع</div>
+              </div>
+              <a href="equipment-detail.html" class="btn btn-eq w-100" style="font-size:0.88rem">احجز الآن</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="col-md-6 col-xl-4 eq-item" data-cat="mixer" data-name="خلاطة خرسانة" data-avail="partial">
+          <div class="eq-card">
+            <div class="eq-card-img" style="background:linear-gradient(135deg,#d1fae5,#a7f3d0)">
+              🚚
+              <span class="eq-avail-badge avail-partial">متاح جزئياً</span>
+            </div>
+            <div style="padding:1.1rem">
+              <div class="d-flex justify-content-between align-items-start mb-1">
+                <h6 style="font-weight:800;color:#1e293b;margin:0;font-size:0.95rem">خلاطة خرسانة Volvo 9م³</h6>
+                <button onclick="toggleFav(this)" style="background:none;border:none;color:#cbd5e1;font-size:1.1rem;cursor:pointer"><i class="fas fa-heart"></i></button>
+              </div>
+              <div style="font-size:0.8rem;color:#64748b;margin-bottom:0.75rem">Volvo · موديل 2023 · سعة 9 متر مكعب</div>
+              <div class="d-flex flex-wrap gap-2 mb-2">
+                <span class="price-tag">450 ر.س/يوم</span>
+                <span style="background:#f8fafc;color:#64748b;border:1px solid #e2e8f0;border-radius:6px;padding:0.15rem 0.5rem;font-size:0.75rem;font-weight:600">بدون مشغل</span>
+              </div>
+              <div class="d-flex gap-3 mb-3">
+                <div class="eq-stat"><i class="fas fa-map-marker-alt eq-accent"></i> الدمام</div>
+                <div class="eq-stat"><i class="fas fa-star text-warning"></i> 4.7 (24)</div>
+                <div class="eq-stat"><i class="fas fa-cube"></i> 9 م³</div>
+              </div>
+              <a href="equipment-detail.html" class="btn btn-eq w-100" style="font-size:0.88rem">احجز الآن</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="col-md-6 col-xl-4 eq-item" data-cat="bulldozer" data-name="بلدوزر" data-avail="avail">
+          <div class="eq-card">
+            <div class="eq-card-img" style="background:linear-gradient(135deg,#fef9c3,#fef08a)">
+              🚜
+              <span class="eq-avail-badge avail-yes">متاح الآن</span>
+            </div>
+            <div style="padding:1.1rem">
+              <div class="d-flex justify-content-between align-items-start mb-1">
+                <h6 style="font-weight:800;color:#1e293b;margin:0;font-size:0.95rem">بلدوزر Komatsu D155A</h6>
+                <button onclick="toggleFav(this)" style="background:none;border:none;color:#cbd5e1;font-size:1.1rem;cursor:pointer"><i class="fas fa-heart"></i></button>
+              </div>
+              <div style="font-size:0.8rem;color:#64748b;margin-bottom:0.75rem">Komatsu · موديل 2020 · 5,100 ساعة عمل</div>
+              <div class="d-flex flex-wrap gap-2 mb-2">
+                <span class="price-tag">1,100 ر.س/يوم</span>
+                <span style="background:#f0f9ff;color:#0369a1;border:1px solid #bae6fd;border-radius:6px;padding:0.15rem 0.5rem;font-size:0.75rem;font-weight:600">مع مشغل</span>
+              </div>
+              <div class="d-flex gap-3 mb-3">
+                <div class="eq-stat"><i class="fas fa-map-marker-alt eq-accent"></i> القصيم</div>
+                <div class="eq-stat"><i class="fas fa-star text-warning"></i> 4.6 (41)</div>
+                <div class="eq-stat"><i class="fas fa-weight-hanging"></i> 38 طن</div>
+              </div>
+              <a href="equipment-detail.html" class="btn btn-eq w-100" style="font-size:0.88rem">احجز الآن</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 5 -->
+        <div class="col-md-6 col-xl-4 eq-item" data-cat="forklift" data-name="فورك ليفت" data-avail="avail">
+          <div class="eq-card">
+            <div class="eq-card-img" style="background:linear-gradient(135deg,#fae8ff,#e9d5ff)">
+              🏭
+              <span class="eq-avail-badge avail-yes">متاح الآن</span>
+            </div>
+            <div style="padding:1.1rem">
+              <div class="d-flex justify-content-between align-items-start mb-1">
+                <h6 style="font-weight:800;color:#1e293b;margin:0;font-size:0.95rem">فورك ليفت Hyundai 5 طن</h6>
+                <button onclick="toggleFav(this)" style="background:none;border:none;color:#cbd5e1;font-size:1.1rem;cursor:pointer"><i class="fas fa-heart"></i></button>
+              </div>
+              <div style="font-size:0.8rem;color:#64748b;margin-bottom:0.75rem">Hyundai · موديل 2023 · كهربائي</div>
+              <div class="d-flex flex-wrap gap-2 mb-2">
+                <span class="price-tag">320 ر.س/يوم</span>
+                <span style="background:#f8fafc;color:#64748b;border:1px solid #e2e8f0;border-radius:6px;padding:0.15rem 0.5rem;font-size:0.75rem;font-weight:600">بدون مشغل</span>
+              </div>
+              <div class="d-flex gap-3 mb-3">
+                <div class="eq-stat"><i class="fas fa-map-marker-alt eq-accent"></i> الرياض</div>
+                <div class="eq-stat"><i class="fas fa-star text-warning"></i> 4.9 (55)</div>
+                <div class="eq-stat"><i class="fas fa-weight-hanging"></i> 5 طن</div>
+              </div>
+              <a href="equipment-detail.html" class="btn btn-eq w-100" style="font-size:0.88rem">احجز الآن</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 6 -->
+        <div class="col-md-6 col-xl-4 eq-item" data-cat="compactor" data-name="مدحلة" data-avail="avail">
+          <div class="eq-card">
+            <div class="eq-card-img" style="background:linear-gradient(135deg,#ffedd5,#fed7aa)">
+              🚧
+              <span class="eq-avail-badge avail-yes">متاح الآن</span>
+            </div>
+            <div style="padding:1.1rem">
+              <div class="d-flex justify-content-between align-items-start mb-1">
+                <h6 style="font-weight:800;color:#1e293b;margin:0;font-size:0.95rem">مدحلة CAT CB10 ثنائية</h6>
+                <button onclick="toggleFav(this)" style="background:none;border:none;color:#cbd5e1;font-size:1.1rem;cursor:pointer"><i class="fas fa-heart"></i></button>
+              </div>
+              <div style="font-size:0.8rem;color:#64748b;margin-bottom:0.75rem">Caterpillar · موديل 2021 · 10 طن</div>
+              <div class="d-flex flex-wrap gap-2 mb-2">
+                <span class="price-tag">680 ر.س/يوم</span>
+                <span style="background:#f0f9ff;color:#0369a1;border:1px solid #bae6fd;border-radius:6px;padding:0.15rem 0.5rem;font-size:0.75rem;font-weight:600">مع مشغل</span>
+              </div>
+              <div class="d-flex gap-3 mb-3">
+                <div class="eq-stat"><i class="fas fa-map-marker-alt eq-accent"></i> مكة المكرمة</div>
+                <div class="eq-stat"><i class="fas fa-star text-warning"></i> 4.8 (28)</div>
+                <div class="eq-stat"><i class="fas fa-weight-hanging"></i> 10 طن</div>
+              </div>
+              <a href="equipment-detail.html" class="btn btn-eq w-100" style="font-size:0.88rem">احجز الآن</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 7 -->
+        <div class="col-md-6 col-xl-4 eq-item" data-cat="loader" data-name="لودر" data-avail="avail">
+          <div class="eq-card">
+            <div class="eq-card-img" style="background:linear-gradient(135deg,#ecfdf5,#d1fae5)">
+              🚛
+              <span class="eq-avail-badge avail-yes">متاح الآن</span>
+            </div>
+            <div style="padding:1.1rem">
+              <div class="d-flex justify-content-between align-items-start mb-1">
+                <h6 style="font-weight:800;color:#1e293b;margin:0;font-size:0.95rem">لودر JCB 457 Agri Pro</h6>
+                <button onclick="toggleFav(this)" style="background:none;border:none;color:#cbd5e1;font-size:1.1rem;cursor:pointer"><i class="fas fa-heart"></i></button>
+              </div>
+              <div style="font-size:0.8rem;color:#64748b;margin-bottom:0.75rem">JCB · موديل 2022 · سعة 3.5 م³</div>
+              <div class="d-flex flex-wrap gap-2 mb-2">
+                <span class="price-tag">750 ر.س/يوم</span>
+                <span style="background:#f0f9ff;color:#0369a1;border:1px solid #bae6fd;border-radius:6px;padding:0.15rem 0.5rem;font-size:0.75rem;font-weight:600">مع مشغل</span>
+                <span style="background:#f8fafc;color:#64748b;border:1px solid #e2e8f0;border-radius:6px;padding:0.15rem 0.5rem;font-size:0.75rem;font-weight:600">توصيل مجاني</span>
+              </div>
+              <div class="d-flex gap-3 mb-3">
+                <div class="eq-stat"><i class="fas fa-map-marker-alt eq-accent"></i> تبوك</div>
+                <div class="eq-stat"><i class="fas fa-star text-warning"></i> 4.7 (19)</div>
+                <div class="eq-stat"><i class="fas fa-cube"></i> 3.5 م³</div>
+              </div>
+              <a href="equipment-detail.html" class="btn btn-eq w-100" style="font-size:0.88rem">احجز الآن</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 8 -->
+        <div class="col-md-6 col-xl-4 eq-item" data-cat="generator" data-name="مولد كهربائي" data-avail="avail">
+          <div class="eq-card">
+            <div class="eq-card-img" style="background:linear-gradient(135deg,#fef3c7,#fde68a)">
+              ⚡
+              <span class="eq-avail-badge avail-yes">متاح الآن</span>
+            </div>
+            <div style="padding:1.1rem">
+              <div class="d-flex justify-content-between align-items-start mb-1">
+                <h6 style="font-weight:800;color:#1e293b;margin:0;font-size:0.95rem">مولد كهربائي Caterpillar 500KVA</h6>
+                <button onclick="toggleFav(this)" style="background:none;border:none;color:#cbd5e1;font-size:1.1rem;cursor:pointer"><i class="fas fa-heart"></i></button>
+              </div>
+              <div style="font-size:0.8rem;color:#64748b;margin-bottom:0.75rem">CAT · موديل 2024 · 500 كيلوفولت أمبير</div>
+              <div class="d-flex flex-wrap gap-2 mb-2">
+                <span class="price-tag">380 ر.س/يوم</span>
+                <span style="background:#f8fafc;color:#64748b;border:1px solid #e2e8f0;border-radius:6px;padding:0.15rem 0.5rem;font-size:0.75rem;font-weight:600">بدون مشغل</span>
+              </div>
+              <div class="d-flex gap-3 mb-3">
+                <div class="eq-stat"><i class="fas fa-map-marker-alt eq-accent"></i> الدمام</div>
+                <div class="eq-stat"><i class="fas fa-star text-warning"></i> 4.9 (63)</div>
+                <div class="eq-stat"><i class="fas fa-bolt"></i> 500 KVA</div>
+              </div>
+              <a href="equipment-detail.html" class="btn btn-eq w-100" style="font-size:0.88rem">احجز الآن</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 9 -->
+        <div class="col-md-6 col-xl-4 eq-item" data-cat="pump" data-name="مضخة مياه" data-avail="avail">
+          <div class="eq-card">
+            <div class="eq-card-img" style="background:linear-gradient(135deg,#e0f2fe,#bae6fd)">
+              💧
+              <span class="eq-avail-badge avail-yes">متاح الآن</span>
+            </div>
+            <div style="padding:1.1rem">
+              <div class="d-flex justify-content-between align-items-start mb-1">
+                <h6 style="font-weight:800;color:#1e293b;margin:0;font-size:0.95rem">مضخة طرد مركزي Grundfos</h6>
+                <button onclick="toggleFav(this)" style="background:none;border:none;color:#cbd5e1;font-size:1.1rem;cursor:pointer"><i class="fas fa-heart"></i></button>
+              </div>
+              <div style="font-size:0.8rem;color:#64748b;margin-bottom:0.75rem">Grundfos · طاقة 75 كيلوواط · 300 م³/ساعة</div>
+              <div class="d-flex flex-wrap gap-2 mb-2">
+                <span class="price-tag">220 ر.س/يوم</span>
+                <span style="background:#f8fafc;color:#64748b;border:1px solid #e2e8f0;border-radius:6px;padding:0.15rem 0.5rem;font-size:0.75rem;font-weight:600">بدون مشغل</span>
+              </div>
+              <div class="d-flex gap-3 mb-3">
+                <div class="eq-stat"><i class="fas fa-map-marker-alt eq-accent"></i> جدة</div>
+                <div class="eq-stat"><i class="fas fa-star text-warning"></i> 4.8 (44)</div>
+                <div class="eq-stat"><i class="fas fa-tint"></i> 300 م³/ساعة</div>
+              </div>
+              <a href="equipment-detail.html" class="btn btn-eq w-100" style="font-size:0.88rem">احجز الآن</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Load More -->
+      <div class="text-center mt-4">
+        <button class="btn btn-eq-outline px-5">
+          <i class="fas fa-plus ms-2"></i> تحميل المزيد
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../assets/js/khedmah.js"></script>
+<script>
+  let currentCat = 'all';
+
+  function setCat(cat, btn) {
+    currentCat = cat;
+    document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    filterEquipment();
+  }
+
+  function filterEquipment() {
+    const q = (document.getElementById('searchInput').value || '').trim().toLowerCase();
+    const avail = document.querySelector('input[name="avail"]:checked')?.value || '';
+    const items = document.querySelectorAll('.eq-item');
+    let count = 0;
+    items.forEach(item => {
+      const cat = item.dataset.cat;
+      const name = item.dataset.name || '';
+      const itemAvail = item.dataset.avail;
+      const catMatch = currentCat === 'all' || cat === currentCat;
+      const qMatch = !q || name.includes(q);
+      const availMatch = !avail || itemAvail === avail;
+      const show = catMatch && qMatch && availMatch;
+      item.style.display = show ? '' : 'none';
+      if (show) count++;
+    });
+    const rc = document.getElementById('resultCount');
+    if (rc) rc.textContent = count;
+  }
+
+  function sortEquipment(val) {
+    // Placeholder — in real app would re-render sorted items
+  }
+
+  function toggleFav(btn) {
+    const icon = btn.querySelector('i');
+    if (icon.style.color === 'rgb(220, 38, 38)') {
+      icon.style.color = '#cbd5e1';
+    } else {
+      icon.style.color = '#dc2626';
+    }
+  }
+
+  // Read URL params
+  (function() {
+    const p = new URLSearchParams(window.location.search);
+    const cat = p.get('cat');
+    const q = p.get('q');
+    if (q) document.getElementById('searchInput').value = q;
+    if (cat) {
+      const pill = document.querySelector(`.cat-pill[onclick*="${cat}"]`);
+      if (pill) { setCat(cat, pill); return; }
+    }
+    filterEquipment();
+  })();
+</script>
+</body>
+</html>

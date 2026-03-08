@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لوحة التحكم الإدارية — خدمة</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="../assets/css/khedmah.css">
+  <style>
+    body { background: #f1f5f9; font-family: 'Tajawal', sans-serif; }
+
+    /* ── Sidebar Overlay (mobile) ── */
+    .k-sidebar-overlay {
+      display: none;
+      position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+      z-index: 1040; backdrop-filter: blur(2px);
+    }
+    .k-sidebar-overlay.show { display: block; }
+
+    /* ── Sidebar ── */
+    .k-admin-sidebar {
+      position: fixed; top: 0; right: 0; bottom: 0;
+      width: 260px; z-index: 1050;
+      transition: transform 0.3s ease;
+    }
+    @media (max-width: 991px) {
+      .k-admin-sidebar { transform: translateX(100%); }
+      .k-admin-sidebar.open { transform: translateX(0); }
+      .k-admin-content { margin-right: 0 !important; }
+    }
+
+    /* ── Top Bar ── */
+    .k-admin-topbar {
+      background: #fff;
+      padding: 1rem 1.5rem;
+      margin-bottom: 1.5rem;
+      border-radius: 0 0 16px 16px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      display: flex; align-items: center;
+      justify-content: space-between; gap: 1rem; flex-wrap: wrap;
+    }
+
+    /* ── Page sections ── */
+    .k-section { display: none; }
+    .k-section.active { display: block; }
+
+    /* ── Table hover ── */
+    .table-hover tbody tr { cursor: pointer; transition: background 0.15s; }
+    .table-hover tbody tr:hover { background: rgba(2,128,144,0.04); }
+
+    /* ── Quick stat mini card ── */
+    .k-mini-stat {
+      background: #fff; border-radius: 12px; padding: 1rem 1.25rem;
+      display: flex; align-items: center; gap: 1rem;
+      box-shadow: var(--k-shadow-sm);
+    }
+    .k-mini-stat .icon-box {
+      width: 44px; height: 44px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; font-size: 1.1rem;
+    }
+
+    /* ── User avatar ── */
+    .k-avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 0.85rem; color: #fff; flex-shrink: 0;
+    }
+
+    /* ── Search input ── */
+    .k-search { position: relative; }
+    .k-search input { padding-right: 2.5rem; border-radius: 10px; }
+    .k-search .icon { position: absolute; right: 0.85rem; top: 50%; transform: translateY(-50%); color: var(--k-gray); }
+
+    /* ── Status badge ── */
+    .s-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 0.2rem 0.65rem; border-radius: 50px;
+      font-size: 0.78rem; font-weight: 600;
+    }
+    .s-badge::before { content:''; width:6px; height:6px; border-radius:50%; background:currentColor; }
+
+    /* ── Animated counter ── */
+    @keyframes countUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+    .k-kpi h3 { animation: countUp 0.6s ease; }
+
+    /* ── Chart card ── */
+    .chart-card { background:#fff; border-radius:16px; box-shadow:var(--k-shadow-sm); padding:1.5rem; }
+
+    /* ── Notification dot ── */
+    .notif-dot {
+      position: absolute; top: -5px; left: -5px;
+      background: var(--k-danger); color: #fff;
+      width: 18px; height: 18px; border-radius: 50%;
+      font-size: 0.62rem; display: flex; align-items: center; justify-content: center;
+      font-weight: 700; border: 2px solid #fff;
+    }
+
+    /* ── Verification card ── */
+    .verif-card {
+      background: #fff; border-radius: 12px; padding: 1rem 1.25rem;
+      box-shadow: var(--k-shadow-sm); border-right: 3px solid var(--k-warning);
+      transition: var(--k-transition);
+    }
+    .verif-card:hover { box-shadow: var(--k-shadow-md); }
+
+    /* ── Alert banner ── */
+    .k-alert-banner {
+      background: linear-gradient(135deg, rgba(245,158,11,0.1), rgba(245,158,11,0.05));
+      border: 1px solid rgba(245,158,11,0.3); border-radius: 12px;
+      padding: 0.85rem 1.25rem; display: flex; align-items: center; gap: 0.75rem;
+      font-size: 0.88rem; color: #92400e;
+    }
+  </style>
+</head>
+<body x-data="adminApp()" @keydown.escape="sidebarOpen=false">
+
+<!-- Sidebar Overlay (mobile) -->
+<div class="k-sidebar-overlay" :class="{ show: sidebarOpen }" @click="sidebarOpen=false"></div>
+
+<!-- ════════════════════════════════════════════════
+     SIDEBAR
+════════════════════════════════════════════════ -->
+<div class="k-admin-sidebar" :class="{ open: sidebarOpen }">
+  <div class="brand" style="padding: 1.5rem 1.5rem 1rem;">
+    <div style="display:flex;align-items:center;justify-content:space-between">
+      <div>
+        <div style="font-size:1.6rem;font-weight:900;color:#fff">خدم<span style="color:var(--k-accent)">ة</span></div>
+        <small style="color:rgba(255,255,255,0.4);font-size:0.72rem;letter-spacing:1px">ADMIN PANEL</small>
+      </div>
+      <button class="d-lg-none" @click="sidebarOpen=false" style="background:none;border:none;color:rgba(255,255,255,0.6);font-size:1.2rem;cursor:pointer;padding:0.25rem">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+  </div>
+
+  <nav class="nav flex-column" style="padding:0 0.75rem;overflow-y:auto;flex:1">
+    <button class="nav-link text-start" :class="{ active: page==='dashboard' }" @click="goto('dashboard')">
+      <i class="fas fa-chart-pie"></i> لوحة التحكم
+    </button>
+    <button class="nav-link text-start" :class="{ active: page==='users' }" @click="goto('users')">
+      <i class="fas fa-users"></i> المستخدمون
+      <span class="badge bg-primary ms-auto" style="font-size:0.68rem" x-text="stats.totalUsers"></span>
+    </button>
+    <button class="nav-link text-start" :class="{ active: page==='providers' }" @click="goto('providers')">
+      <i class="fas fa-hard-hat"></i> مزودو الخدمات
+    </button>
+    <button class="nav-link text-start" :class="{ active: page==='verifications' }" @click="goto('verifications')">
+      <i class="fas fa-id-badge"></i> التحقق من الهويات
+      <span class="badge ms-auto" style="background:var(--k-warning);font-size:0.68rem" x-text="pendingVerif.length"></span>
+    </button>
+    <button class="nav-link text-start" :class="{ active: page==='requests' }" @click="goto('requests')">
+      <i class="fas fa-calendar-check"></i> الطلبات
+    </button>
+    <button class="nav-link text-start" :class="{ active: page==='transactions' }" @click="goto('transactions')">
+      <i class="fas fa-credit-card"></i> المعاملات
+    </button>
+    <button class="nav-link text-start" :class="{ active: page==='reviews' }" @click="goto('reviews')">
+      <i class="fas fa-star"></i> التقييمات
+      <span class="badge ms-auto" style="background:var(--k-danger);font-size:0.68rem">3</span>
+    </button>
+    <button class="nav-link text-start" :class="{ active: page==='reports' }" @click="goto('reports')">
+      <i class="fas fa-chart-bar"></i> التقارير
+    </button>
+    <button class="nav-link text-start" :class="{ active: page==='settings' }" @click="goto('settings')">
+      <i class="fas fa-cog"></i> الإعدادات
+    </button>
+
+    <div style="margin-top:auto;padding:1rem 0.75rem 0.5rem;border-top:1px solid rgba(255,255,255,0.08)">
+      <div style="display:flex;align-items:center;gap:0.75rem;padding:0.75rem;background:rgba(255,255,255,0.05);border-radius:10px;margin-bottom:0.75rem">
+        <div style="width:36px;height:36px;background:linear-gradient(135deg,var(--k-primary),var(--k-accent));border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;flex-shrink:0">م</div>
+        <div>
+          <div style="color:#fff;font-size:0.85rem;font-weight:600">المشرف العام</div>
+          <div style="color:rgba(255,255,255,0.4);font-size:0.72rem">admin@khedmah.sa</div>
+        </div>
+      </div>
+      <button class="nav-link text-start w-100" style="color:rgba(239,68,68,0.8)!important" @click="logout()">
+        <i class="fas fa-right-from-bracket"></i> تسجيل الخروج
+      </button>
+    </div>
+  </nav>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     MAIN CONTENT
+════════════════════════════════════════════════ -->
+<div class="k-admin-content">
+
+  <!-- Top Bar -->
+  <div class="k-admin-topbar">
+    <div style="display:flex;align-items:center;gap:1rem">
+      <button class="d-lg-none btn btn-light btn-sm" @click="sidebarOpen=true" style="border-radius:8px">
+        <i class="fas fa-bars"></i>
+      </button>
+      <div>
+        <h5 style="font-weight:900;color:var(--k-dark-2);margin:0" x-text="pageTitle()"></h5>
+        <small style="color:var(--k-gray)" x-text="todayDate()"></small>
+      </div>
+    </div>
+    <div class="d-flex align-items-center gap-3">
+      <!-- Search -->
+      <div class="k-search d-none d-md-block">
+        <i class="fas fa-search icon"></i>
+        <input type="text" class="form-control form-control-sm" placeholder="بحث سريع..." style="width:200px" x-model="globalSearch">
+      </div>
+      <!-- Notifications -->
+      <div style="position:relative;cursor:pointer" @click="goto('reviews')">
+        <i class="fas fa-bell fa-lg" style="color:var(--k-gray)"></i>
+        <span class="notif-dot">8</span>
+      </div>
+      <!-- Avatar -->
+      <div style="width:40px;height:40px;background:linear-gradient(135deg,var(--k-primary),var(--k-accent));border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;cursor:pointer" title="المشرف العام">م</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       PAGE: DASHBOARD
+  ══════════════════════════════════════ -->
+  <div class="k-section" :class="{ active: page==='dashboard' }">
+
+    <!-- Alert Banner -->
+    <div class="k-alert-banner mb-4">
+      <i class="fas fa-triangle-exclamation" style="color:var(--k-warning);flex-shrink:0"></i>
+      <span>يوجد <strong x-text="pendingVerif.length"></strong> مزود ينتظر مراجعة الهوية و <strong>3</strong> تقييمات مُبلَّغ عنها تتطلب إجراء.</span>
+      <button class="btn btn-sm ms-auto" style="background:rgba(245,158,11,0.15);color:#92400e;border-radius:8px" @click="goto('verifications')">مراجعة الآن</button>
+    </div>
+
+    <!-- KPI Cards -->
+    <div class="row g-3 mb-4">
+      <div class="col-6 col-lg-3">
+        <div class="k-kpi">
+          <div class="d-flex align-items-center gap-3">
+            <div class="k-kpi-icon" style="background:rgba(2,128,144,0.1)"><i class="fas fa-users" style="color:var(--k-primary)"></i></div>
+            <div>
+              <h3 x-text="stats.totalUsers.toLocaleString('ar-SA')"></h3>
+              <p>إجمالي المستخدمين</p>
+            </div>
+          </div>
+          <div style="font-size:0.8rem;color:var(--k-success);margin-top:0.75rem"><i class="fas fa-arrow-up ms-1"></i> +12% هذا الشهر</div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="k-kpi k-kpi-success">
+          <div class="d-flex align-items-center gap-3">
+            <div class="k-kpi-icon" style="background:rgba(16,185,129,0.1)"><i class="fas fa-hard-hat" style="color:var(--k-success)"></i></div>
+            <div>
+              <h3 x-text="stats.verifiedProviders"></h3>
+              <p>مزودون معتمدون</p>
+            </div>
+          </div>
+          <div style="font-size:0.8rem;color:var(--k-success);margin-top:0.75rem"><i class="fas fa-arrow-up ms-1"></i> +8 هذا الأسبوع</div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="k-kpi k-kpi-warning">
+          <div class="d-flex align-items-center gap-3">
+            <div class="k-kpi-icon" style="background:rgba(245,158,11,0.1)"><i class="fas fa-calendar-check" style="color:var(--k-warning)"></i></div>
+            <div>
+              <h3 x-text="stats.monthlyRequests.toLocaleString('ar-SA')"></h3>
+              <p>الطلبات هذا الشهر</p>
+            </div>
+          </div>
+          <div style="font-size:0.8rem;color:var(--k-success);margin-top:0.75rem"><i class="fas fa-arrow-up ms-1"></i> +22% عن الشهر الماضي</div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="k-kpi k-kpi-danger">
+          <div class="d-flex align-items-center gap-3">
+            <div class="k-kpi-icon" style="background:rgba(239,68,68,0.1)"><i class="fas fa-coins" style="color:var(--k-danger)"></i></div>
+            <div>
+              <h3 style="font-size:1.4rem" x-text="stats.revenue.toLocaleString('ar-SA') + ' ر.س'"></h3>
+              <p>الإيرادات (هذا الشهر)</p>
+            </div>
+          </div>
+          <div style="font-size:0.8rem;color:var(--k-success);margin-top:0.75rem"><i class="fas fa-arrow-up ms-1"></i> +18% عن الشهر الماضي</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mini Stats Row -->
+    <div class="row g-3 mb-4">
+      <div class="col-6 col-md-3">
+        <div class="k-mini-stat">
+          <div class="icon-box" style="background:rgba(2,128,144,0.1)"><i class="fas fa-clock" style="color:var(--k-primary)"></i></div>
+          <div>
+            <div style="font-size:1.2rem;font-weight:800;color:var(--k-dark-2)">247</div>
+            <div style="font-size:0.78rem;color:var(--k-gray)">قيد التنفيذ</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="k-mini-stat">
+          <div class="icon-box" style="background:rgba(16,185,129,0.1)"><i class="fas fa-circle-check" style="color:var(--k-success)"></i></div>
+          <div>
+            <div style="font-size:1.2rem;font-weight:800;color:var(--k-dark-2)">892</div>
+            <div style="font-size:0.78rem;color:var(--k-gray)">مكتملة</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="k-mini-stat">
+          <div class="icon-box" style="background:rgba(245,158,11,0.1)"><i class="fas fa-hourglass-half" style="color:var(--k-warning)"></i></div>
+          <div>
+            <div style="font-size:1.2rem;font-weight:800;color:var(--k-dark-2)" x-text="pendingVerif.length + ' / 8'"></div>
+            <div style="font-size:0.78rem;color:var(--k-gray)">تحقق معلق</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="k-mini-stat">
+          <div class="icon-box" style="background:rgba(239,68,68,0.1)"><i class="fas fa-flag" style="color:var(--k-danger)"></i></div>
+          <div>
+            <div style="font-size:1.2rem;font-weight:800;color:var(--k-dark-2)">3</div>
+            <div style="font-size:0.78rem;color:var(--k-gray)">بلاغات نشطة</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="row g-4 mb-4">
+      <div class="col-lg-8">
+        <div class="chart-card">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h6 style="font-weight:800;color:var(--k-dark-2);margin:0">الطلبات والإيرادات — آخر 8 أشهر</h6>
+            <div class="d-flex gap-2">
+              <button class="btn btn-sm" style="border-radius:8px;background:rgba(2,128,144,0.1);color:var(--k-primary);font-size:0.78rem">شهري</button>
+              <button class="btn btn-sm btn-light" style="border-radius:8px;font-size:0.78rem">أسبوعي</button>
+            </div>
+          </div>
+          <canvas id="bookingsChart" height="230"></canvas>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="chart-card h-100 d-flex flex-column">
+          <h6 style="font-weight:800;color:var(--k-dark-2);margin-bottom:1rem">توزيع المستخدمين</h6>
+          <canvas id="userTypesChart" height="200"></canvas>
+          <div class="d-flex justify-content-around mt-3 pt-3" style="border-top:1px solid #f1f5f9">
+            <div class="text-center">
+              <div style="font-weight:800;color:var(--k-primary)">2,430</div>
+              <div style="font-size:0.75rem;color:var(--k-gray)">عملاء</div>
+            </div>
+            <div class="text-center">
+              <div style="font-weight:800;color:var(--k-accent)">390</div>
+              <div style="font-size:0.75rem;color:var(--k-gray)">مزودون</div>
+            </div>
+            <div class="text-center">
+              <div style="font-weight:800;color:var(--k-warning)">27</div>
+              <div style="font-size:0.75rem;color:var(--k-gray)">مشرفون</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Services Chart -->
+    <div class="row g-4 mb-4">
+      <div class="col-lg-6">
+        <div class="chart-card">
+          <h6 style="font-weight:800;color:var(--k-dark-2);margin-bottom:1rem">الخدمات الأكثر طلباً</h6>
+          <canvas id="servicesChart" height="220"></canvas>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="chart-card">
+          <h6 style="font-weight:800;color:var(--k-dark-2);margin-bottom:1rem">الطلبات حسب المدينة</h6>
+          <canvas id="citiesChart" height="220"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Verifications + Flagged Reviews -->
+    <div class="row g-4 mb-4">
+      <!-- Pending Verifications -->
+      <div class="col-lg-7">
+        <div class="chart-card">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h6 style="font-weight:800;color:var(--k-dark-2);margin:0">
+              مزودون بانتظار الموافقة
+              <span class="badge ms-2" style="background:var(--k-warning)" x-text="pendingVerif.length"></span>
+            </h6>
+            <button class="btn btn-outline-primary btn-sm" @click="goto('verifications')">عرض الكل</button>
+          </div>
+          <div class="d-flex flex-column gap-2">
+            <template x-for="p in pendingVerif.slice(0,3)" :key="p.id">
+              <div class="verif-card d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <div class="d-flex align-items-center gap-2">
+                  <div class="k-avatar" :style="'background:' + p.color" x-text="p.initial"></div>
+                  <div>
+                    <div style="font-weight:700;font-size:0.9rem" x-text="p.name"></div>
+                    <div style="font-size:0.78rem;color:var(--k-gray)" x-text="p.specialty + ' · ' + p.date"></div>
+                  </div>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                  <span class="badge" style="background:rgba(245,158,11,0.12);color:var(--k-warning)" x-text="p.docs + ' وثائق'"></span>
+                  <button class="btn btn-success btn-sm" style="border-radius:8px;font-size:0.8rem" @click="approveProvider(p)">
+                    <i class="fas fa-check ms-1"></i> قبول
+                  </button>
+                  <button class="btn btn-outline-danger btn-sm" style="border-radius:8px;font-size:0.8rem" @click="rejectProvider(p)">رفض</button>
+                </div>
+              </div>
+            </template>
+          </div>
+        </div>
+      </div>
+
+      <!-- Flagged Reviews -->
+      <div class="col-lg-5">
+        <div class="chart-card">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h6 style="font-weight:800;color:var(--k-dark-2);margin:0">
+              تقييمات مُبلَّغ عنها
+              <span class="badge ms-2" style="background:var(--k-danger)">3</span>
+            </h6>
+            <button class="btn btn-outline-danger btn-sm" @click="goto('reviews')">عرض الكل</button>
+          </div>
+          <template x-for="(r, idx) in flaggedReviews" :key="idx">
+            <div style="background:#fff5f5;border:1px solid rgba(239,68,68,0.18);border-radius:12px;padding:0.9rem;margin-bottom:0.65rem">
+              <div class="d-flex justify-content-between align-items-start mb-1 gap-2">
+                <div>
+                  <strong style="font-size:0.88rem" x-text="r.rater"></strong>
+                  <span style="color:var(--k-gray);font-size:0.78rem" x-text="' → ' + r.ratee"></span>
+                </div>
+                <div class="d-flex gap-1">
+                  <button class="btn btn-outline-danger btn-sm" style="padding:0.15rem 0.5rem;font-size:0.75rem;border-radius:6px" @click="removeReview(idx)">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+              </div>
+              <p style="color:var(--k-gray);font-size:0.8rem;margin:0 0 0.4rem" x-text="r.comment"></p>
+              <div class="k-rating-stars" style="font-size:0.78rem">
+                <i class="fas fa-star"></i> <span x-text="r.score"></span>
+              </div>
+            </div>
+          </template>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Transactions Table -->
+    <div class="chart-card">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h6 style="font-weight:800;color:var(--k-dark-2);margin:0">آخر المعاملات</h6>
+        <button class="btn btn-outline-primary btn-sm" @click="goto('transactions')">عرض الكل</button>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-hover mb-0" style="font-size:0.87rem">
+          <thead style="background:#f8fafc">
+            <tr>
+              <th style="font-weight:700">#</th>
+              <th style="font-weight:700">العميل</th>
+              <th style="font-weight:700">المزود</th>
+              <th style="font-weight:700">الخدمة</th>
+              <th style="font-weight:700">المبلغ</th>
+              <th style="font-weight:700">الحالة</th>
+              <th style="font-weight:700">التاريخ</th>
+            </tr>
+          </thead>
+          <tbody>
+            <template x-for="tx in recentTransactions" :key="tx.id">
+              <tr>
+                <td style="color:var(--k-gray);font-size:0.8rem" x-text="tx.id"></td>
+                <td x-text="tx.customer"></td>
+                <td x-text="tx.provider"></td>
+                <td x-text="tx.service"></td>
+                <td :style="'font-weight:700;color:' + tx.amountColor" x-text="tx.amount + ' ر.س'"></td>
+                <td>
+                  <span class="s-badge" :style="'background:' + tx.statusBg + ';color:' + tx.statusColor" x-text="tx.statusLabel"></span>
+                </td>
+                <td style="color:var(--k-gray)" x-text="tx.date"></td>
+              </tr>
+            </template>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div><!-- /dashboard -->
+
+  <!-- ══════════════════════════════════════
+       PAGE: USERS
+  ══════════════════════════════════════ -->
+  <div class="k-section" :class="{ active: page==='users' }">
+    <div class="chart-card mb-4">
+      <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+        <h6 style="font-weight:800;color:var(--k-dark-2);margin:0">إدارة المستخدمين (<span x-text="users.length"></span>)</h6>
+        <div class="k-search">
+          <i class="fas fa-search icon"></i>
+          <input type="text" class="form-control form-control-sm" placeholder="بحث..." x-model="userSearch" style="width:220px">
+        </div>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-hover mb-0" style="font-size:0.87rem">
+          <thead style="background:#f8fafc">
+            <tr>
+              <th style="font-weight:700">المستخدم</th>
+              <th style="font-weight:700">الجوال</th>
+              <th style="font-weight:700">النوع</th>
+              <th style="font-weight:700">المدينة</th>
+              <th style="font-weight:700">تاريخ التسجيل</th>
+              <th style="font-weight:700">الحالة</th>
+              <th style="font-weight:700">إجراءات</th>
+            </tr>
+          </thead>
+          <tbody>
+            <template x-for="u in filteredUsers" :key="u.id">
+              <tr>
+                <td>
+                  <div class="d-flex align-items-center gap-2">
+                    <div class="k-avatar" :style="'background:' + u.color" x-text="u.initial"></div>
+                    <span style="font-weight:600" x-text="u.name"></span>
+                  </div>
+                </td>
+                <td style="direction:ltr;text-align:right" x-text="u.phone"></td>
+                <td>
+                  <span class="badge" :style="'background:' + u.roleBg + ';color:' + u.roleColor" x-text="u.roleLabel"></span>
+                </td>
+                <td x-text="u.city"></td>
+                <td style="color:var(--k-gray)" x-text="u.joinDate"></td>
+                <td>
+                  <span class="s-badge" :style="u.active ? 'background:rgba(16,185,129,0.1);color:var(--k-success)' : 'background:rgba(239,68,68,0.1);color:var(--k-danger)'" :x-text="u.active ? 'نشط' : 'موقوف'">نشط</span>
+                </td>
+                <td>
+                  <button class="btn btn-sm btn-outline-secondary" style="border-radius:7px;font-size:0.78rem" @click="toggleUserStatus(u)">
+                    <i class="fas" :class="u.active ? 'fa-ban' : 'fa-check'"></i>
+                  </button>
+                </td>
+              </tr>
+            </template>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       PAGE: VERIFICATIONS
+  ══════════════════════════════════════ -->
+  <div class="k-section" :class="{ active: page==='verifications' }">
+    <div class="row g-3 mb-4">
+      <div class="col-md-4">
+        <div class="k-mini-stat">
+          <div class="icon-box" style="background:rgba(245,158,11,0.1)"><i class="fas fa-hourglass" style="color:var(--k-warning)"></i></div>
+          <div>
+            <div style="font-size:1.4rem;font-weight:800" x-text="pendingVerif.length"></div>
+            <div style="font-size:0.8rem;color:var(--k-gray)">بانتظار المراجعة</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="k-mini-stat">
+          <div class="icon-box" style="background:rgba(16,185,129,0.1)"><i class="fas fa-check-circle" style="color:var(--k-success)"></i></div>
+          <div>
+            <div style="font-size:1.4rem;font-weight:800">312</div>
+            <div style="font-size:0.8rem;color:var(--k-gray)">معتمدون</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="k-mini-stat">
+          <div class="icon-box" style="background:rgba(239,68,68,0.1)"><i class="fas fa-times-circle" style="color:var(--k-danger)"></i></div>
+          <div>
+            <div style="font-size:1.4rem;font-weight:800">18</div>
+            <div style="font-size:0.8rem;color:var(--k-gray)">مرفوضون</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <h6 style="font-weight:800;color:var(--k-dark-2);margin-bottom:1.25rem">
+        طلبات التحقق من الهوية
+        <span class="badge ms-2" style="background:var(--k-warning)" x-text="pendingVerif.length"></span>
+      </h6>
+      <div class="table-responsive">
+        <table class="table table-hover mb-0" style="font-size:0.87rem">
+          <thead style="background:#f8fafc">
+            <tr>
+              <th style="font-weight:700">المزود</th>
+              <th style="font-weight:700">التخصص</th>
+              <th style="font-weight:700">تاريخ التقديم</th>
+              <th style="font-weight:700">الوثائق</th>
+              <th style="font-weight:700">رقم السجل</th>
+              <th style="font-weight:700">الإجراء</th>
+            </tr>
+          </thead>
+          <tbody>
+            <template x-for="p in pendingVerif" :key="p.id">
+              <tr>
+                <td>
+                  <div class="d-flex align-items-center gap-2">
+                    <div class="k-avatar" :style="'background:' + p.color" x-text="p.initial"></div>
+                    <span style="font-weight:600" x-text="p.name"></span>
+                  </div>
+                </td>
+                <td>
+                  <span class="badge" style="background:rgba(2,128,144,0.1);color:var(--k-primary)" x-text="p.specialty"></span>
+                </td>
+                <td style="color:var(--k-gray)" x-text="p.date"></td>
+                <td>
+                  <span class="badge" style="background:rgba(245,158,11,0.1);color:var(--k-warning)" x-text="p.docs + ' وثائق'"></span>
+                </td>
+                <td style="font-size:0.8rem;color:var(--k-gray)" x-text="p.cr || '—'"></td>
+                <td>
+                  <div class="d-flex gap-1">
+                    <button class="btn btn-success btn-sm" style="border-radius:8px;font-size:0.8rem" @click="approveProvider(p)">
+                      <i class="fas fa-check ms-1"></i> قبول
+                    </button>
+                    <button class="btn btn-outline-danger btn-sm" style="border-radius:8px;font-size:0.8rem" @click="rejectProvider(p)">رفض</button>
+                  </div>
+                </td>
+              </tr>
+            </template>
+            <tr x-show="pendingVerif.length===0">
+              <td colspan="6" style="text-align:center;padding:2rem;color:var(--k-gray)">
+                <i class="fas fa-circle-check fa-2x mb-2 d-block" style="color:var(--k-success)"></i>
+                لا توجد طلبات تحقق معلقة
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       PAGE: TRANSACTIONS
+  ══════════════════════════════════════ -->
+  <div class="k-section" :class="{ active: page==='transactions' }">
+    <div class="chart-card">
+      <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+        <h6 style="font-weight:800;color:var(--k-dark-2);margin:0">سجل المعاملات</h6>
+        <div class="d-flex gap-2">
+          <select class="form-select form-select-sm" style="width:140px;border-radius:8px" x-model="txFilter">
+            <option value="">كل الحالات</option>
+            <option value="completed">مكتمل</option>
+            <option value="inprogress">قيد التنفيذ</option>
+            <option value="refunded">مسترد</option>
+          </select>
+          <div class="k-search">
+            <i class="fas fa-search icon"></i>
+            <input type="text" class="form-control form-control-sm" placeholder="بحث..." x-model="txSearch" style="width:180px">
+          </div>
+        </div>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-hover mb-0" style="font-size:0.87rem">
+          <thead style="background:#f8fafc">
+            <tr>
+              <th style="font-weight:700">#</th>
+              <th style="font-weight:700">العميل</th>
+              <th style="font-weight:700">المزود</th>
+              <th style="font-weight:700">الخدمة</th>
+              <th style="font-weight:700">المبلغ</th>
+              <th style="font-weight:700">عمولة المنصة</th>
+              <th style="font-weight:700">الحالة</th>
+              <th style="font-weight:700">التاريخ</th>
+            </tr>
+          </thead>
+          <tbody>
+            <template x-for="tx in filteredTransactions" :key="tx.id">
+              <tr>
+                <td style="color:var(--k-gray);font-size:0.8rem" x-text="tx.id"></td>
+                <td x-text="tx.customer"></td>
+                <td x-text="tx.provider"></td>
+                <td x-text="tx.service"></td>
+                <td style="font-weight:700" x-text="tx.amount + ' ر.س'"></td>
+                <td style="color:var(--k-primary);font-weight:700" x-text="(tx.amount * 0.1).toFixed(0) + ' ر.س'"></td>
+                <td>
+                  <span class="s-badge" :style="'background:' + tx.statusBg + ';color:' + tx.statusColor" x-text="tx.statusLabel"></span>
+                </td>
+                <td style="color:var(--k-gray)" x-text="tx.date"></td>
+              </tr>
+            </template>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       PAGE: REVIEWS
+  ══════════════════════════════════════ -->
+  <div class="k-section" :class="{ active: page==='reviews' }">
+    <div class="chart-card">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h6 style="font-weight:800;color:var(--k-dark-2);margin:0">
+          تقييمات مُبلَّغ عنها
+          <span class="badge ms-2" style="background:var(--k-danger)" x-text="flaggedReviews.length"></span>
+        </h6>
+      </div>
+      <div class="d-flex flex-column gap-3">
+        <template x-for="(r, idx) in flaggedReviews" :key="idx">
+          <div style="background:#fff5f5;border:1px solid rgba(239,68,68,0.2);border-radius:12px;padding:1.1rem">
+            <div class="d-flex justify-content-between align-items-start mb-2 flex-wrap gap-2">
+              <div>
+                <strong style="color:var(--k-dark-2)" x-text="r.rater"></strong>
+                <span style="color:var(--k-gray);font-size:0.82rem" x-text="' → ' + r.ratee"></span>
+              </div>
+              <div class="d-flex gap-2">
+                <button class="btn btn-outline-primary btn-sm" style="font-size:0.8rem">مراجعة</button>
+                <button class="btn btn-outline-danger btn-sm" style="font-size:0.8rem" @click="removeReview(idx)">
+                  <i class="fas fa-trash ms-1"></i> حذف
+                </button>
+              </div>
+            </div>
+            <p style="color:var(--k-gray);font-size:0.85rem;margin:0 0 0.5rem" x-text="r.comment"></p>
+            <div class="k-rating-stars" style="font-size:0.82rem"><i class="fas fa-star"></i> <span x-text="r.score"></span></div>
+          </div>
+        </template>
+        <div x-show="flaggedReviews.length===0" style="text-align:center;padding:2.5rem;color:var(--k-gray)">
+          <i class="fas fa-star fa-2x mb-2 d-block" style="color:var(--k-warning)"></i>
+          لا توجد تقييمات مُبلَّغ عنها
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       PAGE: REPORTS
+  ══════════════════════════════════════ -->
+  <div class="k-section" :class="{ active: page==='reports' }">
+    <div class="row g-4">
+      <div class="col-lg-8">
+        <div class="chart-card mb-4">
+          <h6 style="font-weight:800;color:var(--k-dark-2);margin-bottom:1rem">نمو الإيرادات — آخر 12 شهراً</h6>
+          <canvas id="revenueChart" height="250"></canvas>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="chart-card mb-4">
+          <h6 style="font-weight:800;color:var(--k-dark-2);margin-bottom:1rem">طرق الدفع</h6>
+          <canvas id="paymentMethodsChart" height="250"></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="row g-3">
+      <div class="col-md-4">
+        <div class="k-mini-stat">
+          <div class="icon-box" style="background:rgba(2,128,144,0.1)"><i class="fas fa-arrow-trend-up" style="color:var(--k-primary)"></i></div>
+          <div>
+            <div style="font-size:1.1rem;font-weight:800">524,000 ر.س</div>
+            <div style="font-size:0.78rem;color:var(--k-gray)">إجمالي الإيرادات (2026)</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="k-mini-stat">
+          <div class="icon-box" style="background:rgba(16,185,129,0.1)"><i class="fas fa-hand-holding-dollar" style="color:var(--k-success)"></i></div>
+          <div>
+            <div style="font-size:1.1rem;font-weight:800">52,400 ر.س</div>
+            <div style="font-size:0.78rem;color:var(--k-gray)">عمولة المنصة (10%)</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="k-mini-stat">
+          <div class="icon-box" style="background:rgba(245,158,11,0.1)"><i class="fas fa-calculator" style="color:var(--k-warning)"></i></div>
+          <div>
+            <div style="font-size:1.1rem;font-weight:800">435 ر.س</div>
+            <div style="font-size:0.78rem;color:var(--k-gray)">متوسط قيمة الطلب</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       PAGE: SETTINGS
+  ══════════════════════════════════════ -->
+  <div class="k-section" :class="{ active: page==='settings' }">
+    <div class="row g-4">
+      <div class="col-md-6">
+        <div class="chart-card">
+          <h6 style="font-weight:800;color:var(--k-dark-2);margin-bottom:1.25rem">إعدادات المنصة</h6>
+          <div class="mb-3">
+            <label class="form-label fw-600" style="font-size:0.9rem">نسبة عمولة المنصة (%)</label>
+            <input type="number" class="form-control" value="10" min="1" max="30">
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-600" style="font-size:0.9rem">ساعات الإفراج التلقائي عن الضمان</label>
+            <input type="number" class="form-control" value="48" min="12" max="168">
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-600" style="font-size:0.9rem">الحد الأقصى لمحاولات OTP</label>
+            <input type="number" class="form-control" value="5" min="3" max="10">
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-600" style="font-size:0.9rem">مكافأة الإحالة (ر.س)</label>
+            <input type="number" class="form-control" value="50" min="10">
+          </div>
+          <div class="mb-4">
+            <div class="d-flex justify-content-between align-items-center">
+              <label class="fw-600" style="font-size:0.9rem">وضع الصيانة</label>
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="maintenanceMode">
+              </div>
+            </div>
+            <small style="color:var(--k-gray)">عند التفعيل، يتم إيقاف الموقع وعرض صفحة صيانة للمستخدمين</small>
+          </div>
+          <button class="btn btn-primary w-100">
+            <i class="fas fa-save ms-2"></i> حفظ الإعدادات
+          </button>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="chart-card mb-4">
+          <h6 style="font-weight:800;color:var(--k-dark-2);margin-bottom:1.25rem">معلومات النظام</h6>
+          <div style="font-size:0.88rem;color:var(--k-gray)">
+            <div class="d-flex justify-content-between py-2" style="border-bottom:1px solid #f1f5f9">
+              <span>نسخة API</span><strong style="color:var(--k-dark-2)">v1.0.0</strong>
+            </div>
+            <div class="d-flex justify-content-between py-2" style="border-bottom:1px solid #f1f5f9">
+              <span>قاعدة البيانات</span><strong style="color:var(--k-success)">● PostgreSQL متصل</strong>
+            </div>
+            <div class="d-flex justify-content-between py-2" style="border-bottom:1px solid #f1f5f9">
+              <span>Redis Cache</span><strong style="color:var(--k-success)">● متصل</strong>
+            </div>
+            <div class="d-flex justify-content-between py-2" style="border-bottom:1px solid #f1f5f9">
+              <span>Moyasar</span><strong style="color:var(--k-success)">● نشط</strong>
+            </div>
+            <div class="d-flex justify-content-between py-2" style="border-bottom:1px solid #f1f5f9">
+              <span>Unifonic SMS</span><strong style="color:var(--k-success)">● نشط</strong>
+            </div>
+            <div class="d-flex justify-content-between py-2">
+              <span>آخر نسخ احتياطي</span><strong style="color:var(--k-dark-2)">اليوم 03:00 ص</strong>
+            </div>
+          </div>
+        </div>
+        <div class="chart-card">
+          <h6 style="font-weight:800;color:var(--k-dark-2);margin-bottom:1.25rem">إعدادات الأمان</h6>
+          <div class="mb-3">
+            <label class="form-label fw-600" style="font-size:0.9rem">كلمة المرور الجديدة</label>
+            <input type="password" class="form-control" placeholder="أدخل كلمة المرور الجديدة">
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-600" style="font-size:0.9rem">تأكيد كلمة المرور</label>
+            <input type="password" class="form-control" placeholder="أعد إدخال كلمة المرور">
+          </div>
+          <button class="btn btn-outline-primary w-100">
+            <i class="fas fa-key ms-2"></i> تغيير كلمة المرور
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- placeholder pages -->
+  <div class="k-section" :class="{ active: page==='providers' }">
+    <div class="chart-card" style="text-align:center;padding:3rem">
+      <i class="fas fa-hard-hat fa-3x mb-3" style="color:var(--k-primary)"></i>
+      <h5 style="font-weight:800">صفحة مزودو الخدمات</h5>
+      <p style="color:var(--k-gray)">سيتم تطوير هذه الصفحة قريباً</p>
+    </div>
+  </div>
+  <div class="k-section" :class="{ active: page==='requests' }">
+    <div class="chart-card" style="text-align:center;padding:3rem">
+      <i class="fas fa-calendar-check fa-3x mb-3" style="color:var(--k-primary)"></i>
+      <h5 style="font-weight:800">صفحة الطلبات</h5>
+      <p style="color:var(--k-gray)">سيتم تطوير هذه الصفحة قريباً</p>
+    </div>
+  </div>
+
+</div><!-- /k-admin-content -->
+
+<!-- Toast -->
+<div x-show="toast.show" x-transition style="position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);z-index:9999;min-width:260px">
+  <div :style="'padding:0.85rem 1.5rem;border-radius:12px;font-weight:600;font-size:0.9rem;text-align:center;color:#fff;background:' + (toast.type==='success' ? 'var(--k-success)' : toast.type==='danger' ? 'var(--k-danger)' : 'var(--k-dark-2)')" x-text="toast.msg"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+<script src="../assets/js/khedmah.js"></script>
+<script>
+  // Auth guard
+  if (sessionStorage.getItem('adminLoggedIn') !== 'true') {
+    window.location.href = 'login.html';
+  }
+
+  function adminApp() {
+    return {
+      page: 'dashboard',
+      sidebarOpen: false,
+      globalSearch: '',
+      userSearch: '',
+      txFilter: '',
+      txSearch: '',
+      toast: { show: false, msg: '', type: 'success' },
+
+      stats: {
+        totalUsers: 2847,
+        verifiedProviders: 312,
+        monthlyRequests: 1204,
+        revenue: 45280
+      },
+
+      pendingVerif: [
+        { id:1, initial:'أ', color:'linear-gradient(135deg,#028090,#02C39A)', name:'أحمد الزهراني', specialty:'سباكة', date:'4 مارس 2026', docs:3, cr:'CR-44821' },
+        { id:2, initial:'م', color:'linear-gradient(135deg,#f59e0b,#d97706)', name:'محمد الحربي', specialty:'كهرباء', date:'3 مارس 2026', docs:2, cr:'' },
+        { id:3, initial:'س', color:'linear-gradient(135deg,#10b981,#059669)', name:'سعد القحطاني', specialty:'تنظيف', date:'2 مارس 2026', docs:4, cr:'CR-51093' },
+        { id:4, initial:'ن', color:'linear-gradient(135deg,#6366f1,#8b5cf6)', name:'نايف الشهري', specialty:'دهانات', date:'1 مارس 2026', docs:3, cr:'' },
+        { id:5, initial:'خ', color:'linear-gradient(135deg,#ef4444,#dc2626)', name:'خالد العمري', specialty:'نجارة', date:'28 فبراير 2026', docs:2, cr:'CR-33712' },
+      ],
+
+      flaggedReviews: [
+        { rater:'محمد الغامدي', ratee:'فريق التنظيف', comment:'محتوى التقييم يحتوي على كلمات غير لائقة ويجب مراجعته...', score:1 },
+        { rater:'سعد القحطاني', ratee:'أحمد السباك', comment:'تقييم مشبوه — تم الإبلاغ عنه من قبل المزود كتقييم كيدي...', score:1 },
+        { rater:'عبدالله المطيري', ratee:'شركة النقل السريع', comment:'تقييم يحتوي على اتهامات غير مدعومة بأدلة...', score:1 },
+      ],
+
+      users: [
+        { id:1, initial:'أ', color:'linear-gradient(135deg,#028090,#02C39A)', name:'أحمد الغامدي', phone:'+966 51 234 5678', roleLabel:'عميل', roleBg:'rgba(2,128,144,0.1)', roleColor:'var(--k-primary)', city:'الرياض', joinDate:'15 يناير 2026', active:true },
+        { id:2, initial:'ن', color:'linear-gradient(135deg,#f59e0b,#d97706)', name:'نورة الحربي', phone:'+966 55 876 5432', roleLabel:'عميل', roleBg:'rgba(2,128,144,0.1)', roleColor:'var(--k-primary)', city:'جدة', joinDate:'20 يناير 2026', active:true },
+        { id:3, initial:'م', color:'linear-gradient(135deg,#10b981,#059669)', name:'محمد السباك', phone:'+966 50 111 2222', roleLabel:'مزود', roleBg:'rgba(16,185,129,0.1)', roleColor:'var(--k-success)', city:'الرياض', joinDate:'5 فبراير 2026', active:true },
+        { id:4, initial:'خ', color:'linear-gradient(135deg,#6366f1,#8b5cf6)', name:'خالد الكهربائي', phone:'+966 53 333 4444', roleLabel:'مزود', roleBg:'rgba(16,185,129,0.1)', roleColor:'var(--k-success)', city:'الدمام', joinDate:'10 فبراير 2026', active:false },
+        { id:5, initial:'ف', color:'linear-gradient(135deg,#ef4444,#dc2626)', name:'فاطمة العتيبي', phone:'+966 59 555 6666', roleLabel:'عميل', roleBg:'rgba(2,128,144,0.1)', roleColor:'var(--k-primary)', city:'مكة', joinDate:'1 مارس 2026', active:true },
+        { id:6, initial:'س', color:'linear-gradient(135deg,#8b5cf6,#7c3aed)', name:'سلمان الدهان', phone:'+966 54 777 8888', roleLabel:'مزود', roleBg:'rgba(16,185,129,0.1)', roleColor:'var(--k-success)', city:'المدينة', joinDate:'3 مارس 2026', active:true },
+      ],
+
+      recentTransactions: [
+        { id:'#TXN-1892', customer:'أحمد الغامدي', provider:'محمد السباك', service:'سباكة', amount:295, amountColor:'var(--k-success)', statusLabel:'مكتمل', statusBg:'rgba(16,185,129,0.1)', statusColor:'var(--k-success)', date:'5 مارس 2026', type:'completed' },
+        { id:'#TXN-1891', customer:'نورة الحربي', provider:'فريق التنظيف', service:'تنظيف', amount:180, amountColor:'var(--k-success)', statusLabel:'مكتمل', statusBg:'rgba(16,185,129,0.1)', statusColor:'var(--k-success)', date:'4 مارس 2026', type:'completed' },
+        { id:'#TXN-1890', customer:'محمد الشهري', provider:'خالد الكهربائي', service:'كهرباء', amount:420, amountColor:'var(--k-warning)', statusLabel:'قيد التنفيذ', statusBg:'rgba(245,158,11,0.1)', statusColor:'var(--k-warning)', date:'4 مارس 2026', type:'inprogress' },
+        { id:'#TXN-1889', customer:'فاطمة العتيبي', provider:'سلمان الدهان', service:'دهانات', amount:650, amountColor:'var(--k-success)', statusLabel:'مكتمل', statusBg:'rgba(16,185,129,0.1)', statusColor:'var(--k-success)', date:'3 مارس 2026', type:'completed' },
+        { id:'#TXN-1888', customer:'خالد المطيري', provider:'أحمد السباك', service:'سباكة', amount:350, amountColor:'var(--k-danger)', statusLabel:'مسترد', statusBg:'rgba(239,68,68,0.1)', statusColor:'var(--k-danger)', date:'2 مارس 2026', type:'refunded' },
+        { id:'#TXN-1887', customer:'عبدالله العمري', provider:'فريق النقل', service:'نقل عفش', amount:900, amountColor:'var(--k-success)', statusLabel:'مكتمل', statusBg:'rgba(16,185,129,0.1)', statusColor:'var(--k-success)', date:'1 مارس 2026', type:'completed' },
+      ],
+
+      get filteredUsers() {
+        if (!this.userSearch) return this.users;
+        const q = this.userSearch.toLowerCase();
+        return this.users.filter(u => u.name.includes(q) || u.phone.includes(q) || u.city.includes(q));
+      },
+
+      get filteredTransactions() {
+        let list = this.recentTransactions;
+        if (this.txFilter) list = list.filter(t => t.type === this.txFilter);
+        if (this.txSearch) {
+          const q = this.txSearch.toLowerCase();
+          list = list.filter(t => t.id.toLowerCase().includes(q) || t.customer.includes(q) || t.provider.includes(q));
+        }
+        return list;
+      },
+
+      goto(p) {
+        this.page = p;
+        this.sidebarOpen = false;
+        if (p === 'reports') {
+          this.$nextTick(() => this.initReportCharts());
+        }
+      },
+
+      pageTitle() {
+        const titles = {
+          dashboard: 'لوحة التحكم', users: 'إدارة المستخدمين',
+          providers: 'مزودو الخدمات', verifications: 'التحقق من الهويات',
+          requests: 'الطلبات', transactions: 'المعاملات',
+          reviews: 'التقييمات', reports: 'التقارير', settings: 'الإعدادات'
+        };
+        return titles[this.page] || 'لوحة التحكم';
+      },
+
+      todayDate() {
+        return new Date().toLocaleDateString('ar-SA', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+      },
+
+      approveProvider(p) {
+        this.pendingVerif = this.pendingVerif.filter(x => x.id !== p.id);
+        this.stats.verifiedProviders++;
+        this.showToast('تم قبول ' + p.name + ' بنجاح', 'success');
+      },
+
+      rejectProvider(p) {
+        this.pendingVerif = this.pendingVerif.filter(x => x.id !== p.id);
+        this.showToast('تم رفض طلب ' + p.name, 'danger');
+      },
+
+      removeReview(idx) {
+        this.flaggedReviews.splice(idx, 1);
+        this.showToast('تم حذف التقييم', 'success');
+      },
+
+      toggleUserStatus(u) {
+        u.active = !u.active;
+        this.showToast(u.active ? 'تم تفعيل الحساب' : 'تم تعليق الحساب', u.active ? 'success' : 'danger');
+      },
+
+      logout() {
+        sessionStorage.clear();
+        window.location.href = 'login.html';
+      },
+
+      showToast(msg, type = 'success') {
+        this.toast = { show: true, msg, type };
+        setTimeout(() => this.toast.show = false, 3000);
+      },
+
+      initReportCharts() {
+        if (document.getElementById('revenueChart')._chart) return;
+        const rc = document.getElementById('revenueChart');
+        rc._chart = new Chart(rc, {
+          type: 'bar',
+          data: {
+            labels: ['أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر','يناير','فبراير','مارس'],
+            datasets: [{
+              label: 'الإيرادات (ر.س)',
+              data: [28000, 33000, 38000, 35000, 42000, 48000, 45000, 52000, 56000, 43000, 49000, 55000],
+              backgroundColor: 'rgba(2,128,144,0.8)',
+              borderRadius: 6,
+            }]
+          },
+          options: {
+            responsive:true,
+            plugins:{ legend:{display:false} },
+            scales:{ y:{ beginAtZero:true, grid:{ color:'rgba(0,0,0,0.05)' } }, x:{ grid:{ display:false } } }
+          }
+        });
+        const pmc = document.getElementById('paymentMethodsChart');
+        pmc._chart = new Chart(pmc, {
+          type: 'doughnut',
+          data: {
+            labels: ['مدى','STC Pay','Apple Pay','بطاقة ائتمان'],
+            datasets: [{ data:[45,25,18,12], backgroundColor:['#028090','#02C39A','#f59e0b','#6366f1'], borderWidth:0 }]
+          },
+          options: { responsive:true, cutout:'65%', plugins:{ legend:{ position:'bottom', labels:{ font:{family:'Tajawal',size:11}, padding:10 } } } }
+        });
+      }
+    };
+  }
+
+  // Wait for Alpine to be ready before initializing charts
+  document.addEventListener('alpine:initialized', () => {
+    // Line chart
+    new Chart(document.getElementById('bookingsChart'), {
+      type: 'line',
+      data: {
+        labels: ['أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر','يناير','فبراير','مارس'],
+        datasets: [
+          {
+            label: 'الطلبات',
+            data: [820, 950, 1100, 980, 1350, 1204, 1380, 1520],
+            borderColor: '#028090',
+            backgroundColor: 'rgba(2,128,144,0.08)',
+            tension: 0.4, fill: true,
+            pointBackgroundColor: '#028090', pointRadius: 4, pointHoverRadius: 7
+          },
+          {
+            label: 'الإيرادات (×100 ر.س)',
+            data: [310, 380, 420, 395, 510, 453, 512, 580],
+            borderColor: '#02C39A',
+            backgroundColor: 'rgba(2,195,154,0.08)',
+            tension: 0.4, fill: true,
+            pointBackgroundColor: '#02C39A', pointRadius: 4, pointHoverRadius: 7
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { position: 'top', labels: { font: { family: 'Tajawal', size: 12 }, padding: 15 } } },
+        scales: {
+          y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } },
+          x: { grid: { display: false } }
+        }
+      }
+    });
+
+    // Doughnut chart
+    new Chart(document.getElementById('userTypesChart'), {
+      type: 'doughnut',
+      data: {
+        labels: ['عملاء','مزودون','مشرفون'],
+        datasets: [{ data: [2430, 390, 27], backgroundColor: ['#028090','#02C39A','#f59e0b'], borderWidth: 0 }]
+      },
+      options: {
+        responsive: true, cutout: '65%',
+        plugins: { legend: { display: false } }
+      }
+    });
+
+    // Services bar chart
+    new Chart(document.getElementById('servicesChart'), {
+      type: 'bar',
+      data: {
+        labels: ['سباكة','كهرباء','تنظيف','تكييف','دهانات','نجارة'],
+        datasets: [{
+          label: 'عدد الطلبات',
+          data: [342, 289, 256, 198, 167, 134],
+          backgroundColor: ['#028090','#02C39A','#00A896','#f59e0b','#6366f1','#10b981'],
+          borderRadius: 6, borderSkipped: false
+        }]
+      },
+      options: {
+        responsive: true, indexAxis: 'y',
+        plugins: { legend: { display: false } },
+        scales: { x: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } }, y: { grid: { display: false } } }
+      }
+    });
+
+    // Cities doughnut
+    new Chart(document.getElementById('citiesChart'), {
+      type: 'doughnut',
+      data: {
+        labels: ['الرياض','جدة','الدمام','مكة','المدينة','أخرى'],
+        datasets: [{ data: [38, 24, 16, 10, 7, 5], backgroundColor: ['#028090','#02C39A','#00A896','#f59e0b','#6366f1','#94a3b8'], borderWidth: 0 }]
+      },
+      options: {
+        responsive: true, cutout: '55%',
+        plugins: { legend: { position: 'bottom', labels: { font: { family: 'Tajawal', size: 11 }, padding: 10 } } }
+      }
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الإعدادات — خدمة</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="../assets/css/khedmah.css">
+  <style>
+    body { background: #f1f5f9; }
+    @media (max-width:991px) { .k-sidebar { display:none; } .k-main-content { margin-right:0; } }
+    .settings-section { background:#fff; border-radius:16px; padding:1.75rem; margin-bottom:1.25rem; box-shadow:0 2px 10px rgba(0,0,0,0.05); }
+    .settings-section h6 { font-weight:800; color:var(--k-dark-2); margin-bottom:1.25rem; font-size:1rem; display:flex; align-items:center; gap:0.6rem; }
+    .settings-section h6 i { color:var(--k-primary); }
+    .avatar-circle { width:90px; height:90px; border-radius:50%; background:linear-gradient(135deg,var(--k-primary),var(--k-accent)); display:flex; align-items:center; justify-content:center; font-size:2.2rem; color:#fff; font-weight:800; margin-bottom:0.75rem; cursor:pointer; position:relative; overflow:hidden; transition:all 0.3s; }
+    .avatar-circle:hover { box-shadow:0 6px 20px rgba(2,128,144,0.4); }
+    .avatar-overlay { position:absolute; inset:0; background:rgba(0,0,0,0.4); display:flex; align-items:center; justify-content:center; opacity:0; transition:0.3s; }
+    .avatar-circle:hover .avatar-overlay { opacity:1; }
+    .toggle-switch { position:relative; display:inline-block; width:46px; height:24px; }
+    .toggle-switch input { opacity:0; width:0; height:0; }
+    .toggle-slider { position:absolute; cursor:pointer; inset:0; background:#e2e8f0; border-radius:24px; transition:0.3s; }
+    .toggle-slider:before { content:''; position:absolute; width:18px; height:18px; right:3px; top:3px; background:#fff; border-radius:50%; transition:0.3s; box-shadow:0 2px 4px rgba(0,0,0,0.15); }
+    input:checked + .toggle-slider { background:var(--k-primary); }
+    input:checked + .toggle-slider:before { transform:translateX(-22px); }
+    .notif-row { display:flex; justify-content:space-between; align-items:center; padding:0.85rem 0; border-bottom:1px solid #f1f5f9; }
+    .notif-row:last-child { border-bottom:none; }
+    .lang-option { border:2px solid #e2e8f0; border-radius:12px; padding:0.75rem 1rem; cursor:pointer; transition:all 0.2s; display:flex; align-items:center; gap:0.6rem; font-weight:600; font-size:0.9rem; }
+    .lang-option:hover, .lang-option.active { border-color:var(--k-primary); background:rgba(2,128,144,0.04); color:var(--k-primary); }
+    .danger-zone { border:1px solid rgba(239,68,68,0.2); background:rgba(239,68,68,0.02); }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../assets/js/supabase-client.js"></script>
+</head>
+<body>
+<script>
+  /* ── Auth guard ── */
+  (function() {
+    if (localStorage.getItem('khedmah_demo')) return;
+    var hasSession = Object.keys(localStorage).some(function(k) {
+      return k.indexOf('auth-token') !== -1 || k.indexOf('supabase') !== -1;
+    });
+    if (!hasSession) { window.location.replace('../auth/login.html'); }
+  })();
+</script>
+
+
+<nav class="k-navbar navbar navbar-expand-lg" style="position:sticky;top:0;z-index:200">
+  <div class="container-fluid px-4">
+    <a class="navbar-brand" href="../index.html">خدم<span style="color:var(--k-accent)">ة</span></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navMain">
+      <ul class="navbar-nav me-auto gap-1">
+        <li class="nav-item"><a class="nav-link" href="dashboard.html">لوحة التحكم</a></li>
+        <li class="nav-item"><a class="nav-link active" href="settings.html">الإعدادات</a></li>
+      </ul>
+      <div class="d-flex gap-2 align-items-center">
+        <span style="color:rgba(255,255,255,0.75);font-size:0.9rem">أحمد محمد</span>
+        <div style="width:36px;height:36px;background:linear-gradient(135deg,var(--k-primary),var(--k-accent));border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:0.9rem">أ</div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="d-flex">
+  <!-- Sidebar -->
+  <div class="k-sidebar">
+    <div class="k-sidebar-brand mb-4">خدم<span>ة</span></div>
+    <nav class="nav flex-column gap-1">
+      <a href="dashboard.html" class="nav-link"><i class="fas fa-home"></i> لوحة التحكم</a>
+      <a href="search.html" class="nav-link"><i class="fas fa-search"></i> البحث عن خدمات</a>
+      <a href="quote-request.html" class="nav-link"><i class="fas fa-file-invoice"></i> طلب جديد</a>
+      <a href="chat.html" class="nav-link"><i class="fas fa-comments"></i> المحادثات</a>
+      <a href="../rewards/referral-program.html" class="nav-link"><i class="fas fa-gift"></i> برنامج الإحالة</a>
+      <a href="settings.html" class="nav-link active"><i class="fas fa-cog"></i> الإعدادات</a>
+      <a href="#" onclick="localStorage.removeItem('khedmah_demo');sessionStorage.clear();window.location.href='../auth/login.html'" class="nav-link" style="color:rgba(239,68,68,0.8)!important;margin-top:2rem"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</a>
+    </nav>
+  </div>
+
+  <!-- Main -->
+  <div class="k-main-content flex-grow-1" x-data="settingsApp()">
+
+    <h4 style="font-weight:900;color:var(--k-dark-2);margin-bottom:1.5rem">الإعدادات</h4>
+
+    <!-- Settings Tabs -->
+    <ul class="nav nav-pills mb-4 flex-wrap gap-2" id="settingsTabs">
+      <li class="nav-item"><a class="nav-link active" data-bs-toggle="pill" href="#sProfile" style="border-radius:50px"><i class="fas fa-user me-1"></i> الملف الشخصي</a></li>
+      <li class="nav-item"><a class="nav-link" data-bs-toggle="pill" href="#sNotif" style="border-radius:50px"><i class="fas fa-bell me-1"></i> الإشعارات</a></li>
+      <li class="nav-item"><a class="nav-link" data-bs-toggle="pill" href="#sLang" style="border-radius:50px"><i class="fas fa-language me-1"></i> اللغة</a></li>
+      <li class="nav-item"><a class="nav-link" data-bs-toggle="pill" href="#sSecurity" style="border-radius:50px"><i class="fas fa-shield-alt me-1"></i> الأمان</a></li>
+    </ul>
+
+    <div class="tab-content" style="max-width:720px">
+
+      <!-- Profile -->
+      <div class="tab-pane fade show active" id="sProfile">
+        <div class="settings-section">
+          <h6><i class="fas fa-user-circle"></i> معلومات الحساب</h6>
+          <div class="text-center mb-4">
+            <div class="avatar-circle mx-auto" onclick="document.getElementById('avatarInput').click()">
+              <span>أ</span>
+              <div class="avatar-overlay"><i class="fas fa-camera" style="color:#fff;font-size:1.2rem"></i></div>
+            </div>
+            <input type="file" id="avatarInput" accept="image/*" style="display:none">
+            <div style="font-size:0.82rem;color:var(--k-gray)">اضغط لتغيير الصورة</div>
+          </div>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label fw-600 small">الاسم الأول</label>
+              <input type="text" class="form-control" value="أحمد" x-model="name1">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-600 small">اسم العائلة</label>
+              <input type="text" class="form-control" value="محمد" x-model="name2">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-600 small">رقم الجوال</label>
+              <div class="input-group">
+                <span class="input-group-text" style="background:#f8fafc;font-size:0.85rem">+966</span>
+                <input type="tel" class="form-control" value="512345678" dir="ltr">
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-600 small">البريد الإلكتروني</label>
+              <input type="email" class="form-control" placeholder="البريد الإلكتروني (اختياري)" dir="ltr">
+            </div>
+            <div class="col-12">
+              <label class="form-label fw-600 small">المدينة</label>
+              <select class="form-select">
+                <option selected>الرياض</option>
+                <option>جدة</option>
+                <option>الدمام</option>
+                <option>مكة المكرمة</option>
+              </select>
+            </div>
+          </div>
+          <div class="mt-4 d-flex gap-2">
+            <button class="btn btn-primary px-4" onclick="showSaved()"><i class="fas fa-save ms-2"></i> حفظ التغييرات</button>
+            <button class="btn btn-outline-secondary px-4">إلغاء</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notifications -->
+      <div class="tab-pane fade" id="sNotif">
+        <div class="settings-section">
+          <h6><i class="fas fa-bell"></i> إعدادات الإشعارات</h6>
+          <div class="notif-row">
+            <div>
+              <div style="font-weight:700;color:var(--k-dark-2);font-size:0.92rem">عروض الأسعار الجديدة</div>
+              <div style="font-size:0.8rem;color:var(--k-gray)">عند وصول عرض سعر من مزود</div>
+            </div>
+            <label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+          </div>
+          <div class="notif-row">
+            <div>
+              <div style="font-weight:700;color:var(--k-dark-2);font-size:0.92rem">تحديثات حالة الخدمة</div>
+              <div style="font-size:0.8rem;color:var(--k-gray)">عند تغيير حالة طلبك</div>
+            </div>
+            <label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+          </div>
+          <div class="notif-row">
+            <div>
+              <div style="font-weight:700;color:var(--k-dark-2);font-size:0.92rem">رسائل المحادثة</div>
+              <div style="font-size:0.8rem;color:var(--k-gray)">عند وصول رسالة جديدة</div>
+            </div>
+            <label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+          </div>
+          <div class="notif-row">
+            <div>
+              <div style="font-weight:700;color:var(--k-dark-2);font-size:0.92rem">تذكير المواعيد</div>
+              <div style="font-size:0.8rem;color:var(--k-gray)">قبل موعد الخدمة بساعتين</div>
+            </div>
+            <label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+          </div>
+          <div class="notif-row">
+            <div>
+              <div style="font-weight:700;color:var(--k-dark-2);font-size:0.92rem">العروض والتخفيضات</div>
+              <div style="font-size:0.8rem;color:var(--k-gray)">عروض خاصة وخصومات</div>
+            </div>
+            <label class="toggle-switch"><input type="checkbox"><span class="toggle-slider"></span></label>
+          </div>
+          <div class="notif-row">
+            <div>
+              <div style="font-weight:700;color:var(--k-dark-2);font-size:0.92rem">إشعارات SMS</div>
+              <div style="font-size:0.8rem;color:var(--k-gray)">إشعارات عبر الرسائل النصية</div>
+            </div>
+            <label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+          </div>
+          <div class="notif-row">
+            <div>
+              <div style="font-weight:700;color:var(--k-dark-2);font-size:0.92rem">النشرة البريدية</div>
+              <div style="font-size:0.8rem;color:var(--k-gray)">أخبار ومستجدات خدمة</div>
+            </div>
+            <label class="toggle-switch"><input type="checkbox"><span class="toggle-slider"></span></label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Language -->
+      <div class="tab-pane fade" id="sLang">
+        <div class="settings-section">
+          <h6><i class="fas fa-language"></i> اللغة المفضلة</h6>
+          <p style="color:var(--k-gray);font-size:0.88rem;margin-bottom:1.25rem">تُستخدم لترجمة المحادثات مع مزودي الخدمة تلقائياً</p>
+          <div class="row g-3" x-data="{ lang: 'ar' }">
+            <div class="col-6 col-md-4">
+              <div class="lang-option" :class="{ active: lang==='ar' }" @click="lang='ar'">
+                <span style="font-size:1.4rem">🇸🇦</span> <div><div style="font-size:0.85rem">العربية</div><div style="font-size:0.72rem;color:var(--k-gray)">Arabic</div></div>
+              </div>
+            </div>
+            <div class="col-6 col-md-4">
+              <div class="lang-option" :class="{ active: lang==='en' }" @click="lang='en'">
+                <span style="font-size:1.4rem">🇬🇧</span> <div><div style="font-size:0.85rem">الإنجليزية</div><div style="font-size:0.72rem;color:var(--k-gray)">English</div></div>
+              </div>
+            </div>
+            <div class="col-6 col-md-4">
+              <div class="lang-option" :class="{ active: lang==='ur' }" @click="lang='ur'">
+                <span style="font-size:1.4rem">🇵🇰</span> <div><div style="font-size:0.85rem">الأردية</div><div style="font-size:0.72rem;color:var(--k-gray)">Urdu</div></div>
+              </div>
+            </div>
+            <div class="col-6 col-md-4">
+              <div class="lang-option" :class="{ active: lang==='hi' }" @click="lang='hi'">
+                <span style="font-size:1.4rem">🇮🇳</span> <div><div style="font-size:0.85rem">الهندية</div><div style="font-size:0.72rem;color:var(--k-gray)">Hindi</div></div>
+              </div>
+            </div>
+            <div class="col-6 col-md-4">
+              <div class="lang-option" :class="{ active: lang==='bn' }" @click="lang='bn'">
+                <span style="font-size:1.4rem">🇧🇩</span> <div><div style="font-size:0.85rem">البنغالية</div><div style="font-size:0.72rem;color:var(--k-gray)">Bengali</div></div>
+              </div>
+            </div>
+            <div class="col-6 col-md-4">
+              <div class="lang-option" :class="{ active: lang==='tl' }" @click="lang='tl'">
+                <span style="font-size:1.4rem">🇵🇭</span> <div><div style="font-size:0.85rem">الفلبينية</div><div style="font-size:0.72rem;color:var(--k-gray)">Tagalog</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="mt-4">
+            <button class="btn btn-primary px-4" onclick="showSaved()"><i class="fas fa-save ms-2"></i> حفظ اللغة</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Security -->
+      <div class="tab-pane fade" id="sSecurity">
+        <div class="settings-section">
+          <h6><i class="fas fa-key"></i> تغيير كلمة المرور</h6>
+          <div class="mb-3">
+            <label class="form-label fw-600 small">كلمة المرور الحالية</label>
+            <div class="input-group">
+              <span class="input-group-text" style="background:#f8fafc"><i class="fas fa-lock" style="color:var(--k-gray)"></i></span>
+              <input type="password" class="form-control" placeholder="أدخل كلمة مرورك الحالية">
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-600 small">كلمة المرور الجديدة</label>
+            <div class="input-group">
+              <span class="input-group-text" style="background:#f8fafc"><i class="fas fa-lock" style="color:var(--k-gray)"></i></span>
+              <input type="password" class="form-control" placeholder="8 أحرف على الأقل">
+            </div>
+          </div>
+          <div class="mb-4">
+            <label class="form-label fw-600 small">تأكيد كلمة المرور الجديدة</label>
+            <div class="input-group">
+              <span class="input-group-text" style="background:#f8fafc"><i class="fas fa-lock" style="color:var(--k-gray)"></i></span>
+              <input type="password" class="form-control" placeholder="أعد إدخال كلمة المرور">
+            </div>
+          </div>
+          <button class="btn btn-primary px-4" onclick="showSaved()"><i class="fas fa-save ms-2"></i> تحديث كلمة المرور</button>
+        </div>
+        <div class="settings-section">
+          <h6><i class="fas fa-shield-alt"></i> التحقق بخطوتين</h6>
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <div style="font-weight:600;color:var(--k-dark-2)">تفعيل التحقق بخطوتين</div>
+              <div style="font-size:0.82rem;color:var(--k-gray)">أمان إضافي عبر رمز SMS عند كل تسجيل دخول</div>
+            </div>
+            <label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+          </div>
+        </div>
+        <div class="settings-section danger-zone">
+          <h6 style="color:var(--k-danger)"><i class="fas fa-exclamation-triangle" style="color:var(--k-danger)"></i> منطقة الخطر</h6>
+          <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div>
+              <div style="font-weight:600;color:var(--k-dark-2)">حذف الحساب نهائياً</div>
+              <div style="font-size:0.82rem;color:var(--k-gray)">سيتم حذف جميع بياناتك بشكل دائم ولا يمكن التراجع</div>
+            </div>
+            <button class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal">
+              <i class="fas fa-trash me-1"></i> حذف الحساب
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Delete Confirm Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="border-radius:20px">
+      <div class="modal-header border-0 pb-0">
+        <h5 class="modal-title" style="font-weight:800;color:var(--k-danger)"><i class="fas fa-exclamation-triangle me-2"></i>تأكيد الحذف</h5>
+        <button class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p style="color:var(--k-gray)">هل أنت متأكد من حذف حسابك؟ لا يمكن التراجع عن هذه الخطوة وستُفقد جميع بياناتك.</p>
+        <input type="text" class="form-control" placeholder='اكتب "احذف حسابي" للتأكيد'>
+      </div>
+      <div class="modal-footer border-0">
+        <button class="btn btn-outline-secondary" data-bs-dismiss="modal">إلغاء</button>
+        <button class="btn btn-danger">حذف الحساب نهائياً</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="savedToast" style="position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:#059669;color:#fff;padding:0.75rem 1.5rem;border-radius:50px;font-weight:700;font-size:0.9rem;display:none;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,0.2)">
+  <i class="fas fa-check me-2"></i> تم حفظ التغييرات
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+<script src="../assets/js/khedmah.js"></script>
+<script>
+  function settingsApp() { return { name1: 'أحمد', name2: 'محمد' }; }
+  function showSaved() {
+    const t = document.getElementById('savedToast');
+    t.style.display = 'block';
+    setTimeout(() => { t.style.display = 'none'; }, 2500);
+  }
+</script>
+</body>
+</html>

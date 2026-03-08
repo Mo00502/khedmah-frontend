@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الشروط والأحكام — خدمة</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="../assets/css/khedmah.css">
+  <style>
+    body { background: #f8fafc; }
+    .terms-wrap { max-width: 800px; margin: 0 auto; padding: 3rem 1rem 4rem; }
+    .terms-card { background: #fff; border-radius: 20px; padding: 2.5rem; box-shadow: 0 4px 20px rgba(0,0,0,0.06); margin-bottom: 1.5rem; }
+    .terms-card h5 { font-weight: 800; color: var(--k-dark-2); margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 2px solid rgba(2,128,144,0.1); }
+    .terms-card p, .terms-card li { color: #475569; line-height: 1.9; font-size: 0.95rem; }
+    .terms-card ul { padding-right: 1.25rem; }
+    .terms-card ul li { margin-bottom: 0.4rem; }
+    .terms-nav { background: #fff; border-radius: 16px; padding: 1.25rem; position: sticky; top: 80px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+    .terms-nav a { display: block; padding: 0.5rem 0.75rem; font-size: 0.88rem; color: var(--k-gray); text-decoration: none; border-radius: 8px; transition: all 0.2s; font-weight: 600; }
+    .terms-nav a:hover, .terms-nav a.active { background: rgba(2,128,144,0.08); color: var(--k-primary); }
+    .tab-btn { border: 2px solid #e2e8f0; border-radius: 50px; padding: 0.5rem 1.5rem; font-weight: 700; cursor: pointer; transition: all 0.2s; background: #fff; font-size: 0.9rem; }
+    .tab-btn.active { border-color: var(--k-primary); background: var(--k-primary); color: #fff; }
+  </style>
+</head>
+<body>
+
+<nav class="k-navbar navbar navbar-expand-lg">
+  <div class="container">
+    <a class="navbar-brand" href="../index.html">خدم<span style="color:var(--k-accent)">ة</span></a>
+    <div class="collapse navbar-collapse" id="navMain">
+      <ul class="navbar-nav me-auto gap-1">
+        <li class="nav-item"><a class="nav-link" href="../index.html">الرئيسية</a></li>
+        <li class="nav-item"><a class="nav-link active" href="terms.html">الشروط والأحكام</a></li>
+      </ul>
+      <div class="d-flex gap-2">
+        <a href="../auth/login.html" class="btn btn-outline-light btn-sm">تسجيل الدخول</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div style="background:linear-gradient(135deg,var(--k-dark),var(--k-primary-dk));padding:3rem 0">
+  <div class="container text-center">
+    <h1 style="color:#fff;font-weight:900;margin-bottom:0.5rem">الشروط القانونية</h1>
+    <p style="color:rgba(255,255,255,0.7)">آخر تحديث: 1 مارس 2026</p>
+    <div class="d-flex gap-3 justify-content-center mt-3" id="docTabs">
+      <button class="tab-btn active" onclick="showDoc('terms', this)">شروط الاستخدام</button>
+      <button class="tab-btn" onclick="showDoc('privacy', this)" id="privacy">سياسة الخصوصية</button>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row g-4 py-4">
+    <div class="col-lg-3 d-none d-lg-block">
+      <div class="terms-nav" id="termsNav">
+        <div style="font-size:0.75rem;font-weight:700;color:var(--k-gray);letter-spacing:0.5px;margin-bottom:0.75rem;text-transform:uppercase">المحتويات</div>
+        <a href="#t1">التعريفات</a>
+        <a href="#t2">قبول الشروط</a>
+        <a href="#t3">الحسابات</a>
+        <a href="#t4">الخدمات</a>
+        <a href="#t5">الدفع والضمان</a>
+        <a href="#t6">التقييمات</a>
+        <a href="#t7">المسؤولية</a>
+        <a href="#t8">التعديلات</a>
+      </div>
+    </div>
+    <div class="col-lg-9">
+
+      <!-- Terms Content -->
+      <div id="termsContent">
+        <div class="terms-card" id="t1">
+          <h5><i class="fas fa-book me-2" style="color:var(--k-primary)"></i>1. التعريفات</h5>
+          <p>"خدمة" أو "المنصة" يشير إلى تطبيق وموقع خدمة للخدمات المنزلية. "العميل" هو المستخدم الذي يطلب الخدمات. "المزود" هو الشخص أو الجهة التي تقدم الخدمات. "الضمان" هو نظام الاحتجاز المالي المؤقت.</p>
+        </div>
+        <div class="terms-card" id="t2">
+          <h5><i class="fas fa-handshake me-2" style="color:var(--k-primary)"></i>2. قبول الشروط</h5>
+          <p>باستخدامك منصة خدمة، فإنك توافق على هذه الشروط والأحكام. إذا كنت لا توافق على أي بند، يرجى التوقف عن استخدام المنصة. نحتفظ بحق تحديث هذه الشروط في أي وقت مع إشعارك بالتغييرات.</p>
+        </div>
+        <div class="terms-card" id="t3">
+          <h5><i class="fas fa-user me-2" style="color:var(--k-primary)"></i>3. الحسابات والتسجيل</h5>
+          <ul>
+            <li>يجب أن يكون عمرك 18 سنة أو أكثر للتسجيل</li>
+            <li>يجب تقديم معلومات صحيحة ودقيقة عند التسجيل</li>
+            <li>أنت مسؤول عن سرية كلمة مرورك وأي نشاط يتم عبر حسابك</li>
+            <li>لا يجوز إنشاء أكثر من حساب واحد لكل شخص</li>
+            <li>نحتفظ بحق تعليق أو إغلاق أي حساب يُشتبه في مخالفته للشروط</li>
+          </ul>
+        </div>
+        <div class="terms-card" id="t4">
+          <h5><i class="fas fa-tools me-2" style="color:var(--k-primary)"></i>4. الخدمات</h5>
+          <p>خدمة منصة وسيطة فقط وليست طرفاً في العقد بين العميل والمزود. جودة الخدمة مسؤولية المزود. نشجع على توثيق الاتفاق والتواصل عبر المنصة لضمان حماية الطرفين.</p>
+        </div>
+        <div class="terms-card" id="t5">
+          <h5><i class="fas fa-shield-alt me-2" style="color:var(--k-primary)"></i>5. الدفع ونظام الضمان</h5>
+          <ul>
+            <li>تُحجز المدفوعات في حساب ضمان آمن حتى تأكيد العميل</li>
+            <li>عمولة المنصة: 10% من قيمة كل معاملة</li>
+            <li>تُحوَّل الأرباح للمزود خلال 1-3 أيام عمل من التأكيد</li>
+            <li>الشكاوى المالية يجب تقديمها خلال 48 ساعة من إتمام الخدمة</li>
+            <li>جميع الأسعار بالريال السعودي وشاملة ضريبة القيمة المضافة 15%</li>
+          </ul>
+        </div>
+        <div class="terms-card" id="t6">
+          <h5><i class="fas fa-star me-2" style="color:var(--k-primary)"></i>6. التقييمات والمراجعات</h5>
+          <p>التقييمات يجب أن تكون صادقة وتعكس تجربة حقيقية. يُحظر التلاعب في التقييمات أو الدفع مقابلها. نحتفظ بحق حذف أي تقييم يُشتبه في كونه مزوراً.</p>
+        </div>
+        <div class="terms-card" id="t7">
+          <h5><i class="fas fa-balance-scale me-2" style="color:var(--k-primary)"></i>7. حدود المسؤولية</h5>
+          <p>لا تتحمل خدمة مسؤولية مباشرة عن الأضرار الناتجة عن تقديم الخدمات. مسؤوليتنا محدودة بقيمة المعاملة المعنية. نسعى دائماً للتوسط وحل النزاعات بشكل عادل.</p>
+        </div>
+        <div class="terms-card" id="t8">
+          <h5><i class="fas fa-edit me-2" style="color:var(--k-primary)"></i>8. التعديلات والإنهاء</h5>
+          <p>يمكننا تعديل هذه الشروط في أي وقت. سيتم إشعارك بالتغييرات المهمة عبر البريد الإلكتروني أو الإشعارات. استمرارك في استخدام المنصة بعد التعديل يُعدّ قبولاً ضمنياً.</p>
+        </div>
+      </div>
+
+      <!-- Privacy Content -->
+      <div id="privacyContent" style="display:none">
+        <div class="terms-card">
+          <h5><i class="fas fa-user-shield me-2" style="color:var(--k-primary)"></i>جمع المعلومات</h5>
+          <p>نجمع المعلومات التي تقدمها عند التسجيل، معلومات الاستخدام، وبيانات الموقع (عند الإذن). لا نبيع بياناتك لأطراف ثالثة.</p>
+        </div>
+        <div class="terms-card">
+          <h5><i class="fas fa-database me-2" style="color:var(--k-primary)"></i>استخدام المعلومات</h5>
+          <ul>
+            <li>تحسين تجربة الاستخدام وتخصيص الخدمات</li>
+            <li>إرسال الإشعارات والتنبيهات المتعلقة بطلباتك</li>
+            <li>التحقق من هويتك ومنع الاحتيال</li>
+            <li>الامتثال للمتطلبات القانونية</li>
+          </ul>
+        </div>
+        <div class="terms-card">
+          <h5><i class="fas fa-lock me-2" style="color:var(--k-primary)"></i>حماية البيانات</h5>
+          <p>نستخدم تشفير SSL/TLS لجميع الاتصالات. بيانات الدفع محمية بمعيار PCI DSS. لا نخزن أرقام بطاقات الائتمان الكاملة على خوادمنا.</p>
+        </div>
+        <div class="terms-card">
+          <h5><i class="fas fa-user-cog me-2" style="color:var(--k-primary)"></i>حقوقك</h5>
+          <ul>
+            <li>طلب الاطلاع على بياناتك الشخصية</li>
+            <li>تصحيح البيانات غير الصحيحة</li>
+            <li>طلب حذف بياناتك (مع مراعاة المتطلبات القانونية)</li>
+            <li>إيقاف استخدام بياناتك للأغراض التسويقية</li>
+          </ul>
+        </div>
+        <div class="terms-card">
+          <h5><i class="fas fa-envelope me-2" style="color:var(--k-primary)"></i>التواصل بشأن الخصوصية</h5>
+          <p>للاستفسارات المتعلقة بخصوصيتك، راسلنا على: <a href="mailto:privacy@khedmah.sa" style="color:var(--k-primary)">privacy@khedmah.sa</a></p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<footer class="k-footer">
+  <div class="container">
+    <div class="row g-3">
+      <div class="col-lg-6"><div class="footer-brand mb-2">خدم<span>ة</span></div><p style="color:rgba(255,255,255,0.6);font-size:0.88rem">منصة الخدمات المنزلية الآمنة</p></div>
+      <div class="col-lg-3 col-6"><h6>روابط</h6><a href="../index.html">الرئيسية</a><a href="faq.html">الأسئلة الشائعة</a><a href="about.html">من نحن</a></div>
+      <div class="col-lg-3 col-6"><h6>قانوني</h6><a href="terms.html">الشروط والأحكام</a><a href="terms.html#privacy">سياسة الخصوصية</a></div>
+    </div>
+    <hr class="footer-divider">
+    <p style="color:rgba(255,255,255,0.4);text-align:center;font-size:0.85rem">© 2026 خدمة. جميع الحقوق محفوظة.</p>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  function showDoc(doc, btn) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('termsContent').style.display = doc === 'terms' ? '' : 'none';
+    document.getElementById('privacyContent').style.display = doc === 'privacy' ? '' : 'none';
+    document.getElementById('termsNav').style.display = doc === 'terms' ? '' : 'none';
+  }
+  // Support direct link to privacy (#privacy)
+  if (window.location.hash === '#privacy') {
+    showDoc('privacy', document.getElementById('privacy'));
+  }
+</script>
+</body>
+</html>

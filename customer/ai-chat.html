@@ -1,0 +1,1357 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>المساعد الذكي — خدمة</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="../assets/css/khedmah.css">
+  <style>
+    html, body { height: 100%; overflow: hidden; }
+    body { background: #f1f5f9; display: flex; flex-direction: column; }
+
+    .ai-nav {
+      background: linear-gradient(135deg, var(--k-dark), var(--k-dark-2));
+      padding: 0.75rem 1.5rem;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-shrink: 0; z-index: 100;
+      box-shadow: 0 2px 20px rgba(0,0,0,0.2);
+    }
+    .ai-main { flex: 1; display: flex; overflow: hidden; min-height: 0; }
+    .chat-panel { flex: 1; display: flex; flex-direction: column; min-width: 0; background: #f8fafc; }
+    .chat-messages { flex: 1; overflow-y: auto; padding: 1.5rem; scroll-behavior: smooth; }
+    .chat-messages::-webkit-scrollbar { width: 5px; }
+    .chat-messages::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+
+    .msg-row { display: flex; align-items: flex-end; gap: 0.6rem; margin-bottom: 1rem; }
+    .msg-row.user { flex-direction: row-reverse; }
+    .msg-avatar { width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 1rem; font-weight: 700; }
+    .msg-avatar.ai-av { background: linear-gradient(135deg, var(--k-primary), var(--k-accent)); color: #fff; }
+    .msg-avatar.user-av { background: linear-gradient(135deg, #6366f1, #4f46e5); color: #fff; font-size: 0.85rem; }
+
+    .bubble { max-width: 72%; padding: 0.85rem 1.1rem; border-radius: 18px; line-height: 1.7; font-size: 0.93rem; position: relative; animation: bubbleIn 0.25s ease forwards; }
+    @keyframes bubbleIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    .bubble.ai { background: #fff; color: var(--k-dark-2); border-bottom-right-radius: 4px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+    .bubble.user { background: linear-gradient(135deg, var(--k-primary), var(--k-accent)); color: #fff; border-bottom-left-radius: 4px; }
+    .bubble-time { font-size: 0.7rem; color: var(--k-gray); margin-top: 0.2rem; padding: 0 0.25rem; }
+    .msg-row.user .bubble-time { text-align: left; }
+
+    /* Mode badge inside AI bubble */
+    .mode-badge { display: inline-block; font-size: 0.65rem; font-weight: 800; padding: 0.1rem 0.5rem; border-radius: 50px; margin-bottom: 0.4rem; }
+    .mode-exec    { background: rgba(239,68,68,0.12);  color: #dc2626; }
+    .mode-advice  { background: rgba(99,102,241,0.1);  color: #4f46e5; }
+    .mode-qualify { background: rgba(245,158,11,0.12); color: #b45309; }
+    .mode-disc    { background: rgba(2,128,144,0.1);   color: var(--k-primary); }
+
+    .service-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.6rem; }
+    .svc-chip { display: inline-flex; align-items: center; gap: 0.35rem; background: rgba(2,128,144,0.1); color: var(--k-primary); border: 1px solid rgba(2,128,144,0.25); border-radius: 50px; padding: 0.2rem 0.7rem; font-size: 0.78rem; font-weight: 700; animation: chipPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+    @keyframes chipPop { from { opacity: 0; transform: scale(0.7); } to { opacity: 1; transform: scale(1); } }
+
+    .typing-row { display: flex; align-items: flex-end; gap: 0.6rem; }
+    .typing-bubble { background: #fff; border-radius: 18px; border-bottom-right-radius: 4px; padding: 0.85rem 1.2rem; box-shadow: 0 2px 12px rgba(0,0,0,0.06); display: flex; gap: 5px; align-items: center; }
+    .typing-dot { width: 7px; height: 7px; background: var(--k-primary); border-radius: 50%; animation: typingBounce 1.2s ease-in-out infinite; }
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes typingBounce { 0%,60%,100% { transform: translateY(0); opacity: 0.5; } 30% { transform: translateY(-6px); opacity: 1; } }
+
+    .chat-input-area { border-top: 1px solid #e2e8f0; background: #fff; padding: 1rem 1.5rem; flex-shrink: 0; }
+    .chat-input-wrap { display: flex; gap: 0.75rem; align-items: flex-end; background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 16px; padding: 0.5rem 0.75rem; transition: border-color 0.2s; }
+    .chat-input-wrap:focus-within { border-color: var(--k-primary); }
+    .chat-input-wrap textarea { flex: 1; border: none; background: transparent; resize: none; font-family: 'Tajawal', sans-serif; font-size: 0.95rem; outline: none; min-height: 40px; max-height: 120px; color: var(--k-dark-2); line-height: 1.5; }
+    .chat-input-wrap textarea::placeholder { color: #94a3b8; }
+    .send-btn { width: 42px; height: 42px; border-radius: 12px; background: linear-gradient(135deg, var(--k-primary), var(--k-accent)); border: none; color: #fff; font-size: 1rem; cursor: pointer; transition: all 0.2s; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+    .send-btn:hover { opacity: 0.9; transform: scale(1.05); }
+    .send-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+    .quick-sugg { display: flex; gap: 0.5rem; flex-wrap: wrap; padding: 0.75rem 1.5rem; border-top: 1px solid #f1f5f9; background: #fff; }
+    .sugg-btn { background: rgba(2,128,144,0.07); border: 1px solid rgba(2,128,144,0.2); color: var(--k-primary); border-radius: 50px; padding: 0.3rem 0.85rem; font-size: 0.82rem; font-weight: 600; cursor: pointer; white-space: nowrap; transition: all 0.2s; font-family: 'Tajawal', sans-serif; }
+    .sugg-btn:hover { background: var(--k-primary); color: #fff; }
+
+    .intel-panel { width: 340px; flex-shrink: 0; background: #fff; border-right: 1px solid #e2e8f0; display: flex; flex-direction: column; overflow-y: auto; }
+    .intel-panel::-webkit-scrollbar { width: 4px; }
+    .intel-panel::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 3px; }
+    @media (max-width: 900px) { .intel-panel { display: none; } }
+    .intel-header { padding: 1.25rem 1.25rem 0.75rem; border-bottom: 1px solid #f1f5f9; flex-shrink: 0; }
+    .intel-section { padding: 1rem 1.25rem; border-bottom: 1px solid #f1f5f9; }
+    .intel-label { font-size: 0.7rem; font-weight: 800; color: #94a3b8; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 0.6rem; }
+    .lead-meter { background: #f1f5f9; border-radius: 50px; height: 8px; overflow: hidden; margin-top: 0.5rem; }
+    .lead-fill { height: 100%; border-radius: 50px; transition: width 0.8s cubic-bezier(0.4,0,0.2,1), background 0.5s ease; }
+    .info-row { display: flex; justify-content: space-between; align-items: center; padding: 0.4rem 0; border-bottom: 1px solid #f8fafc; font-size: 0.85rem; }
+    .info-row:last-child { border-bottom: none; }
+    .info-key { color: var(--k-gray); font-weight: 600; }
+    .info-val { color: var(--k-dark-2); font-weight: 700; text-align: left; max-width: 55%; word-break: break-word; }
+    .svc-list-item { display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 0.75rem; background: #f8fafc; border-radius: 10px; margin-bottom: 0.4rem; font-size: 0.85rem; font-weight: 700; color: var(--k-dark-2); animation: slideIn 0.3s ease forwards; }
+    @keyframes slideIn { from { opacity: 0; transform: translateX(10px); } to { opacity: 1; transform: translateX(0); } }
+    .svc-list-item .svc-icon { width: 30px; height: 30px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0; }
+    .svc-primary .svc-icon { background: rgba(2,128,144,0.12); color: var(--k-primary); }
+    .svc-secondary .svc-icon { background: rgba(99,102,241,0.1); color: #6366f1; }
+
+    .route-btn { width: calc(100% - 2.5rem); margin: 1rem 1.25rem; padding: 0.9rem; border-radius: 14px; border: none; background: linear-gradient(135deg, var(--k-primary), var(--k-accent)); color: #fff; font-family: 'Tajawal', sans-serif; font-size: 0.95rem; font-weight: 800; cursor: pointer; transition: all 0.3s; box-shadow: 0 6px 20px rgba(2,128,144,0.3); display: none; }
+    .route-btn.visible { display: block; animation: bubbleIn 0.4s ease forwards; }
+    .route-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(2,128,144,0.4); }
+
+    .api-modal-overlay { position: fixed; inset: 0; background: rgba(15,23,42,0.7); backdrop-filter: blur(6px); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 1rem; }
+    .api-modal-box { background: #fff; border-radius: 24px; padding: 2.5rem; width: 100%; max-width: 460px; box-shadow: 0 40px 100px rgba(0,0,0,0.3); animation: bubbleIn 0.3s ease forwards; }
+
+    .intro-card { background: #fff; border-radius: 16px; padding: 1.25rem; border: 1px solid #e2e8f0; cursor: pointer; transition: all 0.2s; text-align: right; }
+    .intro-card:hover { border-color: var(--k-primary); box-shadow: 0 4px 16px rgba(2,128,144,0.1); transform: translateY(-2px); }
+    .summary-bubble { background: linear-gradient(135deg, rgba(2,128,144,0.05), rgba(2,195,154,0.05)); border: 1.5px solid rgba(2,128,144,0.2); border-radius: 16px; padding: 1.25rem; margin-top: 0.5rem; font-size: 0.88rem; }
+    .summary-bubble h6 { font-weight: 900; color: var(--k-primary); margin-bottom: 0.75rem; }
+    .summary-row { display: flex; gap: 0.5rem; align-items: flex-start; margin-bottom: 0.4rem; }
+    .summary-row i { color: var(--k-primary); width: 16px; flex-shrink: 0; margin-top: 2px; }
+    .lang-badge { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.2); color: #fff; border-radius: 50px; padding: 0.2rem 0.6rem; font-size: 0.75rem; font-weight: 700; }
+    [x-cloak] { display: none !important; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+  </style>
+</head>
+<body x-data="aiChat()" x-init="init()">
+<!-- No auth guard — AI assistant is public for all visitors -->
+
+
+<!-- ── Guest Mode Banner (shown when not logged in) ── -->
+<div id="guestBanner" style="display:none;background:linear-gradient(90deg,#f59e0b,#d97706);padding:0.45rem 1.25rem;text-align:center;font-size:0.82rem;font-weight:700;color:#fff;flex-shrink:0">
+  <i class="fas fa-user-clock ms-1"></i> وضع الزائر — تصفّح بحرية. سيُطلب تسجيل الدخول فقط عند إرسال طلب حقيقي.
+  <a href="../auth/login.html" style="color:#fff;text-decoration:underline;margin-right:1rem">دخول</a>
+  <a href="../auth/signup.html" style="color:#fff;text-decoration:underline">حساب جديد</a>
+</div>
+
+<!-- ── Guest Gate Modal (fires on real action only) ── -->
+<div id="guestGate" style="display:none;position:fixed;inset:0;background:rgba(15,23,42,0.78);backdrop-filter:blur(8px);z-index:9998;align-items:center;justify-content:center;padding:1rem">
+  <div style="background:#fff;border-radius:24px;padding:2.5rem;max-width:420px;width:100%;text-align:center;box-shadow:0 40px 100px rgba(0,0,0,0.35);animation:bubbleIn 0.3s ease forwards">
+    <div style="width:72px;height:72px;background:linear-gradient(135deg,var(--k-primary),var(--k-accent));border-radius:20px;margin:0 auto 1.25rem;display:flex;align-items:center;justify-content:center;box-shadow:0 12px 32px rgba(2,128,144,0.3)">
+      <i class="fas fa-rocket fa-2x" style="color:#fff"></i>
+    </div>
+    <h4 style="font-weight:900;color:var(--k-dark-2);margin-bottom:0.5rem">جاهز! خطوة واحدة أخيرة</h4>
+    <p style="color:var(--k-gray);margin-bottom:0.5rem;font-size:0.92rem;line-height:1.7">
+      تم تحليل طلبك بنجاح ✓<br>
+      سجّل دخولك لإرسال الطلب للمزودين المناسبين.
+    </p>
+    <p style="font-size:0.8rem;color:var(--k-primary);margin-bottom:1.75rem;font-weight:700">
+      <i class="fas fa-shield-alt ms-1"></i> محادثتك محفوظة — لن تفقد شيئاً
+    </p>
+    <div class="d-flex flex-column gap-2">
+      <a id="guestLoginBtn" href="../auth/login.html" style="display:block;background:linear-gradient(135deg,var(--k-primary),var(--k-accent));color:#fff;border-radius:12px;padding:0.85rem;font-weight:800;font-size:0.95rem;text-decoration:none">
+        <i class="fas fa-sign-in-alt ms-2"></i> تسجيل الدخول
+      </a>
+      <a id="guestSignupBtn" href="../auth/signup.html" style="display:block;background:#f8fafc;color:var(--k-dark-2);border:2px solid #e2e8f0;border-radius:12px;padding:0.85rem;font-weight:700;font-size:0.92rem;text-decoration:none">
+        <i class="fas fa-user-plus ms-2"></i> إنشاء حساب مجاني
+      </a>
+      <button onclick="document.getElementById('guestGate').style.display='none'" style="background:transparent;border:none;color:var(--k-gray);font-size:0.85rem;cursor:pointer;padding:0.5rem;font-family:inherit">
+        العودة للمحادثة
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="ai-nav">
+  <div class="d-flex align-items-center gap-3">
+    <a href="../index.html" style="color:#fff;text-decoration:none;font-size:0.85rem;opacity:0.7"><i class="fas fa-arrow-right"></i></a>
+    <div class="d-flex align-items-center gap-2">
+      <div style="width:36px;height:36px;background:linear-gradient(135deg,var(--k-primary),var(--k-accent));border-radius:10px;display:flex;align-items:center;justify-content:center">
+        <i class="fas fa-robot" style="color:#fff;font-size:1rem"></i>
+      </div>
+      <div>
+        <div style="color:#fff;font-weight:800;font-size:0.95rem;line-height:1.2">المساعد الذكي</div>
+        <div style="font-size:0.7rem;color:rgba(255,255,255,0.5)" x-text="'وضع: ' + modeLabel + ' · يدعم العربية والإنجليزية'"></div>
+      </div>
+    </div>
+    <div class="d-flex align-items-center gap-1 ms-2">
+      <div style="width:7px;height:7px;background:#10b981;border-radius:50%;animation:pulse 2s infinite"></div>
+      <span style="color:#10b981;font-size:0.75rem;font-weight:700">نشط</span>
+    </div>
+  </div>
+  <div class="d-flex align-items-center gap-2">
+    <span class="lang-badge" x-text="detectedLang || 'AR'"></span>
+    <button @click="showSettings=true" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);color:#fff;border-radius:8px;padding:0.35rem 0.75rem;font-size:0.8rem;font-family:'Tajawal',sans-serif;cursor:pointer;">
+      <i class="fas fa-key ms-1"></i> API
+    </button>
+    <button @click="resetConversation()" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);color:#fff;border-radius:8px;padding:0.35rem 0.75rem;font-size:0.8rem;font-family:'Tajawal',sans-serif;cursor:pointer;">
+      <i class="fas fa-redo ms-1"></i> جديد
+    </button>
+  </div>
+</div>
+
+<div class="ai-main">
+  <div class="chat-panel">
+    <div class="chat-messages" id="chatMessages">
+
+      <!-- Empty state -->
+      <div x-show="messages.length === 0" style="max-width:580px;margin:2rem auto">
+        <div class="text-center mb-4">
+          <div style="width:72px;height:72px;background:linear-gradient(135deg,var(--k-primary),var(--k-accent));border-radius:20px;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;box-shadow:0 12px 32px rgba(2,128,144,0.3)">
+            <i class="fas fa-robot fa-2x" style="color:#fff"></i>
+          </div>
+          <h5 style="font-weight:900;color:var(--k-dark-2)">مرحباً! أنا مساعدك الذكي</h5>
+          <p style="color:var(--k-gray);font-size:0.9rem">أخبرني بما تحتاجه — سأفهم مشروعك وأرشدك للخبير المناسب</p>
+          <p style="color:var(--k-gray);font-size:0.82rem">Tell me what you need in any language. I'll understand and find the right expert.</p>
+        </div>
+        <div class="row g-3">
+          <div class="col-6" @click="sendSuggestion('أبي أبني مجلس خارجي من الصفر')">
+            <div class="intro-card">
+              <div style="width:36px;height:36px;background:rgba(2,128,144,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:0.75rem"><i class="fas fa-couch" style="color:var(--k-primary)"></i></div>
+              <div style="font-weight:700;color:var(--k-dark-2);font-size:0.88rem;margin-bottom:0.25rem">بناء مجلس</div>
+              <div style="color:var(--k-gray);font-size:0.78rem">داخلي أو خارجي — من الصفر</div>
+            </div>
+          </div>
+          <div class="col-6" @click="sendSuggestion('عندي تسرب مياه وأريد دهان وصيانة')">
+            <div class="intro-card">
+              <div style="width:36px;height:36px;background:rgba(239,68,68,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:0.75rem"><i class="fas fa-wrench" style="color:#ef4444"></i></div>
+              <div style="font-weight:700;color:var(--k-dark-2);font-size:0.88rem;margin-bottom:0.25rem">صيانة وإصلاح</div>
+              <div style="color:var(--k-gray);font-size:0.78rem">سباكة، كهرباء، دهان</div>
+            </div>
+          </div>
+          <div class="col-6" @click="sendSuggestion('أريد أفتح مطعم من التصميم للتنفيذ')">
+            <div class="intro-card">
+              <div style="width:36px;height:36px;background:rgba(245,158,11,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:0.75rem"><i class="fas fa-store" style="color:#f59e0b"></i></div>
+              <div style="font-weight:700;color:var(--k-dark-2);font-size:0.88rem;margin-bottom:0.25rem">مشروع تجاري</div>
+              <div style="color:var(--k-gray);font-size:0.78rem">مطعم، كافيه، محل</div>
+            </div>
+          </div>
+          <div class="col-6" @click="sendSuggestion('I want to renovate my villa with new interior design and lighting')">
+            <div class="intro-card">
+              <div style="width:36px;height:36px;background:rgba(99,102,241,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:0.75rem"><i class="fas fa-home" style="color:#6366f1"></i></div>
+              <div style="font-weight:700;color:var(--k-dark-2);font-size:0.88rem;margin-bottom:0.25rem">Villa Renovation</div>
+              <div style="color:var(--k-gray);font-size:0.78rem">Design + execution</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Messages -->
+      <template x-for="(msg, i) in messages" :key="i">
+        <div :class="'msg-row ' + (msg.role==='user' ? 'user' : '')" style="max-width:800px;margin:0 auto 0.25rem">
+          <div :class="'msg-avatar ' + (msg.role==='user' ? 'user-av' : 'ai-av')">
+            <i :class="msg.role==='user' ? 'fas fa-user' : 'fas fa-robot'"></i>
+          </div>
+          <div style="max-width:72%">
+            <div :class="'bubble ' + (msg.role==='user' ? 'user' : 'ai')">
+              <div x-show="msg.modeBadge" class="mb-1">
+                <span :class="'mode-badge ' + (msg.modeBadge||'')" x-text="msg.modeLabel"></span>
+              </div>
+              <span x-html="formatMessage(msg.content)"></span>
+            </div>
+            <div x-show="msg.role==='assistant' && msg.services && msg.services.length > 0" class="service-chips">
+              <template x-for="svc in (msg.services || [])" :key="svc">
+                <span class="svc-chip"><i class="fas fa-check-circle" style="font-size:0.7rem"></i> <span x-text="svc"></span></span>
+              </template>
+            </div>
+            <div x-show="msg.isSummary" class="summary-bubble" x-html="msg.summaryHtml"></div>
+            <div class="bubble-time" x-text="msg.time"></div>
+          </div>
+        </div>
+      </template>
+
+      <div x-show="typing" class="typing-row" style="max-width:800px;margin:0 auto 1rem">
+        <div class="msg-avatar ai-av"><i class="fas fa-robot"></i></div>
+        <div class="typing-bubble">
+          <div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>
+        </div>
+      </div>
+      <div id="msgBottom"></div>
+    </div>
+
+    <div class="quick-sugg" x-show="quickSuggestions.length > 0">
+      <template x-for="s in quickSuggestions" :key="s">
+        <button class="sugg-btn" @click="sendSuggestion(s)" x-text="s"></button>
+      </template>
+    </div>
+
+    <div class="chat-input-area">
+      <div class="chat-input-wrap">
+        <textarea id="chatInput" x-model="inputText" @keydown.enter.prevent="handleEnter($event)"
+          placeholder="اكتب ما تحتاجه... أو type in English" rows="1" :disabled="typing" @input="autoResize($el)"></textarea>
+        <button class="send-btn" @click="sendMessage()" :disabled="!inputText.trim() || typing">
+          <i class="fas fa-paper-plane" style="transform:scaleX(-1)"></i>
+        </button>
+      </div>
+      <div class="d-flex justify-content-between mt-1" style="font-size:0.72rem;color:#94a3b8;padding:0 0.25rem">
+        <span>Enter للإرسال · Shift+Enter لسطر جديد</span>
+        <span x-show="apiKey" style="color:#10b981"><i class="fas fa-circle" style="font-size:0.5rem"></i> Claude AI</span>
+        <span x-show="!apiKey" style="color:#f59e0b"><i class="fas fa-circle" style="font-size:0.5rem"></i> Demo Mode</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Intelligence Sidebar -->
+  <div class="intel-panel">
+    <div class="intel-header">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem">
+        <div style="font-weight:900;color:var(--k-dark-2);font-size:0.92rem">لوحة الذكاء</div>
+        <span style="font-size:0.72rem;background:rgba(2,128,144,0.1);color:var(--k-primary);padding:0.15rem 0.6rem;border-radius:50px;font-weight:700" x-text="modeLabel"></span>
+      </div>
+      <div class="intel-label">مستوى الاهتمام</div>
+      <div style="display:flex;align-items:center;gap:0.5rem">
+        <div class="lead-meter" style="flex:1"><div class="lead-fill" :style="'width:'+leadPct+'%;background:'+leadColor"></div></div>
+        <span style="font-size:0.78rem;font-weight:800" :style="'color:'+leadColor" x-text="leadLabel"></span>
+      </div>
+    </div>
+
+    <div class="intel-section">
+      <div class="intel-label"><i class="fas fa-tools me-1"></i> الخدمات المطلوبة</div>
+      <div x-show="detectedServices.length === 0" style="color:#94a3b8;font-size:0.82rem;padding:0.25rem 0">لم يتم الكشف بعد...</div>
+      <template x-for="svc in detectedServices" :key="svc.name">
+        <div :class="'svc-list-item svc-'+svc.tier">
+          <div class="svc-icon"><i :class="svc.icon"></i></div>
+          <div style="flex:1">
+            <div style="font-size:0.83rem;font-weight:700" x-text="svc.name"></div>
+            <div style="font-size:0.7rem;color:var(--k-gray)" x-text="svc.tier==='primary'?'رئيسية':'إضافية'"></div>
+          </div>
+        </div>
+      </template>
+    </div>
+
+    <div class="intel-section">
+      <div class="intel-label"><i class="fas fa-info-circle me-1"></i> تفاصيل المشروع</div>
+      <div x-show="Object.keys(extractedInfo).length === 0" style="color:#94a3b8;font-size:0.82rem;padding:0.25rem 0">تظهر مع المحادثة...</div>
+      <template x-for="[key, val] in Object.entries(extractedInfo)" :key="key">
+        <div class="info-row">
+          <span class="info-key" x-text="infoLabels[key] || key"></span>
+          <span class="info-val" x-text="val"></span>
+        </div>
+      </template>
+    </div>
+
+    <div class="intel-section" x-show="missingInfo.length > 0">
+      <div class="intel-label"><i class="fas fa-question-circle me-1"></i> مطلوب</div>
+      <template x-for="m in missingInfo" :key="m">
+        <div style="display:flex;align-items:center;gap:0.4rem;font-size:0.82rem;color:#f59e0b;margin-bottom:0.3rem">
+          <i class="fas fa-circle-dot" style="font-size:0.6rem"></i><span x-text="m"></span>
+        </div>
+      </template>
+    </div>
+
+    <div class="intel-section" x-show="routingSummary">
+      <div class="intel-label"><i class="fas fa-file-alt me-1"></i> الملخص</div>
+      <p style="font-size:0.83rem;color:var(--k-dark-2);line-height:1.7;margin:0" x-text="routingSummary"></p>
+    </div>
+
+    <button class="route-btn" :class="readyToRoute ? 'visible' : ''" @click="connectProviders()">
+      <i class="fas fa-rocket ms-2"></i> تواصل مع المزودين المناسبين
+    </button>
+  </div>
+</div>
+
+<!-- API Settings Modal -->
+<div class="api-modal-overlay" x-show="showSettings" @click.self="showSettings=false" x-cloak>
+  <div class="api-modal-box">
+    <div class="d-flex align-items-center gap-2 mb-3">
+      <div style="width:44px;height:44px;background:linear-gradient(135deg,var(--k-primary),var(--k-accent));border-radius:12px;display:flex;align-items:center;justify-content:center"><i class="fas fa-key" style="color:#fff"></i></div>
+      <div><h5 style="margin:0;font-weight:900;color:var(--k-dark-2)">إعدادات Claude API</h5><p style="margin:0;font-size:0.8rem;color:var(--k-gray)">Claude AI Settings</p></div>
+    </div>
+    <div style="background:#fef3c7;border:1px solid #fde68a;border-radius:10px;padding:0.85rem;margin-bottom:1.25rem;font-size:0.82rem;color:#92400e">
+      <i class="fas fa-info-circle ms-1"></i> مفتاح API يُخزن في المتصفح فقط. للتجربة فقط.
+    </div>
+    <label style="font-weight:700;color:var(--k-dark-2);font-size:0.88rem;display:block;margin-bottom:0.4rem">Anthropic API Key</label>
+    <input type="password" x-model="apiKeyInput" placeholder="sk-ant-api03-..." class="form-control mb-3" style="font-family:monospace;font-size:0.85rem;direction:ltr;text-align:left">
+    <label style="font-weight:700;color:var(--k-dark-2);font-size:0.88rem;display:block;margin-bottom:0.4rem">النموذج / Model</label>
+    <select x-model="selectedModel" class="form-select mb-4" style="direction:ltr;text-align:left">
+      <option value="claude-sonnet-4-6">claude-sonnet-4-6 (Recommended)</option>
+      <option value="claude-haiku-4-5-20251001">claude-haiku-4-5-20251001 (Fast)</option>
+      <option value="claude-opus-4-6">claude-opus-4-6 (Most Capable)</option>
+    </select>
+    <div class="d-flex gap-2">
+      <button @click="saveApiKey()" class="btn btn-primary flex-fill py-2"><i class="fas fa-save ms-1"></i> حفظ والاتصال</button>
+      <button @click="clearApiKey()" class="btn btn-outline-danger"><i class="fas fa-trash"></i></button>
+      <button @click="showSettings=false" class="btn btn-outline-secondary">إغلاق</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+<script>
+/* ═══════════════════════════════════════════════════════════════════
+   MASTER SYSTEM PROMPT  (used when Claude API key is set)
+═══════════════════════════════════════════════════════════════════ */
+const SYSTEM_PROMPT = `You are Khedmah's intelligent AI service consultant for Saudi Arabia's leading services marketplace. You act as a professional project advisor, intake specialist, and workflow agent — NOT a static menu bot.
+
+CRITICAL OPERATING RULES:
+1. ALWAYS respond in the EXACT language the user wrote in (Arabic / English / any language)
+2. Read EVERY message carefully — never give the same generic reply twice
+3. Answer the user's CURRENT intent, not what was asked before
+4. Remember ALL project details shared earlier — never ask again for known information
+5. Ask ONE focused question per turn, maximum
+6. When the user gives an execution command, STOP advising and START the execution workflow
+
+──────────────────────────────────────────────
+CONVERSATION MODES — switch automatically:
+──────────────────────────────────────────────
+
+DISCOVERY MODE — user describes project freely
+→ Detect services, ask the single most useful next question
+
+CLARIFICATION MODE — request is too vague
+→ Ask one focused clarifying question
+
+ADVICE MODE — user asks for guidance, cost, style, or recommendation
+→ Answer directly and intelligently; use project context already known
+→ NEVER restart service classification when in advice mode
+
+QUALIFICATION MODE — enough intent known, now collecting project details
+→ Collect: city, indoor/outdoor, size, design-only vs execution, budget, timeline
+
+EXECUTION MODE — triggered by commands: ابدأ / كمل / نفذ / وصلني / ابدأ التنفيذ / start / begin / proceed / submit / connect / go ahead
+→ Summarize project, state service path, ask ONLY for mandatory missing fields, prepare routing
+
+──────────────────────────────────────────────
+INTENT TYPES — identify before every reply:
+──────────────────────────────────────────────
+• execution_command → switch to execution mode
+• cost_question → give smart pricing guidance using known context
+• design_advice → give aesthetic/style direction
+• service_recommendation → recommend what services are needed
+• detail_provision → user is answering your question; store data, advance
+• project_request → new or updated project description
+• follow_up_question → user asks something new within same project
+• vague_request → unclear; ask one smart clarifying question
+
+──────────────────────────────────────────────
+SAUDI ARABIC — understand naturally:
+──────────────────────────────────────────────
+أبي / ودي = I want | كمل / نفذ / ابدأ = proceed/execute
+وش = what | بس = only | أبهر = impress | فخم = luxury
+من الصفر = from scratch | كيف تشوف = what do you think
+
+──────────────────────────────────────────────
+SERVICES CATALOG:
+──────────────────────────────────────────────
+Design: architectural design, interior design, lighting design, landscape design, furniture styling, 3D visualization
+Construction: contractor, renovation, civil engineering, structural engineering, MEP engineering, project supervision
+Maintenance: electrician, plumber, AC technician, painter, carpenter, flooring, waterproofing, pest control, cleaning
+Business: restaurant fitout, shop fitout, office design, commercial construction
+Support: project consultant, quantity surveying, project management
+
+──────────────────────────────────────────────
+RESPONSE FORMAT (JSON only):
+──────────────────────────────────────────────
+{
+  "message": "Natural language response to user",
+  "mode": "discovery|clarification|advice|qualification|execution|confirmation",
+  "detected_services": [{"name":"","name_ar":"","tier":"primary|secondary","icon":"fas fa-..."}],
+  "extracted_info": {
+    "project_type": null, "property_type": null, "location": null,
+    "size": null, "budget": null, "timeline": null,
+    "urgency": null, "phase_needed": null, "style": null,
+    "indoor_outdoor": null
+  },
+  "missing_info": ["list only what still blocks routing"],
+  "lead_level": "exploratory|qualified|high_intent|urgent|vip",
+  "quick_suggestions": ["max 4 short contextual reply chips"],
+  "ready_to_route": false,
+  "routing_summary": "one paragraph summary (only when ready_to_route is true)"
+}
+
+Anti-repetition check before every reply:
+- Did I already say this?
+- Is the user asking something different now?
+- Am I moving the conversation forward?
+If not, regenerate.`;
+
+/* ═══════════════════════════════════════════════════════════════════
+   SERVICE CATALOG
+═══════════════════════════════════════════════════════════════════ */
+const SVC = {
+  architect:    { name:'تصميم معماري',        en:'Architect',           tier:'primary',   icon:'fas fa-drafting-compass' },
+  interior:     { name:'تصميم داخلي',          en:'Interior Designer',   tier:'primary',   icon:'fas fa-couch' },
+  contractor:   { name:'مقاول تنفيذ',          en:'Contractor',          tier:'primary',   icon:'fas fa-hard-hat' },
+  electrician:  { name:'كهربائي',              en:'Electrician',         tier:'primary',   icon:'fas fa-bolt' },
+  plumber:      { name:'سباك',                 en:'Plumber',             tier:'primary',   icon:'fas fa-faucet' },
+  ac_tech:      { name:'فني تكييف',            en:'AC Technician',       tier:'primary',   icon:'fas fa-snowflake' },
+  painter:      { name:'دهان',                 en:'Painter',             tier:'primary',   icon:'fas fa-paint-roller' },
+  carpenter:    { name:'نجار',                 en:'Carpenter',           tier:'secondary', icon:'fas fa-hammer' },
+  lighting:     { name:'تصميم إضاءة',          en:'Lighting Designer',   tier:'secondary', icon:'fas fa-lightbulb' },
+  landscaper:   { name:'مصمم حدائق',           en:'Landscaper',          tier:'primary',   icon:'fas fa-leaf' },
+  cleaner:      { name:'تنظيف',               en:'Cleaning Service',    tier:'primary',   icon:'fas fa-broom' },
+  mover:        { name:'نقل عفش',             en:'Moving Company',      tier:'primary',   icon:'fas fa-truck' },
+  mep:          { name:'هندسة MEP',            en:'MEP Engineer',        tier:'secondary', icon:'fas fa-cogs' },
+  civil:        { name:'هندسة مدنية',          en:'Civil Engineer',      tier:'secondary', icon:'fas fa-building' },
+  tiling:       { name:'فني بلاط وأرضيات',    en:'Tiling Specialist',   tier:'secondary', icon:'fas fa-border-all' },
+  waterproof:   { name:'عزل مائي',            en:'Waterproofing',       tier:'secondary', icon:'fas fa-water' },
+  pest:         { name:'مكافحة حشرات',        en:'Pest Control',        tier:'primary',   icon:'fas fa-bug' },
+  consultant:   { name:'مستشار مشاريع',        en:'Project Consultant',  tier:'secondary', icon:'fas fa-user-tie' },
+  kitchen_spec: { name:'متخصص مطابخ',         en:'Kitchen Specialist',  tier:'primary',   icon:'fas fa-utensils' },
+  fitout:       { name:'تجهيز محلات تجارية',  en:'Shop Fitout',         tier:'primary',   icon:'fas fa-store' },
+  furniture:    { name:'تنسيق أثاث',          en:'Furniture Stylist',   tier:'secondary', icon:'fas fa-chair' },
+};
+
+/* ═══════════════════════════════════════════════════════════════════
+   KEYWORD → SERVICE SCORING TABLE
+═══════════════════════════════════════════════════════════════════ */
+const KW = [
+  { re:/مجلس|ديوانية|ديوان|diwan|majlis|diwaniyya|sitting\s*room/i,                svcs:[['interior',3],['lighting',2],['carpenter',1],['furniture',1]] },
+  { re:/مطبخ|kitchen|cuisine/i,                                                      svcs:[['kitchen_spec',4],['plumber',1],['electrician',1],['tiling',1]] },
+  { re:/حمام|دورة\s*مياه|bathroom|toilet|wc\b|shower/i,                             svcs:[['plumber',3],['tiling',3],['contractor',1]] },
+  { re:/حديقة|حدائق|garden|outdoor|landscape|lawn|pool|مسبح/i,                      svcs:[['landscaper',4],['electrician',1],['plumber',1]] },
+  { re:/مكتب|مكاتب|office|workspace|corporate/i,                                     svcs:[['interior',3],['contractor',2],['electrician',2],['lighting',1]] },
+  { re:/سقف|جبس|أسقف|ceiling|gypsum|plasterboard/i,                                 svcs:[['contractor',2],['interior',1],['painter',1]] },
+  { re:/أرضية|أرضيات|بلاط|رخام|سيراميك|floor|tile|marble|parquet|flooring/i,        svcs:[['tiling',4],['contractor',1]] },
+  { re:/فيلا|villa/i,                                                                 svcs:[['interior',1],['contractor',1]] },
+  { re:/شقة|apartment|flat|studio|دوبلكس|duplex/i,                                   svcs:[['interior',2],['contractor',1]] },
+  { re:/مطعم|restaurant/i,                                                            svcs:[['interior',3],['contractor',3],['kitchen_spec',3],['mep',2],['lighting',2]] },
+  { re:/كافيه|مقهى|cafe|coffee\s*shop/i,                                              svcs:[['interior',3],['contractor',2],['lighting',2],['mep',1]] },
+  { re:/محل|بوتيك|شوروم|shop|store|retail|boutique|showroom/i,                       svcs:[['fitout',4],['interior',2],['electrician',1],['lighting',2]] },
+  { re:/بناء|إنشاء|أبني|نبني|build|construct|from\s*scratch|من\s*الصفر/i,            svcs:[['architect',3],['contractor',3],['civil',2],['mep',1]] },
+  { re:/تجديد|ترميم|تحديث|تشطيب|renovate|renovation|remodel|upgrade/i,              svcs:[['contractor',3],['interior',2],['painter',1],['lighting',1]] },
+  { re:/تصميم\s*داخلي|interior\s*design|ديكور\s*داخلي/i,                             svcs:[['interior',4],['lighting',2],['carpenter',1],['furniture',1]] },
+  { re:/تصميم\s*معماري|architectural|رسومات\s*معمارية/i,                              svcs:[['architect',4],['civil',1]] },
+  { re:/تصميم|ديكور|design|decor/i,                                                   svcs:[['interior',2],['lighting',1]] },
+  { re:/إضاءة|إنارة|lighting|نور\b/i,                                                svcs:[['lighting',3],['electrician',2]] },
+  { re:/كهرباء|كهربائي|electrical|electrician|أسلاك|wiring/i,                        svcs:[['electrician',4]] },
+  { re:/سباكة|سباك|تسرب|plumb|leak|pipe\b/i,                                         svcs:[['plumber',4],['waterproof',1]] },
+  { re:/تكييف|مكيف|\bac\b|a\.c\.|hvac|air\s*condition/i,                             svcs:[['ac_tech',4]] },
+  { re:/دهان|طلاء|paint/i,                                                            svcs:[['painter',4]] },
+  { re:/نجارة|نجار|أثاث|خشب|furniture|woodwork|carpenter|cabinet/i,                 svcs:[['carpenter',4],['interior',1]] },
+  { re:/تنظيف|نظافة|clean/i,                                                          svcs:[['cleaner',4]] },
+  { re:/حشرات|صراصير|pest|insect|termite/i,                                          svcs:[['pest',4]] },
+  { re:/نقل\s*(?:عفش|أثاث)|moving|move\s*house/i,                                   svcs:[['mover',4]] },
+  { re:/عزل|رطوبة|waterproof|insulation|damp/i,                                      svcs:[['waterproof',4],['contractor',1]] },
+  { re:/\bmep\b|ميكانيكا|صرف\s*صحي|mechanical/i,                                    svcs:[['mep',4],['plumber',1]] },
+  { re:/صيانة|maintenance|إصلاح|repair\b|fix\b|broken|عطل/i,                         svcs:[['electrician',1],['plumber',1],['ac_tech',1]] },
+  { re:/إدارة\s*مشروع|مشرف|إشراف|project\s*manag|supervision/i,                    svcs:[['consultant',4],['civil',1]] },
+  { re:/أثاث|فرش|تنسيق|furniture\s*styling|furnish/i,                               svcs:[['furniture',3],['interior',1]] },
+];
+
+/* ═══════════════════════════════════════════════════════════════════
+   ENTITY EXTRACTORS
+═══════════════════════════════════════════════════════════════════ */
+const EX = {
+  location(t) {
+    const m = t.match(/(الرياض|جدة|جدّة|مكة(?:\s*المكرمة)?|المدينة(?:\s*المنورة)?|الدمام|الخبر|الظهران|أبها|تبوك|بريدة|حائل|نجران|جازان|القصيم|riyadh|jeddah|makkah|mecca|medina|dammam|khobar|dhahran|abha|tabuk|buraidah)/i);
+    return m ? m[0].trim() : null;
+  },
+  size(t) {
+    return (t.match(/(\d[\d,]*)\s*(?:م²|م2|متر\s*مربع|sqm|m²|m2)/i) ||
+            t.match(/(\d[\d,]*)\s*(?:غرفة|غرف|room|bedroom)/i) ||
+            t.match(/(?:طول|عرض|ارتفاع|length|width|height)\s*\d+/i))?.[0]?.trim() || null;
+  },
+  budget(t) {
+    return (t.match(/(\d[\d,.]*)\s*(?:ريال|sar|sr\b)/i) ||
+            t.match(/(?:ميزانية|budget)[^\d]*(\d[\d,.]*)/i))?.[0]?.trim() || null;
+  },
+  urgency(t) {
+    if (/عاجل|ضروري|urgent|immediately|asap|الحين|اليوم|مستعجل/i.test(t)) return 'عاجل';
+    if (/مرن|flexible|no\s*rush|وقت\s*كافي/i.test(t)) return 'مرن';
+    return null;
+  },
+  phase(t) {
+    if (/تصميم\s*فقط|design\s*only/i.test(t)) return 'تصميم فقط';
+    if (/تنفيذ\s*فقط|execution\s*only/i.test(t)) return 'تنفيذ فقط';
+    if (/تصميم\s*وتنفيذ|design\s*and|both|كل\s*شيء|full\s*package|حزمة\s*كاملة/i.test(t)) return 'تصميم وتنفيذ';
+    if (/استشار[ةه]|consultation/i.test(t)) return 'استشارة';
+    return null;
+  },
+  property_type(t) {
+    if (/فيلا|villa/i.test(t))                  return 'فيلا';
+    if (/شقة|apartment|flat|studio/i.test(t))   return 'شقة';
+    if (/مكتب|office/i.test(t))                 return 'مكتب';
+    if (/مطعم|restaurant/i.test(t))             return 'مطعم';
+    if (/كافيه|مقهى|cafe/i.test(t))             return 'كافيه';
+    if (/محل|shop|store|retail/i.test(t))       return 'محل تجاري';
+    if (/مجلس|ديوانية|majlis/i.test(t))         return 'مجلس';
+    if (/مطبخ|kitchen/i.test(t))                return 'مطبخ';
+    if (/حمام|bathroom/i.test(t))               return 'حمام';
+    if (/حديقة|garden|outdoor/i.test(t))        return 'حديقة';
+    return null;
+  },
+  indoor_outdoor(t) {
+    if (/خارجي|outdoor|outside|open\s*air/i.test(t)) return 'خارجي';
+    if (/داخلي|indoor|inside/i.test(t)) return 'داخلي';
+    return null;
+  },
+  style(t) {
+    if (/فخم|luxury|فاخر|راقي|luxurious/i.test(t)) return 'فاخر';
+    if (/عصري|modern|معاصر/i.test(t))               return 'عصري';
+    if (/كلاسيك|classic|تراثي/i.test(t))            return 'كلاسيك';
+    if (/بسيط|simple|minimalist/i.test(t))          return 'بسيط';
+    if (/خليجي|gulf\s*style|عربي/i.test(t))         return 'خليجي';
+    return null;
+  },
+};
+
+/* ═══════════════════════════════════════════════════════════════════
+   INTENT CLASSIFIER  — runs before every response
+═══════════════════════════════════════════════════════════════════ */
+const INTENT = {
+  classify(text) {
+    const t = text.trim();
+
+    // ── Execution commands (highest priority) ──
+    if (/^(ابدأ|ابده|كمل|نفذ|أرسل|وصلني|ابدأ\s*التنفيذ|ابدأ\s*الآن|امضي|تابع|استمر|أكمل|اعمل|شغل|روح|إيه\s*وصلني|هيا|تمام\s*ابدأ|تمام|ok\s*go|ok\s*start|go\s*ahead|let['']?s\s*go|start|begin|proceed|submit|connect\s*me|match\s*me|send|create\s*request)/i.test(t)) {
+      return 'execution_command';
+    }
+
+    // ── Cost / pricing questions ──
+    if (/كم\s*(?:يكلف|سعر|تكلف|الكلفة|التكلفة|ثمن)|السعر|الكلفة|كم\s*بتكلف|how\s*much|what.*cost|price\??|budget\??|expensive|afford|تكلفة|سعره|يكلف\s*كم/i.test(t)) {
+      return 'cost_question';
+    }
+
+    // ── Design / style / advice ──
+    if (/ساعدني|شيء\s*فخم|يبهر|ابهر|impressive|luxury|فخم|روعة|أبهر|وش\s*أحسن|وش\s*اقترح|ماذا\s*تقترح|suggest|recommend|what.*think|رأيك|رأيك\s*إيش|تنصح|ايش\s*تنصح|style|أسلوب|طراز|يبدو\s*فخم|شيء\s*مميز|مميز|خاص/i.test(t)) {
+      return 'design_advice';
+    }
+
+    // ── Asking what services are needed ──
+    if (/وش\s*أحتاج|ماذا\s*أحتاج|what\s*(?:do\s*I\s*need|services)|ما\s*هي\s*الخدمات|وش\s*لازم|ايش\s*لازم/i.test(t)) {
+      return 'service_recommendation';
+    }
+
+    // ── Answering a yes/no or selection question ──
+    if (/^(?:نعم|لا|أيو|إيو|ايوه|yes\b|no\b|both\b|كلاهما|داخلي|خارجي|indoor|outdoor|تصميم\s*فقط|تنفيذ\s*فقط|تصميم\s*وتنفيذ|design\s*only|execution|agree|موافق|صح|مضبوط)\s*\.?$/i.test(t)) {
+      return 'detail_provision';
+    }
+
+    // ── Vague / short message ──
+    if (t.length < 10 || /^(?:مساعدة|help|ساعدني\s*$|أريد\s*$|أبي\s*$|نعم\s*$|أحتاج\s*$|هلا\s*$|مرحبا\s*$|hi\s*$|hello\s*$)/.test(t)) {
+      return 'vague_request';
+    }
+
+    return 'project_request';
+  }
+};
+
+/* ═══════════════════════════════════════════════════════════════════
+   ADVICE ENGINE  — answers cost/style/recommendation questions
+═══════════════════════════════════════════════════════════════════ */
+const ADVICE = {
+
+  cost(svcs, info, ar) {
+    const space   = info.property_type || '';
+    const isLux   = info.style === 'فاخر';
+    const phase   = info.phase_needed || '';
+    const loc     = info.location || '';
+
+    if (ar) {
+      let base = 'التكلفة تعتمد على عدة عوامل:';
+      let ranges = '';
+
+      if (svcs.some(s => s.id === 'contractor') && svcs.some(s => s.id === 'interior')) {
+        ranges = isLux
+          ? '\n• بناء وتصميم فاخر: 600–1,200 ريال / م²'
+          : '\n• بناء وتصميم متوسط: 250–600 ريال / م²';
+      } else if (svcs.some(s => s.id === 'interior')) {
+        ranges = '\n• تصميم داخلي: 50–200 ريال / م² (حسب مستوى التشطيب)';
+      } else if (svcs.some(s => s.id === 'painter')) {
+        ranges = '\n• دهان وطلاء: 10–30 ريال / م²';
+      } else if (svcs.some(s => s.id === 'plumber')) {
+        ranges = '\n• أعمال السباكة: 100–500 ريال للزيارة + قطع الغيار';
+      } else if (svcs.some(s => s.id === 'ac_tech')) {
+        ranges = '\n• صيانة تكييف: 200–600 ريال / وحدة';
+      } else if (svcs.some(s => s.id === 'landscaper')) {
+        ranges = '\n• تصميم حديقة: 80–400 ريال / م²';
+      } else {
+        ranges = '\n• الأسعار تتفاوت حسب نوع الخدمة والتشطيب';
+      }
+
+      const question = !loc
+        ? '\n\nأخبرني بالمدينة والمساحة التقريبية حتى أعطيك تقدير أدق.'
+        : !info.size
+        ? '\n\nما هي المساحة التقريبية؟ سيساعدني في تضييق النطاق.'
+        : '';
+
+      return `${base}${ranges}\n• المدينة ومستوى التشطيب (اقتصادي / متوسط / فاخر)\n• هل التصميم فقط أم تصميم وتنفيذ${question}`;
+    } else {
+      let base = 'The cost depends on several factors:';
+      let ranges = '';
+      if (svcs.some(s => s.id === 'contractor') && svcs.some(s => s.id === 'interior')) {
+        ranges = isLux ? '\n• Luxury design + build: SAR 600–1,200 / sqm' : '\n• Mid-range design + build: SAR 250–600 / sqm';
+      } else if (svcs.some(s => s.id === 'interior')) {
+        ranges = '\n• Interior design: SAR 50–200 / sqm (depends on finish level)';
+      } else if (svcs.some(s => s.id === 'painter')) {
+        ranges = '\n• Painting: SAR 10–30 / sqm';
+      } else if (svcs.some(s => s.id === 'plumber')) {
+        ranges = '\n• Plumbing visit: SAR 100–500 + parts';
+      } else {
+        ranges = '\n• Prices vary by service type and finish level';
+      }
+      const question = !loc ? '\n\nShare the city and approximate size for a more precise estimate.' : '';
+      return `${base}${ranges}\n• City and finish level (basic / mid-range / luxury)\n• Design only vs. design + execution${question}`;
+    }
+  },
+
+  designAdvice(text, svcs, info, ar) {
+    const isMajlis  = /مجلس|majlis/i.test(text + JSON.stringify(info));
+    const isLux     = /فخم|luxury|impressive|يبهر|ابهر|مميز|impressive/i.test(text);
+    const isModern  = /عصري|modern|معاصر/i.test(text);
+    const isGarden  = /حديقة|garden|outdoor/i.test(text + JSON.stringify(info));
+
+    if (ar) {
+      if (isMajlis && isLux) {
+        return 'لتصميم مجلس فاخر يُبهر الضيوف:\n\n• **المدخل**: يجب أن يُحدث انطباعاً قوياً من الخطوة الأولى\n• **الإضاءة**: طبقات إضاءة دافئة — سبوت ليت، جداريات مضيئة، وشاندلييه مركزي\n• **السقف**: جبس مزخرف أو خشب دافئ كعنصر بصري رئيسي\n• **المواد**: رخام، خشب جوز أو آجور، نسيج حرير أو مخمل للجلسات\n• **النسب**: الأثاث يجب أن يتناسب مع الحجم — لا صغير ولا مزدحم\n\nهل تفضل الطراز الخليجي المعاصر، الكلاسيك العربي، أم الحديث البسيط؟';
+      }
+      if (isLux) {
+        return 'لتصميم يُبهر ويُبرز المكان:\n\n• **الدخول**: عنصر جمالي قوي في المدخل (جدار حجر / لوحة / إضاءة درامية)\n• **الإضاءة**: مصدر رئيسي + إضاءة مكملة — تخلق العمق والإحساس بالفخامة\n• **الألوان**: درجات محايدة دافئة مع نقطة تركيز جريئة (زرقاء / ذهبية / خضراء)\n• **المواد**: سطح واحد مميز بمادة فاخرة يكفي لرفع مستوى المكان كله\n• **التناسب**: المساحة بين العناصر لا تقل أهمية عن العناصر نفسها\n\nما الغرفة أو المساحة التي تريد تطوير شكلها؟';
+      }
+      if (isModern) {
+        return 'للتصميم العصري المتوازن:\n\n• خطوط نظيفة وبسيطة بدون زخرفة زائدة\n• مواد طبيعية: خشب فاتح، حجر، معدن مطفي\n• إضاءة مدمجة (concealed lighting) كعنصر أساسي\n• ألوان هادئة مع لمسة واحدة مميزة\n• فراغات مفتوحة تعكس الراحة والأناقة\n\nهل تفضل خامات طبيعية أم صناعية؟';
+      }
+      if (isGarden) {
+        return 'لتصميم حديقة أو مساحة خارجية مميزة:\n\n• **التشجير**: طبقات — أشجار ظل + نباتات متوسطة + تغطية أرضية\n• **الإضاءة الخارجية**: مسارات مضيئة + إضاءة أشجار + نقاط تركيز\n• **جلسات خارجية**: اختر مواد مقاومة للحرارة والرطوبة\n• **المياه**: نافورة صغيرة أو عنصر مائي يضيف هدوء وحركة\n• **الخصوصية**: سياج من النباتات الكثيفة + واجهات خشبية';
+      }
+      return 'من الناحية التصميمية، لتحقيق نتيجة مميزة:\n\n• حدد عنصراً بصرياً واحداً يكون "نجم" المكان\n• اعتمد على الإضاءة لتعزيز الانطباع العام\n• تجنب الاكتظاظ — الفراغ الجيد يرفع قيمة المكان\n• استخدم ثلاثة ألوان أو أقل بنسب متوازنة\n\nما الشعور الذي تريد أن يحسه من يدخل المكان؟';
+    } else {
+      if (isMajlis && isLux) {
+        return 'For an impressive luxury majlis:\n\n• **Entrance**: Create a strong first impression from the doorway\n• **Lighting**: Layered warm lighting — spotlights, wall sconces, central chandelier\n• **Ceiling**: Ornate plasterwork or warm wood as the visual focal point\n• **Materials**: Marble, walnut or oak wood, silk/velvet upholstery\n• **Scale**: Furniture sized appropriately — neither too small nor overcrowded\n\nDo you prefer contemporary Gulf style, classic Arabic, or clean modern?';
+      }
+      if (isLux) {
+        return 'To create an impressive, high-impact space:\n\n• **Entry**: A strong visual statement at the entrance (stone wall / artwork / dramatic lighting)\n• **Lighting**: Primary + ambient layers create depth and a sense of luxury\n• **Colors**: Warm neutrals with one bold accent (navy / gold / forest green)\n• **Materials**: One premium surface material elevates the entire space\n• **Proportion**: The space between elements matters as much as the elements themselves\n\nWhich room or space are you looking to elevate?';
+      }
+      return 'For a great design outcome:\n\n• Pick one visual "star" element for the space\n• Use lighting to enhance the overall mood\n• Avoid clutter — good negative space elevates quality\n• Stick to 3 colors or fewer in balanced proportions\n\nWhat feeling do you want people to have when they enter?';
+    }
+  },
+
+  serviceRecommendation(text, svcs, info, ar) {
+    if (!svcs.length) {
+      return ar
+        ? 'لتحديد الخدمات المطلوبة بدقة، أحتاج معرفة:\n\n• ما نوع المشروع؟ (بناء، تجديد، صيانة)\n• ما نوع المكان؟ (منزل، مكتب، محل)\n\nأخبرني أكثر وسأعطيك قائمة دقيقة بالمتخصصين اللازمين.'
+        : 'To recommend the right services, I need to know:\n\n• What type of project? (build, renovation, maintenance)\n• What type of space? (home, office, shop)\n\nTell me more and I\'ll give you a precise list.';
+    }
+    const names = ar ? svcs.map(s => `• ${s.name}`).join('\n') : svcs.map(s => `• ${s.en}`).join('\n');
+    return ar
+      ? `بناءً على ما فهمته من مشروعك، ستحتاج على الأرجح:\n\n${names}\n\nهل تريد التصميم فقط أم التصميم مع التنفيذ الكامل؟`
+      : `Based on what I understand about your project, you'll likely need:\n\n${names}\n\nDo you want design only, or design plus full execution?`;
+  }
+};
+
+/* ═══════════════════════════════════════════════════════════════════
+   EXECUTION ENGINE  — handles "start / proceed / submit" commands
+═══════════════════════════════════════════════════════════════════ */
+const EXEC = {
+  MANDATORY: ['location', 'phase_needed'],
+
+  getMissing(info) {
+    return this.MANDATORY.filter(k => !info[k]);
+  },
+
+  buildSummary(svcs, info, ar) {
+    if (!svcs.length && !Object.keys(info).length) return null;
+    const svcList = ar ? svcs.map(s => s.name).join('، ') : svcs.map(s => s.en).join(', ');
+    const lines = [];
+    if (svcList) lines.push(ar ? `الخدمات: ${svcList}` : `Services: ${svcList}`);
+    if (info.property_type) lines.push(ar ? `نوع المشروع: ${info.property_type}` : `Project type: ${info.property_type}`);
+    if (info.indoor_outdoor) lines.push(ar ? `الموقع: ${info.indoor_outdoor}` : `Location: ${info.indoor_outdoor}`);
+    if (info.location)       lines.push(ar ? `المدينة: ${info.location}` : `City: ${info.location}`);
+    if (info.size)           lines.push(ar ? `المساحة: ${info.size}` : `Size: ${info.size}`);
+    if (info.phase_needed)   lines.push(ar ? `النطاق: ${info.phase_needed}` : `Scope: ${info.phase_needed}`);
+    if (info.budget)         lines.push(ar ? `الميزانية: ${info.budget}` : `Budget: ${info.budget}`);
+    if (info.style)          lines.push(ar ? `الأسلوب: ${info.style}` : `Style: ${info.style}`);
+    return lines.join('\n');
+  },
+
+  respond(svcs, info, ar) {
+    const missing = this.getMissing(info);
+    const summaryText = this.buildSummary(svcs, info, ar);
+
+    if (!svcs.length && !Object.keys(info).length) {
+      return {
+        message: ar
+          ? 'يسعدني أن أبدأ! أخبرني أولاً — ما هو المشروع الذي تريد تنفيذه؟'
+          : "I'd love to start! First, tell me — what project do you want to proceed with?",
+        mode: 'execution',
+        quick_suggestions: ar
+          ? ['بناء مجلس', 'تجديد منزل', 'مشروع تجاري', 'صيانة عاجلة']
+          : ['Build a majlis', 'Home renovation', 'Commercial project', 'Urgent maintenance'],
+      };
+    }
+
+    if (missing.length === 0) {
+      const summary = ar
+        ? `${svcs.map(s=>s.name).join('، ')} · ${info.location || ''} · ${info.phase_needed || ''}`
+        : `${svcs.map(s=>s.en).join(', ')} · ${info.location || ''} · ${info.phase_needed || ''}`;
+      return {
+        message: ar
+          ? `ممتاز! لدي كل ما أحتاجه.\n\n**ملخص طلبك:**\n${summaryText}\n\nسأرتب لك التواصل مع المتخصصين المناسبين. اضغط الزر أدناه للمتابعة.`
+          : `Great! I have everything I need.\n\n**Your request summary:**\n${summaryText}\n\nI'll connect you with the right specialists. Tap the button below to proceed.`,
+        mode: 'execution',
+        ready_to_route: true,
+        routing_summary: summary,
+        quick_suggestions: [],
+      };
+    }
+
+    const missingAr = { location: 'المدينة', phase_needed: 'التصميم فقط أم مع التنفيذ؟', size: 'المساحة', budget: 'الميزانية' };
+    const missingEn = { location: 'city', phase_needed: 'design only or design + execution?', size: 'project size', budget: 'budget range' };
+    const firstMissing = missing[0];
+
+    return {
+      message: ar
+        ? `حسناً، هيا نبدأ.\n\n**ما فهمته حتى الآن:**\n${summaryText || 'معلومات أولية'}\n\nلإتمام الطلب، أحتاج: **${missingAr[firstMissing] || firstMissing}**`
+        : `Alright, let's proceed.\n\n**What I have so far:**\n${summaryText || 'Initial details'}\n\nTo complete the request, I need: **${missingEn[firstMissing] || firstMissing}**`,
+      mode: 'execution',
+      missing_info: missing.map(k => ar ? (missingAr[k] || k) : (missingEn[k] || k)),
+      quick_suggestions: firstMissing === 'location'
+        ? (ar ? ['الرياض', 'جدة', 'الدمام', 'مكة'] : ['Riyadh', 'Jeddah', 'Dammam', 'Makkah'])
+        : (ar ? ['تصميم وتنفيذ', 'تصميم فقط', 'تنفيذ فقط'] : ['Both design & execution', 'Design only', 'Execution only']),
+    };
+  }
+};
+
+/* ═══════════════════════════════════════════════════════════════════
+   SMART DEMO MASTER — orchestrates all engines
+═══════════════════════════════════════════════════════════════════ */
+const SmartDemo = {
+
+  detectLang: (t) => /[\u0600-\u06FF]/.test(t) ? 'ar' : /[\u0900-\u097F]/.test(t) ? 'hi' : 'en',
+
+  detectServices(t) {
+    const scores = {};
+    for (const rule of KW) {
+      if (rule.re.test(t)) {
+        for (const [id, w] of rule.svcs) scores[id] = (scores[id] || 0) + w;
+      }
+    }
+    return Object.entries(scores).sort((a,b) => b[1]-a[1]).map(([id]) => ({ id, ...SVC[id] }));
+  },
+
+  extractEntities(t) {
+    const out = {};
+    for (const [k, fn] of Object.entries(EX)) { const v = fn(t); if (v) out[k] = v; }
+    return out;
+  },
+
+  getNextQuestion(allSvcs, known, askedSet, ar) {
+    const hasDesign   = allSvcs.some(s => ['architect','interior','lighting'].includes(s.id));
+    const hasConstruct= allSvcs.some(s => ['contractor','civil'].includes(s.id));
+    const hasMajlis   = known.property_type === 'مجلس';
+    const hasGarden   = allSvcs.some(s => s.id === 'landscaper');
+
+    const qs = [
+      { key:'indoor_outdoor', cond:() => (hasMajlis || hasGarden) && !known.indoor_outdoor,
+        ar:'هل هو داخلي أم خارجي؟', en:'Is this indoor or outdoor?',
+        sAr:['داخلي','خارجي','كلاهما'], sEn:['Indoor','Outdoor','Both'] },
+      { key:'phase', cond:() => (hasDesign || hasConstruct) && allSvcs.length >= 2 && !known.phase_needed,
+        ar:'هل تحتاج التصميم فقط، التنفيذ فقط، أم كليهما؟', en:'Design only, execution only, or both?',
+        sAr:['تصميم وتنفيذ','تصميم فقط','تنفيذ فقط'], sEn:['Both','Design only','Execution only'] },
+      { key:'location', cond:() => !known.location,
+        ar:'في أي مدينة يقع المشروع؟', en:'Which city is the project in?',
+        sAr:['الرياض','جدة','الدمام'], sEn:['Riyadh','Jeddah','Dammam'] },
+      { key:'size', cond:() => !known.size && (hasDesign || hasConstruct) && known.location,
+        ar:'ما هي المساحة التقريبية؟ (م² أو عدد الغرف)', en:'Approximate size? (sqm or rooms)',
+        sAr:['أقل من 150م²','150–300م²','أكثر من 300م²'], sEn:['Under 150 sqm','150–300 sqm','Over 300 sqm'] },
+      { key:'budget', cond:() => !known.budget && known.location && known.size,
+        ar:'هل لديك ميزانية تقريبية؟', en:'Do you have a rough budget in mind?',
+        sAr:['أقل من 50,000 ريال','50,000–200,000 ريال','أكثر من 200,000 ريال'], sEn:['Under 50K SAR','50K–200K SAR','Over 200K SAR'] },
+    ];
+
+    for (const q of qs) {
+      if (!askedSet.has(q.key) && q.cond()) {
+        askedSet.add(q.key);
+        return { text: ar ? q.ar : q.en, sugg: ar ? q.sAr : q.sEn };
+      }
+    }
+    return null;
+  },
+
+  buildOpening(svcs, entities, text, ar) {
+    const isMajlis   = /مجلس|ديوانية|majlis|diwan/i.test(text);
+    const isKitchen  = /مطبخ|kitchen/i.test(text);
+    const isBath     = /حمام|bathroom/i.test(text);
+    const isGarden   = /حديقة|garden|outdoor/i.test(text);
+    const isOffice   = /مكتب|office/i.test(text);
+    const isRest     = /مطعم|restaurant/i.test(text);
+    const isCafe     = /كافيه|مقهى|cafe/i.test(text);
+    const isShop     = /محل|shop|store|retail/i.test(text);
+    const isBuild    = /بناء|إنشاء|build|construct|من\s*الصفر|from\s*scratch/i.test(text);
+    const isRenovate = /تجديد|ترميم|renovate|remodel/i.test(text);
+    const isDesign   = /تصميم|design|ديكور|decor/i.test(text) && !isBuild && !isRenovate;
+    const isMaint    = /صيانة|maintenance|إصلاح|repair|fix/i.test(text);
+    const isUrgent   = entities.urgency === 'عاجل';
+    const top2ar     = svcs.slice(0,2).map(s=>s.name).join(' و');
+    const top2en     = svcs.slice(0,2).map(s=>s.en).join(' and ');
+
+    if (ar) {
+      if (isUrgent && isMaint)          return 'فهمت — الأمر عاجل. سأعطيك أولوية قصوى الآن.';
+      if (isMajlis && isBuild)          return 'بناء مجلس جديد من الصفر — مشروع متكامل يحتاج فريقاً متخصصاً!';
+      if (isMajlis && isRenovate)       return 'تجديد المجلس يمكن أن يحوّله تماماً — لنحدد ما تحتاجه.';
+      if (isMajlis && isDesign)         return 'تصميم المجلس يحتاج لمسة احترافية — وصلت للمكان الصحيح.';
+      if (isMajlis)                     return 'فهمت أنك تريد العمل على المجلس — هذا تخصصنا.';
+      if (isKitchen)                    return 'المطبخ يحتاج دقة وتنسيق — لنخطط له معاً.';
+      if (isBath)                       return 'تجديد الحمام يتطلب تنسيقاً دقيقاً بين السباكة والتشطيب.';
+      if (isGarden && isBuild)          return 'إنشاء حديقة من الصفر — مشروع رائع! لنبني له خطة متكاملة.';
+      if (isGarden)                     return 'تصميم الحديقة يجمع بين الجماليات والوظيفية — مشروع أحبه!';
+      if (isOffice)                     return 'تصميم المكاتب يؤثر مباشرة على الإنتاجية — خيار ذكي.';
+      if (isRest && isBuild)            return 'فتح مطعم جديد — مشروع ممتاز يحتاج حزمة خدمات متكاملة!';
+      if (isRest)                       return 'مشروع المطعم يتطلب تنسيقاً بين عدة متخصصين — لنرتبه لك.';
+      if (isCafe)                       return 'كافيه يحتاج تصميماً يعكس هويتك — فكرة رائعة!';
+      if (isShop)                       return 'تجهيز المحل يحتاج خبرة تجارية — الخيار الصحيح.';
+      if (isMaint)                      return 'فهمت احتياجك للصيانة — سأجد لك المتخصص المناسب.';
+      if (isBuild)                      return 'مشروع بناء جديد يحتاج فريقاً متكاملاً — لنبدأ.';
+      if (isRenovate)                   return 'التجديد يغيّر كل شيء — دعنا نحدد احتياجاتك بدقة.';
+      if (svcs.length)                  return `يبدو أنك تحتاج ${top2ar} — يسعدني مساعدتك.`;
+      return 'وصلتني رسالتك — دعني أفهم احتياجاتك بشكل أدق.';
+    } else {
+      if (isUrgent && isMaint)          return "Understood — this is urgent. I'll prioritize you right now.";
+      if (isMajlis && isBuild)          return "Building a new majlis from scratch — that's a complete project needing a specialist team!";
+      if (isMajlis && isRenovate)       return "Renovating a majlis can completely transform it — let's nail down what you need.";
+      if (isMajlis && isDesign)         return "Designing a majlis needs a professional touch — you're in the right place.";
+      if (isMajlis)                     return "I understand you want to work on your majlis — that's our specialty.";
+      if (isKitchen)                    return "Kitchens need precision and coordination — let's plan it together.";
+      if (isBath)                       return "Bathroom renovation needs tight coordination between plumbing and finishing.";
+      if (isGarden && isBuild)          return "Creating a garden from scratch — great project! Let's build a full plan.";
+      if (isGarden)                     return "Garden design blends aesthetics and function — love this kind of project!";
+      if (isOffice)                     return "Office design directly impacts productivity — a smart investment.";
+      if (isRest && isBuild)            return "Opening a new restaurant — exciting project that needs a full service package!";
+      if (isRest)                       return "A restaurant project needs coordination between specialists — let me organize that.";
+      if (isCafe)                       return "A café needs a design that reflects your identity — great idea!";
+      if (isShop)                       return "Shop fitout needs commercial design expertise — right decision.";
+      if (isMaint)                      return "I understand you need maintenance — I'll find the right specialist.";
+      if (isBuild)                      return "A new construction project needs a complete team — let's get started.";
+      if (isRenovate)                   return "Renovation can change everything — let's define your needs precisely.";
+      if (svcs.length)                  return `It looks like you need ${top2en} — happy to help with that.`;
+      return "Got your message — let me understand your needs better.";
+    }
+  },
+
+  buildServicesText(svcs, ar) {
+    if (!svcs.length) return '';
+    const primary   = svcs.filter(s => s.tier === 'primary');
+    const secondary = svcs.filter(s => s.tier === 'secondary');
+    const fmt = (list) => list.map(s => ar ? `• ${s.name}` : `• ${s.en}`).join('\n');
+    return (primary.length   ? (ar ? `الخدمات الأساسية:\n${fmt(primary)}` : `Main services:\n${fmt(primary)}`)   : '') +
+           (secondary.length ? (ar ? `\n\nخدمات إضافية:\n${fmt(secondary)}` : `\n\nAdditional services:\n${fmt(secondary)}`) : '');
+  },
+
+  classifyLead(svcs, known) {
+    if (known.urgency === 'عاجل') return 'urgent';
+    const score = svcs.length * 2 + (known.location ? 3 : 0) + (known.size ? 2 : 0) + (known.budget ? 2 : 0) + (known.phase_needed ? 1 : 0);
+    if (score >= 12) return 'vip';
+    if (score >= 7)  return 'high_intent';
+    if (score >= 3)  return 'qualified';
+    return 'exploratory';
+  },
+
+  // ── MASTER GENERATE ──────────────────────────────────────
+  generate(text, ctxSvcs, ctxInfo, askedSet) {
+    const ar     = this.detectLang(text) === 'ar';
+    const intent = INTENT.classify(text);
+
+    // ── Detect services and entities from THIS message
+    const newSvcs     = this.detectServices(text);
+    const newEntities = this.extractEntities(text);
+
+    // ── Merge with context
+    const knownIds  = new Set(ctxSvcs.map(s => s.id));
+    const addedSvcs = newSvcs.filter(s => !knownIds.has(s.id));
+    const allSvcs   = [...ctxSvcs, ...addedSvcs];
+    const allInfo   = { ...ctxInfo, ...newEntities };
+
+    const lead = this.classifyLead(allSvcs, allInfo);
+
+    // ════════════════════════════════
+    //  EXECUTION COMMAND
+    // ════════════════════════════════
+    if (intent === 'execution_command') {
+      const execResp = EXEC.respond(allSvcs, allInfo, ar);
+      return {
+        message: execResp.message,
+        detected_services: addedSvcs.map(s => ({ name:s.name, name_ar:s.name, tier:s.tier, icon:s.icon })),
+        extracted_info: newEntities,
+        missing_info: execResp.missing_info || [],
+        lead_level: execResp.ready_to_route ? 'vip' : lead,
+        quick_suggestions: execResp.quick_suggestions || [],
+        ready_to_route: !!execResp.ready_to_route,
+        routing_summary: execResp.routing_summary || null,
+        _mode: 'execution',
+      };
+    }
+
+    // ════════════════════════════════
+    //  COST QUESTION
+    // ════════════════════════════════
+    if (intent === 'cost_question') {
+      return {
+        message: ADVICE.cost(allSvcs, allInfo, ar),
+        detected_services: addedSvcs.map(s => ({ name:s.name, name_ar:s.name, tier:s.tier, icon:s.icon })),
+        extracted_info: newEntities,
+        missing_info: [],
+        lead_level: lead,
+        quick_suggestions: ar
+          ? ['تصميم وتنفيذ', 'تشطيب فاخر', 'تشطيب متوسط', 'أخبرني بالمدينة']
+          : ['Design + execution', 'Luxury finish', 'Mid-range finish', 'Share city'],
+        ready_to_route: false,
+        _mode: 'advice',
+      };
+    }
+
+    // ════════════════════════════════
+    //  DESIGN / STYLE ADVICE
+    // ════════════════════════════════
+    if (intent === 'design_advice') {
+      return {
+        message: ADVICE.designAdvice(text, allSvcs, allInfo, ar),
+        detected_services: addedSvcs.map(s => ({ name:s.name, name_ar:s.name, tier:s.tier, icon:s.icon })),
+        extracted_info: newEntities,
+        missing_info: [],
+        lead_level: lead,
+        quick_suggestions: ar
+          ? ['طراز خليجي معاصر', 'كلاسيك عربي', 'حديث بسيط', 'كم يكلف؟']
+          : ['Contemporary Gulf', 'Classic Arabic', 'Modern minimal', 'How much will it cost?'],
+        ready_to_route: false,
+        _mode: 'advice',
+      };
+    }
+
+    // ════════════════════════════════
+    //  SERVICE RECOMMENDATION
+    // ════════════════════════════════
+    if (intent === 'service_recommendation') {
+      return {
+        message: ADVICE.serviceRecommendation(text, allSvcs, allInfo, ar),
+        detected_services: addedSvcs.map(s => ({ name:s.name, name_ar:s.name, tier:s.tier, icon:s.icon })),
+        extracted_info: newEntities,
+        missing_info: [],
+        lead_level: lead,
+        quick_suggestions: ar
+          ? ['تصميم وتنفيذ', 'تصميم فقط', 'استشارة', 'كمل']
+          : ['Full package', 'Design only', 'Consultation', 'Proceed'],
+        ready_to_route: false,
+        _mode: 'advice',
+      };
+    }
+
+    // ════════════════════════════════
+    //  VAGUE REQUEST
+    // ════════════════════════════════
+    if (intent === 'vague_request' && !allSvcs.length) {
+      const clarifications = ar ? [
+        'يسعدني مساعدتك! هل مشروعك يخص صيانة، تجديد، تصميم، أم بناء جديد؟',
+        'بكل سرور! ما نوع المشروع أو المكان الذي تريد العمل عليه؟',
+        'أنا هنا! أخبرني — هل هو مشروع سكني أم تجاري؟',
+      ] : [
+        "Happy to help! Is your project about maintenance, renovation, design, or new construction?",
+        "Of course! What type of project or space would you like to work on?",
+        "I'm here! Tell me — is this a residential or commercial project?",
+      ];
+      const idx = askedSet.size % clarifications.length;
+      askedSet.add('clarify_' + idx);
+      return {
+        message: clarifications[idx],
+        detected_services: [],
+        extracted_info: newEntities,
+        missing_info: [ar ? 'نوع المشروع' : 'Project type'],
+        lead_level: 'exploratory',
+        quick_suggestions: ar
+          ? ['صيانة منزلية', 'تجديد وديكور', 'بناء أو تجديد', 'مشروع تجاري']
+          : ['Home maintenance', 'Design & decor', 'Construction', 'Commercial project'],
+        ready_to_route: false,
+        _mode: 'clarification',
+      };
+    }
+
+    // ════════════════════════════════
+    //  PROJECT REQUEST / DETAIL PROVISION (default path)
+    // ════════════════════════════════
+    const opening     = this.buildOpening(allSvcs.length ? allSvcs : newSvcs, allInfo, text, ar);
+    const showSvcList = addedSvcs.length > 0;
+    const svcsText    = showSvcList ? this.buildServicesText(addedSvcs, ar) : '';
+    const nextQ       = this.getNextQuestion(allSvcs, allInfo, askedSet, ar);
+    const readyToRoute= allSvcs.length > 0 && !!allInfo.location && !nextQ;
+
+    let parts = [opening];
+    if (svcsText) parts.push(svcsText);
+
+    if (readyToRoute) {
+      const summaryStr = ar
+        ? `العميل يحتاج: ${allSvcs.map(s=>s.name).join('، ')}. الموقع: ${allInfo.location}. ${allInfo.phase_needed ? 'النطاق: ' + allInfo.phase_needed + '.' : ''}`
+        : `Customer needs: ${allSvcs.map(s=>s.en).join(', ')}. Location: ${allInfo.location}. ${allInfo.phase_needed ? 'Scope: ' + allInfo.phase_needed + '.' : ''}`;
+      parts.push(ar
+        ? 'لدي الآن ما يكفي لأرشح لك أفضل المتخصصين في منطقتك.\n\nاضغط **"تواصل مع المزودين"** أدناه.'
+        : 'I now have enough to match you with the best specialists in your area.\n\nTap **"Connect with Providers"** below.');
+      return {
+        message: parts.filter(Boolean).join('\n\n'),
+        detected_services: addedSvcs.map(s => ({ name:s.name, name_ar:s.name, tier:s.tier, icon:s.icon })),
+        extracted_info: newEntities,
+        missing_info: [],
+        lead_level: lead === 'exploratory' ? 'high_intent' : lead,
+        quick_suggestions: [],
+        ready_to_route: true,
+        routing_summary: summaryStr,
+        _mode: 'qualification',
+      };
+    }
+
+    if (nextQ) parts.push(nextQ.text);
+
+    return {
+      message: parts.filter(Boolean).join('\n\n'),
+      detected_services: addedSvcs.map(s => ({ name:s.name, name_ar:s.name, tier:s.tier, icon:s.icon })),
+      extracted_info: newEntities,
+      missing_info: nextQ ? [nextQ.text] : [],
+      lead_level: lead,
+      quick_suggestions: nextQ ? nextQ.sugg : (ar ? ['الرياض','جدة','الدمام'] : ['Riyadh','Jeddah','Dammam']),
+      ready_to_route: false,
+      _mode: allSvcs.length ? 'discovery' : 'clarification',
+    };
+  },
+};
+
+/* ═══════════════════════════════════════════════════════════════════
+   ALPINE.JS APP
+═══════════════════════════════════════════════════════════════════ */
+function aiChat() {
+  return {
+    messages: [],
+    inputText: '',
+    typing: false,
+    apiKey: '',
+    apiKeyInput: '',
+    selectedModel: 'claude-sonnet-4-6',
+    showSettings: false,
+    detectedLang: 'AR',
+    conversationMode: 'discovery',  // discovery|clarification|advice|qualification|execution
+
+    detectedServices: [],
+    extractedInfo: {},
+    missingInfo: [],
+    routingSummary: '',
+    leadLevel: 'exploratory',
+    readyToRoute: false,
+    quickSuggestions: [],
+
+    history: [],
+    askedQuestions: new Set(),
+
+    infoLabels: {
+      project_type:'نوع المشروع', property_type:'نوع العقار', location:'المدينة',
+      size:'المساحة', budget:'الميزانية', timeline:'الجدول الزمني',
+      urgency:'الأولوية', phase_needed:'النطاق', style:'الأسلوب', indoor_outdoor:'داخلي/خارجي',
+    },
+
+    get leadPct()   { return { exploratory:15, qualified:40, high_intent:70, urgent:88, vip:100 }[this.leadLevel] || 15; },
+    get leadColor() { return { exploratory:'#94a3b8', qualified:'#f59e0b', high_intent:'#028090', urgent:'#ef4444', vip:'#7c3aed' }[this.leadLevel] || '#94a3b8'; },
+    get leadLabel() { return { exploratory:'استكشاف', qualified:'مؤهل', high_intent:'جاهز', urgent:'عاجل', vip:'VIP' }[this.leadLevel] || 'استكشاف'; },
+    get modeLabel() {
+      return { discovery:'اكتشاف', clarification:'توضيح', advice:'استشارة', qualification:'تأهيل', execution:'تنفيذ', confirmation:'تأكيد' }[this.conversationMode] || 'اكتشاف';
+    },
+
+    init() {
+      this.apiKey = localStorage.getItem('khedmah_api_key') || '';
+      this.apiKeyInput = this.apiKey;
+      this.selectedModel = localStorage.getItem('khedmah_model') || 'claude-sonnet-4-6';
+
+      /* ── Guest mode: show banner if not logged in ── */
+      const isLoggedIn = !!localStorage.getItem('khedmah_demo') ||
+        Object.keys(localStorage).some(k => k.indexOf('supabase') !== -1 || k.indexOf('auth-token') !== -1);
+      if (!isLoggedIn) {
+        document.getElementById('guestBanner').style.display = 'block';
+      }
+
+      /* ── Restore conversation saved before login redirect ── */
+      const saved = localStorage.getItem('khedmah_ai_convo');
+      if (saved) {
+        try {
+          const d = JSON.parse(saved);
+          this.messages         = d.messages         || [];
+          this.detectedServices = d.detectedServices || [];
+          this.extractedInfo    = d.extractedInfo    || {};
+          this.routingSummary   = d.routingSummary   || '';
+          this.leadLevel        = d.leadLevel        || 'exploratory';
+          this.readyToRoute     = d.readyToRoute     || false;
+          localStorage.removeItem('khedmah_ai_convo');
+          this.$nextTick(() => this.scrollBottom());
+          if (typeof kToast === 'function') kToast('تم استعادة محادثتك', 'success');
+        } catch(e) {}
+      }
+    },
+
+    handleEnter(e) { if (!e.shiftKey) this.sendMessage(); },
+
+    autoResize(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 120) + 'px'; },
+
+    formatMessage(text) {
+      if (!text) return '';
+      return text
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\n/g, '<br>');
+    },
+
+    now() { return new Date().toLocaleTimeString('ar-SA', { hour:'2-digit', minute:'2-digit' }); },
+
+    scrollBottom() { this.$nextTick(() => { document.getElementById('msgBottom')?.scrollIntoView({ behavior:'smooth' }); }); },
+
+    sendSuggestion(text) { this.inputText = text; this.sendMessage(); },
+
+    async sendMessage() {
+      const text = this.inputText.trim();
+      if (!text || this.typing) return;
+
+      this.detectedLang = /[\u0600-\u06FF]/.test(text) ? 'AR' : /[\u0900-\u097F]/.test(text) ? 'HI' : 'EN';
+      this.messages.push({ role:'user', content:text, time:this.now() });
+      this.history.push({ role:'user', content:text });
+      this.inputText = '';
+      this.quickSuggestions = [];
+      const ta = document.getElementById('chatInput');
+      if (ta) ta.style.height = 'auto';
+
+      this.typing = true;
+      this.scrollBottom();
+
+      try {
+        let parsed;
+        if (this.apiKey) {
+          parsed = await this.callClaudeAPI();
+        } else {
+          await new Promise(r => setTimeout(r, 600 + Math.random() * 600));
+          parsed = SmartDemo.generate(text, this.detectedServices, this.extractedInfo, this.askedQuestions);
+        }
+        this.handleAIResponse(parsed, text);
+      } catch (err) {
+        console.error(err);
+        this.messages.push({ role:'assistant', content:'عذراً، حدث خطأ. يرجى المحاولة مجدداً.\n\nSorry, an error occurred. Please try again.', time:this.now() });
+      }
+
+      this.typing = false;
+      this.scrollBottom();
+    },
+
+    async callClaudeAPI() {
+      const resp = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': this.apiKey,
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-access': 'true'
+        },
+        body: JSON.stringify({ model:this.selectedModel, max_tokens:1500, system:SYSTEM_PROMPT, messages:this.history })
+      });
+      if (!resp.ok) { const e = await resp.json().catch(()=>({})); throw new Error(e.error?.message || `API ${resp.status}`); }
+      const data = await resp.json();
+      const raw  = data.content[0]?.text || '{}';
+      const m    = raw.match(/```json\s*([\s\S]*?)```/) || raw.match(/```\s*([\s\S]*?)```/) || raw.match(/(\{[\s\S]*\})/);
+      try { return JSON.parse(m ? m[1] : raw); }
+      catch { return { message:raw, detected_services:[], extracted_info:{}, missing_info:[], lead_level:'qualified', quick_suggestions:[], ready_to_route:false }; }
+    },
+
+    handleAIResponse(parsed, userText) {
+      // Mode mapping
+      const modeMap = { discovery:'discovery', clarification:'clarification', advice:'advice', qualification:'qualification', execution:'execution', confirmation:'confirmation' };
+      const rawMode = parsed._mode || parsed.mode || 'discovery';
+      this.conversationMode = modeMap[rawMode] || 'discovery';
+
+      // Mode badge info
+      const modeBadgeMap = {
+        execution:     { cls:'mode-exec',    label:'وضع التنفيذ' },
+        advice:        { cls:'mode-advice',   label:'استشارة' },
+        qualification: { cls:'mode-qualify',  label:'تأهيل المشروع' },
+        discovery:     { cls:'mode-disc',     label:'اكتشاف' },
+      };
+      const badge = modeBadgeMap[rawMode];
+
+      const msg = {
+        role: 'assistant',
+        content: parsed.message || 'شكراً على رسالتك.',
+        services: [],
+        time: this.now(),
+        isSummary: false,
+        modeBadge: badge ? badge.cls : null,
+        modeLabel: badge ? badge.label : null,
+      };
+
+      // Merge services
+      if (parsed.detected_services?.length) {
+        const existingNames = new Set(this.detectedServices.map(s => s.name));
+        for (const svc of parsed.detected_services) {
+          if (svc.name && !existingNames.has(svc.name)) {
+            this.detectedServices.push(svc);
+            msg.services.push(svc.name_ar || svc.name);
+            existingNames.add(svc.name);
+          }
+        }
+      }
+
+      // Merge extracted info
+      if (parsed.extracted_info) {
+        for (const [k, v] of Object.entries(parsed.extracted_info)) {
+          if (v && v !== 'null') this.extractedInfo[k] = v;
+        }
+      }
+
+      if (parsed.missing_info)      this.missingInfo      = parsed.missing_info;
+      if (parsed.lead_level)        this.leadLevel        = parsed.lead_level;
+      if (parsed.quick_suggestions) this.quickSuggestions = parsed.quick_suggestions.slice(0,4);
+      if (parsed.ready_to_route)    this.readyToRoute     = true;
+
+      if (parsed.routing_summary) {
+        this.routingSummary = parsed.routing_summary;
+        msg.isSummary  = true;
+        msg.summaryHtml = this.buildSummaryHTML(parsed);
+      }
+
+      this.history.push({ role:'assistant', content:parsed.message });
+      this.messages.push(msg);
+    },
+
+    buildSummaryHTML(parsed) {
+      const svcs    = this.detectedServices.map(s => `<span class="svc-chip"><i class="fas fa-check-circle" style="font-size:0.7rem"></i> ${s.name_ar || s.name}</span>`).join('');
+      const infoRows= Object.entries(this.extractedInfo).filter(([,v])=>v)
+        .map(([k,v]) => `<div class="summary-row"><i class="fas fa-circle-dot"></i><span><strong>${this.infoLabels[k]||k}:</strong> ${v}</span></div>`).join('');
+      return `<h6><i class="fas fa-file-alt ms-1"></i> ملخص طلبك</h6>
+              <p style="color:var(--k-gray);font-size:0.85rem;line-height:1.7;margin-bottom:0.75rem">${parsed.routing_summary}</p>
+              <div class="service-chips mb-2">${svcs}</div>${infoRows}`;
+    },
+
+    connectProviders() {
+      /* Check login status */
+      const isLoggedIn = !!localStorage.getItem('khedmah_demo') ||
+        Object.keys(localStorage).some(k => k.indexOf('supabase') !== -1 || k.indexOf('auth-token') !== -1);
+
+      if (!isLoggedIn) {
+        /* Save full conversation state so it survives the login redirect */
+        localStorage.setItem('khedmah_ai_convo', JSON.stringify({
+          messages:         this.messages,
+          detectedServices: this.detectedServices,
+          extractedInfo:    this.extractedInfo,
+          routingSummary:   this.routingSummary,
+          leadLevel:        this.leadLevel,
+          readyToRoute:     this.readyToRoute
+        }));
+        /* Add return URL to login/signup links so they come back here */
+        const returnUrl = encodeURIComponent('ai-chat.html');
+        document.getElementById('guestLoginBtn').href  = `../auth/login.html?return=${returnUrl}`;
+        document.getElementById('guestSignupBtn').href = `../auth/signup.html?return=${returnUrl}`;
+        /* Show the gate modal */
+        document.getElementById('guestGate').style.display = 'flex';
+        return;
+      }
+
+      const summary = encodeURIComponent(this.routingSummary || this.detectedServices.map(s=>s.name).join(', '));
+      window.location.href = `search.html?ai_request=${summary}`;
+    },
+
+    saveApiKey() {
+      this.apiKey = this.apiKeyInput.trim();
+      localStorage.setItem('khedmah_api_key', this.apiKey);
+      localStorage.setItem('khedmah_model', this.selectedModel);
+      this.showSettings = false;
+      if (typeof kToast === 'function') kToast('تم حفظ مفتاح API', 'success');
+    },
+
+    clearApiKey() {
+      this.apiKey = '';
+      this.apiKeyInput = '';
+      localStorage.removeItem('khedmah_api_key');
+    },
+
+    resetConversation() {
+      this.messages = [];
+      this.history  = [];
+      this.detectedServices = [];
+      this.extractedInfo    = {};
+      this.missingInfo      = [];
+      this.routingSummary   = '';
+      this.leadLevel        = 'exploratory';
+      this.readyToRoute     = false;
+      this.quickSuggestions = [];
+      this.inputText        = '';
+      this.conversationMode = 'discovery';
+      this.askedQuestions   = new Set();
+    },
+  };
+}
+</script>
+<script src="../assets/js/khedmah.js"></script>
+</body>
+</html>

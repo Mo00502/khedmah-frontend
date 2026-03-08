@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تتبع الطلب — خدمة</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="../assets/css/khedmah.css">
+  <style>
+    body{background:#f1f5f9;}
+    @media(max-width:991px){.k-sidebar{display:none}.k-main-content{margin-right:0}}
+
+    /* Stepper */
+    .stepper{ display:flex; flex-direction:column; gap:0; }
+    .step{ display:flex; align-items:flex-start; gap:1rem; position:relative; }
+    .step:not(:last-child)::after{
+      content:''; position:absolute;
+      right:19px; top:40px; width:2px; height:calc(100% - 8px);
+      background:#e2e8f0; z-index:0;
+    }
+    .step.done::after{ background:var(--k-success); }
+    .step.active::after{ background:linear-gradient(to bottom,var(--k-primary),#e2e8f0); }
+    .step-circle{
+      width:40px;height:40px; border-radius:50%;
+      display:flex;align-items:center;justify-content:center;
+      font-size:1rem; flex-shrink:0; position:relative; z-index:1;
+    }
+    .step.done .step-circle{ background:var(--k-success); color:#fff; }
+    .step.active .step-circle{
+      background:var(--k-primary); color:#fff;
+      box-shadow:0 0 0 6px rgba(2,128,144,0.15);
+      animation:stepPulse 2s infinite;
+    }
+    .step.pending .step-circle{ background:#e2e8f0; color:var(--k-gray); }
+    @keyframes stepPulse{
+      0%,100%{box-shadow:0 0 0 4px rgba(2,128,144,0.15)}
+      50%{box-shadow:0 0 0 10px rgba(2,128,144,0.07)}
+    }
+    .step-body{ padding:0.4rem 0 1.5rem; flex:1; }
+    .step.done .step-title{ color:var(--k-success); }
+    .step.active .step-title{ color:var(--k-primary); }
+    .step.pending .step-title{ color:var(--k-gray); }
+
+    /* Map */
+    .map-area{
+      width:100%; height:180px; border-radius:14px;
+      background:
+        repeating-linear-gradient(0deg,rgba(2,128,144,0.04) 0,rgba(2,128,144,0.04) 1px,transparent 1px,transparent 32px),
+        repeating-linear-gradient(90deg,rgba(2,128,144,0.04) 0,rgba(2,128,144,0.04) 1px,transparent 1px,transparent 32px),
+        #f8fafc;
+      border:2px dashed rgba(2,128,144,0.2);
+      display:flex;align-items:center;justify-content:center;
+      position:relative;overflow:hidden;
+    }
+    .map-pin{
+      width:36px;height:36px;background:var(--k-primary);
+      border-radius:50% 50% 50% 0;transform:rotate(-45deg);
+      display:flex;align-items:center;justify-content:center;
+      box-shadow:0 4px 12px rgba(2,128,144,0.4);
+      animation:pinBounce 2s infinite;
+    }
+    .map-pin::after{content:'🔧';transform:rotate(45deg);font-size:0.9rem;}
+    @keyframes pinBounce{0%,100%{transform:rotate(-45deg) translateY(0)}50%{transform:rotate(-45deg) translateY(-8px)}}
+    .map-label{
+      position:absolute;bottom:10px;right:10px;
+      background:#fff;border-radius:8px;padding:3px 10px;
+      font-size:0.78rem;font-weight:600;color:var(--k-primary);
+      box-shadow:0 2px 8px rgba(0,0,0,0.1);
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../assets/js/supabase-client.js"></script>
+</head>
+<body>
+<script>
+  (function(){
+    if(localStorage.getItem('khedmah_demo')) return;
+    var has=Object.keys(localStorage).some(function(k){return k.indexOf('auth-token')!==-1||k.indexOf('supabase')!==-1;});
+    if(!has) window.location.replace('../auth/login.html');
+  })();
+</script>
+
+<nav class="k-navbar navbar navbar-expand-lg" style="position:sticky;top:0;z-index:200">
+  <div class="container-fluid px-4">
+    <a class="navbar-brand" href="../index.html">خدم<span style="color:var(--k-accent)">ة</span></a>
+    <div class="collapse navbar-collapse">
+      <ul class="navbar-nav me-auto gap-1">
+        <li class="nav-item"><a class="nav-link" href="../customer/dashboard.html">← لوحة التحكم</a></li>
+        <li class="nav-item"><a class="nav-link" href="../customer/notifications.html">الإشعارات</a></li>
+      </ul>
+      <div class="d-flex gap-2 align-items-center">
+        <span style="color:rgba(255,255,255,0.75);font-size:0.9rem">أحمد محمد</span>
+        <div style="width:36px;height:36px;background:linear-gradient(135deg,var(--k-primary),var(--k-accent));border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:0.9rem">أ</div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="d-flex">
+  <div class="k-sidebar">
+    <div class="k-sidebar-brand mb-4">خدم<span>ة</span></div>
+    <nav class="nav flex-column gap-1">
+      <a href="../customer/dashboard.html" class="nav-link"><i class="fas fa-home"></i> لوحة التحكم</a>
+      <a href="../customer/search.html" class="nav-link"><i class="fas fa-search"></i> البحث</a>
+      <a href="../customer/notifications.html" class="nav-link"><i class="fas fa-bell"></i> الإشعارات</a>
+      <a href="../customer/chat.html" class="nav-link"><i class="fas fa-comments"></i> المحادثات</a>
+      <a href="../rewards/referral-program.html" class="nav-link"><i class="fas fa-gift"></i> برنامج الإحالة</a>
+    </nav>
+  </div>
+
+  <div class="k-main-content flex-grow-1">
+
+    <!-- Order Summary Banner -->
+    <div class="mb-4" style="background:linear-gradient(135deg,var(--k-primary),var(--k-secondary));border-radius:20px;padding:1.75rem;color:#fff">
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div class="d-flex align-items-center gap-3">
+          <div style="width:56px;height:56px;background:rgba(255,255,255,0.2);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.8rem">🔧</div>
+          <div>
+            <div style="font-size:1.15rem;font-weight:700;margin-bottom:0.2rem">إصلاح تسريب مياه</div>
+            <div style="font-size:0.88rem;opacity:0.9">أحمد السباك المحترف · طلب #KH-0451</div>
+          </div>
+        </div>
+        <div style="text-align:left">
+          <div style="font-size:0.8rem;opacity:0.85;margin-bottom:3px">موعد الخدمة</div>
+          <div style="font-size:1.05rem;font-weight:700">اليوم، 10:30 ص</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ETA Card -->
+    <div class="card border-0 shadow-sm mb-4" id="etaCard" style="border-radius:16px;border-right:4px solid var(--k-primary)!important">
+      <div class="card-body d-flex justify-content-between align-items-center">
+        <div>
+          <div style="font-size:0.88rem;color:var(--k-gray);margin-bottom:0.3rem"><i class="fas fa-route ms-2" style="color:var(--k-primary)"></i> المزود في الطريق — الوقت المتوقع للوصول</div>
+          <div id="etaTimer" style="font-size:2.4rem;font-weight:900;color:var(--k-primary);letter-spacing:2px;font-variant-numeric:tabular-nums">12:00</div>
+          <div style="font-size:0.78rem;color:var(--k-gray)">يتحدث تلقائياً</div>
+        </div>
+        <div style="font-size:3rem;opacity:0.6">🗺️</div>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      <!-- Stepper -->
+      <div class="col-lg-6">
+        <div class="card border-0 shadow-sm h-100" style="border-radius:16px">
+          <div class="card-body">
+            <h6 class="fw-bold mb-4"><i class="fas fa-map-marker-alt ms-2" style="color:var(--k-primary)"></i> حالة الطلب</h6>
+            <div class="stepper">
+              <div class="step done" id="step1">
+                <div class="step-circle"><i class="fas fa-check"></i></div>
+                <div class="step-body">
+                  <div class="step-title fw-bold mb-1">تم قبول الطلب</div>
+                  <div style="font-size:0.83rem;color:var(--k-gray)">وافق المزود وتأكدت تفاصيل الخدمة</div>
+                  <div style="font-size:0.75rem;color:var(--k-gray);margin-top:3px">الساعة 9:15 ص</div>
+                </div>
+              </div>
+              <div class="step active" id="step2">
+                <div class="step-circle"><i class="fas fa-car"></i></div>
+                <div class="step-body">
+                  <div class="step-title fw-bold mb-1">المزود في الطريق</div>
+                  <div style="font-size:0.83rem;color:var(--k-gray)">أحمد السباك في طريقه إليك حالياً</div>
+                  <div style="font-size:0.75rem;color:var(--k-gray);margin-top:3px">الساعة 9:55 ص — جارٍ الآن</div>
+                </div>
+              </div>
+              <div class="step pending" id="step3">
+                <div class="step-circle"><i class="fas fa-cog"></i></div>
+                <div class="step-body">
+                  <div class="step-title fw-bold mb-1">بدأ العمل</div>
+                  <div style="font-size:0.83rem;color:var(--k-gray)">سيبدأ المزود تنفيذ الخدمة عند الوصول</div>
+                </div>
+              </div>
+              <div class="step pending" id="step4">
+                <div class="step-circle"><i class="fas fa-flag-checkered"></i></div>
+                <div class="step-body">
+                  <div class="step-title fw-bold mb-1">اكتملت الخدمة</div>
+                  <div style="font-size:0.83rem;color:var(--k-gray)">ستُشعر عند الاكتمال لتأكيد الدفع</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Provider + Map -->
+      <div class="col-lg-6 d-flex flex-column gap-4">
+        <!-- Provider -->
+        <div class="card border-0 shadow-sm" style="border-radius:16px">
+          <div class="card-body">
+            <h6 class="fw-bold mb-3" style="color:var(--k-gray);font-size:0.85rem">مزود الخدمة</h6>
+            <div class="d-flex align-items-center gap-3 mb-3">
+              <div style="width:52px;height:52px;background:linear-gradient(135deg,var(--k-primary),var(--k-accent));border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:1.2rem;flex-shrink:0">أ</div>
+              <div>
+                <div style="font-weight:700;font-size:1rem">أحمد السباك المحترف</div>
+                <div class="k-rating-stars" style="font-size:0.85rem"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i> <span style="color:var(--k-gray);font-size:0.78rem">(128) · 4.9</span></div>
+              </div>
+            </div>
+            <button class="btn btn-outline-success w-100" onclick="callProvider()"><i class="fas fa-phone ms-2"></i> اتصل بالمزود</button>
+          </div>
+        </div>
+
+        <!-- Map -->
+        <div class="card border-0 shadow-sm" style="border-radius:16px">
+          <div class="card-body">
+            <h6 class="fw-bold mb-3" style="color:var(--k-gray);font-size:0.85rem">الموقع التقريبي</h6>
+            <div class="map-area">
+              <div class="map-pin"></div>
+              <div class="map-label">📍 الرياض، حي النرجس</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="d-flex gap-3 mt-4 flex-wrap">
+      <a href="../customer/chat.html" class="btn btn-primary flex-fill"><i class="fas fa-comments ms-2"></i> تواصل مع المزود</a>
+      <button class="btn btn-outline-danger" id="cancelBtn" onclick="cancelOrder()"><i class="fas fa-times ms-2"></i> إلغاء الطلب</button>
+    </div>
+
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../assets/js/khedmah.js"></script>
+<script>
+  var currentStep=2, etaSecs=12*60;
+
+  function pad(n){ return String(n).padStart(2,'0'); }
+
+  var timer=setInterval(function(){
+    if(etaSecs>0){ etaSecs--; }
+    else{
+      clearInterval(timer);
+      document.getElementById('etaCard').style.display='none';
+      advanceStep(3);
+      if(typeof kToast==='function') kToast('🛎️ وصل المزود! بدأ العمل.');
+    }
+    var m=Math.floor(etaSecs/60), s=etaSecs%60;
+    document.getElementById('etaTimer').textContent=pad(m)+':'+pad(s);
+  },1000);
+
+  function advanceStep(n){
+    currentStep=n;
+    for(var i=1;i<n;i++){
+      var s=document.getElementById('step'+i);
+      s.className='step done';
+      s.querySelector('.step-circle').innerHTML='<i class="fas fa-check"></i>';
+    }
+    var active=document.getElementById('step'+n);
+    if(active) active.className='step active';
+    if(n>1) document.getElementById('cancelBtn').disabled=true;
+  }
+
+  function callProvider(){
+    if(typeof kToast==='function') kToast('📞 جارٍ الاتصال بأحمد السباك...');
+  }
+
+  function cancelOrder(){
+    if(currentStep>1) return;
+    if(confirm('هل تريد إلغاء الطلب؟\n\nسيتم استرداد المبلغ خلال 2-5 أيام عمل.')){
+      document.getElementById('cancelBtn').disabled=true;
+      if(typeof kToast==='function') kToast('✓ تم إلغاء الطلب. سيُسترد المبلغ قريباً.');
+    }
+  }
+</script>
+</body>
+</html>

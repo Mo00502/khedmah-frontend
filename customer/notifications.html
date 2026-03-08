@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الإشعارات — خدمة</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="../assets/css/khedmah.css">
+  <style>
+    body { background:#f1f5f9; }
+    @media(max-width:991px){.k-sidebar{display:none}.k-main-content{margin-right:0}}
+    .notif-card {
+      background:#fff; border-radius:14px; padding:1.1rem 1.25rem;
+      border:1px solid #e2e8f0; margin-bottom:0.75rem;
+      display:flex; align-items:flex-start; gap:1rem;
+      transition:all 0.2s; border-right:4px solid transparent;
+    }
+    .notif-card.unread { border-right-color:var(--k-primary); background:rgba(2,128,144,0.02); }
+    .notif-card:hover { border-color:var(--k-primary); box-shadow:0 4px 16px rgba(2,128,144,0.08); }
+    .notif-icon { width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.15rem;flex-shrink:0; }
+    .notif-icon.quote   { background:rgba(2,128,144,0.12);  color:var(--k-primary); }
+    .notif-icon.remind  { background:rgba(245,158,11,0.12); color:var(--k-warning); }
+    .notif-icon.payment { background:rgba(16,185,129,0.12); color:var(--k-success); }
+    .notif-icon.rating  { background:rgba(236,72,153,0.12); color:#ec4899; }
+    .notif-icon.chat    { background:rgba(99,102,241,0.12); color:#6366f1; }
+    .unread-dot { width:9px;height:9px;background:var(--k-primary);border-radius:50%;flex-shrink:0;margin-top:6px; }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../assets/js/supabase-client.js"></script>
+</head>
+<body>
+<script>
+  (function(){
+    if(localStorage.getItem('khedmah_demo')) return;
+    var has=Object.keys(localStorage).some(function(k){return k.indexOf('auth-token')!==-1||k.indexOf('supabase')!==-1;});
+    if(!has) window.location.replace('../auth/login.html');
+  })();
+</script>
+
+<!-- Navbar -->
+<nav class="k-navbar navbar navbar-expand-lg" style="position:sticky;top:0;z-index:200">
+  <div class="container-fluid px-4">
+    <a class="navbar-brand" href="../index.html">خدم<span style="color:var(--k-accent)">ة</span></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navMain">
+      <ul class="navbar-nav me-auto gap-1">
+        <li class="nav-item"><a class="nav-link" href="dashboard.html">لوحة التحكم</a></li>
+        <li class="nav-item"><a class="nav-link" href="search.html">الخدمات</a></li>
+        <li class="nav-item"><a class="nav-link active" href="notifications.html">الإشعارات</a></li>
+        <li class="nav-item"><a class="nav-link" href="chat.html">المحادثات</a></li>
+      </ul>
+      <div class="d-flex gap-2 align-items-center">
+        <span style="color:rgba(255,255,255,0.75);font-size:0.9rem">أحمد محمد</span>
+        <div style="width:36px;height:36px;background:linear-gradient(135deg,var(--k-primary),var(--k-accent));border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:0.9rem">أ</div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="d-flex">
+  <!-- Sidebar -->
+  <div class="k-sidebar">
+    <div class="k-sidebar-brand mb-4">خدم<span>ة</span></div>
+    <nav class="nav flex-column gap-1">
+      <a href="dashboard.html" class="nav-link"><i class="fas fa-home"></i> لوحة التحكم</a>
+      <a href="search.html" class="nav-link"><i class="fas fa-search"></i> البحث عن خدمات</a>
+      <a href="quote-request.html" class="nav-link"><i class="fas fa-file-invoice"></i> طلب جديد</a>
+      <a href="notifications.html" class="nav-link active"><i class="fas fa-bell"></i> الإشعارات <span id="sidebarBadge" class="badge bg-danger ms-1">3</span></a>
+      <a href="chat.html" class="nav-link"><i class="fas fa-comments"></i> المحادثات</a>
+      <a href="../rewards/referral-program.html" class="nav-link"><i class="fas fa-gift"></i> برنامج الإحالة</a>
+      <a href="settings.html" class="nav-link"><i class="fas fa-cog"></i> الإعدادات</a>
+      <a href="#" onclick="localStorage.removeItem('khedmah_demo');sessionStorage.clear();window.location.href='../auth/login.html'" class="nav-link" style="color:rgba(239,68,68,0.8)!important;margin-top:2rem"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</a>
+    </nav>
+  </div>
+
+  <!-- Main Content -->
+  <div class="k-main-content flex-grow-1">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+      <div>
+        <h4 style="font-weight:900;color:var(--k-dark-2);margin-bottom:0.25rem">
+          الإشعارات <span id="unreadBadge" class="badge bg-danger ms-2" style="font-size:0.9rem">3</span>
+        </h4>
+        <p style="color:var(--k-gray);font-size:0.9rem;margin:0">تابع آخر تحديثات طلباتك وعروض الأسعار</p>
+      </div>
+      <button class="btn btn-outline-primary" onclick="markAllRead()">
+        <i class="fas fa-check-double ms-2"></i> تحديد الكل كمقروء
+      </button>
+    </div>
+
+    <!-- Tabs -->
+    <ul class="nav nav-tabs mb-4" id="notifTabs">
+      <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#tabAll">الكل</a></li>
+      <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tabUnread">غير مقروء <span id="unreadTabBadge" class="badge bg-danger ms-1">3</span></a></li>
+      <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tabArchive">الأرشيف</a></li>
+    </ul>
+
+    <div class="tab-content">
+
+      <!-- All -->
+      <div class="tab-pane fade show active" id="tabAll">
+
+        <div class="notif-card unread" id="n1">
+          <div class="notif-icon quote"><i class="fas fa-bell"></i></div>
+          <div class="flex-grow-1">
+            <div style="font-weight:700;color:var(--k-dark-2);margin-bottom:0.2rem">عرض سعر جديد</div>
+            <div style="font-size:0.88rem;color:var(--k-gray);margin-bottom:0.5rem">أحمد السباك المحترف أرسل عرضاً بقيمة <strong>180 ر.س</strong> لخدمة إصلاح تسريب المياه</div>
+            <div class="d-flex align-items-center gap-3 flex-wrap">
+              <span style="font-size:0.78rem;color:var(--k-gray)"><i class="fas fa-clock ms-1"></i> منذ 5 دقائق</span>
+              <a href="../shared/payment-escrow.html" style="font-size:0.82rem;color:var(--k-primary);font-weight:700;text-decoration:none">عرض التفاصيل ←</a>
+              <button class="btn btn-link btn-sm p-0" style="font-size:0.78rem;color:var(--k-gray)" onclick="markRead('n1')">تحديد كمقروء</button>
+            </div>
+          </div>
+          <div class="unread-dot" id="dot-n1"></div>
+        </div>
+
+        <div class="notif-card unread" id="n2">
+          <div class="notif-icon remind"><i class="fas fa-clock"></i></div>
+          <div class="flex-grow-1">
+            <div style="font-weight:700;color:var(--k-dark-2);margin-bottom:0.2rem">تذكير تأكيد الخدمة</div>
+            <div style="font-size:0.88rem;color:var(--k-gray);margin-bottom:0.5rem">تذكير: لديك <strong>24 ساعة</strong> لتأكيد إتمام خدمة تركيب المكيف وإطلاق المبلغ</div>
+            <div class="d-flex align-items-center gap-3 flex-wrap">
+              <span style="font-size:0.78rem;color:var(--k-gray)"><i class="fas fa-clock ms-1"></i> منذ ساعتين</span>
+              <a href="service-confirmation.html" style="font-size:0.82rem;color:var(--k-primary);font-weight:700;text-decoration:none">تأكيد الخدمة ←</a>
+              <button class="btn btn-link btn-sm p-0" style="font-size:0.78rem;color:var(--k-gray)" onclick="markRead('n2')">تحديد كمقروء</button>
+            </div>
+          </div>
+          <div class="unread-dot" id="dot-n2"></div>
+        </div>
+
+        <div class="notif-card unread" id="n3">
+          <div class="notif-icon payment"><i class="fas fa-money-bill-wave"></i></div>
+          <div class="flex-grow-1">
+            <div style="font-weight:700;color:var(--k-dark-2);margin-bottom:0.2rem">تحرير مبلغ</div>
+            <div style="font-size:0.88rem;color:var(--k-gray);margin-bottom:0.5rem">تم تحرير مبلغ <strong>350 ر.س</strong> لمزود خدمة تنظيف المنازل بعد تأكيدك</div>
+            <div class="d-flex align-items-center gap-3 flex-wrap">
+              <span style="font-size:0.78rem;color:var(--k-gray)"><i class="fas fa-clock ms-1"></i> منذ 5 ساعات</span>
+              <a href="invoice.html" style="font-size:0.82rem;color:var(--k-primary);font-weight:700;text-decoration:none">عرض الفاتورة ←</a>
+              <button class="btn btn-link btn-sm p-0" style="font-size:0.78rem;color:var(--k-gray)" onclick="markRead('n3')">تحديد كمقروء</button>
+            </div>
+          </div>
+          <div class="unread-dot" id="dot-n3"></div>
+        </div>
+
+        <div class="notif-card" id="n4">
+          <div class="notif-icon rating"><i class="fas fa-star"></i></div>
+          <div class="flex-grow-1">
+            <div style="font-weight:700;color:var(--k-dark-2);margin-bottom:0.2rem">تقييم مطلوب</div>
+            <div style="font-size:0.88rem;color:var(--k-gray);margin-bottom:0.5rem">يرجى تقييم خدمة التنظيف التي حصلت عليها من فاطمة. رأيك يساعد المجتمع</div>
+            <div class="d-flex align-items-center gap-3 flex-wrap">
+              <span style="font-size:0.78rem;color:var(--k-gray)"><i class="fas fa-clock ms-1"></i> أمس</span>
+              <a href="rate-service.html" style="font-size:0.82rem;color:var(--k-primary);font-weight:700;text-decoration:none">تقييم الآن ←</a>
+            </div>
+          </div>
+          <div class="unread-dot" id="dot-n4" style="display:none"></div>
+        </div>
+
+        <div class="notif-card" id="n5">
+          <div class="notif-icon chat"><i class="fas fa-comment"></i></div>
+          <div class="flex-grow-1">
+            <div style="font-weight:700;color:var(--k-dark-2);margin-bottom:0.2rem">رسالة جديدة</div>
+            <div style="font-size:0.88rem;color:var(--k-gray);margin-bottom:0.5rem">محمد الكهربائي: "سأكون في موقعك الساعة 10 صباحاً إن شاء الله"</div>
+            <div class="d-flex align-items-center gap-3 flex-wrap">
+              <span style="font-size:0.78rem;color:var(--k-gray)"><i class="fas fa-clock ms-1"></i> منذ يومين</span>
+              <a href="chat.html" style="font-size:0.82rem;color:var(--k-primary);font-weight:700;text-decoration:none">فتح المحادثة ←</a>
+            </div>
+          </div>
+          <div class="unread-dot" id="dot-n5" style="display:none"></div>
+        </div>
+
+      </div>
+
+      <!-- Unread -->
+      <div class="tab-pane fade" id="tabUnread">
+        <div id="unreadList"></div>
+        <div id="emptyUnread" style="display:none;text-align:center;padding:3rem">
+          <div style="font-size:3rem;margin-bottom:1rem">🎉</div>
+          <h5 style="font-weight:700">لا توجد إشعارات غير مقروءة</h5>
+          <p style="color:var(--k-gray)">أنت على اطلاع بكل شيء!</p>
+        </div>
+      </div>
+
+      <!-- Archive -->
+      <div class="tab-pane fade" id="tabArchive">
+        <div class="notif-card">
+          <div class="notif-icon quote"><i class="fas fa-bell"></i></div>
+          <div class="flex-grow-1">
+            <div style="font-weight:700;color:var(--k-dark-2);margin-bottom:0.2rem">عرض سعر — منتهي الصلاحية</div>
+            <div style="font-size:0.88rem;color:var(--k-gray);margin-bottom:0.5rem">انتهت صلاحية عرض السعر المقدم من خالد الكهربائي لخدمة تمديد الأسلاك</div>
+            <span style="font-size:0.78rem;color:var(--k-gray)"><i class="fas fa-clock ms-1"></i> منذ أسبوع</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../assets/js/khedmah.js"></script>
+<script>
+  var unread = new Set(['n1','n2','n3']);
+
+  function updateBadges() {
+    var c = unread.size;
+    var ub = document.getElementById('unreadBadge');
+    var sb = document.getElementById('sidebarBadge');
+    var tb = document.getElementById('unreadTabBadge');
+    [ub,sb,tb].forEach(function(el){ if(el){ el.textContent=c; el.style.display=c?'':'none'; } });
+  }
+
+  function markRead(id) {
+    if(!unread.has(id)) return;
+    unread.delete(id);
+    var card = document.getElementById(id);
+    if(card){ card.classList.remove('unread'); }
+    var dot = document.getElementById('dot-'+id);
+    if(dot){ dot.style.display='none'; }
+    updateBadges();
+    refreshUnread();
+    if(typeof kToast==='function') kToast('تم تحديده كمقروء ✓');
+  }
+
+  function markAllRead() {
+    unread.forEach(function(id){ markRead(id); });
+    if(typeof kToast==='function') kToast('تم تحديد الكل كمقروء ✓');
+  }
+
+  function refreshUnread() {
+    var list = document.getElementById('unreadList');
+    var empty = document.getElementById('emptyUnread');
+    list.innerHTML='';
+    var cards = document.querySelectorAll('#tabAll .notif-card.unread');
+    if(cards.length===0){ empty.style.display='block'; return; }
+    empty.style.display='none';
+    cards.forEach(function(c){ list.appendChild(c.cloneNode(true)); });
+  }
+
+  document.getElementById('notifTabs').addEventListener('shown.bs.tab', function(e){
+    if(e.target.getAttribute('href')==='#tabUnread') refreshUnread();
+  });
+
+  updateBadges();
+</script>
+</body>
+</html>

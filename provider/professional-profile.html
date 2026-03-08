@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>م. سارة المالكي — مهندسة معمارية — خدمة</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="../assets/css/khedmah.css">
+  <style>
+    :root {
+      --prof-color: #7c3aed;
+      --prof-dk:    #5b21b6;
+      --prof-light: #f5f3ff;
+    }
+    body { background: #f1f5f9; }
+
+    /* Cover */
+    .pp-cover {
+      height: 240px;
+      background: linear-gradient(135deg, #1e1b4b 0%, #3730a3 50%, #7c3aed 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    .pp-cover::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 30% 60%, rgba(124,58,237,0.4) 0%, transparent 60%),
+                  radial-gradient(ellipse at 80% 20%, rgba(99,102,241,0.3) 0%, transparent 50%);
+    }
+
+    /* Avatar */
+    .pp-avatar {
+      width: 120px; height: 120px;
+      border-radius: 50%;
+      border: 4px solid #fff;
+      background: linear-gradient(135deg, #7c3aed, #6366f1);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2.8rem; color: #fff; font-weight: 900;
+      position: absolute;
+      bottom: -60px;
+      right: 2rem;
+      box-shadow: 0 8px 32px rgba(124,58,237,0.4);
+    }
+
+    /* Profile info area */
+    .pp-info-bar {
+      background: #fff;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 1.25rem 0;
+    }
+
+    /* Tab nav */
+    .pp-tabs {
+      background: #fff;
+      border-bottom: 2px solid #e2e8f0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .pp-tab {
+      padding: 0.85rem 1.5rem;
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: var(--k-gray);
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+      transition: all 0.2s;
+      background: none;
+      border-top: none;
+      border-left: none;
+      border-right: none;
+      min-height: 44px;
+    }
+    .pp-tab:hover   { color: var(--prof-color); }
+    .pp-tab.active  { color: var(--prof-color); border-bottom-color: var(--prof-color); }
+
+    /* Pricing method badge */
+    .pm-badge {
+      display: inline-flex; align-items: center; gap: 0.25rem;
+      font-size: 0.72rem; font-weight: 700;
+      border-radius: 50px;
+      padding: 0.2rem 0.6rem;
+    }
+    .pm-hourly   { background: rgba(99,102,241,0.1); color: #4f46e5; }
+    .pm-fixed    { background: rgba(2,128,144,0.1);  color: var(--k-primary); }
+    .pm-percent  { background: rgba(245,158,11,0.1); color: #92400e; }
+    .pm-sqm      { background: rgba(16,185,129,0.1); color: #047857; }
+    .pm-retainer { background: rgba(124,58,237,0.1); color: var(--prof-color); }
+    .pm-custom   { background: rgba(100,116,139,0.1); color: #475569; }
+
+    /* Service item row */
+    .svc-item {
+      border: 1.5px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 1.25rem;
+      background: #fff;
+      transition: all 0.2s;
+      margin-bottom: 0.75rem;
+    }
+    .svc-item:hover { border-color: var(--prof-color); box-shadow: 0 4px 16px rgba(124,58,237,0.1); }
+    .svc-price-main {
+      font-size: 1.15rem;
+      font-weight: 900;
+      color: var(--prof-color);
+    }
+    .svc-price-note {
+      font-size: 0.75rem;
+      color: var(--k-gray);
+      margin-top: 0.1rem;
+    }
+
+    /* Portfolio grid */
+    .port-item {
+      border-radius: 14px;
+      overflow: hidden;
+      position: relative;
+      cursor: pointer;
+      aspect-ratio: 4/3;
+    }
+    .port-img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      background: linear-gradient(135deg, #7c3aed, #6366f1);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 3rem; color: rgba(255,255,255,0.7);
+      transition: transform 0.3s;
+    }
+    .port-item:hover .port-img { transform: scale(1.05); }
+    .port-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(30,27,75,0.85), transparent 60%);
+      opacity: 0;
+      transition: opacity 0.3s;
+      display: flex; align-items: flex-end; padding: 1rem;
+    }
+    .port-item:hover .port-overlay { opacity: 1; }
+
+    /* Credential item */
+    .cred-item {
+      display: flex; align-items: flex-start; gap: 1rem;
+      padding: 1rem;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      background: #fff;
+      margin-bottom: 0.75rem;
+    }
+    .cred-icon {
+      width: 44px; height: 44px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.25rem;
+      flex-shrink: 0;
+    }
+
+    /* Social links */
+    .social-link-item {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      border-radius: 50px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s;
+      margin: 0.2rem;
+    }
+    .social-link-item:hover { opacity: 0.85; transform: translateY(-2px); }
+
+    /* Review card */
+    .review-card {
+      background: #fff;
+      border-radius: 14px;
+      padding: 1.25rem;
+      border: 1px solid #e2e8f0;
+      margin-bottom: 0.75rem;
+    }
+
+    /* Sticky sidebar card */
+    .pp-action-card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.09);
+      position: sticky;
+      top: 80px;
+    }
+
+    /* SCE Badge */
+    .sce-badge {
+      background: linear-gradient(135deg, #065f46, #047857);
+      color: #fff;
+      border-radius: 10px;
+      padding: 0.6rem 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+
+<a href="#main-content" class="k-skip-link">تخطى إلى المحتوى الرئيسي</a>
+
+<nav class="k-navbar navbar navbar-expand-lg" role="navigation">
+  <div class="container">
+    <a class="navbar-brand" href="../index.html">خدم<span style="color:var(--k-accent)">ة</span></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain" aria-label="فتح القائمة">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navMain">
+      <ul class="navbar-nav me-auto gap-1">
+        <li class="nav-item"><a class="nav-link" href="../index.html">الرئيسية</a></li>
+        <li class="nav-item"><a class="nav-link" href="../services/professional-services.html">الخدمات المهنية</a></li>
+        <li class="nav-item"><a class="nav-link" href="../customer/home-services.html">خدمات المنازل</a></li>
+      </ul>
+      <div class="d-flex gap-2">
+        <a href="../auth/login.html"  class="btn btn-outline-light btn-sm" style="min-height:40px;display:flex;align-items:center">دخول</a>
+        <a href="../auth/signup.html" class="btn btn-accent btn-sm"        style="min-height:40px;display:flex;align-items:center">سجّل الآن</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<main id="main-content">
+
+<!-- Cover -->
+<div class="pp-cover">
+  <div class="container position-relative" style="height:100%">
+    <div class="pp-avatar" aria-hidden="true">م.س</div>
+  </div>
+</div>
+
+<!-- Profile Info Bar -->
+<div class="pp-info-bar">
+  <div class="container">
+    <div style="padding-right:160px;padding-top:0.5rem">
+      <div class="d-flex align-items-start flex-wrap gap-3 justify-content-between">
+        <div>
+          <!-- Name + verified -->
+          <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
+            <h1 style="font-weight:900;font-size:1.5rem;color:var(--k-dark-2);margin:0">م. سارة المالكي</h1>
+            <span style="background:rgba(16,185,129,0.1);color:var(--k-success);border:1px solid rgba(16,185,129,0.25);border-radius:50px;padding:0.2rem 0.7rem;font-size:0.75rem;font-weight:700">
+              <i class="fas fa-check-circle me-1"></i>موثّقة
+            </span>
+            <span style="background:rgba(124,58,237,0.1);color:var(--prof-color);border:1px solid rgba(124,58,237,0.2);border-radius:50px;padding:0.2rem 0.7rem;font-size:0.75rem;font-weight:700">
+              <i class="fas fa-user-graduate me-1"></i>مهندسة معمارية
+            </span>
+          </div>
+          <!-- Sub info -->
+          <div class="d-flex flex-wrap gap-3" style="font-size:0.85rem;color:var(--k-gray)">
+            <span><i class="fas fa-drafting-compass me-1" style="color:var(--prof-color)"></i>هندسة معمارية — 9 سنوات خبرة</span>
+            <span><i class="fas fa-map-marker-alt me-1"></i>الرياض — تخدم كل مناطق المملكة</span>
+            <span><i class="fas fa-briefcase me-1"></i>62 مشروع منجز</span>
+            <span><i class="fas fa-star me-1" style="color:#f59e0b"></i>5.0 (62 تقييم)</span>
+            <span><i class="fas fa-clock me-1"></i>يرد خلال ساعة</span>
+          </div>
+        </div>
+        <!-- SCE badge -->
+        <div class="sce-badge" title="عضوية هيئة المهندسين السعوديين">
+          <i class="fas fa-shield-alt fa-lg"></i>
+          <div>
+            <div style="font-size:0.68rem;opacity:0.85">هيئة المهندسين السعوديين</div>
+            <div style="font-size:0.82rem">عضوية نشطة #A-2024-7823</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick stats -->
+      <div class="d-flex flex-wrap gap-3 mt-3" style="font-size:0.82rem">
+        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:0.4rem 0.9rem;text-align:center">
+          <div style="font-weight:800;color:var(--prof-color)">62</div>
+          <div style="color:var(--k-gray);font-size:0.72rem">مشروع منجز</div>
+        </div>
+        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:0.4rem 0.9rem;text-align:center">
+          <div style="font-weight:800;color:var(--k-success)">94%</div>
+          <div style="color:var(--k-gray);font-size:0.72rem">عملاء يعودون</div>
+        </div>
+        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:0.4rem 0.9rem;text-align:center">
+          <div style="font-weight:800;color:var(--k-dark-2)">< ساعة</div>
+          <div style="color:var(--k-gray);font-size:0.72rem">متوسط الرد</div>
+        </div>
+        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:0.4rem 0.9rem;text-align:center">
+          <div style="font-weight:800;color:var(--k-warning)">5.0 ★</div>
+          <div style="color:var(--k-gray);font-size:0.72rem">متوسط التقييم</div>
+        </div>
+        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:0.4rem 0.9rem;text-align:center">
+          <div style="font-weight:800;color:var(--k-dark-2)">سكني / تجاري</div>
+          <div style="color:var(--k-gray);font-size:0.72rem">القطاعات</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Tabs -->
+<div class="pp-tabs">
+  <div class="container">
+    <div class="d-flex overflow-auto" style="gap:0;scrollbar-width:none" role="tablist">
+      <button class="pp-tab active" role="tab" aria-selected="true"  onclick="switchPpTab('services',this)" id="tab-services">
+        <i class="fas fa-tags me-1"></i>الخدمات والأسعار
+      </button>
+      <button class="pp-tab" role="tab" aria-selected="false" onclick="switchPpTab('portfolio',this)" id="tab-portfolio">
+        <i class="fas fa-images me-1"></i>مشاريع سابقة
+      </button>
+      <button class="pp-tab" role="tab" aria-selected="false" onclick="switchPpTab('credentials',this)" id="tab-credentials">
+        <i class="fas fa-certificate me-1"></i>الشهادات والتراخيص
+      </button>
+      <button class="pp-tab" role="tab" aria-selected="false" onclick="switchPpTab('reviews',this)" id="tab-reviews">
+        <i class="fas fa-star me-1"></i>التقييمات (62)
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Main content -->
+<div class="container py-4">
+  <div class="row g-4">
+
+    <!-- LEFT: Tabs content -->
+    <div class="col-lg-8">
+
+      <!-- ── SERVICES & PRICING TAB ── -->
+      <div id="pp-services">
+
+        <!-- Pricing model explainer -->
+        <div style="background:linear-gradient(135deg,var(--prof-light),#ede9fe);border-radius:16px;padding:1.25rem 1.5rem;margin-bottom:1.5rem;border:1px solid rgba(124,58,237,0.15)">
+          <div style="font-weight:800;color:var(--prof-dk);margin-bottom:0.5rem"><i class="fas fa-info-circle me-1"></i>طريقة التسعير</div>
+          <p style="font-size:0.85rem;color:#4c1d95;margin:0;line-height:1.7">
+            كل خدمة لها طريقة تسعير مختلفة بحسب طبيعتها. <strong>الاستشارة</strong> بالساعة — <strong>المخططات والتصاميم</strong> بسعر ثابت — <strong>المشاريع الكاملة</strong> بنسبة من قيمة البناء — <strong>التصاميم الداخلية المتكررة</strong> بالمتر المربع.
+          </p>
+          <div class="d-flex flex-wrap gap-1 mt-2">
+            <span class="pm-badge pm-hourly"><i class="fas fa-clock"></i>بالساعة</span>
+            <span class="pm-badge pm-fixed"><i class="fas fa-tag"></i>سعر ثابت</span>
+            <span class="pm-badge pm-percent"><i class="fas fa-percent"></i>نسبة من التكلفة</span>
+            <span class="pm-badge pm-sqm"><i class="fas fa-ruler-combined"></i>بالمتر المربع</span>
+            <span class="pm-badge pm-retainer"><i class="fas fa-sync"></i>راتب شهري</span>
+            <span class="pm-badge pm-custom"><i class="fas fa-comment-dots"></i>عرض مخصص</span>
+          </div>
+        </div>
+
+        <!-- Category: Consultation -->
+        <h5 style="font-weight:800;color:var(--k-dark-2);margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:2px solid #f1f5f9">
+          <i class="fas fa-comments me-2" style="color:var(--prof-color)"></i>الاستشارات
+        </h5>
+
+        <div class="svc-item">
+          <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+            <div style="flex:1">
+              <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+                <strong style="font-size:0.95rem">استشارة معمارية أولية</strong>
+                <span class="pm-badge pm-hourly"><i class="fas fa-clock"></i>بالساعة</span>
+                <span style="font-size:0.72rem;background:#f0fdf4;color:#166534;border-radius:50px;padding:0.15rem 0.5rem;font-weight:600"><i class="fas fa-video me-1"></i>أونلاين</span>
+              </div>
+              <p style="font-size:0.85rem;color:var(--k-gray);margin-bottom:0.5rem">مناقشة المشروع، دراسة الاحتياجات، مراجعة مبدئية للفكرة مع توصيات أولية. مناسبة للمشاريع غير محددة الملامح.</p>
+              <div style="font-size:0.78rem;color:var(--k-gray)">
+                <span class="me-3"><i class="fas fa-check me-1" style="color:var(--k-success)"></i>تسجيل المكالمة</span>
+                <span class="me-3"><i class="fas fa-check me-1" style="color:var(--k-success)"></i>ملخص كتابي بعد الجلسة</span>
+                <span><i class="fas fa-clock me-1"></i>60 دقيقة / جلسة</span>
+              </div>
+            </div>
+            <div style="text-align:center;min-width:120px">
+              <div class="svc-price-main">450 ر.س/س</div>
+              <div class="svc-price-note">حد أدنى ساعة واحدة</div>
+              <a href="../customer/quote-request.html?type=professional" class="btn btn-sm mt-2 px-3" style="background:var(--prof-color);color:#fff;border:none;border-radius:8px;min-height:36px;font-size:0.82rem">احجز</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="svc-item">
+          <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+            <div style="flex:1">
+              <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+                <strong style="font-size:0.95rem">مراجعة مخططات موجودة</strong>
+                <span class="pm-badge pm-fixed"><i class="fas fa-tag"></i>سعر ثابت</span>
+                <span style="font-size:0.72rem;background:#f0fdf4;color:#166534;border-radius:50px;padding:0.15rem 0.5rem;font-weight:600"><i class="fas fa-video me-1"></i>أونلاين</span>
+              </div>
+              <p style="font-size:0.85rem;color:var(--k-gray);margin-bottom:0.5rem">مراجعة مخططات جاهزة والتعليق عليها تقنياً وجمالياً مع توصيات مكتوبة.</p>
+              <div style="font-size:0.78rem;color:var(--k-gray)">
+                <span class="me-3"><i class="fas fa-check me-1" style="color:var(--k-success)"></i>تقرير مفصل</span>
+                <span><i class="fas fa-clock me-1"></i>تسليم خلال 48 ساعة</span>
+              </div>
+            </div>
+            <div style="text-align:center;min-width:120px">
+              <div class="svc-price-main">900 ر.س</div>
+              <div class="svc-price-note">حتى 3 مخططات</div>
+              <a href="../customer/quote-request.html?type=professional" class="btn btn-sm mt-2 px-3" style="background:var(--prof-color);color:#fff;border:none;border-radius:8px;min-height:36px;font-size:0.82rem">احجز</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Category: Design Packages -->
+        <h5 style="font-weight:800;color:var(--k-dark-2);margin:1.5rem 0 1rem;padding-bottom:0.5rem;border-bottom:2px solid #f1f5f9">
+          <i class="fas fa-drafting-compass me-2" style="color:var(--prof-color)"></i>التصميم المعماري
+        </h5>
+
+        <div class="svc-item">
+          <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+            <div style="flex:1">
+              <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+                <strong style="font-size:0.95rem">حزمة التصميم المفاهيمي</strong>
+                <span class="pm-badge pm-fixed"><i class="fas fa-tag"></i>سعر ثابت</span>
+                <span style="font-size:0.72rem;background:#eff6ff;color:#1d4ed8;border-radius:50px;padding:0.15rem 0.5rem;font-weight:600">موصى به</span>
+              </div>
+              <p style="font-size:0.85rem;color:var(--k-gray);margin-bottom:0.5rem">تصميم مبدئي يشمل المسقط والواجهات والمنظور ثلاثي الأبعاد. مناسب لمرحلة الفكرة قبل الترخيص.</p>
+              <div style="font-size:0.78rem;color:var(--k-gray)">
+                <span class="me-3"><i class="fas fa-check me-1" style="color:var(--k-success)"></i>مسقط + واجهات</span>
+                <span class="me-3"><i class="fas fa-check me-1" style="color:var(--k-success)"></i>منظور 3D</span>
+                <span class="me-3"><i class="fas fa-check me-1" style="color:var(--k-success)"></i>تعديل مجاني واحد</span>
+                <span><i class="fas fa-clock me-1"></i>10-14 يوم</span>
+              </div>
+            </div>
+            <div style="text-align:center;min-width:120px">
+              <div class="svc-price-main">3,500 ر.س</div>
+              <div class="svc-price-note">ابتداءً من — حسب المساحة</div>
+              <a href="../customer/quote-request.html?type=professional" class="btn btn-sm mt-2 px-3" style="background:var(--prof-color);color:#fff;border:none;border-radius:8px;min-height:36px;font-size:0.82rem">احجز</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="svc-item">
+          <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+            <div style="flex:1">
+              <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+                <strong style="font-size:0.95rem">مخططات ترخيص كاملة (فيلا)</strong>
+                <span class="pm-badge pm-fixed"><i class="fas fa-tag"></i>سعر ثابت</span>
+              </div>
+              <p style="font-size:0.85rem;color:var(--k-gray);margin-bottom:0.5rem">مجموعة مخططات معتمدة للتقديم لدى الأمانة وبلدية التشييد، تشمل المعمارية والكهربائية والصحية.</p>
+              <div style="font-size:0.78rem;color:var(--k-gray)">
+                <span class="me-3"><i class="fas fa-check me-1" style="color:var(--k-success)"></i>كامل لوحات التصميم</span>
+                <span class="me-3"><i class="fas fa-check me-1" style="color:var(--k-success)"></i>ملف الترخيص</span>
+                <span><i class="fas fa-clock me-1"></i>3-4 أسابيع</span>
+              </div>
+            </div>
+            <div style="text-align:center;min-width:120px">
+              <div class="svc-price-main">8,000 ر.س</div>
+              <div class="svc-price-note">فيلا حتى 500 م²</div>
+              <a href="../customer/quote-request.html?type=professional" class="btn btn-sm mt-2 px-3" style="background:var(--prof-color);color:#fff;border:none;border-radius:8px;min-height:36px;font-size:0.82rem">احجز</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="svc-item">
+          <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+            <div style="flex:1">
+              <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+                <strong style="font-size:0.95rem">تصميم معماري كامل (مشاريع)</strong>
+                <span class="pm-badge pm-percent"><i class="fas fa-percent"></i>نسبة من قيمة البناء</span>
+              </div>
+              <p style="font-size:0.85rem;color:var(--k-gray);margin-bottom:0.5rem">تصميم كامل من المفهوم حتى التنفيذ — مفهومي، تطوير، توثيق، إشراف. مناسب للمشاريع الكبرى.</p>
+              <div style="font-size:0.78rem;color:var(--k-gray)">
+                <span class="me-3"><i class="fas fa-check me-1" style="color:var(--k-success)"></i>جميع مراحل التصميم</span>
+                <span class="me-3"><i class="fas fa-check me-1" style="color:var(--k-success)"></i>إشراف ميداني</span>
+                <span class="me-3"><i class="fas fa-check me-1" style="color:var(--k-success)"></i>اجتماعات دورية</span>
+              </div>
+            </div>
+            <div style="text-align:center;min-width:120px">
+              <div class="svc-price-main">4–8%</div>
+              <div class="svc-price-note">من قيمة المشروع الإنشائي</div>
+              <a href="../customer/quote-request.html?type=professional" class="btn btn-sm mt-2 px-3" style="background:var(--prof-color);color:#fff;border:none;border-radius:8px;min-height:36px;font-size:0.82rem">اطلب عرضاً</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Category: Interior Design -->
+        <h5 style="font-weight:800;color:var(--k-dark-2);margin:1.5rem 0 1rem;padding-bottom:0.5rem;border-bottom:2px solid #f1f5f9">
+          <i class="fas fa-couch me-2" style="color:var(--prof-color)"></i>التصميم الداخلي
+        </h5>
+
+        <div class="svc-item">
+          <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+            <div style="flex:1">
+              <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+                <strong style="font-size:0.95rem">تصميم داخلي — باقة غرفة</strong>
+                <span class="pm-badge pm-fixed"><i class="fas fa-tag"></i>سعر ثابت</span>
+              </div>
+              <p style="font-size:0.85rem;color:var(--k-gray);margin-bottom:0.5rem">تصميم غرفة معيشة أو نوم أو مطبخ — مخطط تأثيث، لوح ألوان، مواد مقترحة، تصور ثلاثي الأبعاد.</p>
+              <div style="font-size:0.78rem;color:var(--k-gray)">
+                <span class="me-3"><i class="fas fa-check me-1" style="color:var(--k-success)"></i>مخطط + منظور 3D</span>
+                <span class="me-3"><i class="fas fa-check me-1" style="color:var(--k-success)"></i>قائمة مشتريات</span>
+                <span><i class="fas fa-clock me-1"></i>7 أيام</span>
+              </div>
+            </div>
+            <div style="text-align:center;min-width:120px">
+              <div class="svc-price-main">1,800 ر.س</div>
+              <div class="svc-price-note">للغرفة الواحدة</div>
+              <a href="../customer/quote-request.html?type=professional" class="btn btn-sm mt-2 px-3" style="background:var(--prof-color);color:#fff;border:none;border-radius:8px;min-height:36px;font-size:0.82rem">احجز</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="svc-item">
+          <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+            <div style="flex:1">
+              <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+                <strong style="font-size:0.95rem">تصميم داخلي كامل للشقة أو الفيلا</strong>
+                <span class="pm-badge pm-sqm"><i class="fas fa-ruler-combined"></i>بالمتر المربع</span>
+              </div>
+              <p style="font-size:0.85rem;color:var(--k-gray);margin-bottom:0.5rem">تصميم متكامل لجميع المساحات — مناسب للمشاريع المتشابهة حيث تتوسع التكلفة بالمساحة.</p>
+              <div style="font-size:0.78rem;color:var(--k-gray)">
+                <span class="me-3"><i class="fas fa-check me-1" style="color:var(--k-success)"></i>جميع الغرف</span>
+                <span class="me-3"><i class="fas fa-check me-1" style="color:var(--k-success)"></i>كتالوج مواد</span>
+                <span class="me-3"><i class="fas fa-check me-1" style="color:var(--k-success)"></i>تعديلان مجانيان</span>
+              </div>
+            </div>
+            <div style="text-align:center;min-width:120px">
+              <div class="svc-price-main">85 ر.س/م²</div>
+              <div class="svc-price-note">حد أدنى 100 م²</div>
+              <a href="../customer/quote-request.html?type=professional" class="btn btn-sm mt-2 px-3" style="background:var(--prof-color);color:#fff;border:none;border-radius:8px;min-height:36px;font-size:0.82rem">احجز</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Category: Supervision -->
+        <h5 style="font-weight:800;color:var(--k-dark-2);margin:1.5rem 0 1rem;padding-bottom:0.5rem;border-bottom:2px solid #f1f5f9">
+          <i class="fas fa-hard-hat me-2" style="color:var(--prof-color)"></i>الإشراف على التنفيذ
+        </h5>
+
+        <div class="svc-item">
+          <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+            <div style="flex:1">
+              <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+                <strong style="font-size:0.95rem">إشراف ميداني دوري</strong>
+                <span class="pm-badge pm-retainer"><i class="fas fa-sync"></i>شهري / راتب</span>
+                <span style="font-size:0.72rem;background:#fff7ed;color:#c2410c;border-radius:50px;padding:0.15rem 0.5rem;font-weight:600"><i class="fas fa-map-marker-alt me-1"></i>حضوري</span>
+              </div>
+              <p style="font-size:0.85rem;color:var(--k-gray);margin-bottom:0.5rem">زيارات موقعية منتظمة، متابعة التنفيذ، حضور اجتماعات المشروع، تقارير دورية للمالك.</p>
+              <div style="font-size:0.78rem;color:var(--k-gray)">
+                <span class="me-3"><i class="fas fa-check me-1" style="color:var(--k-success)"></i>4 زيارات / شهر</span>
+                <span class="me-3"><i class="fas fa-check me-1" style="color:var(--k-success)"></i>تقرير شهري</span>
+              </div>
+            </div>
+            <div style="text-align:center;min-width:120px">
+              <div class="svc-price-main">3,200 ر.س/ش</div>
+              <div class="svc-price-note">+ 350 ر.س/زيارة إضافية</div>
+              <a href="../customer/quote-request.html?type=professional" class="btn btn-sm mt-2 px-3" style="background:var(--prof-color);color:#fff;border:none;border-radius:8px;min-height:36px;font-size:0.82rem">تواصل</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Optional add-ons -->
+        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:14px;padding:1.25rem;margin-top:1rem">
+          <h6 style="font-weight:800;color:var(--k-dark-2);margin-bottom:0.75rem"><i class="fas fa-plus-circle me-1" style="color:var(--prof-color)"></i>الرسوم الإضافية الاختيارية</h6>
+          <div class="row g-2" style="font-size:0.82rem">
+            <div class="col-6 col-md-4">
+              <div style="background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:0.6rem 0.75rem">
+                <div style="font-weight:700;color:var(--k-dark-2)">زيارة موقعية</div>
+                <div style="color:var(--prof-color);font-weight:800">350 ر.س</div>
+              </div>
+            </div>
+            <div class="col-6 col-md-4">
+              <div style="background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:0.6rem 0.75rem">
+                <div style="font-weight:700;color:var(--k-dark-2)">تعديل إضافي</div>
+                <div style="color:var(--prof-color);font-weight:800">450 ر.س / تعديل</div>
+              </div>
+            </div>
+            <div class="col-6 col-md-4">
+              <div style="background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:0.6rem 0.75rem">
+                <div style="font-weight:700;color:var(--k-dark-2)">تصور 3D فوتوريالستك</div>
+                <div style="color:var(--prof-color);font-weight:800">800 ر.س / منظور</div>
+              </div>
+            </div>
+            <div class="col-6 col-md-4">
+              <div style="background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:0.6rem 0.75rem">
+                <div style="font-weight:700;color:var(--k-dark-2)">متابعة الترخيص</div>
+                <div style="color:var(--prof-color);font-weight:800">1,200 ر.س</div>
+              </div>
+            </div>
+            <div class="col-6 col-md-4">
+              <div style="background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:0.6rem 0.75rem">
+                <div style="font-weight:700;color:var(--k-dark-2)">طلب عاجل (48 ساعة)</div>
+                <div style="color:var(--k-danger);font-weight:800">+50% من السعر</div>
+              </div>
+            </div>
+            <div class="col-6 col-md-4">
+              <div style="background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:0.6rem 0.75rem">
+                <div style="font-weight:700;color:var(--k-dark-2)">سفر خارج الرياض</div>
+                <div style="color:var(--prof-color);font-weight:800">بحسب المسافة</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /services tab -->
+
+      <!-- ── PORTFOLIO TAB ── -->
+      <div id="pp-portfolio" style="display:none">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 style="font-weight:800;color:var(--k-dark-2);margin:0">مشاريع سابقة</h5>
+          <div class="d-flex gap-1 flex-wrap">
+            <button class="spec-pill active" onclick="filterPort('all',this)" style="font-size:0.78rem;padding:0.3rem 0.75rem;border:1.5px solid #e2e8f0;border-radius:50px;background:#fff;cursor:pointer;font-family:'Tajawal',sans-serif;font-weight:600">الكل</button>
+            <button class="spec-pill" onclick="filterPort('residential',this)" style="font-size:0.78rem;padding:0.3rem 0.75rem;border:1.5px solid #e2e8f0;border-radius:50px;background:#fff;cursor:pointer;font-family:'Tajawal',sans-serif;font-weight:600">سكني</button>
+            <button class="spec-pill" onclick="filterPort('commercial',this)" style="font-size:0.78rem;padding:0.3rem 0.75rem;border:1.5px solid #e2e8f0;border-radius:50px;background:#fff;cursor:pointer;font-family:'Tajawal',sans-serif;font-weight:600">تجاري</button>
+            <button class="spec-pill" onclick="filterPort('interior',this)" style="font-size:0.78rem;padding:0.3rem 0.75rem;border:1.5px solid #e2e8f0;border-radius:50px;background:#fff;cursor:pointer;font-family:'Tajawal',sans-serif;font-weight:600">داخلي</button>
+          </div>
+        </div>
+        <div class="row g-3" id="portGrid">
+          <div class="col-6 col-md-4 port-card" data-sector="residential">
+            <div class="port-item">
+              <div class="port-img" style="background:linear-gradient(135deg,#7c3aed,#4f46e5)"><i class="fas fa-home"></i></div>
+              <div class="port-overlay"><div><div style="font-weight:700;color:#fff;font-size:0.85rem">فيلا النرجس — الرياض</div><div style="font-size:0.75rem;color:rgba(255,255,255,0.75)">سكني · 450 م²</div></div></div>
+            </div>
+          </div>
+          <div class="col-6 col-md-4 port-card" data-sector="commercial">
+            <div class="port-item">
+              <div class="port-img" style="background:linear-gradient(135deg,#0369a1,#0284c7)"><i class="fas fa-building"></i></div>
+              <div class="port-overlay"><div><div style="font-weight:700;color:#fff;font-size:0.85rem">مكتب شركة الرواد</div><div style="font-size:0.75rem;color:rgba(255,255,255,0.75)">تجاري · 800 م²</div></div></div>
+            </div>
+          </div>
+          <div class="col-6 col-md-4 port-card" data-sector="interior">
+            <div class="port-item">
+              <div class="port-img" style="background:linear-gradient(135deg,#ec4899,#be185d)"><i class="fas fa-couch"></i></div>
+              <div class="port-overlay"><div><div style="font-weight:700;color:#fff;font-size:0.85rem">تصميم داخلي فيلا جدة</div><div style="font-size:0.75rem;color:rgba(255,255,255,0.75)">داخلي · 380 م²</div></div></div>
+            </div>
+          </div>
+          <div class="col-6 col-md-4 port-card" data-sector="residential">
+            <div class="port-item">
+              <div class="port-img" style="background:linear-gradient(135deg,#10b981,#047857)"><i class="fas fa-city"></i></div>
+              <div class="port-overlay"><div><div style="font-weight:700;color:#fff;font-size:0.85rem">مجمع سكني الملقا</div><div style="font-size:0.75rem;color:rgba(255,255,255,0.75)">سكني · 12 وحدة</div></div></div>
+            </div>
+          </div>
+          <div class="col-6 col-md-4 port-card" data-sector="commercial">
+            <div class="port-item">
+              <div class="port-img" style="background:linear-gradient(135deg,#f59e0b,#d97706)"><i class="fas fa-store"></i></div>
+              <div class="port-overlay"><div><div style="font-weight:700;color:#fff;font-size:0.85rem">معرض تجاري الخبر</div><div style="font-size:0.75rem;color:rgba(255,255,255,0.75)">تجاري · 1,200 م²</div></div></div>
+            </div>
+          </div>
+          <div class="col-6 col-md-4 port-card" data-sector="interior">
+            <div class="port-item">
+              <div class="port-img" style="background:linear-gradient(135deg,#6366f1,#4338ca)"><i class="fas fa-bed"></i></div>
+              <div class="port-overlay"><div><div style="font-weight:700;color:#fff;font-size:0.85rem">شقة فندقية المدينة</div><div style="font-size:0.75rem;color:rgba(255,255,255,0.75)">داخلي · 180 م²</div></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="text-center mt-4">
+          <button class="btn btn-outline-secondary px-4" style="min-height:44px;border-radius:10px">
+            <i class="fas fa-chevron-down ms-2"></i>عرض المزيد (56 مشروع)
+          </button>
+        </div>
+      </div><!-- /portfolio tab -->
+
+      <!-- ── CREDENTIALS TAB ── -->
+      <div id="pp-credentials" style="display:none">
+
+        <!-- SCE Verification -->
+        <div class="sce-badge mb-4" style="font-size:0.9rem;padding:1rem 1.25rem;border-radius:14px">
+          <i class="fas fa-shield-alt fa-2x"></i>
+          <div>
+            <div style="font-size:0.8rem;opacity:0.85;margin-bottom:0.15rem">عضوية موثّقة — هيئة المهندسين السعوديين (SCE)</div>
+            <div style="font-size:1rem;font-weight:900">م. سارة المالكي | رقم العضوية: #A-2024-7823</div>
+            <div style="font-size:0.78rem;opacity:0.8;margin-top:0.15rem">التخصص: هندسة معمارية · فئة: مهندس أول · صلاحية: 2026</div>
+          </div>
+        </div>
+
+        <h5 style="font-weight:800;color:var(--k-dark-2);margin-bottom:1rem">المؤهلات الأكاديمية</h5>
+        <div class="cred-item">
+          <div class="cred-icon" style="background:#ede9fe;color:#7c3aed"><i class="fas fa-graduation-cap"></i></div>
+          <div>
+            <div style="font-weight:800;color:var(--k-dark-2)">بكالوريوس هندسة معمارية</div>
+            <div style="font-size:0.85rem;color:var(--k-gray)">جامعة الملك عبدالعزيز — جدة</div>
+            <div style="font-size:0.78rem;color:var(--k-gray)">2015 · مرتبة الشرف الأولى</div>
+          </div>
+        </div>
+        <div class="cred-item">
+          <div class="cred-icon" style="background:#ede9fe;color:#7c3aed"><i class="fas fa-graduation-cap"></i></div>
+          <div>
+            <div style="font-weight:800;color:var(--k-dark-2)">دبلوم تصميم داخلي</div>
+            <div style="font-size:0.85rem;color:var(--k-gray)">معهد Parsons School of Design — نيويورك</div>
+            <div style="font-size:0.78rem;color:var(--k-gray)">2017</div>
+          </div>
+        </div>
+
+        <h5 style="font-weight:800;color:var(--k-dark-2);margin:1.5rem 0 1rem">التراخيص والشهادات</h5>
+        <div class="cred-item">
+          <div class="cred-icon" style="background:#f0fdf4;color:#16a34a"><i class="fas fa-certificate"></i></div>
+          <div>
+            <div style="font-weight:800;color:var(--k-dark-2)">عضوية هيئة المعماريين السعوديين</div>
+            <div style="font-size:0.85rem;color:var(--k-gray)">SAAR — المملكة العربية السعودية</div>
+            <div style="font-size:0.78rem;color:var(--k-gray)">نشطة حتى ديسمبر 2026</div>
+          </div>
+          <div class="me-auto"><span class="k-security-badge">نشطة</span></div>
+        </div>
+        <div class="cred-item">
+          <div class="cred-icon" style="background:#eff6ff;color:#1d4ed8"><i class="fas fa-certificate"></i></div>
+          <div>
+            <div style="font-weight:800;color:var(--k-dark-2)">LEED Green Associate</div>
+            <div style="font-size:0.85rem;color:var(--k-gray)">US Green Building Council</div>
+            <div style="font-size:0.78rem;color:var(--k-gray)">2020</div>
+          </div>
+          <div class="me-auto"><span class="k-security-badge">نشطة</span></div>
+        </div>
+        <div class="cred-item">
+          <div class="cred-icon" style="background:#fefce8;color:#ca8a04"><i class="fas fa-award"></i></div>
+          <div>
+            <div style="font-weight:800;color:var(--k-dark-2)">ترخيص ممارسة المهنة — وزارة الشؤون البلدية</div>
+            <div style="font-size:0.85rem;color:var(--k-gray)">رقم الترخيص: MH-2022-4512</div>
+            <div style="font-size:0.78rem;color:var(--k-gray)">صالح للتصميم والإشراف</div>
+          </div>
+          <div class="me-auto"><span class="k-security-badge">نشط</span></div>
+        </div>
+
+        <!-- External links -->
+        <h5 style="font-weight:800;color:var(--k-dark-2);margin:1.5rem 0 1rem">روابط المحفظة والتواصل</h5>
+        <div>
+          <a href="#" class="social-link-item" style="background:#e7f3fe;color:#1877f2"><i class="fab fa-linkedin"></i> LinkedIn</a>
+          <a href="#" class="social-link-item" style="background:#fce4ec;color:#e91e63"><i class="fab fa-instagram"></i> Instagram</a>
+          <a href="#" class="social-link-item" style="background:#e8f5e9;color:#00897b"><i class="fab fa-behance"></i> Behance</a>
+          <a href="#" class="social-link-item" style="background:#f3e5f5;color:#7b1fa2"><i class="fas fa-globe"></i> الموقع الإلكتروني</a>
+          <a href="#" class="social-link-item" style="background:#fff8e1;color:#f57f17"><i class="fas fa-file-pdf"></i> ملف PDF التعريفي</a>
+        </div>
+
+      </div><!-- /credentials tab -->
+
+      <!-- ── REVIEWS TAB ── -->
+      <div id="pp-reviews" style="display:none">
+        <!-- Rating breakdown -->
+        <div style="background:#fff;border-radius:16px;padding:1.5rem;border:1px solid #e2e8f0;margin-bottom:1.5rem">
+          <div class="row g-4 align-items-center">
+            <div class="col-md-3 text-center">
+              <div style="font-size:3.5rem;font-weight:900;color:var(--prof-color);line-height:1">5.0</div>
+              <div style="color:#f59e0b;font-size:1.1rem">★★★★★</div>
+              <div style="font-size:0.82rem;color:var(--k-gray)">62 تقييم</div>
+            </div>
+            <div class="col-md-9">
+              <div class="d-flex flex-column gap-1">
+                <div class="d-flex align-items-center gap-2"><span style="font-size:0.78rem;width:14px;text-align:center;font-weight:700">5</span><i class="fas fa-star" style="color:#f59e0b;font-size:0.7rem"></i><div style="flex:1;height:8px;background:#e2e8f0;border-radius:4px"><div style="width:88%;height:100%;background:#f59e0b;border-radius:4px"></div></div><span style="font-size:0.75rem;color:var(--k-gray)">55</span></div>
+                <div class="d-flex align-items-center gap-2"><span style="font-size:0.78rem;width:14px;text-align:center;font-weight:700">4</span><i class="fas fa-star" style="color:#f59e0b;font-size:0.7rem"></i><div style="flex:1;height:8px;background:#e2e8f0;border-radius:4px"><div style="width:11%;height:100%;background:#fbbf24;border-radius:4px"></div></div><span style="font-size:0.75rem;color:var(--k-gray)">7</span></div>
+                <div class="d-flex align-items-center gap-2"><span style="font-size:0.78rem;width:14px;text-align:center;font-weight:700">3</span><i class="fas fa-star" style="color:#f59e0b;font-size:0.7rem"></i><div style="flex:1;height:8px;background:#e2e8f0;border-radius:4px"><div style="width:1%;height:100%;background:#fde68a;border-radius:4px"></div></div><span style="font-size:0.75rem;color:var(--k-gray)">0</span></div>
+              </div>
+              <div class="d-flex gap-4 mt-3" style="font-size:0.82rem">
+                <div><span style="font-weight:700;color:var(--prof-color)">94%</span> <span style="color:var(--k-gray)">عملاء يعودون</span></div>
+                <div><span style="font-weight:700;color:var(--k-success)">< ساعة</span> <span style="color:var(--k-gray)">متوسط الرد</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Review items -->
+        <div class="review-card">
+          <div class="d-flex justify-content-between align-items-start mb-2">
+            <div class="d-flex align-items-center gap-2">
+              <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--k-primary),var(--k-accent));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700">أ</div>
+              <div>
+                <div style="font-weight:700;color:var(--k-dark-2);font-size:0.9rem">أحمد العسيري</div>
+                <div style="font-size:0.75rem;color:var(--k-gray)">مخططات ترخيص فيلا · مارس 2026</div>
+              </div>
+            </div>
+            <div style="color:#f59e0b;font-size:0.85rem">★★★★★</div>
+          </div>
+          <p style="font-size:0.88rem;color:var(--k-gray);margin:0;line-height:1.7">
+            الهندسة سارة من أكثر المهندسين احترافاً تعاملت معهم. سلّمت المخططات في الوقت المحدد وراعت كل التعليقات. بالتأكيد سأعمل معها مرة أخرى.
+          </p>
+        </div>
+
+        <div class="review-card">
+          <div class="d-flex justify-content-between align-items-start mb-2">
+            <div class="d-flex align-items-center gap-2">
+              <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#f59e0b,#d97706);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700">م</div>
+              <div>
+                <div style="font-weight:700;color:var(--k-dark-2);font-size:0.9rem">محمد الحربي</div>
+                <div style="font-size:0.75rem;color:var(--k-gray)">تصميم داخلي كامل · يناير 2026</div>
+              </div>
+            </div>
+            <div style="color:#f59e0b;font-size:0.85rem">★★★★★</div>
+          </div>
+          <p style="font-size:0.88rem;color:var(--k-gray);margin:0;line-height:1.7">
+            التصميم رقي فعلاً. المهندسة سارة تفهم الذوق السعودي مع لمسة عصرية. التسعير بالمتر مريح وواضح، وكل شيء موثّق من البداية.
+          </p>
+        </div>
+
+        <div class="text-center mt-3">
+          <button class="btn btn-outline-secondary px-4" style="min-height:44px;border-radius:10px">عرض جميع التقييمات (62)</button>
+        </div>
+      </div><!-- /reviews tab -->
+
+    </div><!-- /col-lg-8 -->
+
+    <!-- RIGHT SIDEBAR -->
+    <div class="col-lg-4">
+      <div class="pp-action-card">
+
+        <!-- Starting price -->
+        <div style="text-align:center;border-bottom:1px solid #f1f5f9;padding-bottom:1rem;margin-bottom:1rem">
+          <div style="font-size:0.78rem;color:var(--k-gray);margin-bottom:0.2rem">تبدأ أسعار الخدمات من</div>
+          <div style="font-size:2rem;font-weight:900;color:var(--prof-color)">450 ر.س</div>
+          <div style="font-size:0.78rem;color:var(--k-gray)">استشارة بالساعة</div>
+        </div>
+
+        <!-- Action buttons -->
+        <div class="d-flex flex-column gap-2 mb-3">
+          <a href="../customer/quote-request.html?type=professional" class="btn btn-lg w-100" style="background:linear-gradient(135deg,var(--prof-color),#6366f1);color:#fff;border:none;border-radius:12px;font-weight:700;min-height:50px">
+            <i class="fas fa-calendar-check me-2"></i>احجز استشارة
+          </a>
+          <a href="../customer/quote-request.html?type=professional&mode=quote" class="btn btn-lg w-100 btn-outline-secondary" style="border-radius:12px;font-weight:700;min-height:48px">
+            <i class="fas fa-file-invoice me-2"></i>اطلب عرض سعر
+          </a>
+          <a href="../customer/chat.html" class="btn btn-lg w-100" style="background:#f1f5f9;color:var(--k-dark-2);border:none;border-radius:12px;font-weight:700;min-height:48px">
+            <i class="fas fa-comment me-2"></i>ارسل رسالة
+          </a>
+        </div>
+
+        <!-- Availability -->
+        <div style="background:#f0fdf4;border:1px solid rgba(16,185,129,0.2);border-radius:10px;padding:0.75rem;margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem">
+          <div style="width:10px;height:10px;background:var(--k-success);border-radius:50%;flex-shrink:0"></div>
+          <div>
+            <div style="font-weight:700;font-size:0.85rem;color:#065f46">متاحة للحجز الآن</div>
+            <div style="font-size:0.75rem;color:#047857">أقرب موعد: غداً الساعة 10 صباحاً</div>
+          </div>
+        </div>
+
+        <!-- Key info -->
+        <div class="d-flex flex-column gap-2" style="font-size:0.84rem">
+          <div class="d-flex justify-content-between">
+            <span style="color:var(--k-gray)"><i class="fas fa-map-marker-alt me-1"></i>المنطقة</span>
+            <span style="font-weight:600">الرياض + أونلاين</span>
+          </div>
+          <div class="d-flex justify-content-between">
+            <span style="color:var(--k-gray)"><i class="fas fa-language me-1"></i>اللغات</span>
+            <span style="font-weight:600">العربية · الإنجليزية</span>
+          </div>
+          <div class="d-flex justify-content-between">
+            <span style="color:var(--k-gray)"><i class="fas fa-briefcase me-1"></i>مشاريع منجزة</span>
+            <span style="font-weight:600">62 مشروع</span>
+          </div>
+          <div class="d-flex justify-content-between">
+            <span style="color:var(--k-gray)"><i class="fas fa-clock me-1"></i>عضو منذ</span>
+            <span style="font-weight:600">2022</span>
+          </div>
+        </div>
+
+        <hr style="border-color:#f1f5f9;margin:1rem 0">
+
+        <!-- Social links compact -->
+        <div style="font-size:0.8rem;font-weight:700;color:var(--k-gray);margin-bottom:0.5rem">المحفظة الخارجية</div>
+        <div class="d-flex flex-wrap gap-1">
+          <a href="#" style="display:inline-flex;align-items:center;gap:0.3rem;padding:0.35rem 0.75rem;background:#e7f3fe;color:#1877f2;border-radius:50px;font-size:0.75rem;font-weight:700;text-decoration:none"><i class="fab fa-linkedin"></i>LinkedIn</a>
+          <a href="#" style="display:inline-flex;align-items:center;gap:0.3rem;padding:0.35rem 0.75rem;background:#fce4ec;color:#e91e63;border-radius:50px;font-size:0.75rem;font-weight:700;text-decoration:none"><i class="fab fa-instagram"></i>Instagram</a>
+          <a href="#" style="display:inline-flex;align-items:center;gap:0.3rem;padding:0.35rem 0.75rem;background:#e8f5e9;color:#00897b;border-radius:50px;font-size:0.75rem;font-weight:700;text-decoration:none"><i class="fab fa-behance"></i>Behance</a>
+          <a href="#" style="display:inline-flex;align-items:center;gap:0.3rem;padding:0.35rem 0.75rem;background:#f3e5f5;color:#7b1fa2;border-radius:50px;font-size:0.75rem;font-weight:700;text-decoration:none"><i class="fas fa-globe"></i>الموقع</a>
+        </div>
+
+      </div><!-- /action card -->
+    </div><!-- /sidebar -->
+
+  </div>
+</div>
+
+</main>
+
+<footer class="k-footer" role="contentinfo">
+  <div class="container">
+    <div class="row g-3">
+      <div class="col-lg-4">
+        <div class="footer-brand mb-2">خدم<span>ة</span></div>
+        <p style="font-size:.88rem;color:rgba(255,255,255,.55);max-width:280px">منصة سعودية للخدمات المهنية والهندسية.</p>
+      </div>
+      <div class="col-lg-4 col-6">
+        <h6 style="color:#fff;font-weight:700;margin-bottom:.75rem">الخدمات المهنية</h6>
+        <a href="../services/professional-services.html?spec=arch">معماري</a>
+        <a href="../services/professional-services.html?spec=electrical">كهربائي</a>
+        <a href="../services/professional-services.html?spec=interior">تصميم داخلي</a>
+      </div>
+      <div class="col-lg-4 col-6">
+        <h6 style="color:#fff;font-weight:700;margin-bottom:.75rem">روابط سريعة</h6>
+        <a href="../index.html">الرئيسية</a>
+        <a href="../auth/signup.html?role=engineer">انضم كمهندس</a>
+        <a href="../customer/quote-request.html">اطلب خدمة</a>
+      </div>
+    </div>
+    <hr style="border-color:rgba(255,255,255,0.1);margin:2rem 0 1rem">
+    <p style="color:rgba(255,255,255,.3);text-align:center;font-size:0.85rem">© 2026 خدمة. جميع الحقوق محفوظة.</p>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+<script src="../assets/js/khedmah.js"></script>
+<script>
+  AOS.init({ duration: 500, once: true });
+
+  function switchPpTab(id, btn) {
+    ['services','portfolio','credentials','reviews'].forEach(t => {
+      const el = document.getElementById('pp-' + t);
+      if (el) el.style.display = 'none';
+    });
+    document.querySelectorAll('.pp-tab').forEach(b => {
+      b.classList.remove('active');
+      b.setAttribute('aria-selected','false');
+    });
+    const panel = document.getElementById('pp-' + id);
+    if (panel) panel.style.display = '';
+    btn.classList.add('active');
+    btn.setAttribute('aria-selected','true');
+    window.scrollTo({ top: document.querySelector('.pp-tabs').offsetTop - 10, behavior: 'smooth' });
+  }
+
+  function filterPort(sector, btn) {
+    document.querySelectorAll('.port-card').forEach(c => {
+      c.style.display = (sector === 'all' || c.dataset.sector === sector) ? '' : 'none';
+    });
+    document.querySelectorAll('[onclick^="filterPort"]').forEach(b => {
+      b.style.borderColor = '#e2e8f0';
+      b.style.background = '#fff';
+      b.style.color = '';
+    });
+    btn.style.borderColor = 'var(--prof-color)';
+    btn.style.background = 'var(--prof-light)';
+    btn.style.color = 'var(--prof-color)';
+  }
+</script>
+</body>
+</html>
