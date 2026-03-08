@@ -7,8 +7,8 @@
    3. Copy "Project URL" and "anon public" key below
    ============================================================ */
 
-const SUPABASE_URL      = 'https://YOUR_PROJECT_REF.supabase.co';
-const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY_HERE';
+const SUPABASE_URL      = 'https://vajsiefmbpwzwsasakmn.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_uaV1NpS0RYYiPNh4iLdkYQ__Odwy-PNY';
 
 /* ── Demo mode: bypass all Supabase calls ─────────────────────── */
 const _DEMO = !!localStorage.getItem('khedmah_demo');
