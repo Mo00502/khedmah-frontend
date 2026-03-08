@@ -94,24 +94,64 @@ const Auth = {
     if (!sb) return { ok: false, error: { message: 'Supabase غير مُهيَّأ' } };
     const e164 = _toE164(phone);
     if (!e164) return { ok: false, error: { message: 'رقم الهاتف غير صحيح' } };
-    const { error } = await sb.auth.signInWithOtp({ phone: e164 });
-    return { ok: !error, error };
+    const { data, error } = await sb.rpc('mock_send_otp', { p_phone: e164 });
+    if (error) return { ok: false, error };
+    /* DEV: OTP printed in browser console — check Supabase otp_codes table too */
+    if (data?.dev_code) {
+      console.log(
+        '%c🔑 DEV OTP: ' + data.dev_code,
+        'background:#028090;color:#fff;font-size:20px;padding:6px 16px;border-radius:8px;font-weight:900'
+      );
+    }
+    return { ok: data?.ok === true, error: null };
   },
 
   /**
-   * Verify a phone OTP token.
+   * Verify mock OTP, get/create real profile, set session.
    * Returns { ok, user, error }.
    */
   async verifyOtp(phone, token) {
     if (_DEMO) return { ok: true, user: await this.getUser(), error: null };
     if (!sb) return { ok: false, user: null, error: { message: 'Supabase غير مُهيَّأ' } };
     const e164 = _toE164(phone);
-    const { data, error } = await sb.auth.verifyOtp({
-      phone: e164,
-      token: token.trim(),
-      type:  'sms'
+
+    /* 1 — Verify code against otp_codes table */
+    const { data, error } = await sb.rpc('mock_verify_otp', {
+      p_phone: e164,
+      p_code:  token.trim()
     });
-    return { ok: !error, user: data?.user || null, error };
+    if (error)    return { ok: false, user: null, error };
+    if (!data?.ok) return { ok: false, user: null, error: { message: data?.error || 'الرمز غير صحيح' } };
+
+    /* 2 — Fetch or create real profile row */
+    const role     = sessionStorage.getItem('signupRole') || 'customer';
+    const fullName = sessionStorage.getItem('signupName') || '';
+    const lang     = sessionStorage.getItem('signupLang') || 'ar';
+
+    let profile = null;
+    const { data: existing } = await sb.from('profiles')
+      .select('*').eq('phone', e164).maybeSingle();
+
+    if (existing) {
+      profile = existing;
+    } else {
+      const { data: created } = await sb.from('profiles')
+        .insert({ phone: e164, role, full_name: fullName, preferred_language: lang })
+        .select().single();
+      profile = created;
+    }
+
+    /* 3 — Persist session (compatible with all existing pages) */
+    if (profile) {
+      localStorage.setItem('khedmah_demo', JSON.stringify({
+        id:   profile.id,
+        name: profile.full_name || fullName,
+        phone: e164,
+        role:  profile.role || role
+      }));
+    }
+
+    return { ok: true, user: profile, error: null };
   }
 };
 

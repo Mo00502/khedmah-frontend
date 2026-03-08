@@ -31,14 +31,12 @@
 
 <div style="width:100%;max-width:440px">
 
-  <!-- ══ DEMO MODE BYPASS BANNER ══ -->
-  <div id="demoBanner" style="background:linear-gradient(135deg,#f59e0b,#d97706);border-radius:16px;padding:1.25rem;margin-bottom:1rem;text-align:center;box-shadow:0 8px 24px rgba(245,158,11,0.35);display:none">
-    <div style="font-size:0.75rem;font-weight:700;color:rgba(255,255,255,0.85);letter-spacing:1px;margin-bottom:0.5rem">وضع تجريبي — لا يوجد SMS حقيقي</div>
-    <div style="font-weight:900;color:#fff;font-size:1rem;margin-bottom:0.85rem">تخطَّ التحقق والدخول مباشرة</div>
-    <button onclick="demoBypass()" style="background:#fff;color:#d97706;border:none;border-radius:10px;padding:0.65rem 2rem;font-weight:800;font-size:0.95rem;cursor:pointer;font-family:inherit">
-      <i class="fas fa-bolt" style="margin-left:0.4rem"></i> دخول تجريبي فوري
-    </button>
-    <div style="margin-top:0.75rem;font-size:0.78rem;color:rgba(255,255,255,0.75)">أو أدخل أي 6 أرقام في الحقول أدناه</div>
+  <!-- ══ DEV MODE HINT BANNER ══ -->
+  <div id="demoBanner" style="background:linear-gradient(135deg,#028090,#02c39a);border-radius:16px;padding:1.25rem;margin-bottom:1rem;text-align:center;box-shadow:0 8px 24px rgba(2,128,144,0.35);display:none">
+    <div style="font-size:0.75rem;font-weight:700;color:rgba(255,255,255,0.85);letter-spacing:1px;margin-bottom:0.3rem">وضع التطوير — لا يوجد SMS حقيقي</div>
+    <div style="font-weight:900;color:#fff;font-size:1rem;margin-bottom:0.5rem">🔑 الرمز ظاهر في Console المتصفح</div>
+    <div style="font-size:0.82rem;color:rgba(255,255,255,0.85)">افتح Developer Tools → Console للحصول على الرمز</div>
+    <div style="margin-top:0.5rem;font-size:0.78rem;color:rgba(255,255,255,0.75)">أو راجع جدول <strong>otp_codes</strong> في Supabase Dashboard</div>
   </div>
 
 </div>
@@ -217,18 +215,7 @@
           return;
         }
 
-        // Save profile info from signup step
-        const name = sessionStorage.getItem('signupName');
-        const lang = sessionStorage.getItem('signupLang');
-        const role = sessionStorage.getItem('signupRole');
-        if (name || lang || role) {
-          await Profile.upsert({
-            full_name:            name || undefined,
-            preferred_language:   lang || undefined,
-            role:                 role || undefined
-          });
-        }
-
+        // Profile is already created/updated inside Auth.verifyOtp()
         this.success = true;
 
         const role = sessionStorage.getItem('signupRole');
