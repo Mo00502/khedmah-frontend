@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>المساعد الذكي للمشاريع — خدمة</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="../assets/css/khedmah.css">
+  <script src="../assets/js/supabase-client.js"></script>
+  <script src="../assets/js/khedmah-data.js"></script>
+  <style>
+    body { background: #f0f4f8; font-family: 'Tajawal', sans-serif; height: 100vh; overflow: hidden; }
+
+    /* Layout */
+    .chat-layout { display: flex; height: calc(100vh - 60px); }
+    .chat-main   { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+    .chat-sidebar{ width: 360px; border-right: 1px solid #e2e8f0; background: #fff; display: flex; flex-direction: column; overflow: hidden; }
+
+    /* Navbar */
+    .chat-nav { height: 60px; background: #1e293b; display: flex; align-items: center; padding: 0 1.25rem; gap: 1rem; flex-shrink: 0; }
+    .chat-nav .brand { font-size: 1.2rem; font-weight: 900; color: #fff; text-decoration: none; }
+    .chat-nav .brand span { color: var(--k-accent); }
+
+    /* Chat header */
+    .chat-header { background: #fff; border-bottom: 1px solid #e2e8f0; padding: 1rem 1.25rem; display: flex; align-items: center; gap: 0.85rem; flex-shrink: 0; }
+    .ai-avatar { width: 44px; height: 44px; background: linear-gradient(135deg, #0369a1, #0ea5e9); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 1.2rem; flex-shrink: 0; }
+
+    /* Messages area */
+    .messages-area { flex: 1; overflow-y: auto; padding: 1.25rem; display: flex; flex-direction: column; gap: 1rem; }
+
+    /* Bubbles */
+    .bubble-wrap { display: flex; gap: 0.75rem; max-width: 80%; }
+    .bubble-wrap.user-msg { flex-direction: row-reverse; margin-right: auto; margin-left: 0; }
+    .bubble-wrap.user-msg .bubble { background: #0369a1; color: #fff; border-radius: 18px 4px 18px 18px; }
+    .bubble-wrap.bot-msg  .bubble { background: #fff; color: #1e293b; border-radius: 4px 18px 18px 18px; border: 1px solid #e2e8f0; }
+    .bubble { padding: 0.9rem 1.1rem; font-size: 0.92rem; line-height: 1.65; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+    .bubble-time { font-size: 0.7rem; color: #94a3b8; margin-top: 0.25rem; }
+
+    /* Typing indicator */
+    .typing-dots { display: flex; gap: 4px; align-items: center; padding: 0.8rem 1.1rem; background: #fff; border-radius: 4px 18px 18px 18px; border: 1px solid #e2e8f0; width: fit-content; }
+    .typing-dots span { width: 8px; height: 8px; background: #94a3b8; border-radius: 50%; animation: bounce 1.2s infinite; }
+    .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes bounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-6px)} }
+
+    /* Input area */
+    .input-area { padding: 1rem 1.25rem; background: #fff; border-top: 1px solid #e2e8f0; flex-shrink: 0; }
+    .input-row { display: flex; gap: 0.6rem; align-items: flex-end; }
+    .chat-input { flex: 1; resize: none; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 0.75rem 1rem; font-family: 'Tajawal', sans-serif; font-size: 0.92rem; outline: none; max-height: 120px; transition: border-color 0.2s; }
+    .chat-input:focus { border-color: #0369a1; }
+    .send-btn { width: 44px; height: 44px; background: #0369a1; color: #fff; border: none; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; flex-shrink: 0; }
+    .send-btn:hover { background: #025484; transform: scale(1.05); }
+    .send-btn:disabled { background: #cbd5e1; cursor: not-allowed; transform: none; }
+
+    /* Prompt chips */
+    .chips-wrap { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem; }
+    .chip { background: #f0f9ff; color: #0369a1; border: 1px solid #bae6fd; border-radius: 50px; padding: 0.3rem 0.85rem; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .chip:hover { background: #0369a1; color: #fff; }
+
+    /* Sidebar */
+    .sidebar-header { padding: 1rem 1.25rem; border-bottom: 1px solid #e2e8f0; flex-shrink: 0; }
+    .sidebar-items { flex: 1; overflow-y: auto; padding: 0.75rem; }
+    .req-item { background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 0.85rem; margin-bottom: 0.6rem; }
+    .req-item.equipment { border-right: 4px solid #0369a1; }
+    .req-item.manpower  { border-right: 4px solid #7c3aed; }
+    .req-item .req-name { font-weight: 700; font-size: 0.88rem; color: #1e293b; }
+    .req-item .req-meta { font-size: 0.77rem; color: #64748b; margin-top: 0.2rem; }
+    .req-item .save-btn { margin-top: 0.65rem; width: 100%; background: #0369a1; color: #fff; border: none; border-radius: 8px; padding: 0.4rem; font-weight: 700; font-size: 0.82rem; cursor: pointer; transition: all 0.2s; }
+    .req-item .save-btn:hover { background: #025484; }
+    .req-item .save-btn.saved { background: #16a34a; cursor: default; }
+
+    /* Welcome screen */
+    .welcome-screen { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; text-align: center; }
+  </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<div class="chat-nav">
+  <a href="contractor-portal.html" class="btn" style="background:rgba(255,255,255,0.1);color:#fff;border:1px solid rgba(255,255,255,0.2);border-radius:8px;padding:0.35rem 0.85rem;font-size:0.85rem">
+    <i class="fas fa-arrow-right ms-1"></i> بوابة المقاول
+  </a>
+  <a class="brand" href="../index.html">خدم<span>ة</span></a>
+  <span style="color:rgba(255,255,255,0.6);font-size:0.85rem;margin-right:auto">المساعد الذكي للمشاريع</span>
+  <span id="navUserName" style="color:rgba(255,255,255,0.7);font-size:0.82rem"></span>
+</div>
+
+<div class="chat-layout" x-data="chatApp()" x-init="init()">
+
+  <!-- Chat Main -->
+  <div class="chat-main">
+
+    <!-- Chat Header -->
+    <div class="chat-header">
+      <div class="ai-avatar"><i class="fas fa-robot"></i></div>
+      <div>
+        <div style="font-weight:800;color:#1e293b">مساعد خدمة الذكي</div>
+        <div style="font-size:0.8rem;color:#16a34a"><i class="fas fa-circle" style="font-size:0.5rem;margin-left:4px"></i> متاح الآن — يفهم العربية</div>
+      </div>
+      <div class="ms-auto" style="font-size:0.8rem;color:#64748b">
+        <i class="fas fa-info-circle ms-1"></i>
+        اكتب وصف احتياجاتك وسأستخرج المتطلبات تلقائياً
+      </div>
+    </div>
+
+    <!-- Messages -->
+    <div class="messages-area" id="messagesArea">
+
+      <!-- Welcome message -->
+      <div class="bubble-wrap bot-msg">
+        <div class="ai-avatar" style="width:34px;height:34px;font-size:0.9rem;flex-shrink:0;align-self:flex-start"><i class="fas fa-robot"></i></div>
+        <div>
+          <div class="bubble">
+            <strong>مرحباً!</strong> أنا مساعد خدمة الذكي المتخصص في مشاريع المقاولات.<br><br>
+            أخبرني باحتياجات مشروعك — المعدات والعمالة والمدد الزمنية — وسأقوم باستخراجها تلقائياً وتحويلها إلى طلبات للموردين.<br><br>
+            مثال: <em>"أحتاج 3 حفارات لمدة 3 أشهر و20 عاملاً ومولدَين كهربائيَّين"</em>
+          </div>
+          <div class="bubble-time">الآن</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Typing indicator (hidden) -->
+    <div id="typingIndicator" style="display:none;padding:0 1.25rem 0.75rem;display:none">
+      <div class="d-flex gap-2 align-items-center">
+        <div class="ai-avatar" style="width:34px;height:34px;font-size:0.9rem;flex-shrink:0"><i class="fas fa-robot"></i></div>
+        <div class="typing-dots"><span></span><span></span><span></span></div>
+      </div>
+    </div>
+
+    <!-- Input Area -->
+    <div class="input-area">
+      <!-- Prompt chips -->
+      <div class="chips-wrap">
+        <span class="chip" @click="fillChip('أحتاج رافعة برجية لمدة شهرين')">🏗 رافعة برجية</span>
+        <span class="chip" @click="fillChip('نحتاج 15 عاملاً عاماً لمدة 6 أشهر')">👷 عمالة عامة</span>
+        <span class="chip" @click="fillChip('أحتاج مولد كهربائي 500 كيلوواط لمدة سنة')">⚡ مولد كهربائي</span>
+        <span class="chip" @click="fillChip('نحتاج حفارتين ولودر واحد لمدة 90 يوماً')">🚜 حفارة + لودر</span>
+        <span class="chip" @click="fillChip('أحتاج مشرف سلامة وكهربائيَّين اثنين ولحام ماهر')">🔧 عمالة متخصصة</span>
+      </div>
+      <div class="input-row">
+        <textarea
+          class="chat-input"
+          id="chatInput"
+          placeholder="اكتب احتياجات مشروعك بالعربية... (مثال: أحتاج 3 حفارات ومولدَين لمدة 3 أشهر)"
+          x-model="inputText"
+          @keydown.enter.prevent="sendMessage()"
+          rows="1"
+        ></textarea>
+        <button class="send-btn" @click="sendMessage()" :disabled="!inputText.trim() || thinking">
+          <i class="fas fa-paper-plane"></i>
+        </button>
+      </div>
+    </div>
+
+  </div><!-- /chat-main -->
+
+  <!-- Sidebar: Extracted Requirements -->
+  <div class="chat-sidebar">
+    <div class="sidebar-header">
+      <div style="font-weight:800;color:#1e293b;margin-bottom:0.25rem">
+        <i class="fas fa-list-check ms-2" style="color:#0369a1"></i>
+        المتطلبات المستخرجة
+      </div>
+      <div style="font-size:0.8rem;color:#64748b" x-text="extractedReqs.length + ' عنصر'"></div>
+    </div>
+    <div class="sidebar-items">
+
+      <!-- Empty state -->
+      <div x-show="extractedReqs.length === 0" style="text-align:center;padding:2rem;color:#94a3b8">
+        <i class="fas fa-magic fa-2x mb-2" style="opacity:0.4"></i>
+        <p style="font-size:0.85rem">سيتم عرض المتطلبات المستخرجة تلقائياً هنا</p>
+      </div>
+
+      <!-- Requirement items -->
+      <template x-for="(req, idx) in extractedReqs" :key="idx">
+        <div class="req-item" :class="req.type">
+          <div class="d-flex align-items-center gap-2 mb-1">
+            <div :style="'width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:0.8rem;flex-shrink:0;' + (req.type === 'equipment' ? 'background:#eff6ff;color:#1d4ed8' : 'background:#faf5ff;color:#7c3aed')">
+              <i :class="req.type === 'equipment' ? 'fas fa-truck' : 'fas fa-hard-hat'"></i>
+            </div>
+            <div class="req-name" x-text="req.name_ar"></div>
+          </div>
+          <div class="req-meta">
+            <span x-text="'الكمية: ' + req.quantity"></span>
+            <span x-show="req.duration_days" x-text="' · المدة: ' + req.duration_days + ' يوم'"></span>
+          </div>
+          <button
+            class="save-btn"
+            :class="{ saved: req._saved }"
+            :disabled="req._saved"
+            @click="saveReq(idx)"
+          >
+            <span x-show="!req._saving && !req._saved"><i class="fas fa-save ms-1"></i> حفظ وإرسال للموردين</span>
+            <span x-show="req._saving"><i class="fas fa-spinner fa-spin ms-1"></i> جاري الحفظ...</span>
+            <span x-show="req._saved"><i class="fas fa-check ms-1"></i> تم الإرسال للموردين</span>
+          </button>
+        </div>
+      </template>
+
+      <!-- Save All button -->
+      <div x-show="extractedReqs.length > 1 && extractedReqs.some(r => !r._saved)" style="margin-top:0.5rem">
+        <button class="btn w-100" style="background:#0369a1;color:#fff;font-weight:700;border-radius:10px;padding:0.6rem" @click="saveAll()">
+          <i class="fas fa-save ms-2"></i> حفظ الكل (<span x-text="extractedReqs.filter(r=>!r._saved).length"></span>)
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+<script src="../assets/js/khedmah.js"></script>
+<script>
+  function chatApp() {
+    return {
+      inputText: '',
+      thinking: false,
+      extractedReqs: [],
+      tenderId: null,
+
+      init() {
+        var s = JSON.parse(localStorage.getItem('khedmah_demo') || '{}');
+        if (s.name) document.getElementById('navUserName').textContent = s.name;
+        this.tenderId = sessionStorage.getItem('contractorTenderId') || sessionStorage.getItem('currentTenderId');
+
+        // Auto-resize textarea
+        var ta = document.getElementById('chatInput');
+        ta.addEventListener('input', () => {
+          ta.style.height = 'auto';
+          ta.style.height = Math.min(ta.scrollHeight, 120) + 'px';
+        });
+      },
+
+      fillChip(text) {
+        this.inputText = text;
+        document.getElementById('chatInput').focus();
+      },
+
+      sendMessage() {
+        var text = this.inputText.trim();
+        if (!text || this.thinking) return;
+
+        this.addBubble(text, 'user');
+        this.inputText = '';
+        document.getElementById('chatInput').style.height = 'auto';
+        this.thinking = true;
+        this.showTyping(true);
+
+        setTimeout(() => {
+          this.showTyping(false);
+          this.thinking = false;
+          this.processMessage(text);
+        }, 1000 + Math.random() * 800);
+      },
+
+      processMessage(text) {
+        var parsed = ProjectRequirements.parse(text);
+
+        if (parsed.length === 0) {
+          this.addBubble(
+            'لم أتمكن من استخراج متطلبات محددة من نصك. يرجى ذكر أسماء المعدات أو التخصصات المطلوبة بشكل أوضح.\n\nمثال: "أحتاج حفارتَين ومولداً كهربائياً ومشرف سلامة لمدة 3 أشهر"',
+            'bot'
+          );
+          return;
+        }
+
+        var newItems = parsed.filter(p =>
+          !this.extractedReqs.some(r => r.name_ar === p.name_ar)
+        );
+
+        // Add to sidebar
+        newItems.forEach(item => {
+          this.extractedReqs.push({ ...item, _saved: false, _saving: false });
+        });
+
+        // Compose reply
+        var listLines = parsed.map(p =>
+          `• <strong>${p.name_ar}</strong> — ${p.quantity} ${p.type === 'equipment' ? 'وحدة' : 'شخص'}` +
+          (p.duration_days ? ` / ${p.duration_days} يوم` : '')
+        ).join('<br>');
+
+        var reply = `استخرجت ${parsed.length} متطلب${parsed.length > 1 ? 'ات' : ''} من طلبك:<br><br>${listLines}<br><br>`;
+
+        if (newItems.length > 0) {
+          reply += `تمت إضافة ${newItems.length} عنصر جديد إلى قائمة المتطلبات على اليمين. اضغط <strong>"حفظ وإرسال للموردين"</strong> لنشرها في سوق الموردين.`;
+        } else {
+          reply += 'جميع هذه المتطلبات موجودة بالفعل في القائمة.';
+        }
+
+        this.addBubble(reply, 'bot', true);
+      },
+
+      addBubble(text, role, isHtml) {
+        var area = document.getElementById('messagesArea');
+        var time = new Date().toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' });
+        var isUser = role === 'user';
+
+        var avatar = isUser
+          ? `<div style="width:34px;height:34px;background:#0369a1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:0.85rem;flex-shrink:0;align-self:flex-start">${(JSON.parse(localStorage.getItem('khedmah_demo') || '{}').name || 'أ')[0]}</div>`
+          : `<div style="width:34px;height:34px;background:linear-gradient(135deg,#0369a1,#0ea5e9);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:0.9rem;flex-shrink:0;align-self:flex-start"><i class="fas fa-robot"></i></div>`;
+
+        var content = isHtml ? text : text.replace(/\n/g, '<br>');
+
+        var wrap = document.createElement('div');
+        wrap.className = 'bubble-wrap ' + (isUser ? 'user-msg' : 'bot-msg');
+        wrap.innerHTML = avatar + `<div><div class="bubble">${content}</div><div class="bubble-time">${time}</div></div>`;
+        area.appendChild(wrap);
+        area.scrollTop = area.scrollHeight;
+      },
+
+      showTyping(show) {
+        var el = document.getElementById('typingIndicator');
+        el.style.display = show ? 'block' : 'none';
+        if (show) {
+          var area = document.getElementById('messagesArea');
+          area.scrollTop = area.scrollHeight;
+        }
+      },
+
+      async saveReq(idx) {
+        var req = this.extractedReqs[idx];
+        if (req._saved || req._saving) return;
+        req._saving = true;
+
+        var res = await ProjectRequirements.create({
+          tender_id:    this.tenderId,
+          type:         req.type,
+          name_ar:      req.name_ar,
+          quantity:     req.quantity,
+          duration_days: req.duration_days,
+          source_text:  req.source_text
+        });
+
+        req._saving = false;
+        req._saved  = true;
+
+        var confirmText = res.ok
+          ? `تم حفظ طلب "<strong>${req.name_ar}</strong>" وإرساله لسوق الموردين. سيتلقى الموردون إشعاراً فورياً ويمكنهم تقديم عروضهم.`
+          : `تم تسجيل طلب "<strong>${req.name_ar}</strong>" محلياً (الاتصال بالخادم غير متاح في وضع العرض).`;
+
+        this.addBubble(confirmText, 'bot', true);
+      },
+
+      async saveAll() {
+        for (var i = 0; i < this.extractedReqs.length; i++) {
+          if (!this.extractedReqs[i]._saved) {
+            await this.saveReq(i);
+          }
+        }
+        kToast('تم إرسال جميع المتطلبات للموردين', 'success');
+      }
+    };
+  }
+</script>
+</body>
+</html>
