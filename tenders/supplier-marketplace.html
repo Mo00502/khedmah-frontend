@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>سوق الموردين — خدمة</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="../assets/css/khedmah.css">
+  <script src="../assets/js/supabase-client.js"></script>
+  <script src="../assets/js/khedmah-data.js"></script>
+  <style>
+    body { background: #f0f4f8; font-family: 'Tajawal', sans-serif; }
+
+    /* Hero */
+    .sup-hero { background: linear-gradient(135deg, #1c0a00 0%, #78350f 35%, #d97706 100%); padding: 3.5rem 0 4rem; position: relative; overflow: hidden; }
+    .sup-hero::before { content: ''; position: absolute; inset: 0; background: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23fff' fill-opacity='0.04'%3E%3Cpath d='M20 0L0 20h10L20 10 30 20h10L20 0zM0 40h10L20 30l10 10h10L20 20 0 40z'/%3E%3C/g%3E%3C/svg%3E"); }
+
+    /* Filter bar */
+    .filter-bar { background: #fff; border-bottom: 1px solid #e2e8f0; padding: 0.85rem 0; position: sticky; top: 0; z-index: 50; }
+    .f-pill { border: 2px solid #e2e8f0; border-radius: 50px; padding: 0.35rem 1rem; font-size: 0.82rem; font-weight: 700; cursor: pointer; background: #fff; transition: all 0.2s; }
+    .f-pill:hover, .f-pill.active { border-color: #d97706; background: #d97706; color: #fff; }
+    .f-pill.active-equip { border-color: #1d4ed8; background: #1d4ed8; color: #fff; }
+    .f-pill.active-manpower { border-color: #7c3aed; background: #7c3aed; color: #fff; }
+
+    /* Requirement card */
+    .req-card { background: #fff; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); overflow: hidden; transition: all 0.25s; border-right: 5px solid transparent; }
+    .req-card:hover { transform: translateY(-3px); box-shadow: 0 8px 32px rgba(0,0,0,0.12); }
+    .req-card.equipment { border-right-color: #1d4ed8; }
+    .req-card.manpower  { border-right-color: #7c3aed; }
+    .req-card.material  { border-right-color: #d97706; }
+
+    .type-icon { width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0; }
+    .icon-equip    { background: #eff6ff; color: #1d4ed8; }
+    .icon-manpower { background: #faf5ff; color: #7c3aed; }
+    .icon-material { background: #fffbeb; color: #b45309; }
+
+    /* Urgency */
+    .u-high { background: #fef2f2; color: #b91c1c; border-radius: 50px; padding: 0.2rem 0.65rem; font-size: 0.75rem; font-weight: 700; }
+    .u-med  { background: #fffbeb; color: #b45309; border-radius: 50px; padding: 0.2rem 0.65rem; font-size: 0.75rem; font-weight: 700; }
+
+    /* Offer button */
+    .btn-offer { background: #d97706; color: #fff; border: none; border-radius: 10px; padding: 0.6rem 1.25rem; font-weight: 700; font-size: 0.9rem; transition: all 0.2s; }
+    .btn-offer:hover { background: #b45309; color: #fff; transform: translateY(-1px); }
+    .btn-offer:disabled { background: #94a3b8; cursor: not-allowed; transform: none; }
+    .btn-offer.submitted { background: #16a34a; cursor: default; }
+
+    /* Stats bar */
+    .stat-row { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+    .stat-item { text-align: center; }
+    .stat-item .num { font-size: 1.8rem; font-weight: 900; color: #fff; }
+    .stat-item .lbl { font-size: 0.8rem; color: rgba(255,255,255,0.75); }
+
+    /* Sidebar */
+    .side-card { background: #fff; border-radius: 14px; box-shadow: 0 2px 10px rgba(0,0,0,0.06); padding: 1.25rem; margin-bottom: 1rem; }
+    .cat-row { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid #f1f5f9; font-size: 0.85rem; cursor: pointer; }
+    .cat-row:last-child { border-bottom: none; }
+    .cat-row:hover { color: #d97706; }
+  </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="k-navbar navbar navbar-expand-lg">
+  <div class="container">
+    <a class="navbar-brand" href="../index.html">خدم<span style="color:var(--k-accent)">ة</span></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navMain">
+      <ul class="navbar-nav me-auto gap-1">
+        <li class="nav-item"><a class="nav-link" href="../index.html">الرئيسية</a></li>
+        <li class="nav-item"><a class="nav-link" href="index.html">المناقصات</a></li>
+        <li class="nav-item"><a class="nav-link active" href="supplier-marketplace.html">سوق الموردين</a></li>
+        <li class="nav-item"><a class="nav-link" href="../equipment/index.html">المعدات</a></li>
+      </ul>
+      <div class="d-flex gap-2" id="navUserName" style="color:rgba(255,255,255,0.75);font-size:0.88rem;align-items:center"></div>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="sup-hero">
+  <div class="container position-relative">
+    <div class="row align-items-center g-4">
+      <div class="col-lg-7">
+        <span class="badge mb-3 px-3 py-2" style="background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.25);font-size:0.85rem">
+          <i class="fas fa-truck me-1"></i> سوق الموردين والمعدات
+        </span>
+        <h1 style="font-weight:900;color:#fff;font-size:2.2rem;line-height:1.3;margin-bottom:1rem">
+          قدّم عروضك على<br><span style="color:#fde68a">طلبات المقاولين</span>
+        </h1>
+        <p style="color:rgba(255,255,255,0.8);font-size:0.95rem;line-height:1.8;margin-bottom:1.5rem;max-width:500px">
+          تصفح احتياجات المشاريع الكبرى من معدات وعمالة ومواد، وقدّم عرضك مباشرةً للمقاول المسؤول.
+        </p>
+        <div class="stat-row">
+          <div class="stat-item"><div class="num" id="heroReqCount">—</div><div class="lbl">طلب مفتوح</div></div>
+          <div class="stat-item"><div class="num" id="heroEquipCount">—</div><div class="lbl">طلب معدات</div></div>
+          <div class="stat-item"><div class="num" id="heroManpowerCount">—</div><div class="lbl">طلب عمالة</div></div>
+        </div>
+      </div>
+      <div class="col-lg-5 d-none d-lg-flex justify-content-center">
+        <div style="background:rgba(255,255,255,0.1);border-radius:20px;padding:2rem;text-align:center;border:1px solid rgba(255,255,255,0.2)">
+          <i class="fas fa-handshake fa-4x mb-3" style="color:#fde68a;opacity:0.9"></i>
+          <p style="color:rgba(255,255,255,0.85);font-weight:700;margin:0">كن مورّداً معتمداً<br>في منصة خدمة</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Filter Bar -->
+<div class="filter-bar">
+  <div class="container">
+    <div class="d-flex gap-2 align-items-center flex-wrap">
+      <button class="f-pill active" id="pill-all" onclick="setFilter('all', this)">الكل</button>
+      <button class="f-pill" id="pill-equipment" onclick="setFilter('equipment', this)">
+        <i class="fas fa-truck me-1"></i> معدات
+      </button>
+      <button class="f-pill" id="pill-manpower" onclick="setFilter('manpower', this)">
+        <i class="fas fa-hard-hat me-1"></i> عمالة
+      </button>
+      <button class="f-pill" id="pill-material" onclick="setFilter('material', this)">
+        <i class="fas fa-cubes me-1"></i> مواد
+      </button>
+      <div class="ms-auto d-flex gap-2 align-items-center">
+        <input type="text" class="form-control form-control-sm" placeholder="بحث..." style="max-width:200px;border-radius:8px" id="supSearch" oninput="applyFilters()">
+        <span style="font-size:0.85rem;color:#64748b"><strong id="visibleCount">0</strong> طلب</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container py-4" x-data="supplierApp()" x-init="init()">
+  <div class="row g-4">
+
+    <!-- Main Grid -->
+    <div class="col-lg-9">
+
+      <!-- Loading -->
+      <div id="loadingState" style="text-align:center;padding:3rem;color:#94a3b8">
+        <i class="fas fa-spinner fa-spin fa-2x mb-2"></i>
+        <p>جاري تحميل الطلبات...</p>
+      </div>
+
+      <!-- Empty state -->
+      <div id="emptyState" style="display:none;text-align:center;padding:4rem;background:#fff;border-radius:16px">
+        <i class="fas fa-box-open fa-3x mb-3" style="color:#cbd5e1;display:block"></i>
+        <h5 style="color:#64748b">لا توجد طلبات مفتوحة حالياً</h5>
+        <p style="color:#94a3b8;font-size:0.9rem">تحقق لاحقاً — يُضيف المقاولون طلبات جديدة باستمرار</p>
+      </div>
+
+      <!-- Real requirements grid -->
+      <div class="d-flex flex-column gap-3" id="reqGrid"></div>
+
+      <!-- Demo requirements (shown if no real data) -->
+      <div class="d-flex flex-column gap-3" id="demoGrid">
+
+        <!-- Demo 1 -->
+        <div class="req-card equipment" data-type="equipment" data-text="حفارة هيدروليكية">
+          <div style="padding:1.5rem">
+            <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
+              <div class="d-flex align-items-center gap-3">
+                <div class="type-icon icon-equip"><i class="fas fa-truck"></i></div>
+                <div>
+                  <div style="font-weight:800;font-size:1.05rem;color:#1e293b">حفارة هيدروليكية</div>
+                  <div style="font-size:0.82rem;color:#64748b">توسعة شبكة المياه — الرياض</div>
+                </div>
+              </div>
+              <span class="u-high"><i class="fas fa-fire me-1"></i> عاجل</span>
+            </div>
+            <div class="row g-2 mb-3" style="font-size:0.85rem;color:#475569">
+              <div class="col-6 col-md-3"><i class="fas fa-layer-group ms-1" style="color:#1d4ed8"></i> <strong>3</strong> وحدات</div>
+              <div class="col-6 col-md-3"><i class="fas fa-calendar ms-1" style="color:#1d4ed8"></i> 90 يوم</div>
+              <div class="col-6 col-md-3"><i class="fas fa-map-marker-alt ms-1" style="color:#1d4ed8"></i> الرياض</div>
+              <div class="col-6 col-md-3"><i class="fas fa-gavel ms-1" style="color:#1d4ed8"></i> 2 عرض</div>
+            </div>
+            <div class="d-flex justify-content-between align-items-center pt-3" style="border-top:1px solid #f1f5f9">
+              <div style="font-size:0.8rem;color:#94a3b8">تم النشر: 10 مارس 2026</div>
+              <button class="btn-offer btn" onclick="openDemoOffer(this, 'حفارة هيدروليكية')">
+                <i class="fas fa-paper-plane ms-2"></i> تقديم عرض
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Demo 2 -->
+        <div class="req-card manpower" data-type="manpower" data-text="عمالة عامة مشرف سلامة">
+          <div style="padding:1.5rem">
+            <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
+              <div class="d-flex align-items-center gap-3">
+                <div class="type-icon icon-manpower"><i class="fas fa-hard-hat"></i></div>
+                <div>
+                  <div style="font-weight:800;font-size:1.05rem;color:#1e293b">عمالة عامة — 20 عامل</div>
+                  <div style="font-size:0.82rem;color:#64748b">مشروع الطريق الدائري — أبها</div>
+                </div>
+              </div>
+              <span class="u-med"><i class="fas fa-clock me-1"></i> عادي</span>
+            </div>
+            <div class="row g-2 mb-3" style="font-size:0.85rem;color:#475569">
+              <div class="col-6 col-md-3"><i class="fas fa-layer-group ms-1" style="color:#7c3aed"></i> <strong>20</strong> شخص</div>
+              <div class="col-6 col-md-3"><i class="fas fa-calendar ms-1" style="color:#7c3aed"></i> 180 يوم</div>
+              <div class="col-6 col-md-3"><i class="fas fa-map-marker-alt ms-1" style="color:#7c3aed"></i> أبها</div>
+              <div class="col-6 col-md-3"><i class="fas fa-gavel ms-1" style="color:#7c3aed"></i> 5 عروض</div>
+            </div>
+            <div class="d-flex justify-content-between align-items-center pt-3" style="border-top:1px solid #f1f5f9">
+              <div style="font-size:0.8rem;color:#94a3b8">تم النشر: 8 مارس 2026</div>
+              <button class="btn-offer btn" onclick="openDemoOffer(this, 'عمالة عامة')">
+                <i class="fas fa-paper-plane ms-2"></i> تقديم عرض
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Demo 3 -->
+        <div class="req-card equipment" data-type="equipment" data-text="مولد كهربائي">
+          <div style="padding:1.5rem">
+            <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
+              <div class="d-flex align-items-center gap-3">
+                <div class="type-icon icon-equip"><i class="fas fa-bolt"></i></div>
+                <div>
+                  <div style="font-weight:800;font-size:1.05rem;color:#1e293b">مولد كهربائي 500 KVA</div>
+                  <div style="font-size:0.82rem;color:#64748b">توسعة شبكة المياه — الرياض</div>
+                </div>
+              </div>
+              <span class="u-high"><i class="fas fa-fire me-1"></i> عاجل</span>
+            </div>
+            <div class="row g-2 mb-3" style="font-size:0.85rem;color:#475569">
+              <div class="col-6 col-md-3"><i class="fas fa-layer-group ms-1" style="color:#1d4ed8"></i> <strong>2</strong> وحدة</div>
+              <div class="col-6 col-md-3"><i class="fas fa-calendar ms-1" style="color:#1d4ed8"></i> 300 يوم</div>
+              <div class="col-6 col-md-3"><i class="fas fa-map-marker-alt ms-1" style="color:#1d4ed8"></i> الرياض</div>
+              <div class="col-6 col-md-3"><i class="fas fa-gavel ms-1" style="color:#1d4ed8"></i> 1 عرض</div>
+            </div>
+            <div class="d-flex justify-content-between align-items-center pt-3" style="border-top:1px solid #f1f5f9">
+              <div style="font-size:0.8rem;color:#94a3b8">تم النشر: 9 مارس 2026</div>
+              <button class="btn-offer btn" onclick="openDemoOffer(this, 'مولد كهربائي')">
+                <i class="fas fa-paper-plane ms-2"></i> تقديم عرض
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Demo 4 -->
+        <div class="req-card manpower" data-type="manpower" data-text="كهربائي لحام">
+          <div style="padding:1.5rem">
+            <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
+              <div class="d-flex align-items-center gap-3">
+                <div class="type-icon icon-manpower"><i class="fas fa-user-cog"></i></div>
+                <div>
+                  <div style="font-weight:800;font-size:1.05rem;color:#1e293b">كهربائيون ولحامون</div>
+                  <div style="font-size:0.82rem;color:#64748b">مشروع الغاز الطبيعي — الدمام</div>
+                </div>
+              </div>
+              <span class="u-med"><i class="fas fa-clock me-1"></i> عادي</span>
+            </div>
+            <div class="row g-2 mb-3" style="font-size:0.85rem;color:#475569">
+              <div class="col-6 col-md-3"><i class="fas fa-layer-group ms-1" style="color:#7c3aed"></i> <strong>8</strong> أشخاص</div>
+              <div class="col-6 col-md-3"><i class="fas fa-calendar ms-1" style="color:#7c3aed"></i> 60 يوم</div>
+              <div class="col-6 col-md-3"><i class="fas fa-map-marker-alt ms-1" style="color:#7c3aed"></i> الدمام</div>
+              <div class="col-6 col-md-3"><i class="fas fa-gavel ms-1" style="color:#7c3aed"></i> 3 عروض</div>
+            </div>
+            <div class="d-flex justify-content-between align-items-center pt-3" style="border-top:1px solid #f1f5f9">
+              <div style="font-size:0.8rem;color:#94a3b8">تم النشر: 5 مارس 2026</div>
+              <button class="btn-offer btn" onclick="openDemoOffer(this, 'كهربائيون ولحامون')">
+                <i class="fas fa-paper-plane ms-2"></i> تقديم عرض
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="col-lg-3">
+
+      <!-- My Offers -->
+      <div class="side-card">
+        <h6 style="font-weight:800;color:#1e293b;margin-bottom:1rem"><i class="fas fa-list ms-2" style="color:#d97706"></i> عروضي المقدمة</h6>
+        <div id="myOffersList" style="font-size:0.85rem;color:#94a3b8;text-align:center;padding:1rem">
+          <i class="fas fa-inbox fa-lg mb-2" style="display:block;opacity:0.4"></i>
+          لم تقدم عروضاً بعد
+        </div>
+      </div>
+
+      <!-- Category breakdown -->
+      <div class="side-card">
+        <h6 style="font-weight:800;color:#1e293b;margin-bottom:1rem"><i class="fas fa-chart-pie ms-2" style="color:#d97706"></i> الطلبات حسب النوع</h6>
+        <div class="cat-row" onclick="setFilter('equipment', document.getElementById('pill-equipment'))">
+          <span><i class="fas fa-truck ms-1" style="color:#1d4ed8"></i> معدات</span>
+          <span id="countEquip" class="badge" style="background:#eff6ff;color:#1d4ed8">—</span>
+        </div>
+        <div class="cat-row" onclick="setFilter('manpower', document.getElementById('pill-manpower'))">
+          <span><i class="fas fa-hard-hat ms-1" style="color:#7c3aed"></i> عمالة</span>
+          <span id="countManpower" class="badge" style="background:#faf5ff;color:#7c3aed">—</span>
+        </div>
+        <div class="cat-row" onclick="setFilter('material', document.getElementById('pill-material'))">
+          <span><i class="fas fa-cubes ms-1" style="color:#b45309"></i> مواد</span>
+          <span id="countMaterial" class="badge" style="background:#fffbeb;color:#b45309">—</span>
+        </div>
+      </div>
+
+      <!-- Tips -->
+      <div class="side-card" style="background:linear-gradient(135deg,#d97706,#b45309);color:#fff">
+        <h6 style="font-weight:800;margin-bottom:0.75rem"><i class="fas fa-lightbulb ms-2"></i> نصائح للفوز</h6>
+        <ul style="padding-right:1.2rem;font-size:0.85rem;opacity:0.9;line-height:2">
+          <li>قدّم سعراً تنافسياً مع ضمان الجودة</li>
+          <li>اذكر تاريخ التوفر بدقة</li>
+          <li>أضف مؤهلاتك وشهاداتك</li>
+          <li>رُدّ على طلبات التوضيح بسرعة</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Offer Modal -->
+<div class="modal fade" id="offerModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="border-radius:20px;border:none">
+      <div class="modal-header" style="border-bottom:1px solid #f1f5f9">
+        <h5 class="modal-title" style="font-weight:800;color:#1e293b" id="offerModalTitle">تقديم عرض</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" style="padding:1.5rem">
+        <input type="hidden" id="offerReqId">
+        <div class="mb-3">
+          <label class="form-label fw-bold">السعر الإجمالي (ر.س) <span class="text-danger">*</span></label>
+          <input type="number" class="form-control" id="offerPrice" placeholder="مثال: 45,000" style="border-radius:10px">
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-bold">السعر لكل وحدة / يوم (ر.س)</label>
+          <input type="number" class="form-control" id="offerUnitPrice" placeholder="اختياري" style="border-radius:10px">
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-bold">تاريخ الإتاحة</label>
+          <input type="date" class="form-control" id="offerDate" style="border-radius:10px">
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-bold">مدة الإتاحة (أيام)</label>
+          <input type="number" class="form-control" id="offerDuration" placeholder="مثال: 90" style="border-radius:10px">
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-bold">ملاحظات إضافية</label>
+          <textarea class="form-control" id="offerNotes" rows="3" placeholder="اذكر مؤهلاتك وأسباب تميزك..." style="border-radius:10px;font-family:'Tajawal',sans-serif"></textarea>
+        </div>
+        <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:0.75rem;font-size:0.82rem;color:#92400e;margin-bottom:1rem">
+          <i class="fas fa-info-circle me-1"></i>
+          سيتم إشعار المقاول المسؤول بعرضك فور الإرسال.
+        </div>
+        <button class="btn btn-offer w-100 py-3" style="font-size:1rem" id="submitOfferBtn" onclick="submitOffer()">
+          <i class="fas fa-paper-plane ms-2"></i> إرسال العرض
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+<script src="../assets/js/khedmah.js"></script>
+<script>
+  var _allCards  = [];
+  var _activeFilter = 'all';
+  var _myOffers  = [];
+  var _currentReqId = null;
+  var _demoMode  = true;
+
+  function supplierApp() { return {}; }
+
+  async function init() {
+    var s = JSON.parse(localStorage.getItem('khedmah_demo') || '{}');
+    var nameEl = document.getElementById('navUserName');
+    if (s.name && nameEl) nameEl.textContent = s.name;
+
+    document.getElementById('loadingState').style.display = 'block';
+    document.getElementById('demoGrid').style.display = 'none';
+
+    // Load all open requirements
+    var res = await ProjectRequirements.list(null);
+    document.getElementById('loadingState').style.display = 'none';
+
+    if (res.ok && res.data.length > 0) {
+      _demoMode = false;
+      document.getElementById('demoGrid').style.display = 'none';
+      renderRealReqs(res.data);
+    } else {
+      _demoMode = true;
+      document.getElementById('demoGrid').style.display = 'flex';
+      document.getElementById('demoGrid').style.flexDirection = 'column';
+      // Count demo cards
+      var cards = document.querySelectorAll('#demoGrid .req-card');
+      updateHeroStats(cards.length,
+        [...cards].filter(c => c.dataset.type === 'equipment').length,
+        [...cards].filter(c => c.dataset.type === 'manpower').length);
+    }
+  }
+
+  function renderRealReqs(reqs) {
+    var grid = document.getElementById('reqGrid');
+    grid.innerHTML = '';
+    reqs.forEach(function(r) {
+      var typeIcon = r.type === 'equipment' ? 'fas fa-truck' : r.type === 'manpower' ? 'fas fa-hard-hat' : 'fas fa-cubes';
+      var iconClass = r.type === 'equipment' ? 'icon-equip' : r.type === 'manpower' ? 'icon-manpower' : 'icon-material';
+      var div = document.createElement('div');
+      div.className = 'req-card ' + (r.type || 'equipment');
+      div.dataset.type = r.type || 'equipment';
+      div.dataset.text = r.name_ar + ' ' + (r.specifications || '');
+      div.innerHTML = `<div style="padding:1.5rem">
+        <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
+          <div class="d-flex align-items-center gap-3">
+            <div class="type-icon ${iconClass}"><i class="${typeIcon}"></i></div>
+            <div>
+              <div style="font-weight:800;font-size:1.05rem;color:#1e293b">${r.name_ar}</div>
+              <div style="font-size:0.82rem;color:#64748b">طلب رقم: ${r.id.slice(-6)}</div>
+            </div>
+          </div>
+          <span class="u-med"><i class="fas fa-clock me-1"></i> مفتوح</span>
+        </div>
+        <div class="row g-2 mb-3" style="font-size:0.85rem;color:#475569">
+          <div class="col-6 col-md-3"><i class="fas fa-layer-group ms-1"></i> <strong>${r.quantity}</strong> ${r.unit || 'وحدة'}</div>
+          ${r.duration_days ? '<div class="col-6 col-md-3"><i class="fas fa-calendar ms-1"></i> ' + r.duration_days + ' يوم</div>' : ''}
+          <div class="col-6 col-md-3"><i class="fas fa-gavel ms-1"></i> ${r.offers ? (r.offers[0]?.count || 0) : 0} عرض</div>
+        </div>
+        <div class="d-flex justify-content-between align-items-center pt-3" style="border-top:1px solid #f1f5f9">
+          <div style="font-size:0.8rem;color:#94a3b8">نُشر: ${new Date(r.created_at).toLocaleDateString('ar-SA')}</div>
+          <button class="btn-offer btn" onclick="openOfferModal('${r.id}', '${r.name_ar}')">
+            <i class="fas fa-paper-plane ms-2"></i> تقديم عرض
+          </button>
+        </div>
+      </div>`;
+      grid.appendChild(div);
+    });
+
+    var e = reqs.filter(r => r.type === 'equipment').length;
+    var m = reqs.filter(r => r.type === 'manpower').length;
+    var mat = reqs.filter(r => r.type === 'material').length;
+    updateHeroStats(reqs.length, e, m);
+    document.getElementById('countEquip').textContent    = e;
+    document.getElementById('countManpower').textContent = m;
+    document.getElementById('countMaterial').textContent = mat;
+    updateVisibleCount();
+    _allCards = grid.querySelectorAll('.req-card');
+  }
+
+  function updateHeroStats(total, equip, manpower) {
+    document.getElementById('heroReqCount').textContent      = total;
+    document.getElementById('heroEquipCount').textContent    = equip;
+    document.getElementById('heroManpowerCount').textContent = manpower;
+  }
+
+  function setFilter(type, btn) {
+    _activeFilter = type;
+    document.querySelectorAll('.f-pill').forEach(p => p.classList.remove('active','active-equip','active-manpower'));
+    if (btn) {
+      var cls = type === 'equipment' ? 'active-equip' : type === 'manpower' ? 'active-manpower' : 'active';
+      btn.classList.add(cls);
+    }
+    applyFilters();
+  }
+
+  function applyFilters() {
+    var q = (document.getElementById('supSearch').value || '').toLowerCase();
+    var containers = _demoMode
+      ? document.querySelectorAll('#demoGrid .req-card')
+      : document.querySelectorAll('#reqGrid .req-card');
+    var count = 0;
+    containers.forEach(function(c) {
+      var typeMatch = _activeFilter === 'all' || c.dataset.type === _activeFilter;
+      var textMatch = !q || c.dataset.text.toLowerCase().includes(q) || c.textContent.toLowerCase().includes(q);
+      var show = typeMatch && textMatch;
+      c.style.display = show ? '' : 'none';
+      if (show) count++;
+    });
+    updateVisibleCount(count);
+  }
+
+  function updateVisibleCount(n) {
+    var el = document.getElementById('visibleCount');
+    if (n !== undefined) { el.textContent = n; return; }
+    var visible = document.querySelectorAll((_demoMode ? '#demoGrid' : '#reqGrid') + ' .req-card:not([style*="none"])').length;
+    el.textContent = visible;
+  }
+
+  function openOfferModal(reqId, reqName) {
+    _currentReqId = reqId;
+    document.getElementById('offerModalTitle').textContent = 'تقديم عرض — ' + reqName;
+    document.getElementById('offerReqId').value = reqId;
+    document.getElementById('offerPrice').value = '';
+    document.getElementById('offerUnitPrice').value = '';
+    document.getElementById('offerDate').value = '';
+    document.getElementById('offerDuration').value = '';
+    document.getElementById('offerNotes').value = '';
+    var btn = document.getElementById('submitOfferBtn');
+    btn.className = 'btn btn-offer w-100 py-3';
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-paper-plane ms-2"></i> إرسال العرض';
+    new bootstrap.Modal(document.getElementById('offerModal')).show();
+  }
+
+  function openDemoOffer(btn, name) {
+    _currentReqId = null;
+    document.getElementById('offerModalTitle').textContent = 'تقديم عرض — ' + name;
+    document.getElementById('offerReqId').value = '';
+    document.getElementById('offerPrice').value = '';
+    document.getElementById('offerUnitPrice').value = '';
+    document.getElementById('offerDate').value = '';
+    document.getElementById('offerDuration').value = '';
+    document.getElementById('offerNotes').value = '';
+    var submitBtn = document.getElementById('submitOfferBtn');
+    submitBtn.className = 'btn btn-offer w-100 py-3';
+    submitBtn.disabled = false;
+    submitBtn.innerHTML = '<i class="fas fa-paper-plane ms-2"></i> إرسال العرض';
+    new bootstrap.Modal(document.getElementById('offerModal')).show();
+  }
+
+  async function submitOffer() {
+    var price = parseFloat(document.getElementById('offerPrice').value);
+    if (!price) { kToast('يرجى إدخال السعر الإجمالي', 'warning'); return; }
+
+    var btn = document.getElementById('submitOfferBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin ms-2"></i> جاري الإرسال...';
+
+    var reqId = document.getElementById('offerReqId').value;
+    var fields = {
+      price_total:    price,
+      price_per_unit: parseFloat(document.getElementById('offerUnitPrice').value) || null,
+      available_from: document.getElementById('offerDate').value || null,
+      duration_days:  parseInt(document.getElementById('offerDuration').value) || null,
+      notes:          document.getElementById('offerNotes').value || null
+    };
+
+    if (reqId) {
+      await SupplierOffers.submit(reqId, fields);
+    }
+
+    btn.className = 'btn btn-offer submitted w-100 py-3';
+    btn.innerHTML = '<i class="fas fa-check ms-2"></i> تم الإرسال بنجاح';
+
+    // Add to my offers sidebar
+    addMyOffer(document.getElementById('offerModalTitle').textContent.replace('تقديم عرض — ',''), price);
+
+    setTimeout(() => {
+      bootstrap.Modal.getInstance(document.getElementById('offerModal')).hide();
+    }, 1500);
+
+    kToast('تم إرسال عرضك بنجاح. سيتلقى المقاول إشعاراً فورياً.', 'success');
+  }
+
+  function addMyOffer(name, price) {
+    var list = document.getElementById('myOffersList');
+    if (list.querySelector('.no-offers')) list.innerHTML = '';
+    var div = document.createElement('div');
+    div.style.cssText = 'background:#f8fafc;border-radius:8px;padding:0.6rem 0.75rem;margin-bottom:0.5rem;border:1px solid #e2e8f0;font-size:0.82rem';
+    div.innerHTML = '<div style="font-weight:700;color:#1e293b">' + name.split('—')[0].trim() + '</div>'
+      + '<div style="color:#d97706;font-weight:700">' + Number(price).toLocaleString('ar-SA') + ' ر.س</div>';
+    list.appendChild(div);
+  }
+
+  // Initialize
+  window.addEventListener('DOMContentLoaded', function() { init(); });
+</script>
+</body>
+</html>
