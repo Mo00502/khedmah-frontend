@@ -272,7 +272,7 @@
       <p style="margin:0;opacity:0.9;font-size:0.88rem">بناءً على الأوزان المحددة، <strong>شركة البناء المتكاملة</strong> هي الخيار الأمثل — تقدم أفضل توازن بين السعر (7.2M ر.س) والمدة الزمنية (10 أشهر) مع خبرة 22 عاماً وتصنيف G9.</p>
     </div>
     <div>
-      <button class="btn btn-sm" style="background:#fff;color:var(--k-primary);font-weight:700;border-radius:8px;min-height:40px;white-space:nowrap">
+      <button class="btn btn-sm" style="background:#fff;color:var(--k-primary);font-weight:700;border-radius:8px;min-height:40px;white-space:nowrap" onclick="acceptBid()">
         <i class="fas fa-check me-1"></i> قبول هذا العطاء
       </button>
     </div>
@@ -563,7 +563,33 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-  function acceptBid() {
+  // Pre-set demo winningBidId if not already set (so confirmAward() has something to work with)
+  (function seedDemoWinner() {
+    if (!sessionStorage.getItem('winningBidId')) {
+      sessionStorage.setItem('winningBidId',     'demo-bid-winner-001');
+      sessionStorage.setItem('winningBidAmount', '7200000');
+    }
+  })();
+
+  // Load real bids from Supabase if tenderId is set
+  (function loadRealBids() {
+    var tenderId = sessionStorage.getItem('currentTenderId');
+    if (!tenderId) return;
+    TenderBids.listForTender(tenderId).then(function(res) {
+      if (!res.ok || !res.data || res.data.length === 0) return;
+      // Set real winning bid to lowest-priced bid (pre-selected)
+      var sorted = res.data.slice().sort(function(a,b){ return a.amount - b.amount; });
+      sessionStorage.setItem('winningBidId',     sorted[0].id);
+      sessionStorage.setItem('winningBidAmount', sorted[0].amount.toString());
+    }).catch(function(){});
+  })();
+
+  function acceptBid(bidId, bidAmount) {
+    // Allow overriding winner from per-row buttons
+    if (bidId) {
+      sessionStorage.setItem('winningBidId',     bidId);
+      sessionStorage.setItem('winningBidAmount', (bidAmount || '7200000').toString());
+    }
     new bootstrap.Modal(document.getElementById('acceptModal')).show();
   }
 
