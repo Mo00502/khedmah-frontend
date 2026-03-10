@@ -11,6 +11,9 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="stylesheet" href="../assets/css/khedmah.css">
   <style> body { background: #f8fafc; } </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../assets/js/supabase-client.js"></script>
+  <script src="../assets/js/khedmah-data.js"></script>
 </head>
 <body>
 
@@ -38,16 +41,16 @@
           <div class="d-flex align-items-center gap-3 mb-3">
             <div style="width:52px;height:52px;background:linear-gradient(135deg,var(--k-primary),var(--k-accent));border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.3rem"><i class="fas fa-user"></i></div>
             <div>
-              <div style="font-weight:700;color:var(--k-dark-2)">أحمد السباك المحترف</div>
-              <div style="font-size:0.85rem;color:var(--k-gray)">خدمة سباكة</div>
+              <div style="font-weight:700;color:var(--k-dark-2)" id="escrowProvName">أحمد السباك المحترف</div>
+              <div style="font-size:0.85rem;color:var(--k-gray)" id="escrowSvcName">خدمة سباكة</div>
             </div>
           </div>
           <div class="d-flex flex-column gap-2" style="font-size:0.9rem">
-            <div class="d-flex justify-content-between"><span style="color:var(--k-gray)">رسوم الخدمة</span><span>300 ر.س</span></div>
-            <div class="d-flex justify-content-between"><span style="color:var(--k-gray)">ضريبة القيمة المضافة (15%)</span><span>45 ر.س</span></div>
+            <div class="d-flex justify-content-between"><span style="color:var(--k-gray)">رسوم الخدمة</span><span id="escrowFee">300 ر.س</span></div>
+            <div class="d-flex justify-content-between"><span style="color:var(--k-gray)">ضريبة القيمة المضافة (15%)</span><span id="escrowVat">45 ر.س</span></div>
             <div class="d-flex justify-content-between" style="color:var(--k-success)"><span><i class="fas fa-tag ms-1"></i> خصم الإحالة</span><span>- 50 ر.س</span></div>
             <hr style="margin:0.5rem 0;border-color:#e2e8f0">
-            <div class="d-flex justify-content-between"><strong style="color:var(--k-dark-2);font-size:1rem">الإجمالي</strong><strong style="color:var(--k-primary);font-size:1.2rem">295 ر.س</strong></div>
+            <div class="d-flex justify-content-between"><strong style="color:var(--k-dark-2);font-size:1rem">الإجمالي</strong><strong style="color:var(--k-primary);font-size:1.2rem" id="escrowTotal">295 ر.س</strong></div>
           </div>
         </div>
       </div>
@@ -167,7 +170,7 @@
 
       <!-- Pay Button -->
       <button class="btn btn-primary w-100 py-3 mt-4" style="border-radius:14px;font-size:1.1rem;font-weight:700" @click="pay()">
-        <span x-show="!loading"><i class="fas fa-lock ms-2"></i> ادفع 295 ر.س الآن</span>
+        <span x-show="!loading"><i class="fas fa-lock ms-2"></i> ادفع <span id="payAmount">295</span> ر.س الآن</span>
         <span x-show="loading"><i class="fas fa-spinner fa-spin ms-2"></i> جاري المعالجة...</span>
       </button>
     </div>
@@ -226,28 +229,76 @@
 <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
 <script src="../assets/js/khedmah.js"></script>
 <script>
+  var _escrowBookingId = null;
+
   function paymentApp() {
     return {
       method: 'mada',
       loading: false,
       pay() {
         this.loading = true;
-        setTimeout(() => { window.location.href = '../customer/service-confirmation.html'; }, 1800);
+        /* Persist bookingId for service-confirmation page */
+        if (_escrowBookingId) {
+          sessionStorage.setItem('bookingId', _escrowBookingId);
+        }
+        /* Mock payment processing delay */
+        setTimeout(function() {
+          window.location.href = '../customer/service-confirmation.html';
+        }, 1800);
       }
     };
   }
+
   function fmtCardNum(el) {
-    let v = el.value.replace(/\D/g,'').slice(0,16);
+    var v = el.value.replace(/\D/g,'').slice(0,16);
     el.value = v.replace(/(.{4})/g,'$1 ').trim();
     document.getElementById('cardNumDisplay').textContent =
       v.padEnd(16,'•').replace(/(.{4})/g,'$1 ').trim() || '•••• •••• •••• ••••';
   }
+
   function fmtExp(el) {
-    let v = el.value.replace(/\D/g,'');
+    var v = el.value.replace(/\D/g,'');
     if (v.length > 2) v = v.slice(0,2) + '/' + v.slice(2,4);
     el.value = v;
     document.getElementById('cardExpDisplay').textContent = el.value || 'MM/YY';
   }
+
+  /* ── Load booking and fill order summary ── */
+  async function loadEscrow() {
+    var bookingId = sessionStorage.getItem('bookingId') || null;
+    _escrowBookingId = bookingId;
+
+    if (!bookingId || typeof Bookings === 'undefined') return; // keep demo data
+
+    try {
+      var res = await Bookings.get(bookingId);
+      if (!res.ok || !res.data) return;
+      var b = res.data;
+
+      var provName = (b.provider && b.provider.full_name) || sessionStorage.getItem('quoteProvider') || 'المزود';
+      var svcName  = (b.service  && b.service.title)      || b.description || sessionStorage.getItem('quoteService') || 'خدمة منزلية';
+      var fee      = parseFloat((b.service && b.service.price) || b.budget || 0) || 300;
+      var vat      = Math.round(fee * 0.15);
+      var total    = fee + vat;
+
+      var el;
+      el = document.getElementById('escrowProvName'); if (el) el.textContent = provName;
+      el = document.getElementById('escrowSvcName');  if (el) el.textContent = svcName;
+      el = document.getElementById('escrowFee');      if (el) el.textContent = fee.toFixed(0)   + ' ر.س';
+      el = document.getElementById('escrowVat');      if (el) el.textContent = vat.toFixed(0)   + ' ر.س';
+      el = document.getElementById('escrowTotal');    if (el) el.textContent = total.toFixed(0)  + ' ر.س';
+      el = document.getElementById('payAmount');      if (el) el.textContent = total.toFixed(0);
+
+      /* Also update sessionStorage so service-confirmation can read names */
+      sessionStorage.setItem('quoteProvider', provName);
+      sessionStorage.setItem('quoteService',  svcName);
+    } catch(e) { console.warn('loadEscrow:', e); }
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    AOS.init({ duration: 600, once: true });
+    loadEscrow();
+  });
 </script>
 </body>
 </html>
