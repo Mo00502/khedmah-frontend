@@ -22,6 +22,7 @@
   </style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../assets/js/supabase-client.js"></script>
+  <script src="../assets/js/khedmah-data.js"></script>
 </head>
 <body>
 <script>
@@ -49,8 +50,8 @@
       </ul>
       <div class="d-flex gap-2 align-items-center">
         <span class="badge" style="background:rgba(16,185,129,0.2);color:#059669;font-size:0.78rem;padding:0.35rem 0.75rem">مزود معتمد</span>
-        <span style="color:rgba(255,255,255,0.75);font-size:0.9rem">محمد الكهربائي</span>
-        <div style="width:36px;height:36px;background:linear-gradient(135deg,#f59e0b,#d97706);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:0.9rem">م</div>
+        <span id="navName" style="color:rgba(255,255,255,0.75);font-size:0.9rem"></span>
+        <div id="navAvatar" style="width:36px;height:36px;background:linear-gradient(135deg,#f59e0b,#d97706);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:0.9rem"></div>
       </div>
     </div>
   </div>
@@ -83,8 +84,8 @@
     <!-- Header -->
     <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
       <div>
-        <h4 style="font-weight:900;color:var(--k-dark-2);margin-bottom:0.25rem">مرحباً، محمد</h4>
-        <p style="color:var(--k-gray);font-size:0.9rem;margin:0">الخميس، 5 مارس 2026 — حالتك: <span style="color:#059669;font-weight:700">متاح</span></p>
+        <h4 id="welcomeName" style="font-weight:900;color:var(--k-dark-2);margin-bottom:0.25rem">مرحباً 👋</h4>
+        <p id="todayDate" style="color:var(--k-gray);font-size:0.9rem;margin:0"></p>
       </div>
       <div class="d-flex gap-2">
         <button class="btn btn-outline-success btn-sm px-3" onclick="toggleStatus(this)">
@@ -102,7 +103,7 @@
         <div class="k-kpi k-kpi-danger">
           <div class="d-flex align-items-center gap-3">
             <div class="k-kpi-icon" style="background:rgba(239,68,68,0.1)"><i class="fas fa-inbox" style="color:var(--k-danger)"></i></div>
-            <div><h3>4</h3><p>طلبات جديدة</p></div>
+            <div><h3 id="kpiNew">—</h3><p>طلبات جديدة</p></div>
           </div>
         </div>
       </div>
@@ -110,7 +111,7 @@
         <div class="k-kpi k-kpi-success">
           <div class="d-flex align-items-center gap-3">
             <div class="k-kpi-icon" style="background:rgba(16,185,129,0.1)"><i class="fas fa-tools" style="color:var(--k-success)"></i></div>
-            <div><h3>2</h3><p>مهام نشطة</p></div>
+            <div><h3 id="kpiActive">—</h3><p>مهام نشطة</p></div>
           </div>
         </div>
       </div>
@@ -118,7 +119,7 @@
         <div class="k-kpi k-kpi-warning">
           <div class="d-flex align-items-center gap-3">
             <div class="k-kpi-icon" style="background:rgba(245,158,11,0.1)"><i class="fas fa-wallet" style="color:var(--k-warning)"></i></div>
-            <div><h3 style="font-size:1.3rem">3,750</h3><p>أرباح الشهر (ر.س)</p></div>
+            <div><h3 id="kpiEarnings" style="font-size:1.3rem">—</h3><p>أرباح الشهر (ر.س)</p></div>
           </div>
         </div>
       </div>
@@ -150,164 +151,17 @@
 
                 <!-- New Requests -->
                 <div class="tab-pane fade show active" id="tabNew">
-                  <div class="req-card">
-                    <div class="d-flex justify-content-between align-items-start mb-2">
-                      <div class="d-flex gap-3">
-                        <div style="width:44px;height:44px;background:linear-gradient(135deg,#f59e0b,#d97706);border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff"><i class="fas fa-bolt"></i></div>
-                        <div>
-                          <div style="font-weight:700;color:var(--k-dark-2)">إصلاح لوحة كهربائية</div>
-                          <div style="font-size:0.82rem;color:var(--k-gray)">عبدالله الزهراني · الرياض — حي النزهة</div>
-                          <div style="font-size:0.78rem;color:var(--k-gray);margin-top:0.2rem"><i class="fas fa-calendar me-1"></i> الأحد 8 مارس · 10 صباحاً</div>
-                        </div>
-                      </div>
-                      <span class="badge-new">جديد</span>
-                    </div>
-                    <div style="font-size:0.85rem;color:var(--k-gray);margin-bottom:1rem;background:#f8fafc;padding:0.6rem 0.75rem;border-radius:8px">
-                      "انقطع التيار في غرفتين والمفاتيح لا تستجيب منذ أمس"
-                    </div>
-                    <div class="d-flex gap-2">
-                      <button class="btn btn-success btn-sm flex-fill" onclick="acceptReq(this)"><i class="fas fa-check ms-1"></i> قبول</button>
-                      <a href="chat-translation.html" class="btn btn-outline-primary btn-sm flex-fill"><i class="fas fa-comments ms-1"></i> تواصل</a>
-                      <button class="btn btn-outline-danger btn-sm flex-fill" onclick="rejectReq(this)"><i class="fas fa-times ms-1"></i> رفض</button>
-                    </div>
-                  </div>
-                  <div class="req-card">
-                    <div class="d-flex justify-content-between align-items-start mb-2">
-                      <div class="d-flex gap-3">
-                        <div style="width:44px;height:44px;background:linear-gradient(135deg,var(--k-primary),var(--k-accent));border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff"><i class="fas fa-lightbulb"></i></div>
-                        <div>
-                          <div style="font-weight:700;color:var(--k-dark-2)">تركيب إضاءة LED</div>
-                          <div style="font-size:0.82rem;color:var(--k-gray)">سارة العمري · جدة — حي الروضة</div>
-                          <div style="font-size:0.78rem;color:var(--k-gray);margin-top:0.2rem"><i class="fas fa-calendar me-1"></i> الاثنين 9 مارس · 2 عصراً</div>
-                        </div>
-                      </div>
-                      <span class="badge-new">جديد</span>
-                    </div>
-                    <div class="d-flex gap-2">
-                      <button class="btn btn-success btn-sm flex-fill" onclick="acceptReq(this)"><i class="fas fa-check ms-1"></i> قبول</button>
-                      <a href="chat-translation.html" class="btn btn-outline-primary btn-sm flex-fill"><i class="fas fa-comments ms-1"></i> تواصل</a>
-                      <button class="btn btn-outline-danger btn-sm flex-fill" onclick="rejectReq(this)"><i class="fas fa-times ms-1"></i> رفض</button>
-                    </div>
-                  </div>
-                  <div class="req-card">
-                    <div class="d-flex justify-content-between align-items-start mb-2">
-                      <div class="d-flex gap-3">
-                        <div style="width:44px;height:44px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff"><i class="fas fa-plug"></i></div>
-                        <div>
-                          <div style="font-weight:700;color:var(--k-dark-2)">تركيب كاميرات مراقبة</div>
-                          <div style="font-size:0.82rem;color:var(--k-gray)">خالد المطيري · الدمام</div>
-                          <div style="font-size:0.78rem;color:var(--k-gray);margin-top:0.2rem"><i class="fas fa-calendar me-1"></i> الثلاثاء 10 مارس · 9 صباحاً</div>
-                        </div>
-                      </div>
-                      <span class="badge-new">جديد</span>
-                    </div>
-                    <div class="d-flex gap-2">
-                      <button class="btn btn-success btn-sm flex-fill" onclick="acceptReq(this)"><i class="fas fa-check ms-1"></i> قبول</button>
-                      <a href="chat-translation.html" class="btn btn-outline-primary btn-sm flex-fill"><i class="fas fa-comments ms-1"></i> تواصل</a>
-                      <button class="btn btn-outline-danger btn-sm flex-fill" onclick="rejectReq(this)"><i class="fas fa-times ms-1"></i> رفض</button>
-                    </div>
-                  </div>
-                  <div class="req-card">
-                    <div class="d-flex justify-content-between align-items-start mb-2">
-                      <div class="d-flex gap-3">
-                        <div style="width:44px;height:44px;background:linear-gradient(135deg,#10b981,#059669);border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff"><i class="fas fa-video"></i></div>
-                        <div>
-                          <div style="font-weight:700;color:var(--k-dark-2)">صيانة نظام إنذار</div>
-                          <div style="font-size:0.82rem;color:var(--k-gray)">نورة القحطاني · مكة المكرمة</div>
-                          <div style="font-size:0.78rem;color:var(--k-gray);margin-top:0.2rem"><i class="fas fa-calendar me-1"></i> الأربعاء 11 مارس · 11 صباحاً</div>
-                        </div>
-                      </div>
-                      <span class="badge-new">جديد</span>
-                    </div>
-                    <div class="d-flex gap-2">
-                      <button class="btn btn-success btn-sm flex-fill" onclick="acceptReq(this)"><i class="fas fa-check ms-1"></i> قبول</button>
-                      <a href="chat-translation.html" class="btn btn-outline-primary btn-sm flex-fill"><i class="fas fa-comments ms-1"></i> تواصل</a>
-                      <button class="btn btn-outline-danger btn-sm flex-fill" onclick="rejectReq(this)"><i class="fas fa-times ms-1"></i> رفض</button>
-                    </div>
-                  </div>
+                  <div id="listNew"><div class="text-center py-4" style="color:var(--k-gray)"><i class="fas fa-spinner fa-spin fa-lg"></i></div></div>
                 </div>
 
                 <!-- Active Jobs -->
                 <div class="tab-pane fade" id="tabActive">
-                  <div class="req-card">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                      <div class="d-flex gap-3 align-items-center">
-                        <div style="width:44px;height:44px;background:linear-gradient(135deg,var(--k-primary),var(--k-accent));border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff"><i class="fas fa-bolt"></i></div>
-                        <div>
-                          <div style="font-weight:700;color:var(--k-dark-2)">تركيب إضاءة خارجية</div>
-                          <div style="font-size:0.82rem;color:var(--k-gray)">أحمد الغامدي · الرياض</div>
-                        </div>
-                      </div>
-                      <span class="badge-active">قيد التنفيذ</span>
-                    </div>
-                    <div style="margin-bottom:0.75rem">
-                      <div class="d-flex justify-content-between mb-1" style="font-size:0.8rem;color:var(--k-gray)">
-                        <span>التقدم</span><span>75%</span>
-                      </div>
-                      <div style="height:6px;background:#e2e8f0;border-radius:3px">
-                        <div style="width:75%;height:100%;background:linear-gradient(90deg,var(--k-primary),var(--k-accent));border-radius:3px"></div>
-                      </div>
-                    </div>
-                    <div class="d-flex gap-2">
-                      <a href="chat-translation.html" class="btn btn-outline-primary btn-sm flex-fill"><i class="fas fa-comments ms-1"></i> محادثة</a>
-                      <button class="btn btn-success btn-sm flex-fill" onclick="completeJob(this)"><i class="fas fa-check-double ms-1"></i> إنهاء المهمة</button>
-                    </div>
-                  </div>
-                  <div class="req-card">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                      <div class="d-flex gap-3 align-items-center">
-                        <div style="width:44px;height:44px;background:linear-gradient(135deg,#f59e0b,#d97706);border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff"><i class="fas fa-tools"></i></div>
-                        <div>
-                          <div style="font-weight:700;color:var(--k-dark-2)">إصلاح مفاتيح كهربائية</div>
-                          <div style="font-size:0.82rem;color:var(--k-gray)">فاطمة العتيبي · جدة</div>
-                        </div>
-                      </div>
-                      <span class="badge-active">قيد التنفيذ</span>
-                    </div>
-                    <div class="d-flex gap-2">
-                      <a href="chat-translation.html" class="btn btn-outline-primary btn-sm flex-fill"><i class="fas fa-comments ms-1"></i> محادثة</a>
-                      <button class="btn btn-success btn-sm flex-fill" onclick="completeJob(this)"><i class="fas fa-check-double ms-1"></i> إنهاء المهمة</button>
-                    </div>
-                  </div>
+                  <div id="listActive"><div class="text-center py-4" style="color:var(--k-gray)"><i class="fas fa-spinner fa-spin fa-lg"></i></div></div>
                 </div>
 
                 <!-- Completed -->
                 <div class="tab-pane fade" id="tabDone">
-                  <div class="d-flex flex-column gap-2">
-                    <div class="req-card d-flex justify-content-between align-items-center">
-                      <div class="d-flex gap-3 align-items-center">
-                        <div style="width:40px;height:40px;background:rgba(16,185,129,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center"><i class="fas fa-bolt" style="color:var(--k-success)"></i></div>
-                        <div>
-                          <div style="font-weight:700;color:var(--k-dark-2);font-size:0.92rem">لوحة تحكم رئيسية</div>
-                          <div style="font-size:0.78rem;color:var(--k-gray)">20 يناير 2026 · 650 ر.س</div>
-                          <div class="k-rating-stars" style="font-size:0.75rem"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-                        </div>
-                      </div>
-                      <span class="badge-done">مكتمل ✓</span>
-                    </div>
-                    <div class="req-card d-flex justify-content-between align-items-center">
-                      <div class="d-flex gap-3 align-items-center">
-                        <div style="width:40px;height:40px;background:rgba(16,185,129,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center"><i class="fas fa-lightbulb" style="color:var(--k-success)"></i></div>
-                        <div>
-                          <div style="font-weight:700;color:var(--k-dark-2);font-size:0.92rem">إضاءة فيلا كاملة</div>
-                          <div style="font-size:0.78rem;color:var(--k-gray)">10 يناير 2026 · 1,200 ر.س</div>
-                          <div class="k-rating-stars" style="font-size:0.75rem"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-                        </div>
-                      </div>
-                      <span class="badge-done">مكتمل ✓</span>
-                    </div>
-                    <div class="req-card d-flex justify-content-between align-items-center">
-                      <div class="d-flex gap-3 align-items-center">
-                        <div style="width:40px;height:40px;background:rgba(16,185,129,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center"><i class="fas fa-plug" style="color:var(--k-success)"></i></div>
-                        <div>
-                          <div style="font-weight:700;color:var(--k-dark-2);font-size:0.92rem">تركيب مخارج كهرباء</div>
-                          <div style="font-size:0.78rem;color:var(--k-gray)">2 يناير 2026 · 320 ر.س</div>
-                          <div class="k-rating-stars" style="font-size:0.75rem"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i></div>
-                        </div>
-                      </div>
-                      <a href="rate-customer.html" class="btn btn-outline-primary btn-sm">قيّم العميل</a>
-                    </div>
-                  </div>
+                  <div id="listDone"><div class="text-center py-4" style="color:var(--k-gray)"><i class="fas fa-spinner fa-spin fa-lg"></i></div></div>
                 </div>
 
                 <!-- Earnings -->
@@ -315,30 +169,26 @@
                   <div class="row g-3 mb-3">
                     <div class="col-4 text-center">
                       <div style="background:#f8fafc;border-radius:12px;padding:1rem;border:1px solid #e2e8f0">
-                        <div style="font-size:1.4rem;font-weight:900;color:var(--k-primary)">3,750</div>
+                        <div id="earnMonth" style="font-size:1.4rem;font-weight:900;color:var(--k-primary)">—</div>
                         <div style="font-size:0.8rem;color:var(--k-gray)">هذا الشهر (ر.س)</div>
                       </div>
                     </div>
                     <div class="col-4 text-center">
                       <div style="background:#f8fafc;border-radius:12px;padding:1rem;border:1px solid #e2e8f0">
-                        <div style="font-size:1.4rem;font-weight:900;color:#059669">2,900</div>
-                        <div style="font-size:0.8rem;color:var(--k-gray)">متاح للسحب (ر.س)</div>
+                        <div id="earnTotal" style="font-size:1.4rem;font-weight:900;color:#059669">—</div>
+                        <div style="font-size:0.8rem;color:var(--k-gray)">إجمالي الأرباح (ر.س)</div>
                       </div>
                     </div>
                     <div class="col-4 text-center">
                       <div style="background:#f8fafc;border-radius:12px;padding:1rem;border:1px solid #e2e8f0">
-                        <div style="font-size:1.4rem;font-weight:900;color:var(--k-dark-2)">850</div>
-                        <div style="font-size:0.8rem;color:var(--k-gray)">قيد الانتظار (ر.س)</div>
+                        <div id="earnJobs" style="font-size:1.4rem;font-weight:900;color:var(--k-dark-2)">—</div>
+                        <div style="font-size:0.8rem;color:var(--k-gray)">مهام مكتملة</div>
                       </div>
                     </div>
                   </div>
-                  <div class="earnings-row"><span style="color:var(--k-dark-2);font-weight:600">إضاءة فيلا كاملة</span><span style="color:#059669;font-weight:700">+1,200 ر.س</span></div>
-                  <div class="earnings-row"><span style="color:var(--k-dark-2);font-weight:600">لوحة تحكم رئيسية</span><span style="color:#059669;font-weight:700">+650 ر.س</span></div>
-                  <div class="earnings-row"><span style="color:var(--k-dark-2);font-weight:600">تركيب مخارج كهرباء</span><span style="color:#059669;font-weight:700">+320 ر.س</span></div>
-                  <div class="earnings-row"><span style="color:var(--k-dark-2);font-weight:600">إصلاح لوحة منزل</span><span style="color:#059669;font-weight:700">+480 ر.س</span></div>
-                  <div class="earnings-row"><span style="color:var(--k-dark-2);font-weight:600">كاميرات مراقبة</span><span style="color:#059669;font-weight:700">+1,100 ر.س</span></div>
-                  <div class="mt-3 d-flex gap-2">
-                    <a href="bank-settings.html" class="btn btn-primary btn-sm flex-fill"><i class="fas fa-university ms-1"></i> سحب الأرباح</a>
+                  <div id="earnList"></div>
+                  <div class="mt-3">
+                    <a href="bank-settings.html" class="btn btn-primary btn-sm w-100"><i class="fas fa-university ms-1"></i> سحب الأرباح</a>
                   </div>
                 </div>
 
@@ -378,6 +228,222 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="../assets/js/khedmah.js"></script>
 <script>
+/* ── Provider Dashboard data loader ── */
+(async function() {
+  const s = JSON.parse(localStorage.getItem('khedmah_demo') || '{}');
+  const name = s.name || 'مزود';
+
+  document.getElementById('navName').textContent     = name;
+  document.getElementById('navAvatar').textContent   = name.trim()[0] || '؟';
+  document.getElementById('welcomeName').textContent = 'مرحباً، ' + name.split(' ')[0] + ' 👋';
+  document.getElementById('todayDate').textContent   =
+    new Date().toLocaleDateString('ar-SA',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+
+  const { data: bookings } = await Bookings.list('provider');
+  const all = bookings || [];
+
+  /* Store booking→customer map for notification lookup in action handlers */
+  window._bookingMap = {};
+  all.forEach(function(b) { window._bookingMap[b.id] = b; });
+
+  const newReqs  = all.filter(b => b.status === 'pending');
+  const active   = all.filter(b => ['accepted','in_progress'].includes(b.status));
+  const done     = all.filter(b => b.status === 'completed');
+  const thisMonth = new Date(); thisMonth.setDate(1); thisMonth.setHours(0,0,0,0);
+  const monthEarn = done.filter(b => new Date(b.created_at) >= thisMonth)
+                       .reduce((s,b) => s + (b.total_amount||0), 0);
+  const totalEarn = done.reduce((s,b) => s + (b.total_amount||0), 0);
+
+  document.getElementById('kpiNew').textContent      = newReqs.length;
+  document.getElementById('kpiActive').textContent   = active.length;
+  document.getElementById('kpiEarnings').textContent = monthEarn.toLocaleString('ar-SA');
+  document.getElementById('earnMonth').textContent   = monthEarn.toLocaleString('ar-SA');
+  document.getElementById('earnTotal').textContent   = totalEarn.toLocaleString('ar-SA');
+  document.getElementById('earnJobs').textContent    = done.length;
+
+  function emptyState(msg) {
+    return `<div class="text-center py-5" style="color:var(--k-gray)">
+      <i class="fas fa-inbox fa-2x mb-3 d-block" style="opacity:0.3"></i>${msg}</div>`;
+  }
+
+  /* New requests */
+  document.getElementById('listNew').innerHTML = newReqs.length
+    ? newReqs.map(b => `
+      <div class="req-card" id="card-${b.id}">
+        <div class="d-flex justify-content-between align-items-start mb-2">
+          <div>
+            <div style="font-weight:700;color:var(--k-dark-2)">${b.service?.title || b.description || 'طلب خدمة'}</div>
+            <div style="font-size:0.82rem;color:var(--k-gray)">${b.customer?.full_name || '—'} · ${b.address || ''}</div>
+            <div style="font-size:0.78rem;color:var(--k-gray);margin-top:0.2rem">
+              <i class="fas fa-calendar me-1"></i>
+              ${b.scheduled_at ? new Date(b.scheduled_at).toLocaleDateString('ar-SA',{weekday:'long',month:'long',day:'numeric'}) : 'غير محدد'}
+            </div>
+          </div>
+          <span class="badge-new">جديد</span>
+        </div>
+        ${b.description ? `<div style="font-size:0.85rem;color:var(--k-gray);margin-bottom:1rem;background:#f8fafc;padding:0.6rem 0.75rem;border-radius:8px">"${b.description}"</div>` : ''}
+        <div class="d-flex gap-2">
+          <button class="btn btn-success btn-sm flex-fill" onclick="acceptReq('${b.id}',this)"><i class="fas fa-check ms-1"></i> قبول</button>
+          <a href="chat-translation.html" class="btn btn-outline-primary btn-sm flex-fill"><i class="fas fa-comments ms-1"></i> تواصل</a>
+          <button class="btn btn-outline-danger btn-sm flex-fill" onclick="rejectReq('${b.id}',this)"><i class="fas fa-times ms-1"></i> رفض</button>
+        </div>
+      </div>`).join('')
+    : emptyState('لا توجد طلبات جديدة');
+
+  /* Active jobs */
+  document.getElementById('listActive').innerHTML = active.length
+    ? active.map(b => `
+      <div class="req-card" id="card-${b.id}">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <div>
+            <div style="font-weight:700;color:var(--k-dark-2)">${b.service?.title || b.description || 'مهمة نشطة'}</div>
+            <div style="font-size:0.82rem;color:var(--k-gray)">${b.customer?.full_name || '—'}</div>
+          </div>
+          <span class="badge-active">قيد التنفيذ</span>
+        </div>
+        <div class="d-flex gap-2">
+          <a href="chat-translation.html" class="btn btn-outline-primary btn-sm flex-fill"><i class="fas fa-comments ms-1"></i> محادثة</a>
+          <button class="btn btn-success btn-sm flex-fill" onclick="completeJob('${b.id}',this)"><i class="fas fa-check-double ms-1"></i> إنهاء المهمة</button>
+        </div>
+      </div>`).join('')
+    : emptyState('لا توجد مهام نشطة');
+
+  /* Completed */
+  document.getElementById('listDone').innerHTML = done.length
+    ? done.map(b => `
+      <div class="req-card d-flex justify-content-between align-items-center">
+        <div>
+          <div style="font-weight:700;color:var(--k-dark-2);font-size:0.92rem">${b.service?.title || b.description || 'خدمة مكتملة'}</div>
+          <div style="font-size:0.78rem;color:var(--k-gray)">
+            ${new Date(b.created_at).toLocaleDateString('ar-SA',{day:'numeric',month:'long',year:'numeric'})}
+            ${b.total_amount ? ' · ' + b.total_amount.toLocaleString('ar-SA') + ' ر.س' : ''}
+          </div>
+        </div>
+        <span class="badge-done">مكتمل ✓</span>
+      </div>`).join('')
+    : emptyState('لا توجد مهام مكتملة بعد');
+
+  /* Earnings list */
+  document.getElementById('earnList').innerHTML = done.length
+    ? done.map(b => `
+      <div class="earnings-row">
+        <span style="color:var(--k-dark-2);font-weight:600">${b.service?.title || b.description || 'خدمة'}</span>
+        <span style="color:#059669;font-weight:700">+${(b.total_amount||0).toLocaleString('ar-SA')} ر.س</span>
+      </div>`).join('')
+    : '<p style="color:var(--k-gray);text-align:center;padding:1rem">لا توجد أرباح بعد</p>';
+})();
+
+/* ══ Action handlers — write to Supabase + notify customer ══ */
+
+async function acceptReq(id, btn) {
+  if (btn) btn.disabled = true;
+  const res = await Bookings.updateStatus(id, 'accepted');
+
+  const card = document.getElementById('card-' + id);
+  if (card) {
+    card.style.background = 'rgba(16,185,129,0.05)';
+    card.style.borderColor = '#10b981';
+    const badge = card.querySelector('.badge-new');
+    if (badge) badge.textContent = 'تم القبول ✓';
+    const actions = card.querySelector('.d-flex.gap-2');
+    if (actions) actions.innerHTML =
+      '<span style="color:#059669;font-weight:600"><i class="fas fa-check-circle me-1"></i>تم قبول الطلب</span>';
+  }
+
+  /* Notify customer */
+  const booking = window._bookingMap && window._bookingMap[id];
+  const customerId = booking && (booking.customer_id || (booking.customer && booking.customer.id));
+  const svcTitle   = (booking && (booking.description || (booking.service && booking.service.title))) || 'طلب الخدمة';
+  const s = JSON.parse(localStorage.getItem('khedmah_demo') || '{}');
+  const provName = s.name || 'المزود';
+
+  if (customerId) {
+    await Notifications.send(
+      customerId,
+      'booking_accepted',
+      'تم قبول طلبك',
+      provName + ' قبل طلبك: ' + svcTitle + '. سيتواصل معك قريباً.',
+      '../customer/dashboard.html'
+    );
+  }
+
+  if (typeof kToast === 'function') kToast('تم قبول الطلب وإشعار العميل ✓', 'success');
+  if (!res.ok && typeof kToast === 'function') kToast('تعذّر التحديث — تحقق من الاتصال', 'error');
+}
+
+async function rejectReq(id, btn) {
+  if (btn) btn.disabled = true;
+  await Bookings.updateStatus(id, 'cancelled');
+
+  const card = document.getElementById('card-' + id);
+  if (card) { card.style.opacity = '0.5'; setTimeout(function(){ card.remove(); }, 400); }
+
+  /* Notify customer */
+  const booking = window._bookingMap && window._bookingMap[id];
+  const customerId = booking && (booking.customer_id || (booking.customer && booking.customer.id));
+  const svcTitle   = (booking && (booking.description || (booking.service && booking.service.title))) || 'طلب الخدمة';
+
+  if (customerId) {
+    await Notifications.send(
+      customerId,
+      'booking_cancelled',
+      'اعتذر المزود عن الطلب',
+      'تعذّر على المزود قبول طلبك: ' + svcTitle + '. يمكنك البحث عن مزود آخر.',
+      '../customer/search.html'
+    );
+  }
+
+  if (typeof kToast === 'function') kToast('تم رفض الطلب', 'success');
+}
+
+async function completeJob(id, btn) {
+  if (btn) btn.disabled = true;
+  await Bookings.updateStatus(id, 'completed');
+
+  const card = document.getElementById('card-' + id);
+  if (card) {
+    const badge = card.querySelector('.badge-active');
+    if (badge) { badge.textContent = 'مكتمل ✓'; badge.className = 'badge-done'; }
+    const actions = card.querySelector('.d-flex.gap-2');
+    if (actions) actions.innerHTML =
+      '<span style="color:var(--k-primary);font-weight:600"><i class="fas fa-check-double me-1"></i>تم إنهاء المهمة</span>';
+  }
+
+  /* Notify customer to confirm + rate */
+  const booking = window._bookingMap && window._bookingMap[id];
+  const customerId = booking && (booking.customer_id || (booking.customer && booking.customer.id));
+  const svcTitle   = (booking && (booking.description || (booking.service && booking.service.title))) || 'الخدمة';
+
+  if (customerId) {
+    await Notifications.send(
+      customerId,
+      'booking_reminder',
+      'أكّد اكتمال الخدمة',
+      'أنهى المزود خدمة: ' + svcTitle + '. يرجى تأكيد الاستلام وإطلاق المبلغ.',
+      '../customer/service-confirmation.html'
+    );
+    /* Also prompt for rating */
+    await Notifications.send(
+      customerId,
+      'rating_request',
+      'قيّم تجربتك',
+      'كيف كانت تجربتك مع خدمة: ' + svcTitle + '؟ رأيك يساعد المجتمع.',
+      '../customer/rate-service.html'
+    );
+  }
+
+  if (typeof kToast === 'function') kToast('تم إنهاء المهمة وإشعار العميل ✓', 'success');
+}
+
+function toggleStatus(btn) {
+  const isAvail = btn.textContent.trim().startsWith('متاح');
+  btn.innerHTML = isAvail
+    ? '<i class="fas fa-circle me-1" style="font-size:0.6rem;color:#ef4444"></i> مشغول'
+    : '<i class="fas fa-circle me-1" style="font-size:0.6rem;color:#059669"></i> متاح';
+  btn.className = isAvail ? 'btn btn-outline-danger btn-sm px-3' : 'btn btn-outline-success btn-sm px-3';
+}
+</script>
+<script>
   new Chart(document.getElementById('earningsChart'), {
     type: 'bar',
     data: {
@@ -410,35 +476,7 @@
     options: { responsive: true, cutout: '62%', plugins: { legend: { position: 'bottom', labels: { font: { family: 'Tajawal', size: 11 }, padding: 10 } } } }
   });
 
-  function acceptReq(btn) {
-    const card = btn.closest('.req-card');
-    card.style.background = 'rgba(16,185,129,0.05)';
-    card.style.borderColor = '#10b981';
-    card.querySelector('.badge-new').textContent = 'تم القبول ✓';
-    card.querySelector('.badge-new').style.cssText = 'background:rgba(16,185,129,0.1);color:#059669;font-weight:700;font-size:0.72rem;padding:0.25rem 0.6rem;border-radius:50px';
-    btn.closest('.d-flex').innerHTML = '<span style="color:#059669;font-size:0.85rem;font-weight:600"><i class="fas fa-check-circle me-1"></i>تم قبول الطلب</span>';
-  }
-  function rejectReq(btn) {
-    const card = btn.closest('.req-card');
-    card.style.opacity = '0.5';
-    setTimeout(() => card.remove(), 400);
-  }
-  function completeJob(btn) {
-    const card = btn.closest('.req-card');
-    card.querySelector('.badge-active').textContent = 'مكتمل ✓';
-    card.querySelector('.badge-active').className = 'badge-done';
-    btn.closest('.d-flex').innerHTML = '<span style="color:var(--k-primary);font-size:0.85rem;font-weight:600"><i class="fas fa-check-double me-1"></i>تم إنهاء المهمة</span>';
-  }
-  function toggleStatus(btn) {
-    const isAvailable = btn.textContent.trim().startsWith('متاح');
-    if (isAvailable) {
-      btn.innerHTML = '<i class="fas fa-circle me-1" style="font-size:0.6rem;color:#ef4444"></i> مشغول';
-      btn.className = 'btn btn-outline-danger btn-sm px-3';
-    } else {
-      btn.innerHTML = '<i class="fas fa-circle me-1" style="font-size:0.6rem;color:#059669"></i> متاح';
-      btn.className = 'btn btn-outline-success btn-sm px-3';
-    }
-  }
+  /* acceptReq / rejectReq / completeJob / toggleStatus defined above */
 </script>
 </body>
 </html>

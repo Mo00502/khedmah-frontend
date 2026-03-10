@@ -22,6 +22,7 @@
   </style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../assets/js/supabase-client.js"></script>
+  <script src="../assets/js/khedmah-data.js"></script>
 </head>
 <body>
 <script>
@@ -36,7 +37,7 @@
 </script>
 
 
-<div class="chat-layout" x-data="chatApp()">
+<div class="chat-layout" x-data="chatApp()" x-init="init()">
 
   <!-- Navbar -->
   <nav class="k-navbar navbar" style="flex-shrink:0">
@@ -60,8 +61,8 @@
           <input type="text" class="form-control" placeholder="ابحث في المحادثات..." style="background:#f8fafc;border:1px solid #e2e8f0;border-right:none">
         </div>
       </div>
-      <div style="overflow-y:auto;flex:1">
-        <div class="contact-item active">
+      <div id="contactsList" style="overflow-y:auto;flex:1">
+        <div class="contact-item active" data-bid="demo-1" onclick="window._chatApp && window._chatApp.openChatById('demo-1')">
           <div class="d-flex align-items-center gap-2">
             <div style="width:44px;height:44px;background:linear-gradient(135deg,var(--k-primary),var(--k-accent));border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;flex-shrink:0">أ</div>
             <div class="flex-grow-1 overflow-hidden">
@@ -118,13 +119,13 @@
       <!-- Contact Header -->
       <div style="background:#fff;border-bottom:1px solid #e2e8f0;padding:0.75rem 1.25rem;display:flex;align-items:center;justify-content:space-between;flex-shrink:0">
         <div class="d-flex align-items-center gap-3">
-          <div style="width:44px;height:44px;background:linear-gradient(135deg,var(--k-primary),var(--k-accent));border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700">أ</div>
+          <div id="chatHeaderAvatar" style="width:44px;height:44px;background:linear-gradient(135deg,var(--k-primary),var(--k-accent));border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700">أ</div>
           <div>
             <div style="font-weight:800;color:var(--k-dark-2)">
-              أحمد السباك المحترف
+              <span id="chatHeaderName">أحمد السباك المحترف</span>
               <span style="width:8px;height:8px;background:#10b981;border-radius:50%;display:inline-block;margin-right:6px"></span>
             </div>
-            <div style="font-size:0.8rem;color:var(--k-gray)">خدمة سباكة · متصل الآن</div>
+            <div id="chatHeaderSub" style="font-size:0.8rem;color:var(--k-gray)">خدمة سباكة · متصل الآن</div>
           </div>
         </div>
         <div class="d-flex gap-2">
@@ -189,24 +190,230 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+<script src="../assets/js/khedmah.js"></script>
 <script>
+  /* ── Demo fallback data ── */
+  var DEMO_CONTACTS = [
+    { id:'demo-1', provider_id:'p1', category:'سباكة',   provider:{ full_name:'أحمد السباك' },   description:'إصلاح تسريب مياه' },
+    { id:'demo-2', provider_id:'p2', category:'كهرباء',  provider:{ full_name:'محمد الكهربائي' }, description:'تركيب لوحة كهربائية' },
+    { id:'demo-3', provider_id:'p3', category:'تنظيف',   provider:{ full_name:'فريق التنظيف' },   description:'تنظيف منزل شامل' }
+  ];
+  var DEMO_MESSAGES = {
+    'demo-1': [
+      { id:'m1', sender_id:'p1', body:'مرحباً، أنا في الطريق إليك الآن', created_at: new Date(Date.now()-3600000).toISOString() },
+      { id:'m2', sender_id:'me', body:'تمام، أنا في البيت', created_at: new Date(Date.now()-3540000).toISOString() },
+      { id:'m3', sender_id:'p1', body:'وصلت، هل يمكنك فتح الباب؟', created_at: new Date(Date.now()-3480000).toISOString() },
+      { id:'m4', sender_id:'me', body:'تفضلت على الموقع وشفت المشكلة. محتاج استبدال صمام الماء. السعر 120 ريال.', created_at: new Date(Date.now()-3420000).toISOString() }
+    ],
+    'demo-2': [
+      { id:'m5', sender_id:'p2', body:'سأكون في موقعك الساعة 10 صباحاً إن شاء الله', created_at: new Date(Date.now()-86400000).toISOString() },
+      { id:'m6', sender_id:'me', body:'تمام، سأكون بانتظارك', created_at: new Date(Date.now()-86300000).toISOString() }
+    ],
+    'demo-3': [
+      { id:'m7', sender_id:'p3', body:'شكراً لاختياركم لخدماتنا. سنكون عندكم الساعة 9 صباحاً.', created_at: new Date(Date.now()-172800000).toISOString() }
+    ]
+  };
+
   function chatApp() {
     return {
       newMsg: '',
-      sendMsg() {
-        if (!this.newMsg.trim()) return;
-        const container = document.getElementById('chatContainer');
-        const time = new Date().toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' });
-        const div = document.createElement('div');
-        div.style.cssText = 'display:flex;flex-direction:column;align-items:flex-start;gap:0.25rem';
-        div.innerHTML = `
-          <div class="k-bubble k-bubble-sent">${this.newMsg}</div>
-          <small class="k-bubble-time" style="align-self:flex-end;padding-left:0.5rem">${time} <i class="fas fa-check" style="color:#93c5fd"></i></small>
-        `;
-        container.appendChild(div);
-        this.newMsg = '';
-        const area = document.getElementById('messagesArea');
+      sending: false,
+      contacts: [],
+      activeContact: null,
+      activeSession: null,
+      messages: [],
+      useDemoData: false,
+      _subscription: null,
+      _session: {},
+
+      async init() {
+        try { this._session = JSON.parse(localStorage.getItem('khedmah_demo')) || {}; } catch(e) {}
+        await this.loadContacts();
+      },
+
+      async loadContacts() {
+        var res = await Bookings.list('customer');
+        var withProvider = (res.ok && res.data)
+          ? res.data.filter(function(b){ return b.provider_id; })
+          : [];
+
+        if (withProvider.length === 0) {
+          this.useDemoData = true;
+          this.contacts = DEMO_CONTACTS;
+          this.renderContacts();
+          this.openChatById('demo-1');
+          return;
+        }
+
+        this.contacts = withProvider;
+        this.renderContacts();
+        await this.openChatById(this.contacts[0].id);
+      },
+
+      renderContacts() {
+        var self = this;
+        var el = document.getElementById('contactsList');
+        if (!el) return;
+        var COLORS = [
+          'linear-gradient(135deg,var(--k-primary),var(--k-accent))',
+          'linear-gradient(135deg,#f59e0b,#d97706)',
+          'linear-gradient(135deg,#10b981,#059669)',
+          'linear-gradient(135deg,#6366f1,#8b5cf6)'
+        ];
+        el.innerHTML = this.contacts.map(function(b, i) {
+          var provName = (b.provider && b.provider.full_name) || 'مزود الخدمة';
+          var letter   = provName[0] || '؟';
+          var preview  = b.description || b.category || 'طلب خدمة';
+          var color    = COLORS[i % COLORS.length];
+          return '<div class="contact-item" data-bid="'+b.id+'" onclick="window._chatApp.openChatById(\''+b.id+'\')">' +
+            '<div class="d-flex align-items-center gap-2">' +
+              '<div style="width:44px;height:44px;background:'+color+';border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;flex-shrink:0">'+letter+'</div>' +
+              '<div class="flex-grow-1 overflow-hidden">' +
+                '<span style="font-weight:700;font-size:0.9rem;color:var(--k-dark-2)">'+provName+'</span>' +
+                '<div style="font-size:0.8rem;color:var(--k-gray);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+preview+'</div>' +
+              '</div>' +
+            '</div>' +
+          '</div>';
+        }).join('');
+        window._chatApp = this;
+      },
+
+      async openChatById(bookingId) {
+        var booking = this.contacts.find(function(b){ return b.id === bookingId; });
+        if (!booking) return;
+
+        // Highlight active contact
+        document.querySelectorAll('.contact-item').forEach(function(el){
+          el.classList.toggle('active', el.dataset.bid === bookingId);
+        });
+
+        // Update header
+        var provName = (booking.provider && booking.provider.full_name) || 'مزود الخدمة';
+        var el;
+        el = document.getElementById('chatHeaderName');   if(el) el.textContent = provName;
+        el = document.getElementById('chatHeaderSub');    if(el) el.textContent = booking.category || 'طلب خدمة';
+        el = document.getElementById('chatHeaderAvatar'); if(el) el.textContent = provName[0] || '؟';
+
+        this.activeContact = booking;
+
+        // Demo path
+        if (this.useDemoData) {
+          this.messages = DEMO_MESSAGES[bookingId] || [];
+          this.renderMessages();
+          return;
+        }
+
+        // Unsubscribe previous
+        if (this._subscription) {
+          try { this._subscription.unsubscribe(); } catch(e){}
+          this._subscription = null;
+        }
+
+        // Get or create chat session
+        var sessionRes = await Chat.getOrCreateSession(
+          booking.id,
+          booking.customer_id || this._session.id,
+          booking.provider_id
+        );
+
+        if (!sessionRes.ok || !sessionRes.data) {
+          // Fallback: show empty state
+          this.messages = [];
+          this.renderMessages();
+          return;
+        }
+        this.activeSession = sessionRes.data;
+
+        // Load history
+        var msgRes = await Chat.getMessages(this.activeSession.id);
+        this.messages = msgRes.data || [];
+        this.renderMessages();
+
+        // Real-time subscription
+        var self = this;
+        this._subscription = Chat.subscribe(this.activeSession.id, function(newMsg) {
+          var alreadyExists = self.messages.some(function(m){ return m.id === newMsg.id; });
+          if (!alreadyExists) {
+            self.messages.push(newMsg);
+            self.renderMessages();
+          }
+        });
+      },
+
+      renderMessages() {
+        var container = document.getElementById('chatContainer');
+        var area      = document.getElementById('messagesArea');
+        var myId      = this._session.id;
+
+        if (this.messages.length === 0) {
+          container.innerHTML = '<div style="text-align:center;padding:3rem;color:var(--k-gray);font-size:0.9rem"><i class="fas fa-comment-slash fa-2x mb-3" style="display:block;opacity:0.3"></i>لا توجد رسائل بعد.<br>ابدأ المحادثة مع المزود!</div>';
+          return;
+        }
+
+        var self = this;
+        container.innerHTML = this.messages.map(function(m) {
+          var isMe = m.sender_id === myId || m.sender_id === 'me';
+          var time = self._fmtTime(m.created_at);
+          if (isMe) {
+            return '<div style="display:flex;flex-direction:column;align-items:flex-start;gap:0.25rem">' +
+              '<div class="k-bubble k-bubble-sent">' + m.body + '</div>' +
+              '<small class="k-bubble-time" style="align-self:flex-end;padding-left:0.5rem">' + time + ' <i class="fas fa-check-double" style="color:#93c5fd"></i></small>' +
+            '</div>';
+          } else {
+            return '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:0.25rem">' +
+              '<div class="k-bubble k-bubble-received">' + m.body + '</div>' +
+              '<small class="k-bubble-time" style="align-self:flex-start;padding-right:0.5rem">' + time + '</small>' +
+            '</div>';
+          }
+        }).join('');
+
         area.scrollTop = area.scrollHeight;
+      },
+
+      _fmtTime(iso) {
+        if (!iso) return '';
+        return new Date(iso).toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' });
+      },
+
+      async sendMsg() {
+        if (!this.newMsg.trim() || this.sending) return;
+        var body = this.newMsg.trim();
+        this.newMsg = '';
+        this.sending = true;
+
+        // Demo path
+        if (this.useDemoData || !this.activeSession) {
+          var bid = this.activeContact ? this.activeContact.id : 'demo-1';
+          if (!DEMO_MESSAGES[bid]) DEMO_MESSAGES[bid] = [];
+          DEMO_MESSAGES[bid].push({
+            id: 'local-' + Date.now(),
+            sender_id: 'me',
+            body: body,
+            created_at: new Date().toISOString()
+          });
+          this.messages = DEMO_MESSAGES[bid];
+          this.renderMessages();
+          this.sending = false;
+          return;
+        }
+
+        // Real send
+        var res = await Chat.send(this.activeSession.id, body);
+        this.sending = false;
+
+        if (res.ok) {
+          // Optimistic append (real-time sub will deduplicate)
+          this.messages.push({
+            id: 'local-' + Date.now(),
+            session_id: this.activeSession.id,
+            sender_id: this._session.id,
+            body: body,
+            created_at: new Date().toISOString()
+          });
+          this.renderMessages();
+        } else {
+          if (typeof kToast === 'function') kToast('تعذّر إرسال الرسالة', 'error');
+        }
       }
     };
   }

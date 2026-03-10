@@ -53,6 +53,7 @@
   </style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../assets/js/supabase-client.js"></script>
+  <script src="../assets/js/khedmah-data.js"></script>
 </head>
 <body>
 <script>
@@ -120,8 +121,8 @@
           <div style="font-size:0.85rem;opacity:0.85;margin-top:2px">منصة الخدمات المنزلية</div>
         </div>
         <div style="text-align:left">
-          <div style="font-size:1.2rem;font-weight:700"># KH-2026-00451</div>
-          <div style="font-size:0.88rem;opacity:0.9;margin-top:4px"><i class="fas fa-calendar-alt ms-1"></i> 8 مارس 2026</div>
+          <div style="font-size:1.2rem;font-weight:700" id="invNumber"># KH-2026-00451</div>
+          <div style="font-size:0.88rem;opacity:0.9;margin-top:4px"><i class="fas fa-calendar-alt ms-1"></i> <span id="invDate">8 مارس 2026</span></div>
         </div>
       </div>
 
@@ -131,14 +132,14 @@
         <div class="info-grid">
           <div>
             <div class="info-label">بيانات العميل</div>
-            <div style="font-weight:700;font-size:1rem;margin-bottom:0.2rem">محمد عبدالله السالم</div>
-            <div style="color:var(--k-gray);font-size:0.88rem">الرياض، حي النرجس</div>
-            <div style="color:var(--k-gray);font-size:0.88rem">0501234567</div>
+            <div style="font-weight:700;font-size:1rem;margin-bottom:0.2rem" id="invCustName">محمد عبدالله السالم</div>
+            <div style="color:var(--k-gray);font-size:0.88rem" id="invCustCity">الرياض، حي النرجس</div>
+            <div style="color:var(--k-gray);font-size:0.88rem" id="invCustPhone">0501234567</div>
           </div>
           <div>
             <div class="info-label">بيانات مزود الخدمة</div>
-            <div style="font-weight:700;font-size:1rem;margin-bottom:0.2rem">أحمد السباك المحترف</div>
-            <div style="color:var(--k-gray);font-size:0.88rem">خدمات السباكة والتمديدات</div>
+            <div style="font-weight:700;font-size:1rem;margin-bottom:0.2rem" id="invProvName">أحمد السباك المحترف</div>
+            <div style="color:var(--k-gray);font-size:0.88rem" id="invProvCat">خدمات السباكة والتمديدات</div>
             <div style="color:var(--k-gray);font-size:0.88rem">رقم الترخيص: PR-4521</div>
           </div>
         </div>
@@ -153,7 +154,7 @@
               <th>الإجمالي</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody id="invTableBody">
             <tr>
               <td>
                 <div style="font-weight:700">إصلاح تسريب مياه</div>
@@ -174,10 +175,10 @@
         <!-- Totals -->
         <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 pb-4 mb-4" style="border-bottom:1px solid #e2e8f0">
           <div class="totals-box">
-            <div class="total-row"><span>المجموع الفرعي</span><span>180 ر.س</span></div>
-            <div class="total-row"><span>ضريبة القيمة المضافة (15%)</span><span>27 ر.س</span></div>
-            <div class="total-row"><span style="color:var(--k-success)">خصم الإحالة</span><span style="color:var(--k-success)">-27 ر.س</span></div>
-            <div class="total-row grand"><span>المجموع النهائي</span><span>180 ر.س</span></div>
+            <div class="total-row"><span>المجموع الفرعي</span><span id="invSubtotal">180 ر.س</span></div>
+            <div class="total-row"><span>ضريبة القيمة المضافة (15%)</span><span id="invVat">27 ر.س</span></div>
+            <div class="total-row" id="invDiscountRow"><span style="color:var(--k-success)">خصم الإحالة</span><span style="color:var(--k-success)">-27 ر.س</span></div>
+            <div class="total-row grand"><span>المجموع النهائي</span><span id="invGrand">180 ر.س</span></div>
           </div>
           <div class="text-center">
             <div class="paid-stamp">تم الدفع ✓</div>
@@ -194,8 +195,8 @@
             </div>
           </div>
           <div style="font-size:0.85rem;color:var(--k-gray);text-align:left">
-            مرجع صندوق الأمان: <strong style="color:var(--k-dark-2)">ESC-2026-00451</strong><br>
-            تاريخ التحرير: <strong style="color:var(--k-dark-2)">8 مارس 2026</strong>
+            مرجع صندوق الأمان: <strong style="color:var(--k-dark-2)" id="invEscrowRef">ESC-2026-00451</strong><br>
+            تاريخ التحرير: <strong style="color:var(--k-dark-2)" id="invReleaseDate">8 مارس 2026</strong>
           </div>
         </div>
 
@@ -214,10 +215,112 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="../assets/js/khedmah.js"></script>
 <script>
-  function showPdfHint(){
-    var h=document.getElementById('pdfHint');
-    h.style.display=h.style.display==='none'?'block':'none';
+  function showPdfHint() {
+    var h = document.getElementById('pdfHint');
+    h.style.display = h.style.display === 'none' ? 'block' : 'none';
   }
+
+  /* ── Format a date string into Arabic long format ── */
+  function fmtDate(iso) {
+    if (!iso) return '';
+    try {
+      return new Date(iso).toLocaleDateString('ar-SA', { year:'numeric', month:'long', day:'numeric' });
+    } catch(e) { return iso; }
+  }
+
+  /* ── Populate invoice DOM from a booking object ── */
+  function fillInvoice(b) {
+    var year = new Date().getFullYear();
+    var shortId = (b.id || '').slice(-5).toUpperCase() || '00000';
+
+    /* Header */
+    var el = document.getElementById('invNumber');
+    if (el) el.textContent = '# KH-' + year + '-' + shortId;
+
+    var dateStr = fmtDate(b.confirmed_at || b.updated_at || b.created_at);
+    el = document.getElementById('invDate');
+    if (el && dateStr) el.textContent = dateStr;
+
+    /* Customer */
+    var custName  = (b.customer && b.customer.full_name) || '';
+    var custPhone = (b.customer && b.customer.phone)     || '';
+    var custCity  = b.address || sessionStorage.getItem('quoteCity') || '';
+    if (custName)  { el = document.getElementById('invCustName');  if (el) el.textContent = custName; }
+    if (custCity)  { el = document.getElementById('invCustCity');  if (el) el.textContent = custCity; }
+    if (custPhone) { el = document.getElementById('invCustPhone'); if (el) el.textContent = custPhone; }
+
+    /* Provider */
+    var provName = (b.provider && b.provider.full_name)           || sessionStorage.getItem('quoteProvider') || '';
+    var provCat  = (b.service  && b.service.category)             || b.category || sessionStorage.getItem('quoteService') || '';
+    if (provName) { el = document.getElementById('invProvName'); if (el) el.textContent = provName; }
+    if (provCat)  { el = document.getElementById('invProvCat');  if (el) el.textContent = provCat; }
+
+    /* Service table */
+    var svcTitle = (b.service && b.service.title) || b.description || sessionStorage.getItem('quoteService') || 'خدمة منزلية';
+    var svcDesc  = b.description || '';
+    var price    = parseFloat((b.service && b.service.price) || b.budget || 0) || 150;
+    var subtotal = price;
+    var vat      = Math.round(subtotal * 0.15);
+    var grand    = subtotal + vat;
+
+    var tbody = document.getElementById('invTableBody');
+    if (tbody) {
+      tbody.innerHTML =
+        '<tr>' +
+          '<td>' +
+            '<div style="font-weight:700">' + svcTitle + '</div>' +
+            (svcDesc ? '<div style="font-size:0.8rem;color:var(--k-gray)">' + svcDesc + '</div>' : '') +
+          '</td>' +
+          '<td>1</td>' +
+          '<td>' + subtotal.toFixed(0) + ' ر.س</td>' +
+          '<td>' + subtotal.toFixed(0) + ' ر.س</td>' +
+        '</tr>';
+      if (b.includes_materials) {
+        tbody.insertAdjacentHTML('beforeend',
+          '<tr><td><div style="font-weight:700">مواد ومستلزمات</div></td><td>1</td><td>—</td><td>مشمولة</td></tr>');
+      }
+    }
+
+    /* Totals */
+    el = document.getElementById('invSubtotal'); if (el) el.textContent = subtotal.toFixed(0) + ' ر.س';
+    el = document.getElementById('invVat');      if (el) el.textContent = vat.toFixed(0)      + ' ر.س';
+    el = document.getElementById('invGrand');    if (el) el.textContent = grand.toFixed(0)    + ' ر.س';
+
+    /* Hide demo discount row — no real discount data */
+    el = document.getElementById('invDiscountRow');
+    if (el) el.style.display = 'none';
+
+    /* Escrow ref + release date */
+    var escrowRef   = 'ESC-' + year + '-' + shortId;
+    var releaseDate = fmtDate(b.confirmed_at || b.updated_at || new Date().toISOString());
+    el = document.getElementById('invEscrowRef');   if (el) el.textContent = escrowRef;
+    el = document.getElementById('invReleaseDate'); if (el) el.textContent = releaseDate;
+  }
+
+  /* ── Load booking from Supabase and fill invoice ── */
+  async function loadInvoice() {
+    var bookingId = sessionStorage.getItem('invoiceBookingId')
+                 || sessionStorage.getItem('rateBookingId')
+                 || sessionStorage.getItem('bookingId')
+                 || null;
+
+    if (!bookingId || typeof Bookings === 'undefined') {
+      /* Fill customer name from localStorage even in demo mode */
+      try {
+        var s = JSON.parse(localStorage.getItem('khedmah_demo') || '{}');
+        if (s.name) { var el = document.getElementById('invCustName'); if (el) el.textContent = s.name; }
+      } catch(e) {}
+      return;
+    }
+
+    try {
+      var res = await Bookings.get(bookingId);
+      if (!res.ok || !res.data) return;
+      fillInvoice(res.data);
+    } catch(e) { console.warn('loadInvoice:', e); }
+  }
+
+  document.addEventListener('DOMContentLoaded', loadInvoice);
 </script>
 </body>
 </html>

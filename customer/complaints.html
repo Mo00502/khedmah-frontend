@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الشكاوى والدعم — خدمة</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="../assets/css/khedmah.css">
+  <style>
+    body { background:#f1f5f9; }
+    @media(max-width:991px){ .k-sidebar{display:none} .k-main-content{margin-right:0} }
+
+    .complaint-card {
+      background:#fff; border-radius:14px; padding:1.25rem;
+      border:1px solid #e2e8f0; margin-bottom:0.75rem;
+      cursor:pointer; transition:all 0.2s;
+      border-right:4px solid #e2e8f0;
+    }
+    .complaint-card:hover { border-color:var(--k-primary); box-shadow:0 4px 16px rgba(2,128,144,0.08); }
+    .complaint-card.open   { border-right-color:var(--k-warning); }
+    .complaint-card.closed { border-right-color:var(--k-success); }
+    .complaint-card.escalated { border-right-color:var(--k-danger); }
+
+    /* Chat bubble styles */
+    .msg-bubble { max-width:75%; padding:0.65rem 1rem; border-radius:14px; font-size:0.9rem; margin-bottom:0.5rem; line-height:1.5; }
+    .msg-mine   { background:var(--k-primary); color:#fff; border-bottom-right-radius:4px; margin-right:auto; }
+    .msg-support{ background:#f1f5f9; color:var(--k-dark-2); border-bottom-left-radius:4px; margin-left:auto; }
+    .msg-time   { font-size:0.72rem; opacity:0.65; margin-top:0.2rem; }
+
+    .chat-area {
+      height:340px; overflow-y:auto; padding:1rem;
+      background:#fafafa; border-radius:12px;
+      border:1px solid #e2e8f0;
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../assets/js/supabase-client.js"></script>
+  <script src="../assets/js/khedmah-data.js"></script>
+</head>
+<body>
+<script>
+  (function(){
+    if(localStorage.getItem('khedmah_demo')) return;
+    var has=Object.keys(localStorage).some(function(k){return k.indexOf('auth-token')!==-1||k.indexOf('supabase')!==-1;});
+    if(!has) window.location.replace('../auth/login.html');
+  })();
+</script>
+
+<!-- Navbar -->
+<nav class="k-navbar navbar navbar-expand-lg" style="position:sticky;top:0;z-index:200">
+  <div class="container-fluid px-4">
+    <a class="navbar-brand" href="../index.html">خدم<span style="color:var(--k-accent)">ة</span></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navMain">
+      <ul class="navbar-nav me-auto gap-1">
+        <li class="nav-item"><a class="nav-link" href="dashboard.html">لوحة التحكم</a></li>
+        <li class="nav-item"><a class="nav-link" href="search.html">الخدمات</a></li>
+        <li class="nav-item"><a class="nav-link active" href="complaints.html">الشكاوى</a></li>
+      </ul>
+      <div class="d-flex gap-2 align-items-center">
+        <span id="navUserName" style="color:rgba(255,255,255,0.75);font-size:0.9rem">—</span>
+        <div id="navUserAvatar" style="width:36px;height:36px;background:linear-gradient(135deg,var(--k-primary),var(--k-accent));border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:0.9rem">؟</div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="d-flex">
+  <!-- Sidebar -->
+  <div class="k-sidebar">
+    <div class="k-sidebar-brand mb-4">خدم<span>ة</span></div>
+    <nav class="nav flex-column gap-1">
+      <a href="dashboard.html" class="nav-link"><i class="fas fa-home"></i> لوحة التحكم</a>
+      <a href="search.html" class="nav-link"><i class="fas fa-search"></i> البحث عن خدمات</a>
+      <a href="quote-request.html" class="nav-link"><i class="fas fa-file-invoice"></i> طلب جديد</a>
+      <a href="notifications.html" class="nav-link"><i class="fas fa-bell"></i> الإشعارات</a>
+      <a href="chat.html" class="nav-link"><i class="fas fa-comments"></i> المحادثات</a>
+      <a href="complaints.html" class="nav-link active"><i class="fas fa-exclamation-circle"></i> الشكاوى والدعم</a>
+      <a href="../rewards/referral-program.html" class="nav-link"><i class="fas fa-gift"></i> برنامج الإحالة</a>
+      <a href="settings.html" class="nav-link"><i class="fas fa-cog"></i> الإعدادات</a>
+      <a href="#" onclick="localStorage.removeItem('khedmah_demo');sessionStorage.clear();window.location.href='../auth/login.html'" class="nav-link" style="color:rgba(239,68,68,0.8)!important;margin-top:2rem"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</a>
+    </nav>
+  </div>
+
+  <!-- Main Content -->
+  <div class="k-main-content flex-grow-1" x-data="complaintsApp()" x-init="init()">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+      <div>
+        <h4 style="font-weight:900;color:var(--k-dark-2);margin-bottom:0.25rem">
+          <i class="fas fa-exclamation-circle ms-2" style="color:var(--k-primary)"></i> الشكاوى والدعم
+        </h4>
+        <p style="color:var(--k-gray);font-size:0.9rem;margin:0">تواصل مع فريق الدعم لحل أي مشكلة</p>
+      </div>
+      <button class="btn btn-primary" @click="openNewModal()">
+        <i class="fas fa-plus ms-2"></i> رفع شكوى جديدة
+      </button>
+    </div>
+
+    <!-- Complaint list / thread view -->
+    <div class="row g-4">
+
+      <!-- Left: list -->
+      <div class="col-lg-4">
+        <div id="complaintList">
+          <div class="text-center py-4"><i class="fas fa-spinner fa-spin" style="color:var(--k-primary);font-size:1.5rem"></i></div>
+        </div>
+      </div>
+
+      <!-- Right: thread -->
+      <div class="col-lg-8">
+        <!-- Empty state -->
+        <div id="threadEmpty" class="card border-0 shadow-sm text-center" style="border-radius:16px;padding:4rem 2rem">
+          <div style="font-size:3rem;margin-bottom:1rem">💬</div>
+          <h5 style="font-weight:700;color:var(--k-dark-2)">اختر شكوى لعرض المحادثة</h5>
+          <p style="color:var(--k-gray)">أو ارفع شكوى جديدة من الزر أعلاه</p>
+        </div>
+
+        <!-- Thread -->
+        <div id="threadView" class="card border-0 shadow-sm" style="border-radius:16px;display:none">
+          <div class="card-body p-4">
+            <!-- Thread header -->
+            <div class="d-flex align-items-start gap-3 mb-3 pb-3" style="border-bottom:1px solid #e2e8f0">
+              <div style="flex:1">
+                <h6 id="threadSubject" style="font-weight:800;color:var(--k-dark-2);margin-bottom:0.3rem">—</h6>
+                <div class="d-flex gap-2 align-items-center flex-wrap">
+                  <span id="threadCategory" style="font-size:0.78rem;background:rgba(2,128,144,0.1);color:var(--k-primary);padding:0.2rem 0.6rem;border-radius:20px;font-weight:700">—</span>
+                  <span id="threadStatus" class="badge">—</span>
+                  <span id="threadDate" style="font-size:0.78rem;color:var(--k-gray)">—</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Chat area -->
+            <div class="chat-area mb-3" id="chatArea">
+              <div class="text-center py-3" style="color:var(--k-gray);font-size:0.88rem">
+                <i class="fas fa-spinner fa-spin"></i> جاري تحميل الرسائل...
+              </div>
+            </div>
+
+            <!-- Reply box -->
+            <div x-show="activeComplaint && activeComplaint.status !== 'closed'" class="d-flex gap-2">
+              <textarea
+                x-model="replyText"
+                class="form-control"
+                rows="2"
+                placeholder="اكتب ردك هنا..."
+                style="border-radius:12px;resize:none"
+                @keydown.ctrl.enter="sendReply()"
+              ></textarea>
+              <button class="btn btn-primary" style="border-radius:12px;padding:0 1.25rem" @click="sendReply()" :disabled="!replyText.trim() || replying">
+                <span x-show="!replying"><i class="fas fa-paper-plane"></i></span>
+                <span x-show="replying"><i class="fas fa-spinner fa-spin"></i></span>
+              </button>
+            </div>
+            <div x-show="activeComplaint && activeComplaint.status === 'closed'" style="text-align:center;padding:0.75rem;background:#f0fdf4;border-radius:10px;color:var(--k-success);font-weight:700;font-size:0.9rem">
+              <i class="fas fa-check-circle ms-2"></i> تم إغلاق هذه الشكوى
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ New Complaint Modal ══ -->
+    <div class="modal fade" id="newComplaintModal" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius:20px;border:none">
+          <div class="modal-header border-0 pb-0">
+            <h5 class="modal-title fw-800">رفع شكوى جديدة</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body pt-3">
+
+            <div class="mb-3">
+              <label class="form-label fw-600">تصنيف الشكوى <span style="color:var(--k-danger)">*</span></label>
+              <select class="form-select" x-model="newForm.category">
+                <option value="">— اختر التصنيف —</option>
+                <option value="جودة الخدمة">جودة الخدمة</option>
+                <option value="تأخر المزود">تأخر المزود</option>
+                <option value="مشكلة في الدفع">مشكلة في الدفع</option>
+                <option value="سلوك غير لائق">سلوك غير لائق</option>
+                <option value="خدمة غير مكتملة">خدمة غير مكتملة</option>
+                <option value="أخرى">أخرى</option>
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-600">موضوع الشكوى <span style="color:var(--k-danger)">*</span></label>
+              <input type="text" class="form-control" placeholder="وصف موجز للمشكلة" x-model="newForm.subject" maxlength="120">
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-600">تفاصيل الشكوى <span style="color:var(--k-danger)">*</span></label>
+              <textarea class="form-control" rows="4" placeholder="اشرح المشكلة بالتفصيل..." x-model="newForm.body" maxlength="1000"></textarea>
+              <div class="d-flex justify-content-end mt-1">
+                <small style="color:var(--k-gray)" x-text="(newForm.body||'').length + '/1000'">0/1000</small>
+              </div>
+            </div>
+
+            <div x-show="submitError" x-text="submitError" style="background:#fff1f2;border:1px solid #fecdd3;border-radius:10px;padding:0.75rem 1rem;color:#be123c;font-size:0.88rem;margin-bottom:0.75rem;text-align:center"></div>
+
+          </div>
+          <div class="modal-footer border-0 pt-0">
+            <button class="btn btn-outline-secondary" data-bs-dismiss="modal">إلغاء</button>
+            <button class="btn btn-primary" @click="submitComplaint()" :disabled="!newForm.category||!newForm.subject||!newForm.body||submitting">
+              <span x-show="!submitting"><i class="fas fa-paper-plane ms-2"></i> إرسال الشكوى</span>
+              <span x-show="submitting"><i class="fas fa-spinner fa-spin ms-2"></i> جاري الإرسال...</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+<script src="../assets/js/khedmah.js"></script>
+<script>
+  /* ── Session bootstrap ── */
+  (function(){
+    var s = {};
+    try { s = JSON.parse(localStorage.getItem('khedmah_demo')) || {}; } catch(e){}
+    var name = s.name || s.full_name || 'المستخدم';
+    var el = document.getElementById('navUserName');
+    var av = document.getElementById('navUserAvatar');
+    if(el) el.textContent = name;
+    if(av) av.textContent = (name[0] || '؟');
+  })();
+
+  /* ── Helpers ── */
+  var STATUS_LABEL = { open:'مفتوحة', in_progress:'قيد المعالجة', closed:'مغلقة', escalated:'مُصعَّدة' };
+  var STATUS_CLASS  = { open:'bg-warning text-dark', in_progress:'bg-primary', closed:'bg-success', escalated:'bg-danger' };
+
+  function relTime(iso) {
+    if(!iso) return '';
+    var diff = Math.floor((Date.now() - new Date(iso)) / 1000);
+    if(diff < 60)    return 'منذ ' + diff + ' ثانية';
+    if(diff < 3600)  return 'منذ ' + Math.floor(diff/60) + ' دقيقة';
+    if(diff < 86400) return 'منذ ' + Math.floor(diff/3600) + ' ساعة';
+    return 'منذ ' + Math.floor(diff/86400) + ' يوم';
+  }
+
+  /* ── Demo fallback data ── */
+  var DEMO_COMPLAINTS = [
+    { id:'demo-1', subject:'المزود لم يكمل العمل', category:'خدمة غير مكتملة', status:'open',   created_at: new Date(Date.now()-3600000).toISOString() },
+    { id:'demo-2', subject:'تأخر المزود ساعتين',   category:'تأخر المزود',      status:'closed', created_at: new Date(Date.now()-86400000*2).toISOString() }
+  ];
+  var DEMO_MESSAGES = {
+    'demo-1': [
+      { id:'m1', sender_id:'me', sender_role:'customer', body:'المزود وصل متأخراً ولم يكمل العمل المطلوب.', created_at: new Date(Date.now()-3600000).toISOString() },
+      { id:'m2', sender_id:'support', sender_role:'admin', body:'شكراً لتواصلك. سنتابع الموضوع مع المزود وسنرد عليك خلال 24 ساعة.', created_at: new Date(Date.now()-1800000).toISOString() }
+    ],
+    'demo-2': [
+      { id:'m3', sender_id:'me', sender_role:'customer', body:'المزود تأخر ساعتين عن الموعد المحدد.', created_at: new Date(Date.now()-86400000*2).toISOString() },
+      { id:'m4', sender_id:'support', sender_role:'admin', body:'تم التحقق من الموضوع وتنبيه المزود. نعتذر عن الإزعاج.', created_at: new Date(Date.now()-86400000).toISOString() }
+    ]
+  };
+
+  function complaintsApp() {
+    return {
+      complaints: [],
+      activeComplaint: null,
+      messages: [],
+      replyText: '',
+      replying: false,
+      useDemoData: false,
+
+      newForm: { category:'', subject:'', body:'' },
+      submitting: false,
+      submitError: '',
+      _modal: null,
+      _session: {},
+
+      init() {
+        try { this._session = JSON.parse(localStorage.getItem('khedmah_demo')) || {}; } catch(e){}
+        this._modal = new bootstrap.Modal(document.getElementById('newComplaintModal'));
+        this.loadComplaints();
+      },
+
+      async loadComplaints() {
+        var res = await Complaints.list();
+        if(!res.ok || !res.data || res.data.length === 0) {
+          this.useDemoData = true;
+          this.complaints = DEMO_COMPLAINTS;
+        } else {
+          this.complaints = res.data;
+        }
+        this.renderList();
+      },
+
+      renderList() {
+        var self = this;
+        var el = document.getElementById('complaintList');
+        if(this.complaints.length === 0) {
+          el.innerHTML = '<div class="text-center py-5"><div style="font-size:3rem;margin-bottom:1rem">✅</div><h6 style="font-weight:700">لا توجد شكاوى</h6><p style="color:var(--k-gray);font-size:0.88rem">لم ترفع أي شكوى حتى الآن</p></div>';
+          return;
+        }
+        el.innerHTML = this.complaints.map(function(c) {
+          var statusLabel = STATUS_LABEL[c.status] || c.status;
+          var cardClass   = 'complaint-card ' + (c.status || '');
+          return '<div class="'+cardClass+'" onclick="window._complaintsApp.openThread(\''+c.id+'\')">' +
+            '<div class="d-flex justify-content-between align-items-start">' +
+              '<div style="font-weight:700;color:var(--k-dark-2);font-size:0.95rem;margin-bottom:0.25rem">'+(c.subject||'شكوى')+'</div>' +
+              '<span class="badge '+STATUS_CLASS[c.status]+'" style="font-size:0.7rem">'+statusLabel+'</span>' +
+            '</div>' +
+            '<div style="font-size:0.8rem;color:var(--k-gray)">'+(c.category||'')+'</div>' +
+            '<div style="font-size:0.75rem;color:var(--k-gray);margin-top:0.4rem"><i class="fas fa-clock ms-1"></i>'+relTime(c.created_at)+'</div>' +
+          '</div>';
+        }).join('');
+        // expose app to DOM handlers
+        window._complaintsApp = self;
+      },
+
+      async openThread(id) {
+        this.activeComplaint = this.complaints.find(function(c){ return c.id === id; }) || null;
+        if(!this.activeComplaint) return;
+
+        document.getElementById('threadEmpty').style.display = 'none';
+        document.getElementById('threadView').style.display = '';
+
+        // Header
+        document.getElementById('threadSubject').textContent  = this.activeComplaint.subject || '—';
+        document.getElementById('threadCategory').textContent = this.activeComplaint.category || '—';
+        document.getElementById('threadDate').textContent     = relTime(this.activeComplaint.created_at);
+        var st = document.getElementById('threadStatus');
+        st.textContent  = STATUS_LABEL[this.activeComplaint.status] || this.activeComplaint.status;
+        st.className    = 'badge ' + (STATUS_CLASS[this.activeComplaint.status] || 'bg-secondary');
+
+        // Load messages
+        this.messages = [];
+        var area = document.getElementById('chatArea');
+        area.innerHTML = '<div class="text-center py-3" style="color:var(--k-gray);font-size:0.88rem"><i class="fas fa-spinner fa-spin"></i> جاري التحميل...</div>';
+
+        var msgs;
+        if(this.useDemoData) {
+          msgs = { ok: true, data: DEMO_MESSAGES[id] || [] };
+        } else {
+          msgs = await Complaints.getMessages(id);
+        }
+
+        this.messages = msgs.data || [];
+        this.renderMessages();
+      },
+
+      renderMessages() {
+        var session = this._session;
+        var area = document.getElementById('chatArea');
+        if(this.messages.length === 0) {
+          area.innerHTML = '<div class="text-center py-4" style="color:var(--k-gray);font-size:0.88rem">لا توجد رسائل بعد. ابدأ المحادثة مع الدعم.</div>';
+          return;
+        }
+        area.innerHTML = this.messages.map(function(m) {
+          var isMe = m.sender_id === session.id || m.sender_role === 'customer';
+          var bubbleCls = isMe ? 'msg-bubble msg-mine' : 'msg-bubble msg-support';
+          var senderName = isMe ? 'أنت' : (m.sender && m.sender.full_name ? m.sender.full_name : 'فريق الدعم');
+          var align = isMe ? 'd-flex flex-column align-items-end' : 'd-flex flex-column align-items-start';
+          return '<div class="'+align+' mb-2">' +
+            '<div style="font-size:0.72rem;color:var(--k-gray);margin-bottom:0.2rem">'+senderName+'</div>' +
+            '<div class="'+bubbleCls+'">'+m.body+'</div>' +
+            '<div class="msg-time">'+relTime(m.created_at)+'</div>' +
+          '</div>';
+        }).join('');
+        area.scrollTop = area.scrollHeight;
+      },
+
+      async sendReply() {
+        if(!this.replyText.trim() || !this.activeComplaint) return;
+        this.replying = true;
+        var body = this.replyText.trim();
+        this.replyText = '';
+
+        var res;
+        if(this.useDemoData) {
+          // Demo: add locally
+          res = { ok: true };
+          this.messages.push({
+            id: 'local-'+Date.now(),
+            sender_id: this._session.id || 'me',
+            sender_role: 'customer',
+            body: body,
+            created_at: new Date().toISOString()
+          });
+        } else {
+          res = await Complaints.sendMessage(this.activeComplaint.id, body);
+          if(res.ok) {
+            // Refresh messages
+            var fresh = await Complaints.getMessages(this.activeComplaint.id);
+            this.messages = fresh.data || this.messages;
+          }
+        }
+
+        this.replying = false;
+        this.renderMessages();
+
+        if(!res.ok) {
+          if(typeof kToast === 'function') kToast('تعذّر إرسال الرسالة', 'error');
+        } else {
+          if(typeof kToast === 'function') kToast('تم إرسال ردك ✓', 'success');
+        }
+      },
+
+      openNewModal() {
+        this.newForm = { category:'', subject:'', body:'' };
+        this.submitError = '';
+        this._modal.show();
+      },
+
+      async submitComplaint() {
+        if(!this.newForm.category || !this.newForm.subject || !this.newForm.body) return;
+        this.submitting = true;
+        this.submitError = '';
+
+        var res;
+        if(this.useDemoData) {
+          // Demo: add locally
+          var newC = {
+            id: 'demo-' + Date.now(),
+            subject:  this.newForm.subject,
+            category: this.newForm.category,
+            status:   'open',
+            created_at: new Date().toISOString()
+          };
+          this.complaints.unshift(newC);
+          DEMO_MESSAGES[newC.id] = [{
+            id: 'local-1',
+            sender_id: 'me',
+            sender_role: 'customer',
+            body: this.newForm.body,
+            created_at: new Date().toISOString()
+          }];
+          res = { ok: true };
+        } else {
+          res = await Complaints.create({
+            subject:  this.newForm.subject,
+            category: this.newForm.category,
+            body:     this.newForm.body,
+            status:   'open'
+          });
+        }
+
+        this.submitting = false;
+
+        if(!res.ok) {
+          this.submitError = 'تعذّر إرسال الشكوى. حاول مرة أخرى.';
+          return;
+        }
+
+        this._modal.hide();
+        this.renderList();
+        if(typeof kToast === 'function') kToast('تم رفع شكواك بنجاح. سيتواصل معك فريق الدعم قريباً.', 'success');
+
+        // Open the newly created complaint thread
+        if(!this.useDemoData && res.data) {
+          this.complaints.unshift(res.data);
+          this.renderList();
+          this.openThread(res.data.id);
+        } else if(this.useDemoData) {
+          this.openThread(this.complaints[0].id);
+        }
+      }
+    };
+  }
+</script>
+</body>
+</html>

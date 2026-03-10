@@ -12,6 +12,7 @@
   <style> body { background: #f8fafc; } </style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../assets/js/supabase-client.js"></script>
+  <script src="../assets/js/khedmah-data.js"></script>
 </head>
 <body>
 <script>
@@ -61,8 +62,8 @@
         <div style="width:80px;height:80px;background:rgba(255,255,255,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:2.5rem">
           <i class="fas fa-user"></i>
         </div>
-        <h4 style="font-weight:900;margin-bottom:0.25rem">أحمد السباك المحترف</h4>
-        <div style="opacity:0.85;font-size:0.9rem">خدمة سباكة · 5 مارس 2026</div>
+        <h4 id="rateProviderName" style="font-weight:900;margin-bottom:0.25rem">—</h4>
+        <div id="rateServiceMeta" style="opacity:0.85;font-size:0.9rem">—</div>
       </div>
       <div class="card-body p-4">
 
@@ -119,9 +120,98 @@
     return {
       rating: 0, hover: 0, comment: '', loading: false, submitted: false,
       labels: ['','ضعيف 😞','مقبول 😐','جيد 😊','ممتاز 😄','رائع جداً 🤩'],
-      submit() {
+
+      _bookingId:  null,
+      _providerId: null,
+      _booking:    null,
+
+      init() {
+        var self = this;
+        this._bookingId = sessionStorage.getItem('rateBookingId')
+                       || sessionStorage.getItem('bookingId')
+                       || null;
+
+        /* Fill header from sessionStorage first (instant) */
+        var provName = sessionStorage.getItem('quoteProvider') || 'المزود';
+        var svcName  = sessionStorage.getItem('quoteService')  || 'خدمة منزلية';
+        var svcDate  = sessionStorage.getItem('quoteDate')     || '';
+
+        var nameEl = document.getElementById('rateProviderName');
+        var metaEl = document.getElementById('rateServiceMeta');
+        if (nameEl) nameEl.textContent = provName;
+        if (metaEl) metaEl.textContent = svcName + (svcDate ? ' · ' + svcDate : '');
+
+        /* Fetch real booking for provider_id override */
+        if (this._bookingId && typeof Bookings !== 'undefined') {
+          Bookings.get(this._bookingId).then(function(res) {
+            if (!res.ok || !res.data) return;
+            self._booking = res.data;
+            self._providerId = res.data.provider_id
+              || (res.data.provider && res.data.provider.id)
+              || null;
+            var realProv = res.data.provider && res.data.provider.full_name;
+            var realSvc  = res.data.service  && res.data.service.title;
+            if (nameEl && realProv) nameEl.textContent = realProv;
+            if (metaEl && realSvc)  metaEl.textContent = realSvc + (svcDate ? ' · ' + svcDate : '');
+          }).catch(function(){});
+        }
+      },
+
+      async submit() {
+        if (this.rating === 0) return;
         this.loading = true;
-        setTimeout(() => { this.loading = false; this.submitted = true; }, 1500);
+
+        var session = {};
+        try { session = JSON.parse(localStorage.getItem('khedmah_demo') || '{}'); } catch(e){}
+
+        var clientSb = (typeof _sb === 'function' ? _sb() : null)
+                    || (typeof sb  !== 'undefined' ? sb   : null);
+
+        var saved = false;
+
+        /* Write to reviews table */
+        if (clientSb && this._bookingId) {
+          try {
+            var payload = {
+              booking_id:  this._bookingId,
+              reviewer_id: session.id   || null,
+              reviewee_id: this._providerId || null,
+              role:        'customer',
+              rating:      this.rating,
+              comment:     this.comment || null
+            };
+            var result = await clientSb.from('reviews').insert(payload);
+            if (!result.error) saved = true;
+          } catch(e) { console.warn('reviews insert:', e); }
+        }
+
+        /* Notify provider */
+        if (this._providerId && typeof Notifications !== 'undefined') {
+          var stars = '★'.repeat(this.rating) + '☆'.repeat(5 - this.rating);
+          var svcTitle = (this._booking && (
+            (this._booking.service && this._booking.service.title) || this._booking.description
+          )) || sessionStorage.getItem('quoteService') || 'الخدمة';
+
+          await Notifications.send(
+            this._providerId,
+            'new_review',
+            'تقييم جديد من عميل',
+            (session.name || 'عميل') + ' قيّم خدمتك "' + svcTitle + '" بـ ' + this.rating + ' نجوم ' + stars,
+            '../provider/dashboard.html'
+          );
+        }
+
+        /* Clean up sessionStorage keys used in this flow */
+        ['rateBookingId','bookingId','quoteProvider','quoteService',
+         'quoteDate','quoteTime','quoteCity','quoteMaterials','quoteDescription']
+          .forEach(function(k){ sessionStorage.removeItem(k); });
+
+        this.loading   = false;
+        this.submitted = true;
+
+        if (!saved && typeof kToast === 'function') {
+          kToast('تم حفظ تقييمك محلياً (غير متصل بالإنترنت)', 'success');
+        }
       }
     };
   }

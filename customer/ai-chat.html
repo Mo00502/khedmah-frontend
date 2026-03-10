@@ -1112,6 +1112,7 @@ function aiChat() {
 
     history: [],
     askedQuestions: new Set(),
+    _aiSessionId: null,
 
     infoLabels: {
       project_type:'نوع المشروع', property_type:'نوع العقار', location:'المدينة',
@@ -1154,6 +1155,14 @@ function aiChat() {
           if (typeof kToast === 'function') kToast('تم استعادة محادثتك', 'success');
         } catch(e) {}
       }
+
+      /* ── Supabase AI session (fire-and-forget, non-blocking) ── */
+      if (isLoggedIn && typeof AiChat !== 'undefined') {
+        const self = this;
+        AiChat.startSession().then(function(res) {
+          if (res.ok && res.data) self._aiSessionId = res.data.id;
+        }).catch(function(){});
+      }
     },
 
     handleEnter(e) { if (!e.shiftKey) this.sendMessage(); },
@@ -1180,6 +1189,7 @@ function aiChat() {
       this.detectedLang = /[\u0600-\u06FF]/.test(text) ? 'AR' : /[\u0900-\u097F]/.test(text) ? 'HI' : 'EN';
       this.messages.push({ role:'user', content:text, time:this.now() });
       this.history.push({ role:'user', content:text });
+      if (this._aiSessionId) AiChat.sendMessage(this._aiSessionId, text, 'user').catch(function(){});
       this.inputText = '';
       this.quickSuggestions = [];
       const ta = document.getElementById('chatInput');
@@ -1282,6 +1292,11 @@ function aiChat() {
 
       this.history.push({ role:'assistant', content:parsed.message });
       this.messages.push(msg);
+
+      /* ── Persist AI reply to Supabase (non-blocking) ── */
+      if (this._aiSessionId && parsed.message) {
+        AiChat.sendMessage(this._aiSessionId, parsed.message, 'assistant').catch(function(){});
+      }
     },
 
     buildSummaryHTML(parsed) {
@@ -1318,6 +1333,12 @@ function aiChat() {
       }
 
       const summary = encodeURIComponent(this.routingSummary || this.detectedServices.map(s=>s.name).join(', '));
+
+      /* Save routing event to Supabase session */
+      if (this._aiSessionId) {
+        AiChat.sendMessage(this._aiSessionId, '[ROUTED] ' + decodeURIComponent(summary), 'assistant').catch(function(){});
+      }
+
       window.location.href = `search.html?ai_request=${summary}`;
     },
 
@@ -1353,5 +1374,8 @@ function aiChat() {
 }
 </script>
 <script src="../assets/js/khedmah.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../assets/js/supabase-client.js"></script>
+<script src="../assets/js/khedmah-data.js"></script>
 </body>
 </html>

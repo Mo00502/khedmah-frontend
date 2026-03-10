@@ -338,12 +338,16 @@
           </div>
         </div>
 
+        <!-- Submit error -->
+        <div x-show="submitError" x-text="submitError" style="background:#fff1f2;border:1px solid #fecdd3;border-radius:10px;padding:0.75rem 1rem;color:#be123c;font-size:0.88rem;margin-bottom:1rem;text-align:center"></div>
+
         <div class="d-flex gap-3">
-          <button class="btn btn-outline-secondary flex-fill py-2" @click="step=2" style="border-radius:12px">
+          <button class="btn btn-outline-secondary flex-fill py-2" @click="step=2" :disabled="loading" style="border-radius:12px">
             <i class="fas fa-arrow-right ms-2"></i> السابق
           </button>
-          <button class="btn btn-accent flex-fill py-3" :disabled="!date||!time" @click="submitQuote()" style="border-radius:12px;font-size:1rem">
-            <i class="fas fa-check ms-2"></i> تأكيد الطلب وإرسال
+          <button class="btn btn-accent flex-fill py-3" :disabled="!date||!time||loading" @click="submitQuote()" style="border-radius:12px;font-size:1rem">
+            <span x-show="!loading"><i class="fas fa-check ms-2"></i> تأكيد الطلب وإرسال</span>
+            <span x-show="loading"><i class="fas fa-spinner fa-spin ms-2"></i> جاري الإرسال...</span>
           </button>
         </div>
       </div>
@@ -352,9 +356,12 @@
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
 <script src="../assets/js/khedmah.js"></script>
+<script src="../assets/js/supabase-client.js"></script>
+<script src="../assets/js/khedmah-data.js"></script>
 <script>
   // Load provider name from sessionStorage (set by search/profile pages)
   (function () {
@@ -372,16 +379,69 @@
       description: '',
       date: '',
       time: '',
+      loading: false,
+      submitError: '',
 
-      submitQuote() {
-        // Persist quote data so payment page can display it
-        sessionStorage.setItem('quoteService',    this.service);
-        sessionStorage.setItem('quoteCity',       this.city);
-        sessionStorage.setItem('quoteMaterials',  this.hasMaterials ? 'عمالة + مواد' : 'عمالة فقط');
-        sessionStorage.setItem('quoteDate',       this.date);
-        sessionStorage.setItem('quoteTime',       this.time);
+      async submitQuote() {
+        this.loading = true;
+        this.submitError = '';
+
+        // Build scheduled datetime string
+        const scheduledAt = this.date && this.time
+          ? new Date(this.date + ' ' + this.time.replace(' ص','').replace(' م', this.time.includes('م') ? '' : '')).toISOString()
+          : null;
+
+        const providerId = sessionStorage.getItem('quoteProviderId') || null;
+
+        const fields = {
+          description:   this.description,
+          address:       this.city,
+          category:      this.service,
+          includes_materials: this.hasMaterials,
+          scheduled_at:  this.date ? (this.date + 'T00:00:00') : null,
+          scheduled_time: this.time || null,
+        };
+        if (providerId) fields.provider_id = providerId;
+
+        const { ok, data, error } = await Bookings.create(fields);
+
+        if (!ok) {
+          // Demo fallback: save to sessionStorage and continue
+          console.warn('Bookings.create failed — using demo fallback', error);
+          sessionStorage.setItem('quoteService',     this.service);
+          sessionStorage.setItem('quoteCity',        this.city);
+          sessionStorage.setItem('quoteMaterials',   this.hasMaterials ? 'عمالة + مواد' : 'عمالة فقط');
+          sessionStorage.setItem('quoteDate',        this.date);
+          sessionStorage.setItem('quoteTime',        this.time);
+          sessionStorage.setItem('quoteDescription', this.description);
+          this.loading = false;
+          window.location.href = '../shared/payment-escrow.html';
+          return;
+        }
+
+        // Notify provider if linked
+        if (providerId && data?.id) {
+          await Notifications.send(
+            providerId,
+            'new_booking',
+            'طلب خدمة جديد',
+            'وصلك طلب جديد لخدمة: ' + this.service + ' في ' + this.city,
+            '../provider/dashboard.html'
+          );
+        }
+
+        // Persist for payment page
+        sessionStorage.setItem('quoteService',     this.service);
+        sessionStorage.setItem('quoteCity',        this.city);
+        sessionStorage.setItem('quoteMaterials',   this.hasMaterials ? 'عمالة + مواد' : 'عمالة فقط');
+        sessionStorage.setItem('quoteDate',        this.date);
+        sessionStorage.setItem('quoteTime',        this.time);
         sessionStorage.setItem('quoteDescription', this.description);
-        window.location.href = '../shared/payment-escrow.html';
+        if (data?.id) sessionStorage.setItem('bookingId', data.id);
+
+        this.loading = false;
+        if (typeof kToast === 'function') kToast('تم إرسال طلبك بنجاح!', 'success');
+        setTimeout(() => { window.location.href = '../shared/payment-escrow.html'; }, 800);
       }
     };
   }
