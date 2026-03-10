@@ -465,8 +465,67 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="../assets/js/khedmah.js"></script>
+<script src="../assets/js/supabase-client.js"></script>
+<script src="../assets/js/khedmah-data.js"></script>
 <script>
   let currentCat = 'all';
+
+  // ── Emoji map per category ─────────────────────────────────
+  const CAT_EMOJI = {
+    excavator:'⛏️', crane:'🏗️', mixer:'🔄', bulldozer:'🚜',
+    loader:'🚛', truck:'🚚', compactor:'🚧', forklift:'🏭',
+    generator:'⚡', pump:'💧', scaffold:'🪜', other:'🔧'
+  };
+
+  function buildRealCard(eq) {
+    const avail    = eq.is_available;
+    const availCls = avail ? 'avail-yes' : 'avail-no';
+    const availTxt = avail ? 'متاح الآن'  : 'محجوز';
+    const emoji    = eq.emoji || CAT_EMOJI[eq.category] || '🔧';
+    const opTag    = eq.has_operator
+      ? `<span style="background:#f0f9ff;color:#0369a1;border:1px solid #bae6fd;border-radius:6px;padding:0.15rem 0.5rem;font-size:0.75rem;font-weight:600">مع مشغل</span>`
+      : `<span style="background:#f8fafc;color:#64748b;border:1px solid #e2e8f0;border-radius:6px;padding:0.15rem 0.5rem;font-size:0.75rem;font-weight:600">بدون مشغل</span>`;
+    const price    = eq.day_price ? `${eq.day_price.toLocaleString('ar-SA')} ر.س/يوم` : '—';
+
+    return `
+      <div class="col-md-6 col-xl-4 eq-item" data-cat="${eq.category||'other'}" data-name="${eq.name||''}" data-avail="${avail?'avail':'unavail'}">
+        <div class="eq-card">
+          <div class="eq-card-img" style="background:linear-gradient(135deg,#fef3c7,#fed7aa)">
+            ${emoji}
+            <span class="eq-avail-badge ${availCls}">${availTxt}</span>
+          </div>
+          <div style="padding:1.1rem">
+            <div class="d-flex justify-content-between align-items-start mb-1">
+              <h6 style="font-weight:800;color:#1e293b;margin:0;font-size:0.95rem">${eq.name||'معدة'}</h6>
+              <button onclick="toggleFav(this)" style="background:none;border:none;color:#cbd5e1;font-size:1.1rem;cursor:pointer"><i class="fas fa-heart"></i></button>
+            </div>
+            <div style="font-size:0.8rem;color:#64748b;margin-bottom:0.75rem">${eq.brand||''} · موديل ${eq.year||''}</div>
+            <div class="d-flex flex-wrap gap-2 mb-2">
+              <span class="price-tag">${price}</span>
+              ${opTag}
+            </div>
+            <div class="d-flex gap-3 mb-3">
+              <div class="eq-stat"><i class="fas fa-map-marker-alt eq-accent"></i> ${eq.region||''}</div>
+              <div class="eq-stat"><i class="fas fa-star text-warning"></i> ${eq.rating||'—'}</div>
+            </div>
+            <a href="equipment-detail.html?id=${eq.id}" class="btn btn-eq w-100" style="font-size:0.88rem">احجز الآن</a>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  // ── Load real equipment from Supabase ───────────────────────
+  (function loadRealEquipment() {
+    Equipment.search({ available: false }).then(function(res) {
+      if (!res.ok || !res.data || res.data.length === 0) return;
+      const list = document.getElementById('equipmentGrid');
+      if (!list) return;
+      res.data.forEach(function(eq) {
+        list.insertAdjacentHTML('afterbegin', buildRealCard(eq));
+      });
+      filterEquipment();
+    }).catch(function() {});
+  })();
 
   function setCat(cat, btn) {
     currentCat = cat;
