@@ -9,6 +9,8 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="stylesheet" href="../assets/css/khedmah.css">
+  <script src="../assets/js/supabase-client.js"></script>
+  <script src="../assets/js/khedmah-data.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body { background: #f0f4f8; font-family: 'Tajawal', sans-serif; }
@@ -548,6 +550,70 @@
   }
 
   window.addEventListener('load', renderChart);
-</script>
+
+  /* ── Load real company data ──────────────────────────────── */
+  (async function loadCompany() {
+    var params  = new URLSearchParams(window.location.search);
+    var coId    = params.get('id') || sessionStorage.getItem('currentCompanyId');
+    if (!coId) {
+      // Try to load current user's company
+      var res = await Companies.myCompany();
+      if (!res.ok || !res.data) return;
+      fillCompany(res.data);
+      loadMyBids();
+      return;
+    }
+    var res = await Companies.get(coId);
+    if (res.ok && res.data) fillCompany(res.data);
+  })();
+
+  function fillCompany(co) {
+    // Avatar initial
+    var avatarEl = document.querySelector('.profile-avatar');
+    if (avatarEl) avatarEl.textContent = (co.name || 'ش')[0];
+
+    // Name
+    var nameEl = document.querySelector('h2');
+    if (nameEl) nameEl.textContent = co.name || '';
+
+    // Verified badge
+    var verEl = document.querySelector('.verified-badge');
+    if (verEl) verEl.style.display = co.verified ? '' : 'none';
+
+    // Stats boxes
+    var vals = document.querySelectorAll('.stat-box .val');
+    if (vals[0]) vals[0].textContent = co.total_projects || '—';
+    if (vals[3]) vals[3].textContent = co.classification || '—';
+
+    // Rating
+    var stars = document.querySelectorAll('.fa-star.text-warning');
+    if (stars[0] && co.rating) stars[0].parentElement.textContent = '★ ' + co.rating;
+
+    // Sidebar: CR number
+    var crEl = document.querySelector('[data-field="cr"]');
+    if (crEl && co.cr_number) crEl.textContent = co.cr_number;
+  }
+
+  async function loadMyBids() {
+    var res = await TenderBids.listMine();
+    if (!res.ok || res.data.length === 0) return;
+    var container = document.querySelector('.detail-card:last-child .d-flex.flex-column');
+    if (!container) return;
+    container.innerHTML = '';
+    res.data.slice(0, 5).forEach(function(b) {
+      var badge = b.status === 'won'
+        ? '<span style="color:#16a34a;font-weight:700;font-size:0.78rem"><i class="fas fa-trophy ms-1"></i> فائز</span>'
+        : b.status === 'pending'
+          ? '<span style="color:#64748b;font-size:0.78rem">قيد المراجعة</span>'
+          : '';
+      var div = document.createElement('div');
+      div.style.cssText = 'padding:0.75rem;background:#f8fafc;border-radius:10px;border:1px solid #e2e8f0;margin-bottom:0.5rem';
+      div.innerHTML = '<div style="font-weight:700;font-size:0.85rem;color:#1e293b">' + (b.tender ? b.tender.title : 'مناقصة') + '</div>'
+        + '<div style="font-size:0.78rem;color:#0369a1;font-weight:600">'
+        + Number(b.amount).toLocaleString('ar-SA') + ' ر.س' + badge + '</div>';
+      container.appendChild(div);
+    });
+  }
+
 </body>
 </html>

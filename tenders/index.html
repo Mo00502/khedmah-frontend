@@ -10,6 +10,8 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="stylesheet" href="../assets/css/khedmah.css">
+  <script src="../assets/js/supabase-client.js"></script>
+  <script src="../assets/js/khedmah-data.js"></script>
   <style>
     body { background: #f8fafc; }
     .t-hero { background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0369a1 100%); padding: 4rem 0 5rem; position: relative; overflow: hidden; }
@@ -48,6 +50,7 @@
         <li class="nav-item"><a class="nav-link" href="../customer/home-services.html">الخدمات المنزلية</a></li>
         <li class="nav-item"><a class="nav-link active" href="index.html">المناقصات</a></li>
         <li class="nav-item"><a class="nav-link" href="../equipment/index.html">المعدات الثقيلة</a></li>
+        <li class="nav-item"><a class="nav-link" href="supplier-marketplace.html">سوق الموردين</a></li>
       </ul>
       <div class="d-flex gap-2">
         <a href="post-tender.html" class="btn btn-accent btn-sm"><i class="fas fa-plus ms-1"></i> نشر مناقصة</a>
@@ -380,28 +383,105 @@
 <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
 <script src="../assets/js/khedmah.js"></script>
 <script>
+  var _activeCat = 'all';
+
   function filterTender(cat, btn) {
+    _activeCat = cat;
     document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-    const cards = document.querySelectorAll('#tendersList .t-card');
+    applyFilters();
+  }
+
+  function applyFilters() {
+    const q   = document.getElementById('tenderSearch').value.toLowerCase();
+    const cat = _activeCat;
     let count = 0;
-    cards.forEach(c => {
-      const show = cat === 'all' || (c.dataset.cat && c.dataset.cat.includes(cat));
+    document.querySelectorAll('#tendersList .t-card').forEach(c => {
+      const catMatch  = cat === 'all' || (c.dataset.cat && c.dataset.cat.includes(cat));
+      const textMatch = !q || c.textContent.toLowerCase().includes(q);
+      const show = catMatch && textMatch;
       c.style.display = show ? '' : 'none';
       if (show) count++;
     });
     document.getElementById('countLabel').textContent = count;
   }
-  document.getElementById('tenderSearch').addEventListener('input', function() {
-    const q = this.value.toLowerCase();
-    let count = 0;
-    document.querySelectorAll('#tendersList .t-card').forEach(c => {
-      const show = !q || c.textContent.toLowerCase().includes(q);
-      c.style.display = show ? '' : 'none';
-      if (show) count++;
+
+  document.getElementById('tenderSearch').addEventListener('input', applyFilters);
+
+  /* ── Load real tenders from Supabase ─────────────────────── */
+  function daysUntil(dateStr) {
+    if (!dateStr) return null;
+    var d = Math.ceil((new Date(dateStr) - new Date()) / 86400000);
+    return d;
+  }
+
+  function urgencyClass(t) {
+    if (!t.urgency) return '';
+    return t.urgency === 'high' ? 'urgency-badge' : '';
+  }
+
+  function buildRealCard(t) {
+    var budget = t.budget_max
+      ? Number(t.budget_max / 1e6).toFixed(1) + 'M ر.س'
+      : (t.budget_min ? '+' + Number(t.budget_min / 1e6).toFixed(1) + 'M ر.س' : 'غير محدد');
+    var days = daysUntil(t.deadline);
+    var daysLabel = days !== null
+      ? (days <= 0 ? 'انتهى التقديم' : 'ينتهي في ' + days + ' يوم')
+      : '';
+    var urgentBadge = (days !== null && days <= 7 && days > 0)
+      ? '<span class="urgency-badge"><i class="fas fa-clock me-1"></i>' + daysLabel + '</span>'
+      : '';
+    var bidsCount = t.bids_count ? (Array.isArray(t.bids_count) ? t.bids_count[0]?.count || 0 : t.bids_count) : 0;
+    var client = t.company ? t.company.name : 'جهة خاصة';
+
+    var div = document.createElement('div');
+    div.className = 't-card';
+    div.dataset.cat = t.category || '';
+    div.onclick = function() {
+      sessionStorage.setItem('currentTenderId', t.id);
+      location.href = 'tender-detail.html?id=' + t.id;
+    };
+    div.innerHTML = `
+      <div class="d-flex justify-content-between align-items-start mb-2 flex-wrap gap-2">
+        <div>
+          <span class="t-cat-badge mb-1 d-inline-block" style="background:rgba(2,128,144,0.1);color:var(--k-primary)">
+            <i class="fas fa-gavel me-1"></i>${t.category || 'عام'}
+          </span>
+          <h6 style="font-weight:800;color:var(--k-dark-2);margin-bottom:0.25rem">${t.title}</h6>
+          <div style="font-size:0.82rem;color:var(--k-gray)">
+            <i class="fas fa-building me-1"></i>${client}
+            ${t.region ? '&nbsp;·&nbsp;<i class="fas fa-map-marker-alt me-1"></i>' + t.region : ''}
+          </div>
+        </div>
+        ${urgentBadge}
+      </div>
+      <p style="color:var(--k-gray);font-size:0.88rem;margin-bottom:1rem;line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">
+        ${t.description || ''}
+      </p>
+      <div class="d-flex flex-wrap gap-3 mb-3">
+        <div class="t-stat"><i class="fas fa-money-bill-wave" style="color:var(--k-primary)"></i> <span>الميزانية: <strong>${budget}</strong></span></div>
+        ${t.duration_months ? '<div class="t-stat"><i class="fas fa-calendar" style="color:var(--k-primary)"></i> <span>المدة: <strong>' + t.duration_months + ' شهراً</strong></span></div>' : ''}
+        <div class="t-stat"><i class="fas fa-gavel" style="color:var(--k-primary)"></i> <span>العروض: <strong>${bidsCount}</strong></span></div>
+      </div>
+      <div class="d-flex justify-content-between align-items-center mt-3 pt-3" style="border-top:1px solid #f1f5f9">
+        <div style="font-size:0.78rem;color:var(--k-gray)">${daysLabel ? 'ينتهي التقديم: ' + (t.deadline ? new Date(t.deadline).toLocaleDateString('ar-SA') : '') : ''}</div>
+        <button class="btn btn-primary btn-sm px-3">عرض التفاصيل وتقديم عرض</button>
+      </div>`;
+    return div;
+  }
+
+  (async function loadTenders() {
+    var res = await Tenders.list({ status: 'open' });
+    if (!res.ok || res.data.length === 0) return;
+
+    var list = document.getElementById('tendersList');
+    // Prepend real cards before demo cards
+    res.data.forEach(function(t) {
+      list.insertBefore(buildRealCard(t), list.firstChild);
     });
-    document.getElementById('countLabel').textContent = count;
-  });
+    document.getElementById('countLabel').textContent =
+      list.querySelectorAll('.t-card').length;
+  })();
 </script>
 </body>
 </html>
