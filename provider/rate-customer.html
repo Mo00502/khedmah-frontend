@@ -22,6 +22,7 @@
   </style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../assets/js/supabase-client.js"></script>
+  <script src="../assets/js/khedmah-data.js"></script>
 </head>
 <body>
 <script>
@@ -48,7 +49,7 @@
   </div>
 </nav>
 
-<div class="container py-4" style="max-width:600px" x-data="rateCustomerApp()">
+<div class="container py-4" style="max-width:600px" x-data="rateCustomerApp()" x-init="init()">
 
   <!-- Success -->
   <div x-show="submitted" style="text-align:center;padding:3rem 1rem">
@@ -75,11 +76,11 @@
     <div class="card border-0 shadow-sm mb-4" style="border-radius:16px">
       <div class="card-body p-4">
         <div class="d-flex align-items-center gap-3">
-          <div style="width:60px;height:60px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.5rem;font-weight:700">م</div>
+          <div style="width:60px;height:60px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.5rem;font-weight:700" id="rateCustomerInitial">م</div>
           <div>
-            <div style="font-weight:800;color:var(--k-dark-2);font-size:1.05rem">محمد العتيبي</div>
-            <div style="color:var(--k-gray);font-size:0.85rem">خدمة سباكة · 5 مارس 2026</div>
-            <div style="font-size:0.82rem;color:var(--k-primary)">350 ر.س</div>
+            <div style="font-weight:800;color:var(--k-dark-2);font-size:1.05rem" id="rateCustomerName">محمد العتيبي</div>
+            <div style="color:var(--k-gray);font-size:0.85rem" id="rateServiceInfo">خدمة سباكة · 5 مارس 2026</div>
+            <div style="font-size:0.82rem;color:var(--k-primary)" id="rateAmount">350 ر.س</div>
           </div>
         </div>
       </div>
@@ -200,10 +201,78 @@
 <script>
   function rateCustomerApp() {
     return {
-      rating: 0, hover: 0, recommend: '', criteria: [], notes: '', loading: false, submitted: false,
-      submit() {
+      rating: 0, hover: 0, recommend: '', criteria: [], notes: '',
+      loading: false, submitted: false,
+      _bookingId:  null,
+      _customerId: null,
+
+      init() {
+        var self = this;
+        this._bookingId = sessionStorage.getItem('rateCustomerBookingId')
+                       || sessionStorage.getItem('bookingId')
+                       || null;
+
+        if (!this._bookingId || typeof Bookings === 'undefined') return;
+
+        Bookings.get(this._bookingId).then(function(res) {
+          if (!res.ok || !res.data) return;
+          var b = res.data;
+          self._customerId = (b.customer && b.customer.id) || b.customer_id || null;
+
+          var custName = (b.customer && b.customer.full_name) || 'العميل';
+          var svcTitle = (b.service  && b.service.title)      || b.description || 'خدمة منزلية';
+          var dateStr  = new Date(b.created_at).toLocaleDateString('ar-SA', { day:'numeric', month:'long', year:'numeric' });
+          var amount   = parseFloat((b.service && b.service.price) || b.budget || 0);
+
+          var el;
+          el = document.getElementById('rateCustomerName');    if (el) el.textContent = custName;
+          el = document.getElementById('rateCustomerInitial'); if (el) el.textContent = custName.charAt(0) || 'م';
+          el = document.getElementById('rateServiceInfo');     if (el) el.textContent = svcTitle + ' · ' + dateStr;
+          el = document.getElementById('rateAmount');          if (el && amount) el.textContent = amount.toFixed(0) + ' ر.س';
+        }).catch(function() {});
+      },
+
+      async submit() {
+        if (this.rating === 0 || !this.recommend) return;
         this.loading = true;
-        setTimeout(() => { this.loading = false; this.submitted = true; }, 1500);
+
+        var session = {};
+        try { session = JSON.parse(localStorage.getItem('khedmah_demo') || '{}'); } catch(e) {}
+
+        var clientSb = (typeof _sb === 'function' ? _sb() : null)
+                    || (typeof sb  !== 'undefined' ? sb   : null);
+
+        /* Write review to Supabase */
+        if (clientSb && this._bookingId) {
+          try {
+            await clientSb.from('reviews').insert({
+              booking_id:  this._bookingId,
+              reviewer_id: session.id          || null,
+              reviewee_id: this._customerId    || null,
+              role:        'provider',
+              rating:      this.rating,
+              comment:     this.notes          || null,
+              recommend:   this.recommend,
+              criteria:    this.criteria
+            });
+          } catch(e) { console.warn('review insert:', e); }
+        }
+
+        /* Notify the customer */
+        if (this._customerId && typeof Notifications !== 'undefined') {
+          var stars = '★'.repeat(this.rating) + '☆'.repeat(5 - this.rating);
+          Notifications.send(
+            this._customerId,
+            'new_review',
+            'المزود قيّمك',
+            (session.name || 'المزود') + ' قيّم تجربته معك بـ ' + this.rating + ' نجوم ' + stars,
+            '../customer/dashboard.html'
+          ).catch(function() {});
+        }
+
+        sessionStorage.removeItem('rateCustomerBookingId');
+        this.loading   = false;
+        this.submitted = true;
       }
     };
   }

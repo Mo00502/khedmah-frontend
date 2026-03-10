@@ -13,6 +13,7 @@
   <style> body { background: #f8fafc; } </style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../assets/js/supabase-client.js"></script>
+  <script src="../assets/js/khedmah-data.js"></script>
 </head>
 <body>
 <script>
@@ -41,12 +42,12 @@
         <li class="nav-item"><a class="nav-link" href="chat-translation.html">المحادثات</a></li>
         <li class="nav-item"><a class="nav-link" href="rate-customer.html">تقييم العميل</a></li>
       </ul>
-      <div style="color:rgba(255,255,255,0.75);font-size:0.9rem">أحمد السباك المحترف</div>
+      <div style="color:rgba(255,255,255,0.75);font-size:0.9rem" id="bankProviderName">أحمد السباك المحترف</div>
     </div>
   </div>
 </nav>
 
-<div class="container py-4" style="max-width:900px" x-data="bankApp()">
+<div class="container py-4" style="max-width:900px" x-data="bankApp()" x-init="init()">
 
   <!-- Header -->
   <div class="text-center mb-4" data-aos="fade-down">
@@ -63,7 +64,7 @@
       <div class="k-kpi k-kpi-success">
         <div class="d-flex align-items-center gap-3">
           <div class="k-kpi-icon" style="background:rgba(16,185,129,0.1)"><i class="fas fa-wallet" style="color:var(--k-success)"></i></div>
-          <div><h3>1,450</h3><p>الرصيد المتاح (ر.س)</p></div>
+          <div><h3 id="kpiBalance">1,450</h3><p>الرصيد المتاح (ر.س)</p></div>
         </div>
       </div>
     </div>
@@ -71,7 +72,7 @@
       <div class="k-kpi k-kpi-warning">
         <div class="d-flex align-items-center gap-3">
           <div class="k-kpi-icon" style="background:rgba(245,158,11,0.1)"><i class="fas fa-clock" style="color:var(--k-warning)"></i></div>
-          <div><h3>350</h3><p>قيد التحويل (ر.س)</p></div>
+          <div><h3 id="kpiPending">350</h3><p>قيد التحويل (ر.س)</p></div>
         </div>
       </div>
     </div>
@@ -79,7 +80,7 @@
       <div class="k-kpi">
         <div class="d-flex align-items-center gap-3">
           <div class="k-kpi-icon" style="background:rgba(2,128,144,0.1)"><i class="fas fa-chart-line" style="color:var(--k-primary)"></i></div>
-          <div><h3 style="font-size:1.5rem">8,750</h3><p>إجمالي الأرباح (ر.س)</p></div>
+          <div><h3 id="kpiTotal" style="font-size:1.5rem">8,750</h3><p>إجمالي الأرباح (ر.س)</p></div>
         </div>
       </div>
     </div>
@@ -175,7 +176,7 @@
           <thead style="background:#f8fafc">
             <tr><th>الخدمة</th><th>التاريخ</th><th>المبلغ</th><th>الحالة</th></tr>
           </thead>
-          <tbody>
+          <tbody id="transfersBody">
             <tr><td>سباكة - محمد الغامدي</td><td>3 مارس 2026</td><td style="color:var(--k-success);font-weight:700">+350 ر.س</td><td><span class="badge" style="background:rgba(16,185,129,0.1);color:var(--k-success)">تم التحويل</span></td></tr>
             <tr><td>تسليك مجاري - فاطمة</td><td>28 فبراير 2026</td><td style="color:var(--k-success);font-weight:700">+150 ر.س</td><td><span class="badge" style="background:rgba(16,185,129,0.1);color:var(--k-success)">تم التحويل</span></td></tr>
             <tr><td>تركيب صنبور - خالد</td><td>20 فبراير 2026</td><td style="color:var(--k-warning);font-weight:700">+95 ر.س</td><td><span class="badge" style="background:rgba(245,158,11,0.1);color:var(--k-warning)">قيد المعالجة</span></td></tr>
@@ -215,16 +216,126 @@
         awal:'البنك الأول', saib:'بنك الاستثمار السعودي', french:'البنك السعودي الفرنسي',
         stc:'STC Pay', urpay:'Urpay', d360:'D360 Bank', neo:'Neo Bank'
       },
+
       formatIBAN(e) {
-        let v = e.target.value.replace(/[^0-9]/g,'');
-        this.iban = v.replace(/(.{4})/g,'$1 ').trim();
+        var v = e.target.value.replace(/[^0-9]/g, '');
+        this.iban = v.replace(/(.{4})/g, '$1 ').trim();
       },
-      saveBank() {
+
+      async init() {
+        var self = this;
+
+        /* Navbar provider name */
+        try {
+          var s = JSON.parse(localStorage.getItem('khedmah_demo') || '{}');
+          if (s.name) { var el = document.getElementById('bankProviderName'); if (el) el.textContent = s.name; }
+        } catch(e) {}
+
+        var clientSb = (typeof _sb === 'function' ? _sb() : null)
+                    || (typeof sb  !== 'undefined' ? sb   : null);
+        if (!clientSb) return;
+
+        var session = {};
+        try { session = JSON.parse(localStorage.getItem('khedmah_demo') || '{}'); } catch(e) {}
+        if (!session.id) return;
+
+        /* Load saved bank settings from profiles */
+        try {
+          var profRes = await clientSb.from('profiles')
+            .select('bank_settings')
+            .eq('id', session.id)
+            .single();
+          if (!profRes.error && profRes.data && profRes.data.bank_settings) {
+            var bs = typeof profRes.data.bank_settings === 'string'
+              ? JSON.parse(profRes.data.bank_settings) : profRes.data.bank_settings;
+            if (bs.bank) self.bank = bs.bank;
+            if (bs.iban) {
+              var digits = bs.iban.replace(/^SA/, '').replace(/\s/g, '');
+              self.iban  = digits.replace(/(.{4})/g, '$1 ').trim();
+            }
+          }
+        } catch(e) { console.warn('loadBankSettings:', e); }
+
+        /* Load real completed bookings for KPIs + transfers table */
+        if (typeof Bookings === 'undefined') return;
+        try {
+          var listRes = await Bookings.list('provider');
+          if (!listRes.ok || !listRes.data || listRes.data.length === 0) return;
+
+          var completed = listRes.data.filter(function(b) {
+            return b.status === 'completed' || b.status === 'payment_released';
+          });
+          var pending = listRes.data.filter(function(b) {
+            return b.status === 'accepted' || b.status === 'in_progress';
+          });
+
+          var sumOf = function(arr) {
+            return arr.reduce(function(sum, b) {
+              return sum + (parseFloat((b.service && b.service.price) || b.budget || 0));
+            }, 0);
+          };
+
+          var balanceAmt = sumOf(completed);
+          var pendingAmt = sumOf(pending);
+          var totalAmt   = balanceAmt + pendingAmt;
+
+          var el;
+          el = document.getElementById('kpiBalance'); if (el) el.textContent = Math.round(balanceAmt).toLocaleString('ar-SA');
+          el = document.getElementById('kpiPending'); if (el) el.textContent = Math.round(pendingAmt).toLocaleString('ar-SA');
+          el = document.getElementById('kpiTotal');   if (el) el.textContent = Math.round(totalAmt).toLocaleString('ar-SA');
+
+          /* Transfers table */
+          var tbody = document.getElementById('transfersBody');
+          if (tbody && completed.length > 0) {
+            tbody.innerHTML = completed.slice(0, 10).map(function(b) {
+              var svcTitle = (b.service && b.service.title) || b.description || 'خدمة';
+              var custName = (b.customer && b.customer.full_name) || 'عميل';
+              var date     = new Date(b.updated_at || b.created_at)
+                               .toLocaleDateString('ar-SA', { day:'numeric', month:'long', year:'numeric' });
+              var amount   = parseFloat((b.service && b.service.price) || b.budget || 0);
+              var released = b.status === 'payment_released';
+              var badgeBg  = released ? 'rgba(16,185,129,0.1)' : 'rgba(245,158,11,0.1)';
+              var badgeClr = released ? 'var(--k-success)'     : 'var(--k-warning)';
+              var badgeTxt = released ? 'تم التحويل'           : 'تم';
+              return '<tr>' +
+                '<td>' + svcTitle + ' - ' + custName + '</td>' +
+                '<td>' + date + '</td>' +
+                '<td style="color:var(--k-success);font-weight:700">+' + Math.round(amount).toLocaleString('ar-SA') + ' ر.س</td>' +
+                '<td><span class="badge" style="background:' + badgeBg + ';color:' + badgeClr + '">' + badgeTxt + '</span></td>' +
+              '</tr>';
+            }).join('');
+          }
+        } catch(e) { console.warn('loadBookings (bank):', e); }
+      },
+
+      async saveBank() {
         if (!this.bank) { alert('يرجى اختيار البنك'); return; }
-        const cleanIBAN = 'SA' + this.iban.replace(/\s/g,'');
-        if (cleanIBAN.length !== 24) { alert('رقم الآيبان يجب أن يكون 24 حرفاً (SA + 22 رقم)'); return; }
+        var cleanIBAN = 'SA' + this.iban.replace(/\s/g, '');
+        if (cleanIBAN.length !== 24) {
+          alert('رقم الآيبان يجب أن يكون 24 حرفاً (SA + 22 رقم)');
+          return;
+        }
+
+        /* Optimistic toast */
         if (typeof kToast === 'function') kToast('تم حفظ إعدادات الحساب البنكي بنجاح! ✓', 'success');
-        else alert('تم الحفظ بنجاح!');
+
+        /* Persist to Supabase */
+        try {
+          var clientSb = (typeof _sb === 'function' ? _sb() : null)
+                      || (typeof sb  !== 'undefined' ? sb   : null);
+          if (!clientSb) return;
+          var session = {};
+          try { session = JSON.parse(localStorage.getItem('khedmah_demo') || '{}'); } catch(e) {}
+          if (!session.id) return;
+
+          await clientSb.from('profiles').update({
+            bank_settings: {
+              bank:     this.bank,
+              iban:     cleanIBAN,
+              bankName: this.bankNames[this.bank] || ''
+            }
+          }).eq('id', session.id);
+        } catch(e) { console.warn('saveBank:', e); }
       }
     };
   }
