@@ -469,3 +469,522 @@ const AiChat = {
     return { intent: null, reply: 'أخبرني أكثر عن المشكلة وسأحاول مساعدتك في إيجاد الخدمة المناسبة.' };
   }
 };
+
+
+/* ══════════════════════════════════════════════════════════════
+   COMPANIES  (contractor/client company profiles)
+   ══════════════════════════════════════════════════════════════ */
+const Companies = {
+
+  /** Get the company associated with the current user */
+  async myCompany() {
+    const s = _session();
+    const client = _sb();
+    if (!client) return { ok: false, data: null };
+
+    const { data, error } = await client
+      .from('companies')
+      .select('*')
+      .eq('owner_id', s.id)
+      .maybeSingle();
+
+    if (error) { console.error('Companies.myCompany:', error); return { ok: false, data: null }; }
+    return { ok: true, data };
+  },
+
+  async get(id) {
+    const client = _sb();
+    if (!client) return { ok: false, data: null };
+
+    const { data, error } = await client
+      .from('companies')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (error) { console.error('Companies.get:', error); return { ok: false, data: null }; }
+    return { ok: true, data };
+  },
+
+  async create(fields) {
+    const s = _session();
+    const client = _sb();
+    if (!client) return { ok: false };
+
+    const { data, error } = await client
+      .from('companies')
+      .insert({ owner_id: s.id, ...fields })
+      .select().single();
+
+    if (error) { console.error('Companies.create:', error); return { ok: false, error }; }
+    return { ok: true, data };
+  },
+
+  async update(id, fields) {
+    const client = _sb();
+    if (!client) return { ok: false };
+
+    const { error } = await client.from('companies').update(fields).eq('id', id);
+    if (error) { console.error('Companies.update:', error); return { ok: false, error }; }
+    return { ok: true };
+  }
+};
+
+
+/* ══════════════════════════════════════════════════════════════
+   TENDERS
+   ══════════════════════════════════════════════════════════════ */
+const Tenders = {
+
+  /** List tenders — optional filters: { category, region, status } */
+  async list(filters) {
+    const client = _sb();
+    if (!client) return { ok: false, data: [] };
+
+    let q = client
+      .from('tenders')
+      .select(`
+        *,
+        company:companies(id, name, logo_url, verified),
+        bids_count:tender_bids(count)
+      `)
+      .order('created_at', { ascending: false })
+      .limit(50);
+
+    if (filters) {
+      if (filters.category) q = q.eq('category', filters.category);
+      if (filters.region)   q = q.eq('region', filters.region);
+      if (filters.status)   q = q.eq('status', filters.status);
+    }
+
+    const { data, error } = await q;
+    if (error) { console.error('Tenders.list:', error); return { ok: false, data: [] }; }
+    return { ok: true, data: data || [] };
+  },
+
+  async get(id) {
+    const client = _sb();
+    if (!client) return { ok: false, data: null };
+
+    const { data, error } = await client
+      .from('tenders')
+      .select(`
+        *,
+        company:companies(id, name, logo_url, verified, rating),
+        bids:tender_bids(
+          id, amount, duration_months, note, terms_accepted, terms_accepted_at, created_at, status,
+          company:companies(id, name, classification, years_experience, rating)
+        )
+      `)
+      .eq('id', id)
+      .single();
+
+    if (error) { console.error('Tenders.get:', error); return { ok: false, data: null }; }
+    return { ok: true, data };
+  },
+
+  async create(fields) {
+    const s = _session();
+    const client = _sb();
+    if (!client) return { ok: false };
+
+    // Get company for current user
+    const { data: co } = await client
+      .from('companies')
+      .select('id')
+      .eq('owner_id', s.id)
+      .maybeSingle();
+
+    const { data, error } = await client
+      .from('tenders')
+      .insert({ company_id: co ? co.id : null, created_by: s.id, status: 'open', ...fields })
+      .select().single();
+
+    if (error) { console.error('Tenders.create:', error); return { ok: false, error }; }
+    return { ok: true, data };
+  },
+
+  async update(id, fields) {
+    const client = _sb();
+    if (!client) return { ok: false };
+
+    const { error } = await client.from('tenders').update(fields).eq('id', id);
+    if (error) { console.error('Tenders.update:', error); return { ok: false, error }; }
+    return { ok: true };
+  },
+
+  /** Award tender: mark winning bid, reject others, set tender to 'awarded' */
+  async award(tenderId, winningBidId) {
+    const client = _sb();
+    if (!client) return { ok: false };
+
+    // Mark winner
+    const { error: e1 } = await client
+      .from('tender_bids')
+      .update({ status: 'won' })
+      .eq('id', winningBidId);
+    if (e1) { console.error('Tenders.award winner:', e1); return { ok: false, error: e1 }; }
+
+    // Reject others
+    await client
+      .from('tender_bids')
+      .update({ status: 'rejected' })
+      .eq('tender_id', tenderId)
+      .neq('id', winningBidId);
+
+    // Update tender
+    const { error: e2 } = await client
+      .from('tenders')
+      .update({ status: 'awarded', winning_bid_id: winningBidId, awarded_at: new Date().toISOString() })
+      .eq('id', tenderId);
+    if (e2) { console.error('Tenders.award tender:', e2); return { ok: false, error: e2 }; }
+
+    return { ok: true };
+  }
+};
+
+
+/* ══════════════════════════════════════════════════════════════
+   TENDER BIDS
+   ══════════════════════════════════════════════════════════════ */
+const TenderBids = {
+
+  /** Submit a bid — fields must include termsAccepted:true */
+  async submit(tenderId, fields) {
+    const s = _session();
+    const client = _sb();
+    if (!client) return { ok: false };
+    if (!fields.terms_accepted) return { ok: false, error: 'يجب قبول الشروط والأحكام قبل التقديم' };
+
+    // Get company
+    const { data: co } = await client
+      .from('companies')
+      .select('id')
+      .eq('owner_id', s.id)
+      .maybeSingle();
+
+    const payload = {
+      tender_id:          tenderId,
+      company_id:         co ? co.id : null,
+      submitted_by:       s.id,
+      status:             'pending',
+      terms_accepted:     true,
+      terms_accepted_at:  new Date().toISOString(),
+      ...fields
+    };
+
+    const { data, error } = await client
+      .from('tender_bids')
+      .insert(payload)
+      .select().single();
+
+    if (error) { console.error('TenderBids.submit:', error); return { ok: false, error }; }
+    return { ok: true, data };
+  },
+
+  async listMine() {
+    const s = _session();
+    const client = _sb();
+    if (!client) return { ok: false, data: [] };
+
+    const { data, error } = await client
+      .from('tender_bids')
+      .select(`
+        *,
+        tender:tenders(id, title, category, region, status, budget_max, deadline)
+      `)
+      .eq('submitted_by', s.id)
+      .order('created_at', { ascending: false });
+
+    if (error) { console.error('TenderBids.listMine:', error); return { ok: false, data: [] }; }
+    return { ok: true, data: data || [] };
+  },
+
+  async listForTender(tenderId) {
+    const client = _sb();
+    if (!client) return { ok: false, data: [] };
+
+    const { data, error } = await client
+      .from('tender_bids')
+      .select(`
+        *,
+        company:companies(id, name, classification, years_experience, rating, logo_url)
+      `)
+      .eq('tender_id', tenderId)
+      .order('amount', { ascending: true });
+
+    if (error) { console.error('TenderBids.listForTender:', error); return { ok: false, data: [] }; }
+    return { ok: true, data: data || [] };
+  }
+};
+
+
+/* ══════════════════════════════════════════════════════════════
+   COMMISSIONS  (2% platform commission on awarded tenders)
+   ══════════════════════════════════════════════════════════════ */
+const Commissions = {
+
+  RATE: 0.02,
+
+  /** Calculate commission amount from tender value */
+  calc(tenderValue) {
+    return Math.round(Number(tenderValue) * this.RATE);
+  },
+
+  /** Create commission record — commission_amount is auto-calculated */
+  async create(fields) {
+    const client = _sb();
+    if (!client) return { ok: false };
+
+    const commission_amount = this.calc(fields.tender_value || 0);
+
+    const { data, error } = await client
+      .from('commissions')
+      .insert({
+        commission_rate:   this.RATE,
+        commission_amount,
+        status:            'pending',
+        ...fields
+      })
+      .select().single();
+
+    if (error) { console.error('Commissions.create:', error); return { ok: false, error }; }
+    return { ok: true, data };
+  },
+
+  /** List commissions — optional filters: { status, company_id } */
+  async list(filters) {
+    const client = _sb();
+    if (!client) return { ok: false, data: [] };
+
+    let q = client
+      .from('commissions')
+      .select(`
+        *,
+        tender:tenders(id, title, category, region),
+        company:companies(id, name, rating)
+      `)
+      .order('created_at', { ascending: false });
+
+    if (filters) {
+      if (filters.status)     q = q.eq('status', filters.status);
+      if (filters.company_id) q = q.eq('company_id', filters.company_id);
+    }
+
+    const { data, error } = await q;
+    if (error) { console.error('Commissions.list:', error); return { ok: false, data: [] }; }
+    return { ok: true, data: data || [] };
+  },
+
+  async updateStatus(id, status, extra) {
+    const client = _sb();
+    if (!client) return { ok: false };
+
+    const timestamps = {
+      in_progress:    { project_started_at: new Date().toISOString() },
+      completed:      { project_completed_at: new Date().toISOString() },
+      invoice_issued: { invoice_issued_at: new Date().toISOString() },
+      paid:           { paid_at: new Date().toISOString() },
+    };
+
+    const { error } = await client
+      .from('commissions')
+      .update({ status, ...(timestamps[status] || {}), ...extra })
+      .eq('id', id);
+
+    if (error) { console.error('Commissions.updateStatus:', error); return { ok: false, error }; }
+    return { ok: true };
+  }
+};
+
+
+/* ══════════════════════════════════════════════════════════════
+   PROJECT REQUIREMENTS  (NLP-extracted from chat)
+   ══════════════════════════════════════════════════════════════ */
+const ProjectRequirements = {
+
+  async create(fields) {
+    const s = _session();
+    const client = _sb();
+    if (!client) return { ok: false };
+
+    const { data, error } = await client
+      .from('project_requirements')
+      .insert({ requested_by: s.id, status: 'open', ...fields })
+      .select().single();
+
+    if (error) { console.error('ProjectRequirements.create:', error); return { ok: false, error }; }
+    return { ok: true, data };
+  },
+
+  async list(tenderId) {
+    const client = _sb();
+    if (!client) return { ok: false, data: [] };
+
+    const { data, error } = await client
+      .from('project_requirements')
+      .select(`
+        *,
+        offers:supplier_offers(count)
+      `)
+      .eq('tender_id', tenderId)
+      .order('created_at', { ascending: false });
+
+    if (error) { console.error('ProjectRequirements.list:', error); return { ok: false, data: [] }; }
+    return { ok: true, data: data || [] };
+  },
+
+  /**
+   * NLP parser — extract equipment/manpower requirements from Arabic free text.
+   * Returns array of requirement objects ready to display/save.
+   */
+  parse(text) {
+    if (!text) return [];
+
+    var EQUIPMENT = {
+      'رافعة شوكية': 'رافعة شوكية', 'فوركليفت': 'رافعة شوكية',
+      'رافعة برجية': 'رافعة برجية', 'كرين': 'رافعة برجية', 'رافعة': 'رافعة برجية',
+      'حفارة': 'حفارة', 'حفار': 'حفارة',
+      'لودر': 'لودر',
+      'مولد كهربائي': 'مولد كهربائي', 'مولد': 'مولد كهربائي',
+      'ضاغط هواء': 'ضاغط هواء', 'كمبريسور': 'ضاغط هواء',
+      'خلاطة خرسانة': 'خلاطة خرسانة', 'خلاطة': 'خلاطة خرسانة',
+      'شاحنة': 'شاحنة نقل', 'سيارة نقل': 'شاحنة نقل',
+      'رافعة هيدروليكية': 'رافعة هيدروليكية',
+      'مضخة مياه': 'مضخة مياه', 'مضخة': 'مضخة مياه',
+      'سقالة': 'سقالة', 'سقالات': 'سقالة'
+    };
+
+    var MANPOWER = {
+      'سباك': 'سباكة', 'سباكة': 'سباكة',
+      'كهربائي': 'كهرباء', 'كهرباء': 'كهرباء',
+      'لحام': 'لحام', 'لحامين': 'لحام',
+      'مهندس مدني': 'هندسة مدنية', 'مهندس': 'هندسة',
+      'مشرف': 'إشراف', 'مشرف مشروع': 'إشراف',
+      'مشرف سلامة': 'سلامة', 'مسؤول سلامة': 'سلامة',
+      'عامل': 'عمالة عامة', 'عمال': 'عمالة عامة', 'عمالة': 'عمالة عامة',
+      'سائق': 'قيادة', 'سائقين': 'قيادة',
+      'حارس': 'حراسة', 'حراسة': 'حراسة',
+      'نجار': 'نجارة', 'حداد': 'حدادة',
+      'رسام': 'دهان', 'دهان': 'دهان',
+      'مساح': 'مساحة', 'مساحة': 'مساحة'
+    };
+
+    var results = [];
+    var found = {};
+    var words = text.split(/\s+/);
+
+    // Try multi-word matches first (longest match)
+    var allTerms = Object.keys(EQUIPMENT).concat(Object.keys(MANPOWER));
+    allTerms.sort(function(a, b) { return b.length - a.length; });
+
+    allTerms.forEach(function(term) {
+      if (text.includes(term) && !found[term]) {
+        var type   = EQUIPMENT[term] ? 'equipment' : 'manpower';
+        var nameAr = EQUIPMENT[term] || MANPOWER[term];
+
+        // Extract quantity: look for digit before/after the term
+        var qtyRegex = new RegExp('(\\d+)\\s*' + term + '|' + term + '\\s*(\\d+)');
+        var qtyMatch = text.match(qtyRegex);
+        var quantity = qtyMatch ? parseInt(qtyMatch[1] || qtyMatch[2]) : 1;
+
+        // Extract duration: شهر/أشهر/يوم/أيام/أسبوع/أسابيع after the term
+        var durRegex = new RegExp(term + '[\\s\\S]{0,30}?(\\d+)\\s*(شهر|أشهر|يوم|أيام|أسبوع|أسابيع)');
+        var durMatch = text.match(durRegex);
+        var durationDays = null;
+        if (durMatch) {
+          var num = parseInt(durMatch[1]);
+          var unit = durMatch[2];
+          if (unit.includes('شهر') || unit.includes('أشهر')) durationDays = num * 30;
+          else if (unit.includes('أسبوع') || unit.includes('أسابيع')) durationDays = num * 7;
+          else durationDays = num;
+        }
+
+        results.push({ type, name_ar: nameAr, quantity, duration_days: durationDays, source_text: term });
+        found[term] = true;
+
+        // Mark sub-terms as found to avoid double-counting
+        Object.keys(EQUIPMENT).concat(Object.keys(MANPOWER)).forEach(function(t2) {
+          if (t2 !== term && term.includes(t2)) found[t2] = true;
+        });
+      }
+    });
+
+    return results;
+  }
+};
+
+
+/* ══════════════════════════════════════════════════════════════
+   SUPPLIER OFFERS  (bids on project requirements)
+   ══════════════════════════════════════════════════════════════ */
+const SupplierOffers = {
+
+  async submit(requirementId, fields) {
+    const s = _session();
+    const client = _sb();
+    if (!client) return { ok: false };
+
+    const { data: co } = await client
+      .from('companies')
+      .select('id')
+      .eq('owner_id', s.id)
+      .maybeSingle();
+
+    const { data, error } = await client
+      .from('supplier_offers')
+      .insert({
+        requirement_id: requirementId,
+        supplier_id:    s.id,
+        company_id:     co ? co.id : null,
+        status:         'pending',
+        ...fields
+      })
+      .select().single();
+
+    if (error) { console.error('SupplierOffers.submit:', error); return { ok: false, error }; }
+    return { ok: true, data };
+  },
+
+  async listForReq(requirementId) {
+    const client = _sb();
+    if (!client) return { ok: false, data: [] };
+
+    const { data, error } = await client
+      .from('supplier_offers')
+      .select(`
+        *,
+        company:companies(id, name, rating, verified)
+      `)
+      .eq('requirement_id', requirementId)
+      .order('price_total', { ascending: true });
+
+    if (error) { console.error('SupplierOffers.listForReq:', error); return { ok: false, data: [] }; }
+    return { ok: true, data: data || [] };
+  },
+
+  /** Select winning offer — rejects all others for same requirement */
+  async select(offerId, requirementId) {
+    const client = _sb();
+    if (!client) return { ok: false };
+
+    const { error: e1 } = await client
+      .from('supplier_offers')
+      .update({ status: 'accepted' })
+      .eq('id', offerId);
+    if (e1) { console.error('SupplierOffers.select winner:', e1); return { ok: false, error: e1 }; }
+
+    await client
+      .from('supplier_offers')
+      .update({ status: 'rejected' })
+      .eq('requirement_id', requirementId)
+      .neq('id', offerId);
+
+    await client
+      .from('project_requirements')
+      .update({ status: 'awarded' })
+      .eq('id', requirementId);
+
+    return { ok: true };
+  }
+};

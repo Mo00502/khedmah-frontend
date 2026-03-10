@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لوحة العمولات — مؤسس خدمة</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="../assets/css/khedmah.css">
+  <script src="../assets/js/supabase-client.js"></script>
+  <script src="../assets/js/khedmah-data.js"></script>
+  <style>
+    body { background: #f0f4f8; font-family: 'Tajawal', sans-serif; }
+
+    /* Sidebar */
+    .admin-sidebar { width: 260px; min-height: 100vh; background: #1e293b; position: fixed; top: 0; right: 0; display: flex; flex-direction: column; z-index: 100; }
+    .admin-sidebar .brand { padding: 1.5rem 1.25rem; border-bottom: 1px solid rgba(255,255,255,0.1); font-weight: 900; font-size: 1.3rem; color: #fff; }
+    .admin-sidebar .brand span { color: var(--k-accent); }
+    .admin-sidebar .nav-link { color: rgba(255,255,255,0.65); padding: 0.7rem 1.25rem; display: flex; align-items: center; gap: 0.75rem; font-size: 0.9rem; font-weight: 600; border-radius: 0; transition: all 0.2s; text-decoration: none; }
+    .admin-sidebar .nav-link:hover, .admin-sidebar .nav-link.active { background: rgba(255,255,255,0.08); color: #fff; border-right: 3px solid var(--k-accent); }
+    .admin-sidebar .nav-link i { width: 20px; text-align: center; }
+
+    /* Main content */
+    .admin-main { margin-right: 260px; padding: 1.5rem; min-height: 100vh; }
+
+    /* KPI cards */
+    .kpi-card { background: #fff; border-radius: 16px; padding: 1.5rem; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+    .kpi-icon { width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; margin-bottom: 0.75rem; }
+    .kpi-value { font-size: 2rem; font-weight: 900; color: #1e293b; line-height: 1; margin-bottom: 0.25rem; }
+    .kpi-label { font-size: 0.82rem; color: #64748b; font-weight: 600; }
+    .kpi-delta { font-size: 0.78rem; font-weight: 700; }
+    .kpi-delta.up   { color: #16a34a; }
+    .kpi-delta.down { color: #dc2626; }
+
+    /* Commission table */
+    .comm-table { width: 100%; border-collapse: collapse; }
+    .comm-table th { background: #f8fafc; padding: 0.75rem 1rem; font-size: 0.8rem; font-weight: 700; color: #64748b; text-align: right; border-bottom: 2px solid #e2e8f0; white-space: nowrap; }
+    .comm-table td { padding: 0.85rem 1rem; font-size: 0.88rem; color: #1e293b; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
+    .comm-table tr:hover td { background: #f8fafc; }
+
+    /* Status badges */
+    .s-badge { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.25rem 0.7rem; border-radius: 50px; font-weight: 700; font-size: 0.75rem; }
+    .s-pending     { background: #fffbeb; color: #b45309; }
+    .s-in_progress { background: #eff6ff; color: #1d4ed8; }
+    .s-completed   { background: #f0fdf4; color: #15803d; }
+    .s-invoice_issued { background: #faf5ff; color: #7c3aed; }
+    .s-paid        { background: #f0fdf4; color: #166534; }
+    .s-overdue     { background: #fef2f2; color: #b91c1c; }
+
+    /* Table card */
+    .t-card { background: #fff; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); overflow: hidden; margin-bottom: 1.5rem; }
+    .t-card-header { padding: 1.25rem 1.5rem; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; }
+
+    /* Progress bar */
+    .mini-bar { height: 6px; background: #e2e8f0; border-radius: 3px; margin-top: 4px; }
+    .mini-bar-fill { height: 100%; border-radius: 3px; }
+
+    /* Tabs */
+    .tab-btn { background: transparent; border: none; padding: 0.6rem 1.25rem; font-weight: 700; color: #64748b; border-bottom: 3px solid transparent; font-family: 'Tajawal', sans-serif; font-size: 0.92rem; cursor: pointer; }
+    .tab-btn.active { color: #0369a1; border-bottom-color: #0369a1; }
+
+    /* Overdue alert */
+    .overdue-row { background: #fef2f2 !important; }
+    .overdue-row td { color: #b91c1c !important; }
+  </style>
+</head>
+<body>
+
+<!-- Admin Sidebar -->
+<div class="admin-sidebar">
+  <div class="brand">خدم<span>ة</span> <span style="font-size:0.7rem;opacity:0.6;font-weight:400">لوحة الإدارة</span></div>
+  <nav style="padding:1rem 0;flex:1">
+    <a href="dashboard.html" class="nav-link"><i class="fas fa-chart-pie"></i> لوحة التحكم</a>
+    <a href="founder-commissions.html" class="nav-link active"><i class="fas fa-receipt"></i> العمولات</a>
+    <div style="padding:0.5rem 1.25rem;font-size:0.72rem;font-weight:700;color:rgba(255,255,255,0.35);text-transform:uppercase;margin-top:0.5rem">المناقصات</div>
+    <a href="../tenders/index.html" class="nav-link"><i class="fas fa-gavel"></i> المناقصات</a>
+    <a href="../tenders/bid-comparison.html" class="nav-link"><i class="fas fa-balance-scale"></i> مقارنة العطاءات</a>
+    <div style="padding:0.5rem 1.25rem;font-size:0.72rem;font-weight:700;color:rgba(255,255,255,0.35);text-transform:uppercase;margin-top:0.5rem">الأنظمة</div>
+    <a href="../customer/dashboard.html" class="nav-link"><i class="fas fa-users"></i> لوحة العملاء</a>
+    <a href="../provider/dashboard.html" class="nav-link"><i class="fas fa-user-tie"></i> لوحة المزودين</a>
+  </nav>
+  <div style="padding:1rem 1.25rem;border-top:1px solid rgba(255,255,255,0.1)">
+    <div style="font-size:0.8rem;color:rgba(255,255,255,0.5)" id="adminName">المؤسس</div>
+    <a href="login.html" style="font-size:0.8rem;color:rgba(255,255,255,0.4);text-decoration:none">
+      <i class="fas fa-sign-out-alt ms-1"></i> خروج
+    </a>
+  </div>
+</div>
+
+<!-- Main Content -->
+<div class="admin-main" x-data="founderApp()" x-init="init()">
+
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+      <h4 style="font-weight:900;color:#1e293b;margin:0">لوحة العمولات</h4>
+      <p style="color:#64748b;font-size:0.88rem;margin:0">نسبة العمولة: <strong>2%</strong> من قيمة كل عقد منتهٍ</p>
+    </div>
+    <div class="d-flex gap-2">
+      <select class="form-select form-select-sm" style="border-radius:8px;max-width:140px" x-model="filterStatus" @change="applyFilter()">
+        <option value="">الكل</option>
+        <option value="pending">معلقة</option>
+        <option value="in_progress">قيد التنفيذ</option>
+        <option value="completed">مكتملة</option>
+        <option value="invoice_issued">فاتورة صادرة</option>
+        <option value="paid">مدفوعة</option>
+        <option value="overdue">متأخرة</option>
+      </select>
+      <button class="btn btn-sm" style="background:#0369a1;color:#fff;border-radius:8px;font-weight:700" @click="exportCSV()">
+        <i class="fas fa-download ms-1"></i> تصدير
+      </button>
+    </div>
+  </div>
+
+  <!-- KPI Row -->
+  <div class="row g-3 mb-4">
+    <div class="col-6 col-lg-3">
+      <div class="kpi-card">
+        <div class="kpi-icon" style="background:#eff6ff;color:#1d4ed8"><i class="fas fa-coins"></i></div>
+        <div class="kpi-value" id="kpiTotal" x-text="formatMoney(totals.total)">—</div>
+        <div class="kpi-label">إجمالي العمولات (ر.س)</div>
+        <div class="kpi-delta up"><i class="fas fa-arrow-up ms-1"></i> كل المناقصات</div>
+      </div>
+    </div>
+    <div class="col-6 col-lg-3">
+      <div class="kpi-card">
+        <div class="kpi-icon" style="background:#f0fdf4;color:#16a34a"><i class="fas fa-check-circle"></i></div>
+        <div class="kpi-value" x-text="formatMoney(totals.paid)">—</div>
+        <div class="kpi-label">مُحصَّل (ر.س)</div>
+        <div class="kpi-delta up"><i class="fas fa-circle ms-1" style="font-size:0.5rem"></i> نسبة التحصيل: <span x-text="totals.total ? Math.round(totals.paid/totals.total*100) + '%' : '0%'"></span></div>
+      </div>
+    </div>
+    <div class="col-6 col-lg-3">
+      <div class="kpi-card">
+        <div class="kpi-icon" style="background:#faf5ff;color:#7c3aed"><i class="fas fa-clock"></i></div>
+        <div class="kpi-value" x-text="formatMoney(totals.pending)">—</div>
+        <div class="kpi-label">قيد التنفيذ (ر.س)</div>
+        <div class="kpi-delta" style="color:#7c3aed"><i class="fas fa-hourglass-half ms-1"></i> في انتظار الاكتمال</div>
+      </div>
+    </div>
+    <div class="col-6 col-lg-3">
+      <div class="kpi-card">
+        <div class="kpi-icon" style="background:#fef2f2;color:#dc2626"><i class="fas fa-exclamation-triangle"></i></div>
+        <div class="kpi-value" x-text="formatMoney(totals.overdue)">—</div>
+        <div class="kpi-label">متأخرة (ر.س)</div>
+        <div class="kpi-delta down" x-show="totals.overdueCount > 0"><i class="fas fa-arrow-up ms-1"></i> <span x-text="totals.overdueCount"></span> حالة</div>
+        <div class="kpi-delta up" x-show="totals.overdueCount === 0"><i class="fas fa-check ms-1"></i> لا يوجد تأخر</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div style="border-bottom:2px solid #f1f5f9;margin-bottom:1.25rem">
+    <button class="tab-btn" :class="{active: activeTab==='table'}" @click="activeTab='table'">
+      <i class="fas fa-table ms-1"></i> جدول العمولات
+    </button>
+    <button class="tab-btn" :class="{active: activeTab==='companies'}" @click="activeTab='companies'">
+      <i class="fas fa-building ms-1"></i> أبرز الشركات
+    </button>
+    <button class="tab-btn" :class="{active: activeTab==='overdue'}" @click="activeTab='overdue'">
+      <i class="fas fa-exclamation-triangle ms-1"></i> متأخرة
+      <span class="badge bg-danger ms-1" x-show="totals.overdueCount > 0" x-text="totals.overdueCount"></span>
+    </button>
+  </div>
+
+  <!-- Commission Table Tab -->
+  <div x-show="activeTab === 'table'">
+    <div class="t-card">
+      <div class="t-card-header">
+        <div style="font-weight:800;color:#1e293b">
+          <i class="fas fa-receipt ms-2" style="color:#0369a1"></i>
+          قائمة العمولات
+          <span style="font-size:0.8rem;color:#64748b;font-weight:400" x-text="'(' + filtered.length + ' سجل)'"></span>
+        </div>
+        <input type="text" class="form-control form-control-sm" placeholder="بحث بالشركة أو المشروع..." style="max-width:220px;border-radius:8px" x-model="searchQ" @input="applyFilter()">
+      </div>
+      <div style="overflow-x:auto">
+        <table class="comm-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>الشركة</th>
+              <th>المشروع</th>
+              <th>قيمة العقد</th>
+              <th>العمولة (2%)</th>
+              <th>الحالة</th>
+              <th>تاريخ الترسية</th>
+              <th>الإجراء</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Real data -->
+            <template x-for="(c, idx) in filtered" :key="c.id">
+              <tr :class="c.status === 'overdue' ? 'overdue-row' : ''">
+                <td style="color:#94a3b8;font-size:0.8rem" x-text="idx + 1"></td>
+                <td>
+                  <div style="font-weight:700" x-text="c.company ? c.company.name : 'غير محدد'"></div>
+                  <div style="font-size:0.75rem;color:#64748b" x-text="c.company && c.company.rating ? '★ ' + c.company.rating : ''"></div>
+                </td>
+                <td>
+                  <div style="font-weight:600;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" x-text="c.tender ? c.tender.title : 'مناقصة'"></div>
+                  <div style="font-size:0.75rem;color:#64748b" x-text="c.tender ? c.tender.category : ''"></div>
+                </td>
+                <td style="font-weight:700" x-text="Number(c.tender_value).toLocaleString('ar-SA') + ' ر.س'"></td>
+                <td style="font-weight:900;color:#0369a1" x-text="Number(c.commission_amount).toLocaleString('ar-SA') + ' ر.س'"></td>
+                <td>
+                  <span class="s-badge" :class="'s-' + c.status">
+                    <i class="fas fa-circle" style="font-size:0.45rem"></i>
+                    <span x-text="statusLabel(c.status)"></span>
+                  </span>
+                </td>
+                <td style="font-size:0.82rem;color:#64748b" x-text="c.created_at ? new Date(c.created_at).toLocaleDateString('ar-SA') : '—'"></td>
+                <td>
+                  <div class="d-flex gap-1 flex-wrap">
+                    <button class="btn btn-sm" style="background:#f0f9ff;color:#0369a1;border:1px solid #bae6fd;font-size:0.78rem;border-radius:7px;font-weight:700" @click="viewDetails(c)">
+                      <i class="fas fa-eye ms-1"></i> تفاصيل
+                    </button>
+                    <button x-show="['completed','in_progress'].includes(c.status)"
+                      class="btn btn-sm" style="background:#faf5ff;color:#7c3aed;border:1px solid #e9d5ff;font-size:0.78rem;border-radius:7px;font-weight:700"
+                      @click="issueInvoice(c)">
+                      <i class="fas fa-file-invoice ms-1"></i> فاتورة
+                    </button>
+                    <button x-show="c.status === 'invoice_issued'"
+                      class="btn btn-sm" style="background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;font-size:0.78rem;border-radius:7px;font-weight:700"
+                      @click="markPaid(c)">
+                      <i class="fas fa-check ms-1"></i> تم التحصيل
+                    </button>
+                    <button x-show="c.status === 'in_progress'"
+                      class="btn btn-sm" style="background:#fef2f2;color:#b91c1c;border:1px solid #fecaca;font-size:0.78rem;border-radius:7px;font-weight:700"
+                      @click="markOverdue(c)">
+                      <i class="fas fa-exclamation-triangle ms-1"></i> متأخر
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </template>
+
+            <!-- Demo rows (when no real data) -->
+            <template x-if="filtered.length === 0 && !loading">
+              <tr>
+                <td colspan="8" style="text-align:center;padding:3rem;color:#94a3b8">
+                  <i class="fas fa-inbox fa-2x mb-2" style="display:block;opacity:0.4"></i>
+                  لا توجد عمولات مطابقة لهذا الفلتر
+                </td>
+              </tr>
+            </template>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Demo Table (shown if no real data and no search/filter) -->
+    <div x-show="allCommissions.length === 0 && !loading">
+      <div class="t-card">
+        <div class="t-card-header">
+          <div style="font-weight:800;color:#1e293b"><i class="fas fa-receipt ms-2" style="color:#0369a1"></i> بيانات توضيحية</div>
+          <span style="font-size:0.8rem;background:#fffbeb;color:#b45309;padding:0.25rem 0.75rem;border-radius:50px;font-weight:700">وضع العرض</span>
+        </div>
+        <div style="overflow-x:auto">
+          <table class="comm-table">
+            <thead>
+              <tr>
+                <th>#</th><th>الشركة</th><th>المشروع</th><th>قيمة العقد</th><th>العمولة (2%)</th><th>الحالة</th><th>التاريخ</th><th>الإجراء</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="color:#94a3b8">1</td>
+                <td><div style="font-weight:700">مجموعة المشاريع الكبرى</div><div style="font-size:0.75rem;color:#64748b">★ 4.9</div></td>
+                <td><div style="font-weight:600">توسعة شبكة المياه — الرياض</div><div style="font-size:0.75rem;color:#64748b">بنية تحتية</div></td>
+                <td style="font-weight:700">7,200,000 ر.س</td>
+                <td style="font-weight:900;color:#0369a1">144,000 ر.س</td>
+                <td><span class="s-badge s-in_progress"><i class="fas fa-circle" style="font-size:0.45rem"></i> قيد التنفيذ</span></td>
+                <td style="font-size:0.82rem;color:#64748b">15/3/2026</td>
+                <td><button class="btn btn-sm" style="background:#f0f9ff;color:#0369a1;border:1px solid #bae6fd;font-size:0.78rem;border-radius:7px;font-weight:700">تفاصيل</button></td>
+              </tr>
+              <tr>
+                <td style="color:#94a3b8">2</td>
+                <td><div style="font-weight:700">البنية المتكاملة للمقاولات</div><div style="font-size:0.75rem;color:#64748b">★ 4.7</div></td>
+                <td><div style="font-weight:600">صيانة شبكة الطرق — جدة</div><div style="font-size:0.75rem;color:#64748b">إنشاء</div></td>
+                <td style="font-weight:700">3,200,000 ر.س</td>
+                <td style="font-weight:900;color:#0369a1">64,000 ر.س</td>
+                <td><span class="s-badge s-completed"><i class="fas fa-circle" style="font-size:0.45rem"></i> مكتملة</span></td>
+                <td style="font-size:0.82rem;color:#64748b">2/2/2026</td>
+                <td>
+                  <button class="btn btn-sm" style="background:#faf5ff;color:#7c3aed;border:1px solid #e9d5ff;font-size:0.78rem;border-radius:7px;font-weight:700">فاتورة</button>
+                </td>
+              </tr>
+              <tr class="overdue-row">
+                <td style="color:#94a3b8">3</td>
+                <td><div style="font-weight:700">العربية للمشاريع الكبرى</div></td>
+                <td><div style="font-weight:600">إنشاء خزان مياه — الدمام</div><div style="font-size:0.75rem;color:#64748b">بنية تحتية</div></td>
+                <td style="font-weight:700">5,800,000 ر.س</td>
+                <td style="font-weight:900">116,000 ر.س</td>
+                <td><span class="s-badge s-overdue"><i class="fas fa-circle" style="font-size:0.45rem"></i> متأخرة</span></td>
+                <td style="font-size:0.82rem">1/1/2026</td>
+                <td><button class="btn btn-sm" style="background:#fef2f2;color:#b91c1c;border:1px solid #fecaca;font-size:0.78rem;border-radius:7px;font-weight:700">متابعة</button></td>
+              </tr>
+              <tr>
+                <td style="color:#94a3b8">4</td>
+                <td><div style="font-weight:700">شركة الأفق للمقاولات</div></td>
+                <td><div style="font-weight:600">محطة معالجة مياه — القصيم</div><div style="font-size:0.75rem;color:#64748b">بنية تحتية</div></td>
+                <td style="font-weight:700">12,000,000 ر.س</td>
+                <td style="font-weight:900;color:#0369a1">240,000 ر.س</td>
+                <td><span class="s-badge s-paid"><i class="fas fa-circle" style="font-size:0.45rem"></i> مدفوعة</span></td>
+                <td style="font-size:0.82rem;color:#64748b">10/12/2025</td>
+                <td><span style="font-size:0.8rem;color:#16a34a;font-weight:700"><i class="fas fa-check-circle ms-1"></i> محصّل</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Companies Tab -->
+  <div x-show="activeTab === 'companies'">
+    <div class="t-card">
+      <div class="t-card-header">
+        <div style="font-weight:800;color:#1e293b"><i class="fas fa-trophy ms-2" style="color:#0369a1"></i> أبرز شركات المقاولات</div>
+      </div>
+      <div style="padding:1rem">
+        <template x-if="topCompanies.length > 0">
+          <div class="d-flex flex-column gap-3">
+            <template x-for="(co, idx) in topCompanies" :key="idx">
+              <div style="display:flex;align-items:center;gap:1rem;padding:1rem;background:#f8fafc;border-radius:12px;border:1px solid #e2e8f0">
+                <div style="width:36px;height:36px;background:linear-gradient(135deg,#0369a1,#0284c7);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;flex-shrink:0" x-text="idx+1"></div>
+                <div style="flex:1">
+                  <div style="font-weight:700" x-text="co.name"></div>
+                  <div style="font-size:0.78rem;color:#64748b" x-text="co.count + ' مناقصة'"></div>
+                </div>
+                <div style="text-align:left">
+                  <div style="font-weight:900;color:#0369a1" x-text="Number(co.total).toLocaleString('ar-SA') + ' ر.س'"></div>
+                  <div style="font-size:0.75rem;color:#64748b">إجمالي العمولات</div>
+                </div>
+              </div>
+            </template>
+          </div>
+        </template>
+
+        <!-- Demo companies -->
+        <template x-if="topCompanies.length === 0">
+          <div class="d-flex flex-column gap-3">
+            <div style="display:flex;align-items:center;gap:1rem;padding:1rem;background:#f8fafc;border-radius:12px;border:1px solid #e2e8f0">
+              <div style="width:36px;height:36px;background:linear-gradient(135deg,#0369a1,#0284c7);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;flex-shrink:0">1</div>
+              <div style="flex:1"><div style="font-weight:700">مجموعة المشاريع الكبرى</div><div style="font-size:0.78rem;color:#64748b">3 مناقصات</div></div>
+              <div style="text-align:left"><div style="font-weight:900;color:#0369a1">348,000 ر.س</div><div style="font-size:0.75rem;color:#64748b">إجمالي العمولات</div></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:1rem;padding:1rem;background:#f8fafc;border-radius:12px;border:1px solid #e2e8f0">
+              <div style="width:36px;height:36px;background:linear-gradient(135deg,#7c3aed,#6d28d9);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;flex-shrink:0">2</div>
+              <div style="flex:1"><div style="font-weight:700">شركة الأفق للمقاولات</div><div style="font-size:0.78rem;color:#64748b">2 مناقصة</div></div>
+              <div style="text-align:left"><div style="font-weight:900;color:#0369a1">312,000 ر.س</div><div style="font-size:0.75rem;color:#64748b">إجمالي العمولات</div></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:1rem;padding:1rem;background:#f8fafc;border-radius:12px;border:1px solid #e2e8f0">
+              <div style="width:36px;height:36px;background:linear-gradient(135deg,#d97706,#b45309);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;flex-shrink:0">3</div>
+              <div style="flex:1"><div style="font-weight:700">البنية المتكاملة للمقاولات</div><div style="font-size:0.78rem;color:#64748b">2 مناقصة</div></div>
+              <div style="text-align:left"><div style="font-weight:900;color:#0369a1">128,000 ر.س</div><div style="font-size:0.75rem;color:#64748b">إجمالي العمولات</div></div>
+            </div>
+          </div>
+        </template>
+      </div>
+    </div>
+  </div>
+
+  <!-- Overdue Tab -->
+  <div x-show="activeTab === 'overdue'">
+    <div class="t-card">
+      <div class="t-card-header" style="background:#fef2f2">
+        <div style="font-weight:800;color:#b91c1c"><i class="fas fa-exclamation-triangle ms-2"></i> العمولات المتأخرة</div>
+        <span style="font-size:0.82rem;color:#b91c1c" x-text="overdueList.length + ' حالة تتطلب المتابعة'"></span>
+      </div>
+      <div x-show="overdueList.length === 0" style="padding:3rem;text-align:center;color:#16a34a">
+        <i class="fas fa-check-circle fa-2x mb-2"></i>
+        <p style="font-weight:700">ممتاز — لا توجد عمولات متأخرة</p>
+      </div>
+      <div class="d-flex flex-column gap-0">
+        <template x-for="c in overdueList" :key="c.id">
+          <div style="padding:1.1rem 1.5rem;border-bottom:1px solid #fecaca;background:#fef2f2">
+            <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+              <div>
+                <div style="font-weight:800;color:#b91c1c" x-text="c.company ? c.company.name : 'شركة'"></div>
+                <div style="font-size:0.82rem;color:#94a3b8" x-text="c.tender ? c.tender.title : 'مشروع'"></div>
+              </div>
+              <div style="text-align:left">
+                <div style="font-weight:900;color:#b91c1c" x-text="Number(c.commission_amount).toLocaleString('ar-SA') + ' ر.س'"></div>
+                <div style="font-size:0.75rem;color:#94a3b8">عمولة مستحقة</div>
+              </div>
+            </div>
+            <div class="d-flex gap-2 mt-2">
+              <button class="btn btn-sm" style="background:#fef2f2;color:#b91c1c;border:1px solid #fecaca;font-size:0.8rem;border-radius:7px;font-weight:700"
+                @click="sendReminder(c)">
+                <i class="fas fa-bell ms-1"></i> إرسال تذكير
+              </button>
+              <button class="btn btn-sm" style="background:#faf5ff;color:#7c3aed;border:1px solid #e9d5ff;font-size:0.8rem;border-radius:7px;font-weight:700"
+                @click="issueInvoice(c)">
+                <i class="fas fa-file-invoice ms-1"></i> إصدار فاتورة
+              </button>
+            </div>
+          </div>
+        </template>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Detail Modal -->
+<div class="modal fade" id="detailModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="border-radius:20px;border:none">
+      <div class="modal-header" style="border-bottom:1px solid #f1f5f9">
+        <h5 class="modal-title" style="font-weight:800;color:#1e293b">تفاصيل العمولة</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" id="detailModalBody" style="font-family:'Tajawal',sans-serif"></div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+<script src="../assets/js/khedmah.js"></script>
+<script>
+  const STATUS_LABELS = {
+    pending: 'معلقة', in_progress: 'قيد التنفيذ',
+    completed: 'مكتملة', invoice_issued: 'فاتورة صادرة',
+    paid: 'مدفوعة', overdue: 'متأخرة'
+  };
+
+  function founderApp() {
+    return {
+      allCommissions: [],
+      filtered: [],
+      topCompanies: [],
+      overdueList: [],
+      filterStatus: '',
+      searchQ: '',
+      loading: true,
+      activeTab: 'table',
+      totals: { total: 0, paid: 0, pending: 0, overdue: 0, overdueCount: 0 },
+
+      async init() {
+        var s = JSON.parse(localStorage.getItem('khedmah_demo') || '{}');
+        if (s.name) document.getElementById('adminName').textContent = s.name;
+
+        var res = await Commissions.list({});
+        this.loading = false;
+        if (res.ok && res.data.length > 0) {
+          this.allCommissions = res.data;
+          this.computeTotals();
+          this.buildTopCompanies();
+          this.overdueList = this.allCommissions.filter(c => c.status === 'overdue');
+          this.applyFilter();
+        }
+      },
+
+      computeTotals() {
+        this.totals.total = this.allCommissions.reduce((a, c) => a + Number(c.commission_amount), 0);
+        this.totals.paid  = this.allCommissions.filter(c => c.status === 'paid').reduce((a, c) => a + Number(c.commission_amount), 0);
+        this.totals.pending = this.allCommissions.filter(c => ['pending','in_progress'].includes(c.status)).reduce((a, c) => a + Number(c.commission_amount), 0);
+        this.totals.overdue = this.allCommissions.filter(c => c.status === 'overdue').reduce((a, c) => a + Number(c.commission_amount), 0);
+        this.totals.overdueCount = this.allCommissions.filter(c => c.status === 'overdue').length;
+      },
+
+      buildTopCompanies() {
+        var map = {};
+        this.allCommissions.forEach(c => {
+          var name = c.company ? c.company.name : 'غير محدد';
+          if (!map[name]) map[name] = { name, total: 0, count: 0 };
+          map[name].total += Number(c.commission_amount);
+          map[name].count++;
+        });
+        this.topCompanies = Object.values(map).sort((a, b) => b.total - a.total).slice(0, 10);
+      },
+
+      applyFilter() {
+        this.filtered = this.allCommissions.filter(c => {
+          var matchStatus = !this.filterStatus || c.status === this.filterStatus;
+          var q = this.searchQ.toLowerCase();
+          var matchSearch = !q ||
+            (c.company && c.company.name.toLowerCase().includes(q)) ||
+            (c.tender  && c.tender.title.toLowerCase().includes(q));
+          return matchStatus && matchSearch;
+        });
+      },
+
+      statusLabel(s) { return STATUS_LABELS[s] || s; },
+
+      formatMoney(v) {
+        return Number(v || 0).toLocaleString('ar-SA');
+      },
+
+      viewDetails(c) {
+        var rows = [
+          ['الشركة', c.company ? c.company.name : '—'],
+          ['المشروع', c.tender ? c.tender.title : '—'],
+          ['قيمة العقد', Number(c.tender_value).toLocaleString('ar-SA') + ' ر.س'],
+          ['نسبة العمولة', (c.commission_rate * 100) + '%'],
+          ['مبلغ العمولة', Number(c.commission_amount).toLocaleString('ar-SA') + ' ر.س'],
+          ['الحالة', STATUS_LABELS[c.status] || c.status],
+          ['تاريخ الترسية', c.created_at ? new Date(c.created_at).toLocaleDateString('ar-SA') : '—'],
+          ['تاريخ الاكتمال', c.project_completed_at ? new Date(c.project_completed_at).toLocaleDateString('ar-SA') : '—'],
+          ['تاريخ الفاتورة', c.invoice_issued_at ? new Date(c.invoice_issued_at).toLocaleDateString('ar-SA') : '—'],
+          ['تاريخ السداد', c.paid_at ? new Date(c.paid_at).toLocaleDateString('ar-SA') : '—'],
+        ];
+        var html = rows.map(r => `
+          <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+            <span style="color:#64748b;font-size:0.85rem">${r[0]}</span>
+            <strong style="font-size:0.9rem">${r[1]}</strong>
+          </div>
+        `).join('');
+        document.getElementById('detailModalBody').innerHTML = `<div style="padding:0.5rem">${html}</div>`;
+        new bootstrap.Modal(document.getElementById('detailModal')).show();
+      },
+
+      async issueInvoice(c) {
+        var res = await Commissions.updateStatus(c.id, 'invoice_issued', {
+          invoice_number: 'COMM-' + new Date().getFullYear() + '-' + c.id.slice(-5).toUpperCase()
+        });
+        if (res.ok) {
+          c.status = 'invoice_issued';
+          kToast('تم إصدار الفاتورة بنجاح', 'success');
+          this.computeTotals();
+          this.overdueList = this.allCommissions.filter(x => x.status === 'overdue');
+        }
+      },
+
+      async markPaid(c) {
+        var res = await Commissions.updateStatus(c.id, 'paid', {
+          payment_reference: 'PAY-' + Date.now()
+        });
+        if (res.ok) {
+          c.status = 'paid';
+          kToast('تم تسجيل السداد بنجاح', 'success');
+          this.computeTotals();
+        }
+      },
+
+      async markOverdue(c) {
+        var res = await Commissions.updateStatus(c.id, 'overdue');
+        if (res.ok) {
+          c.status = 'overdue';
+          this.overdueList = this.allCommissions.filter(x => x.status === 'overdue');
+          this.computeTotals();
+          kToast('تم تصنيف العمولة كمتأخرة', 'warning');
+        }
+      },
+
+      sendReminder(c) {
+        kToast('تم إرسال تذكير إلى ' + (c.company ? c.company.name : 'الشركة'), 'success');
+      },
+
+      exportCSV() {
+        var rows = [['الشركة','المشروع','قيمة العقد','العمولة','الحالة','التاريخ']];
+        var data = this.filtered.length ? this.filtered : this.allCommissions;
+        data.forEach(c => {
+          rows.push([
+            c.company ? c.company.name : '',
+            c.tender  ? c.tender.title : '',
+            c.tender_value, c.commission_amount,
+            STATUS_LABELS[c.status] || c.status,
+            c.created_at ? new Date(c.created_at).toLocaleDateString('ar-SA') : ''
+          ]);
+        });
+        var csv = rows.map(r => r.join(',')).join('\n');
+        var a = document.createElement('a');
+        a.href = 'data:text/csv;charset=utf-8,\uFEFF' + encodeURIComponent(csv);
+        a.download = 'khedmah-commissions.csv';
+        a.click();
+      }
+    };
+  }
+</script>
+</body>
+</html>
