@@ -340,7 +340,94 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
 <script src="../assets/js/khedmah.js"></script>
+<script src="../assets/js/supabase-client.js"></script>
+<script src="../assets/js/khedmah-data.js"></script>
 <script>
+  // Load real equipment data from URL ?id= param
+  (function loadEquipmentDetail() {
+    const params = new URLSearchParams(window.location.search);
+    const eqId   = params.get('id');
+    if (!eqId) return;
+
+    Equipment.get(eqId).then(function(res) {
+      if (!res.ok || !res.data) return;
+      const eq = res.data;
+
+      // Fill page title + breadcrumb
+      const crumb = document.querySelector('.breadcrumb-item.active');
+      if (crumb) crumb.textContent = eq.name || 'تفاصيل المعدة';
+      document.title = (eq.name || 'معدة') + ' — خدمة';
+
+      // Fill image area emoji
+      const gallery = document.querySelector('.img-gallery');
+      if (gallery) {
+        const CAT_EMOJI = {
+          excavator:'⛏️', crane:'🏗️', mixer:'🔄', bulldozer:'🚜',
+          loader:'🚛', truck:'🚚', compactor:'🚧', forklift:'🏭',
+          generator:'⚡', pump:'💧', scaffold:'🪜', other:'🔧'
+        };
+        const emojiNode = gallery.childNodes[0];
+        if (emojiNode && emojiNode.nodeType === 3) {
+          emojiNode.textContent = eq.emoji || CAT_EMOJI[eq.category] || '🔧';
+        }
+        // Availability badge
+        const badge = gallery.querySelector('span');
+        if (badge) {
+          badge.textContent = eq.is_available ? 'متاح الآن' : 'محجوز';
+          badge.style.background = eq.is_available ? '#dcfce7' : '#fef2f2';
+          badge.style.color      = eq.is_available ? '#16a34a' : '#dc2626';
+        }
+      }
+
+      // Fill name, brand/year in heading area
+      const h1 = document.querySelector('h1, h2, [data-eq-name]');
+      if (h1) h1.textContent = eq.name || '';
+
+      // Store equipment id for booking
+      window._currentEqId = eqId;
+      window._currentEqName = eq.name || '';
+
+      // Build real booked days from rentals
+      if (eq.rentals && eq.rentals.length > 0) {
+        const newBooked = [];
+        eq.rentals.forEach(function(r) {
+          if (r.status === 'cancelled') return;
+          const s = new Date(r.start_date), e = new Date(r.end_date);
+          for (let d = new Date(s); d <= e; d.setDate(d.getDate() + 1)) {
+            if (d.getMonth() === 2 && d.getFullYear() === 2026) {
+              newBooked.push(d.getDate());
+            }
+          }
+        });
+        if (newBooked.length > 0) {
+          // Reset calendar with real booked days
+          document.querySelectorAll('.cal-day.booked').forEach(function(el) {
+            el.classList.remove('booked');
+            el.classList.add('available');
+            const d = parseInt(el.textContent);
+            if (!isNaN(d)) el.onclick = function() { selectDay(d, el); };
+          });
+          newBooked.forEach(function(day) {
+            document.querySelectorAll('.cal-day').forEach(function(el) {
+              if (parseInt(el.textContent) === day) {
+                el.classList.remove('available');
+                el.classList.add('booked');
+                el.onclick = null;
+              }
+            });
+          });
+        }
+      }
+
+      // Update Alpine data with real prices
+      if (eq.day_price) {
+        window._eqDayPrice  = eq.day_price;
+        window._eqHourPrice = eq.hour_price || Math.round(eq.day_price / 8);
+        window._eqWeekPrice = eq.week_price || Math.round(eq.day_price * 5.5);
+      }
+    }).catch(function() {});
+  })();
+
   // Generate calendar
   const bookedDays = [8, 9, 10, 11, 18, 19, 25];
   const calGrid = document.getElementById('calGrid');
@@ -422,9 +509,40 @@
         this.totalPrice = this.basePrice + this.operatorFee + 2000; // +2000 deposit
       },
 
-      book() {
+      async book() {
         this.loading = true;
-        setTimeout(() => { this.loading = false; this.booked = true; }, 1800);
+        const eqId = window._currentEqId;
+        if (eqId) {
+          await EquipmentRentals.create({
+            equipment_id:  eqId,
+            start_date:    this.startDate,
+            end_date:      this.endDate,
+            days:          this.days,
+            with_operator: this.withOperator,
+            period:        this.period,
+            total_price:   this.totalPrice,
+            deposit:       2000
+          });
+        }
+        this.loading = false;
+        this.booked  = true;
+      },
+
+      calcRealPrice() {
+        // Use real prices if loaded from DB
+        if (!this.startDate || !this.endDate) { this.days = 0; return; }
+        const s = new Date(this.startDate), e = new Date(this.endDate);
+        if (e < s) { this.days = 0; return; }
+        const diff = Math.round((e - s) / 86400000) + 1;
+        this.days = diff;
+        const dayRate = this.period === 'hour'
+          ? (window._eqHourPrice || 120) * 8
+          : this.period === 'week'
+          ? (window._eqWeekPrice || 4500) / 7
+          : (window._eqDayPrice  || 850);
+        this.basePrice   = Math.round(dayRate * diff);
+        this.operatorFee = this.withOperator ? Math.round(150 * diff) : 0;
+        this.totalPrice  = this.basePrice + this.operatorFee + 2000;
       }
     };
   }

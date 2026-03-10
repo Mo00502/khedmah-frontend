@@ -500,6 +500,8 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
 <script src="../assets/js/khedmah.js"></script>
+<script src="../assets/js/supabase-client.js"></script>
+<script src="../assets/js/khedmah-data.js"></script>
 <script>
   function listApp() {
     return {
@@ -531,9 +533,39 @@
         else this.days.push(d);
       },
 
-      publish() {
+      async publish() {
         this.loading = true;
-        setTimeout(() => { this.loading = false; this.published = true; }, 1800);
+        const res = await Equipment.create({
+          name:          this.name,
+          category:      this.category,
+          brand:         this.brand,
+          year:          this.year ? parseInt(this.year) : null,
+          hours_used:    this.hours ? parseInt(this.hours) : null,
+          description:   this.description,
+          region:        this.region,
+          capacity:      this.capacity,
+          has_operator:  this.hasOperator,
+          has_delivery:  this.hasDelivery,
+          has_insurance: this.hasInsurance,
+          has_maintenance: this.hasMaintenance,
+          hour_price:    this.hourPrice  ? parseFloat(this.hourPrice)  : null,
+          day_price:     this.dayPrice   ? parseFloat(this.dayPrice)   : null,
+          week_price:    this.weekPrice  ? parseFloat(this.weekPrice)  : null,
+          month_price:   this.monthPrice ? parseFloat(this.monthPrice) : null,
+          delivery_cost: parseFloat(this.deliveryCost) || 0,
+          deposit:       parseFloat(this.deposit) || 2000,
+          available_days: this.days,
+          start_hour:    this.startHour,
+          end_hour:      this.endHour,
+          min_rental:    this.minRent,
+          notice_hours:  parseInt(this.notice) || 24,
+          visibility:    this.visibility
+        });
+        if (res.ok && res.data) {
+          sessionStorage.setItem('newEquipmentId', res.data.id);
+        }
+        this.loading = false;
+        this.published = true;
       }
     };
   }

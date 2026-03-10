@@ -988,3 +988,222 @@ const SupplierOffers = {
     return { ok: true };
   }
 };
+
+
+/* ══════════════════════════════════════════════════════════════
+   EQUIPMENT  (heavy equipment rental listings)
+   ══════════════════════════════════════════════════════════════ */
+const Equipment = {
+
+  /** List / search equipment with optional filters */
+  async search(filters) {
+    const client = _sb();
+    if (!client) return { ok: false, data: [] };
+    filters = filters || {};
+
+    let q = client
+      .from('equipment')
+      .select('*')
+      .eq('status', 'active');
+
+    if (filters.category)  q = q.eq('category', filters.category);
+    if (filters.region)    q = q.eq('region', filters.region);
+    if (filters.q)         q = q.ilike('name', `%${filters.q}%`);
+    if (filters.available) q = q.eq('is_available', true);
+
+    q = q.order('created_at', { ascending: false });
+
+    const { data, error } = await q;
+    if (error) { console.error('Equipment.search:', error); return { ok: false, data: [] }; }
+    return { ok: true, data: data || [] };
+  },
+
+  /** Get single equipment listing by ID */
+  async get(id) {
+    const client = _sb();
+    if (!client) return { ok: false, data: null };
+
+    const { data, error } = await client
+      .from('equipment')
+      .select(`
+        *,
+        rentals:equipment_rentals(id, start_date, end_date, status)
+      `)
+      .eq('id', id)
+      .maybeSingle();
+
+    if (error) { console.error('Equipment.get:', error); return { ok: false, data: null }; }
+    return { ok: true, data };
+  },
+
+  /** Create a new equipment listing */
+  async create(fields) {
+    const s = _session();
+    const client = _sb();
+    if (!client) return { ok: false };
+
+    const payload = {
+      owner_id:        s.id,
+      status:          'pending',    // pending → admin review → active
+      is_available:    true,
+      ...fields
+    };
+
+    const { data, error } = await client
+      .from('equipment')
+      .insert(payload)
+      .select().single();
+
+    if (error) { console.error('Equipment.create:', error); return { ok: false, error }; }
+    return { ok: true, data };
+  },
+
+  /** Update equipment listing (owner only) */
+  async update(id, fields) {
+    const client = _sb();
+    if (!client) return { ok: false };
+
+    const { data, error } = await client
+      .from('equipment')
+      .update({ ...fields, updated_at: new Date().toISOString() })
+      .eq('id', id)
+      .select().single();
+
+    if (error) { console.error('Equipment.update:', error); return { ok: false, error }; }
+    return { ok: true, data };
+  },
+
+  /** Soft-delete (set status=archived) */
+  async remove(id) {
+    const client = _sb();
+    if (!client) return { ok: false };
+
+    const { error } = await client
+      .from('equipment')
+      .update({ status: 'archived' })
+      .eq('id', id);
+
+    if (error) { console.error('Equipment.remove:', error); return { ok: false, error }; }
+    return { ok: true };
+  },
+
+  /** List equipment owned by current user */
+  async listMine() {
+    const s = _session();
+    const client = _sb();
+    if (!client) return { ok: false, data: [] };
+
+    const { data, error } = await client
+      .from('equipment')
+      .select('*')
+      .eq('owner_id', s.id)
+      .order('created_at', { ascending: false });
+
+    if (error) { console.error('Equipment.listMine:', error); return { ok: false, data: [] }; }
+    return { ok: true, data: data || [] };
+  }
+};
+
+
+/* ══════════════════════════════════════════════════════════════
+   EQUIPMENT RENTALS  (bookings / rental periods)
+   ══════════════════════════════════════════════════════════════ */
+const EquipmentRentals = {
+
+  /** Create a new rental booking */
+  async create(fields) {
+    const s = _session();
+    const client = _sb();
+    if (!client) return { ok: false };
+
+    const payload = {
+      renter_id:    s.id,
+      status:       'pending',
+      created_at:   new Date().toISOString(),
+      ...fields
+    };
+
+    const { data, error } = await client
+      .from('equipment_rentals')
+      .insert(payload)
+      .select().single();
+
+    if (error) { console.error('EquipmentRentals.create:', error); return { ok: false, error }; }
+
+    // Mark equipment as unavailable while rental is pending/confirmed
+    if (data) {
+      await client
+        .from('equipment')
+        .update({ is_available: false })
+        .eq('id', fields.equipment_id);
+    }
+
+    return { ok: true, data };
+  },
+
+  /** List all rentals (with equipment info) for current user */
+  async list() {
+    const s = _session();
+    const client = _sb();
+    if (!client) return { ok: false, data: [] };
+
+    const { data, error } = await client
+      .from('equipment_rentals')
+      .select(`
+        *,
+        equipment:equipment(id, name, category, region, day_price, emoji)
+      `)
+      .eq('renter_id', s.id)
+      .order('created_at', { ascending: false });
+
+    if (error) { console.error('EquipmentRentals.list:', error); return { ok: false, data: [] }; }
+    return { ok: true, data: data || [] };
+  },
+
+  /** Get single rental by ID */
+  async get(id) {
+    const client = _sb();
+    if (!client) return { ok: false, data: null };
+
+    const { data, error } = await client
+      .from('equipment_rentals')
+      .select(`
+        *,
+        equipment:equipment(*)
+      `)
+      .eq('id', id)
+      .maybeSingle();
+
+    if (error) { console.error('EquipmentRentals.get:', error); return { ok: false, data: null }; }
+    return { ok: true, data };
+  },
+
+  /** Update rental status — also re-enables equipment availability when cancelled/completed */
+  async updateStatus(id, status) {
+    const client = _sb();
+    if (!client) return { ok: false };
+
+    const updates = { status };
+    if (status === 'confirmed') updates.confirmed_at = new Date().toISOString();
+    if (status === 'completed') updates.completed_at = new Date().toISOString();
+    if (status === 'cancelled') updates.cancelled_at = new Date().toISOString();
+
+    const { data, error } = await client
+      .from('equipment_rentals')
+      .update(updates)
+      .eq('id', id)
+      .select().single();
+
+    if (error) { console.error('EquipmentRentals.updateStatus:', error); return { ok: false, error }; }
+
+    // Re-enable availability when rental ends
+    if ((status === 'completed' || status === 'cancelled') && data?.equipment_id) {
+      await client
+        .from('equipment')
+        .update({ is_available: true })
+        .eq('id', data.equipment_id);
+    }
+
+    return { ok: true, data };
+  }
+};
