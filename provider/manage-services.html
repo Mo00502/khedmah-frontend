@@ -21,6 +21,7 @@
   </style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../assets/js/supabase-client.js"></script>
+  <script src="../assets/js/khedmah-data.js"></script>
 </head>
 <body>
 <script>
@@ -46,7 +47,7 @@
       </ul>
       <div class="d-flex gap-2 align-items-center">
         <span class="badge" style="background:rgba(16,185,129,0.2);color:#059669;font-size:0.78rem;padding:0.35rem 0.75rem">مزود معتمد</span>
-        <span style="color:rgba(255,255,255,0.75);font-size:0.9rem">محمد الكهربائي</span>
+        <span style="color:rgba(255,255,255,0.75);font-size:0.9rem" id="navProviderName">محمد الكهربائي</span>
       </div>
     </div>
   </div>
@@ -277,65 +278,231 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="../assets/js/khedmah.js"></script>
 <script>
-  var priceType='hour', deleteTarget=null;
+  /* ── State ── */
+  var priceType    = 'hour';
+  var deleteTarget = null;   // { sbId: uuid|null, cardId: string }
+  var _editId      = null;   // null = new service, uuid string = editing existing
+  window._svcMap   = {};     // sbId → full service object (real services only)
 
-  function setPriceType(t){
-    priceType=t;
-    ['hour','visit','agree'].forEach(function(x){
-      document.getElementById('pt-'+x).className='btn btn-'+(x===t?'primary':'outline-secondary')+' btn-sm px-3';
+  /* ── Navbar: fill provider name ── */
+  (function() {
+    try {
+      var s = JSON.parse(localStorage.getItem('khedmah_demo') || '{}');
+      if (s.name) {
+        var el = document.getElementById('navProviderName');
+        if (el) el.textContent = s.name;
+      }
+    } catch(e) {}
+  })();
+
+  /* ── Price-type toggle UI ── */
+  function setPriceType(t) {
+    priceType = t;
+    ['hour','visit','agree'].forEach(function(x) {
+      document.getElementById('pt-' + x).className =
+        'btn btn-' + (x === t ? 'primary' : 'outline-secondary') + ' btn-sm px-3';
     });
-    document.getElementById('priceGroup').style.display=t==='agree'?'none':'block';
+    document.getElementById('priceGroup').style.display = t === 'agree' ? 'none' : 'block';
   }
 
-  function openAddModal(){
-    document.getElementById('modalTitle').textContent='إضافة خدمة جديدة';
-    document.getElementById('svcName').value='';
-    document.getElementById('svcPrice').value='';
-    document.getElementById('svcDesc').value='';
+  /* ── Build a real-service card HTML ── */
+  function buildSvcCard(svc) {
+    var isActive = svc.is_active !== false;
+    var priceHtml;
+    if (svc.price_type === 'hour') {
+      priceHtml = (svc.price || 0) + ' <span style="font-size:0.85rem;font-weight:400;color:var(--k-gray)">ر.س / ساعة</span>';
+    } else if (svc.price_type === 'visit') {
+      priceHtml = (svc.price || 0) + ' <span style="font-size:0.85rem;font-weight:400;color:var(--k-gray)">ر.س / زيارة</span>';
+    } else {
+      priceHtml = '<span style="font-size:1rem">حسب الاتفاق</span>';
+    }
+    var shortId = svc.id.slice(0, 8);
+    var togId   = 'tog-' + shortId;
+    var lblId   = 'lbl-' + shortId;
+    var cardId  = 'card-' + svc.id;
+    return '<div class="col-md-6 col-xl-4">' +
+      '<div class="svc-card' + (isActive ? '' : ' inactive') + '" id="' + cardId + '">' +
+        '<div class="d-flex justify-content-between align-items-start mb-3">' +
+          '<div style="width:50px;height:50px;background:rgba(2,128,144,0.1);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.5rem">🔧</div>' +
+          '<div class="form-check form-switch mb-0">' +
+            '<input class="form-check-input" type="checkbox" ' + (isActive ? 'checked' : '') +
+              ' id="' + togId + '" onchange="toggleSvc(\'' + cardId + '\',\'' + togId + '\',\'' + lblId + '\',\'' + svc.id + '\')">' +
+            '<label class="form-check-label" id="' + lblId + '" for="' + togId +
+              '" style="font-size:0.82rem;color:var(--k-gray)">' + (isActive ? 'نشط' : 'موقوف') + '</label>' +
+          '</div>' +
+        '</div>' +
+        '<div style="font-weight:700;font-size:1rem;margin-bottom:0.2rem">' + (svc.title || '') + '</div>' +
+        '<div style="font-size:0.82rem;color:var(--k-gray);margin-bottom:0.75rem">' + (svc.category || '') + '</div>' +
+        '<div style="font-size:1.3rem;font-weight:900;color:' + (isActive ? 'var(--k-primary)' : 'var(--k-gray)') + ';margin-bottom:0.25rem">' + priceHtml + '</div>' +
+        '<div style="font-size:0.8rem;color:var(--k-gray);margin-bottom:1rem">⏱ ' + (svc.duration || '—') + '</div>' +
+        '<p style="font-size:0.85rem;color:var(--k-gray);margin-bottom:1rem">' + (svc.description || '') + '</p>' +
+        '<div class="d-flex gap-2">' +
+          '<button class="btn btn-outline-primary btn-sm flex-fill" data-bs-toggle="modal" data-bs-target="#svcModal" onclick="openEditModalById(\'' + svc.id + '\')"><i class="fas fa-edit ms-1"></i> تعديل</button>' +
+          '<button class="btn btn-outline-danger btn-sm flex-fill" data-bs-toggle="modal" data-bs-target="#deleteModal" onclick="setDeleteTargetById(\'' + svc.id + '\')"><i class="fas fa-trash ms-1"></i> حذف</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }
+
+  /* ── Load real services from Supabase ── */
+  async function loadServices() {
+    if (typeof Services === 'undefined') return;
+    var res = await Services.listMine();
+    if (!res.ok || !res.data || res.data.length === 0) return; // keep demo cards
+
+    var grid = document.getElementById('servicesGrid');
+    grid.innerHTML = '';
+    window._svcMap = {};
+    res.data.forEach(function(svc) {
+      window._svcMap[svc.id] = svc;
+      grid.insertAdjacentHTML('beforeend', buildSvcCard(svc));
+    });
+    updateStats();
+  }
+
+  /* ── Modal: open for ADD ── */
+  function openAddModal() {
+    _editId = null;
+    document.getElementById('modalTitle').textContent = 'إضافة خدمة جديدة';
+    document.getElementById('catSelect').value = '';
+    document.getElementById('svcName').value   = '';
+    document.getElementById('svcPrice').value  = '';
+    document.getElementById('svcDesc').value   = '';
+    document.getElementById('svcDur').selectedIndex = 0;
     setPriceType('hour');
   }
 
-  function openEditModal(name){
-    document.getElementById('modalTitle').textContent='تعديل الخدمة';
-    document.getElementById('svcName').value=name;
+  /* ── Modal: open for EDIT (demo cards — name only) ── */
+  function openEditModal(name) {
+    _editId = null; // demo card — no Supabase update
+    document.getElementById('modalTitle').textContent = 'تعديل الخدمة';
+    document.getElementById('svcName').value = name;
   }
 
-  function saveService(){
-    var name=document.getElementById('svcName').value.trim();
-    var cat=document.getElementById('catSelect').value;
-    if(!name||!cat){ alert('يرجى ملء الحقول الإلزامية'); return; }
+  /* ── Modal: open for EDIT (real cards — full object) ── */
+  function openEditModalById(sbId) {
+    var svc = window._svcMap[sbId];
+    if (!svc) return;
+    _editId = sbId;
+    document.getElementById('modalTitle').textContent  = 'تعديل الخدمة';
+    document.getElementById('catSelect').value = svc.category    || '';
+    document.getElementById('svcName').value   = svc.title       || '';
+    document.getElementById('svcPrice').value  = svc.price       || '';
+    document.getElementById('svcDesc').value   = svc.description || '';
+    var durSel = document.getElementById('svcDur');
+    for (var i = 0; i < durSel.options.length; i++) {
+      if (durSel.options[i].value === svc.duration || durSel.options[i].text === svc.duration) {
+        durSel.selectedIndex = i; break;
+      }
+    }
+    setPriceType(svc.price_type || 'hour');
+  }
+
+  /* ── Save (create or update) ── */
+  async function saveService() {
+    var name = document.getElementById('svcName').value.trim();
+    var cat  = document.getElementById('catSelect').value;
+    if (!name || !cat) { alert('يرجى ملء الحقول الإلزامية'); return; }
+
+    var price = priceType === 'agree'
+      ? null
+      : (parseFloat(document.getElementById('svcPrice').value) || null);
+
+    var fields = {
+      title:       name,
+      category:    cat,
+      price_type:  priceType,
+      price:       price,
+      description: document.getElementById('svcDesc').value.trim() || null,
+      duration:    document.getElementById('svcDur').value
+    };
+
     bootstrap.Modal.getInstance(document.getElementById('svcModal')).hide();
-    if(typeof kToast==='function') kToast('✓ تم حفظ الخدمة بنجاح');
+
+    if (_editId) {
+      /* ── UPDATE existing real service ── */
+      var upd = await Services.update(_editId, fields);
+      if (upd.ok) {
+        window._svcMap[_editId] = Object.assign(window._svcMap[_editId], fields);
+        await loadServices(); // re-render grid from updated _svcMap
+      }
+      if (typeof kToast === 'function') kToast('✓ تم تحديث الخدمة بنجاح');
+
+    } else if (typeof Services !== 'undefined') {
+      /* ── CREATE new real service ── */
+      fields.is_active = true;
+      var res = await Services.create(fields);
+      if (res.ok && res.data) {
+        window._svcMap[res.data.id] = res.data;
+        /* Clear any demo cards only once we have a real service */
+        var grid = document.getElementById('servicesGrid');
+        if (Object.keys(window._svcMap).length === 1) grid.innerHTML = ''; // first real card
+        grid.insertAdjacentHTML('afterbegin', buildSvcCard(res.data));
+        updateStats();
+      }
+      if (typeof kToast === 'function') kToast('✓ تم إضافة الخدمة بنجاح');
+
+    } else {
+      /* ── Demo fallback: UI-only save ── */
+      if (typeof kToast === 'function') kToast('✓ تم حفظ الخدمة بنجاح');
+    }
   }
 
-  function setDeleteTarget(id){ deleteTarget=id; }
+  /* ── Delete: set target (demo cards — DOM id) ── */
+  function setDeleteTarget(domId) {
+    deleteTarget = { sbId: null, cardId: domId };
+  }
 
-  function confirmDelete(){
-    if(deleteTarget){
-      var card=document.getElementById(deleteTarget);
-      if(card) card.closest('.col-md-6').remove();
+  /* ── Delete: set target (real cards — Supabase id) ── */
+  function setDeleteTargetById(sbId) {
+    deleteTarget = { sbId: sbId, cardId: 'card-' + sbId };
+  }
+
+  /* ── Delete: confirm ── */
+  async function confirmDelete() {
+    if (deleteTarget) {
+      if (deleteTarget.sbId && typeof Services !== 'undefined') {
+        await Services.remove(deleteTarget.sbId);
+        delete window._svcMap[deleteTarget.sbId];
+      }
+      var card = document.getElementById(deleteTarget.cardId);
+      if (card) {
+        var col = card.closest('[class*="col-"]');
+        if (col) col.remove(); else card.remove();
+      }
       updateStats();
     }
     bootstrap.Modal.getInstance(document.getElementById('deleteModal')).hide();
-    if(typeof kToast==='function') kToast('تم حذف الخدمة');
+    if (typeof kToast === 'function') kToast('تم حذف الخدمة');
   }
 
-  function toggleSvc(cardId, togId, lblId){
-    var card=document.getElementById(cardId);
-    var checked=document.getElementById(togId).checked;
-    document.getElementById(lblId).textContent=checked?'نشط':'موقوف';
-    card.classList.toggle('inactive',!checked);
+  /* ── Toggle active / inactive ── */
+  async function toggleSvc(cardId, togId, lblId, sbId) {
+    var card    = document.getElementById(cardId);
+    var checked = document.getElementById(togId).checked;
+    document.getElementById(lblId).textContent = checked ? 'نشط' : 'موقوف';
+    card.classList.toggle('inactive', !checked);
     updateStats();
-    if(typeof kToast==='function') kToast(checked?'✓ تم تفعيل الخدمة':'⏸ تم إيقاف الخدمة');
+    if (sbId && typeof Services !== 'undefined') {
+      await Services.update(sbId, { is_active: checked });
+      if (window._svcMap[sbId]) window._svcMap[sbId].is_active = checked;
+    }
+    if (typeof kToast === 'function') kToast(checked ? '✓ تم تفعيل الخدمة' : '⏸ تم إيقاف الخدمة');
   }
 
-  function updateStats(){
-    var total=document.querySelectorAll('.svc-card').length;
-    var inactive=document.querySelectorAll('.svc-card.inactive').length;
-    document.getElementById('totalCount').textContent=total;
-    document.getElementById('activeCount').textContent=total-inactive;
-    document.getElementById('inactiveCount').textContent=inactive;
+  /* ── Update stat counters ── */
+  function updateStats() {
+    var total    = document.querySelectorAll('.svc-card').length;
+    var inactive = document.querySelectorAll('.svc-card.inactive').length;
+    document.getElementById('totalCount').textContent   = total;
+    document.getElementById('activeCount').textContent  = total - inactive;
+    document.getElementById('inactiveCount').textContent = inactive;
   }
+
+  /* ── Bootstrap ── */
+  document.addEventListener('DOMContentLoaded', function() {
+    loadServices();
+  });
 </script>
 </body>
 </html>

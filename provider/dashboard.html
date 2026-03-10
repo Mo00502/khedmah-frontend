@@ -242,6 +242,10 @@
   const { data: bookings } = await Bookings.list('provider');
   const all = bookings || [];
 
+  /* Store booking→customer map for notification lookup in action handlers */
+  window._bookingMap = {};
+  all.forEach(function(b) { window._bookingMap[b.id] = b; });
+
   const newReqs  = all.filter(b => b.status === 'pending');
   const active   = all.filter(b => ['accepted','in_progress'].includes(b.status));
   const done     = all.filter(b => b.status === 'completed');
@@ -329,33 +333,108 @@
     : '<p style="color:var(--k-gray);text-align:center;padding:1rem">لا توجد أرباح بعد</p>';
 })();
 
-/* Action handlers — now write to Supabase */
+/* ══ Action handlers — write to Supabase + notify customer ══ */
+
 async function acceptReq(id, btn) {
-  await Bookings.updateStatus(id, 'accepted');
+  if (btn) btn.disabled = true;
+  const res = await Bookings.updateStatus(id, 'accepted');
+
   const card = document.getElementById('card-' + id);
   if (card) {
     card.style.background = 'rgba(16,185,129,0.05)';
     card.style.borderColor = '#10b981';
-    card.querySelector('.badge-new').textContent = 'تم القبول ✓';
-    card.querySelector('.d-flex.gap-2').innerHTML =
+    const badge = card.querySelector('.badge-new');
+    if (badge) badge.textContent = 'تم القبول ✓';
+    const actions = card.querySelector('.d-flex.gap-2');
+    if (actions) actions.innerHTML =
       '<span style="color:#059669;font-weight:600"><i class="fas fa-check-circle me-1"></i>تم قبول الطلب</span>';
   }
+
+  /* Notify customer */
+  const booking = window._bookingMap && window._bookingMap[id];
+  const customerId = booking && (booking.customer_id || (booking.customer && booking.customer.id));
+  const svcTitle   = (booking && (booking.description || (booking.service && booking.service.title))) || 'طلب الخدمة';
+  const s = JSON.parse(localStorage.getItem('khedmah_demo') || '{}');
+  const provName = s.name || 'المزود';
+
+  if (customerId) {
+    await Notifications.send(
+      customerId,
+      'booking_accepted',
+      'تم قبول طلبك',
+      provName + ' قبل طلبك: ' + svcTitle + '. سيتواصل معك قريباً.',
+      '../customer/dashboard.html'
+    );
+  }
+
+  if (typeof kToast === 'function') kToast('تم قبول الطلب وإشعار العميل ✓', 'success');
+  if (!res.ok && typeof kToast === 'function') kToast('تعذّر التحديث — تحقق من الاتصال', 'error');
 }
+
 async function rejectReq(id, btn) {
+  if (btn) btn.disabled = true;
   await Bookings.updateStatus(id, 'cancelled');
+
   const card = document.getElementById('card-' + id);
-  if (card) { card.style.opacity = '0.5'; setTimeout(() => card.remove(), 400); }
+  if (card) { card.style.opacity = '0.5'; setTimeout(function(){ card.remove(); }, 400); }
+
+  /* Notify customer */
+  const booking = window._bookingMap && window._bookingMap[id];
+  const customerId = booking && (booking.customer_id || (booking.customer && booking.customer.id));
+  const svcTitle   = (booking && (booking.description || (booking.service && booking.service.title))) || 'طلب الخدمة';
+
+  if (customerId) {
+    await Notifications.send(
+      customerId,
+      'booking_cancelled',
+      'اعتذر المزود عن الطلب',
+      'تعذّر على المزود قبول طلبك: ' + svcTitle + '. يمكنك البحث عن مزود آخر.',
+      '../customer/search.html'
+    );
+  }
+
+  if (typeof kToast === 'function') kToast('تم رفض الطلب', 'success');
 }
+
 async function completeJob(id, btn) {
+  if (btn) btn.disabled = true;
   await Bookings.updateStatus(id, 'completed');
+
   const card = document.getElementById('card-' + id);
   if (card) {
-    card.querySelector('.badge-active').textContent = 'مكتمل ✓';
-    card.querySelector('.badge-active').className = 'badge-done';
-    card.querySelector('.d-flex.gap-2').innerHTML =
+    const badge = card.querySelector('.badge-active');
+    if (badge) { badge.textContent = 'مكتمل ✓'; badge.className = 'badge-done'; }
+    const actions = card.querySelector('.d-flex.gap-2');
+    if (actions) actions.innerHTML =
       '<span style="color:var(--k-primary);font-weight:600"><i class="fas fa-check-double me-1"></i>تم إنهاء المهمة</span>';
   }
+
+  /* Notify customer to confirm + rate */
+  const booking = window._bookingMap && window._bookingMap[id];
+  const customerId = booking && (booking.customer_id || (booking.customer && booking.customer.id));
+  const svcTitle   = (booking && (booking.description || (booking.service && booking.service.title))) || 'الخدمة';
+
+  if (customerId) {
+    await Notifications.send(
+      customerId,
+      'booking_reminder',
+      'أكّد اكتمال الخدمة',
+      'أنهى المزود خدمة: ' + svcTitle + '. يرجى تأكيد الاستلام وإطلاق المبلغ.',
+      '../customer/service-confirmation.html'
+    );
+    /* Also prompt for rating */
+    await Notifications.send(
+      customerId,
+      'rating_request',
+      'قيّم تجربتك',
+      'كيف كانت تجربتك مع خدمة: ' + svcTitle + '؟ رأيك يساعد المجتمع.',
+      '../customer/rate-service.html'
+    );
+  }
+
+  if (typeof kToast === 'function') kToast('تم إنهاء المهمة وإشعار العميل ✓', 'success');
 }
+
 function toggleStatus(btn) {
   const isAvail = btn.textContent.trim().startsWith('متاح');
   btn.innerHTML = isAvail
@@ -397,35 +476,7 @@ function toggleStatus(btn) {
     options: { responsive: true, cutout: '62%', plugins: { legend: { position: 'bottom', labels: { font: { family: 'Tajawal', size: 11 }, padding: 10 } } } }
   });
 
-  function acceptReq(btn) {
-    const card = btn.closest('.req-card');
-    card.style.background = 'rgba(16,185,129,0.05)';
-    card.style.borderColor = '#10b981';
-    card.querySelector('.badge-new').textContent = 'تم القبول ✓';
-    card.querySelector('.badge-new').style.cssText = 'background:rgba(16,185,129,0.1);color:#059669;font-weight:700;font-size:0.72rem;padding:0.25rem 0.6rem;border-radius:50px';
-    btn.closest('.d-flex').innerHTML = '<span style="color:#059669;font-size:0.85rem;font-weight:600"><i class="fas fa-check-circle me-1"></i>تم قبول الطلب</span>';
-  }
-  function rejectReq(btn) {
-    const card = btn.closest('.req-card');
-    card.style.opacity = '0.5';
-    setTimeout(() => card.remove(), 400);
-  }
-  function completeJob(btn) {
-    const card = btn.closest('.req-card');
-    card.querySelector('.badge-active').textContent = 'مكتمل ✓';
-    card.querySelector('.badge-active').className = 'badge-done';
-    btn.closest('.d-flex').innerHTML = '<span style="color:var(--k-primary);font-size:0.85rem;font-weight:600"><i class="fas fa-check-double me-1"></i>تم إنهاء المهمة</span>';
-  }
-  function toggleStatus(btn) {
-    const isAvailable = btn.textContent.trim().startsWith('متاح');
-    if (isAvailable) {
-      btn.innerHTML = '<i class="fas fa-circle me-1" style="font-size:0.6rem;color:#ef4444"></i> مشغول';
-      btn.className = 'btn btn-outline-danger btn-sm px-3';
-    } else {
-      btn.innerHTML = '<i class="fas fa-circle me-1" style="font-size:0.6rem;color:#059669"></i> متاح';
-      btn.className = 'btn btn-outline-success btn-sm px-3';
-    }
-  }
+  /* acceptReq / rejectReq / completeJob / toggleStatus defined above */
 </script>
 </body>
 </html>

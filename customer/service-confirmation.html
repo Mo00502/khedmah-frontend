@@ -19,6 +19,7 @@
   </style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../assets/js/supabase-client.js"></script>
+  <script src="../assets/js/khedmah-data.js"></script>
 </head>
 <body>
 <script>
@@ -61,26 +62,26 @@
           <i class="fas fa-user"></i>
         </div>
         <div>
-          <div style="font-weight:800;color:var(--k-dark-2)">أحمد السباك المحترف</div>
-          <div style="color:var(--k-gray);font-size:0.85rem">خدمة سباكة</div>
+          <div id="sumProvider" style="font-weight:800;color:var(--k-dark-2)">—</div>
+          <div id="sumService" style="color:var(--k-gray);font-size:0.85rem">—</div>
         </div>
       </div>
       <div class="row g-2" style="font-size:0.85rem">
         <div class="col-6">
           <span style="color:var(--k-gray)"><i class="fas fa-calendar ms-1"></i> التاريخ:</span>
-          <strong style="color:var(--k-dark-2)"> 5 مارس 2026</strong>
+          <strong id="sumDate" style="color:var(--k-dark-2)">—</strong>
         </div>
         <div class="col-6">
-          <span style="color:var(--k-gray)"><i class="fas fa-clock ms-1"></i> المدة:</span>
-          <strong style="color:var(--k-dark-2)"> 3 ساعات</strong>
+          <span style="color:var(--k-gray)"><i class="fas fa-clock ms-1"></i> الوقت:</span>
+          <strong id="sumTime" style="color:var(--k-dark-2)">—</strong>
         </div>
         <div class="col-6">
           <span style="color:var(--k-gray)"><i class="fas fa-map-marker ms-1"></i> الموقع:</span>
-          <strong style="color:var(--k-dark-2)"> الرياض</strong>
+          <strong id="sumCity" style="color:var(--k-dark-2)">—</strong>
         </div>
         <div class="col-6">
-          <span style="color:var(--k-gray)"><i class="fas fa-money-bill ms-1"></i> المبلغ:</span>
-          <strong style="color:var(--k-primary)"> 350 ر.س</strong>
+          <span style="color:var(--k-gray)"><i class="fas fa-money-bill ms-1"></i> النوع:</span>
+          <strong id="sumMaterials" style="color:var(--k-primary)">—</strong>
         </div>
       </div>
     </div>
@@ -158,15 +159,30 @@
 
   <!-- Action Buttons -->
   <div class="d-flex gap-3 mt-4">
-    <button class="btn btn-outline-danger flex-fill py-3" style="border-radius:12px">
+    <button class="btn btn-outline-danger flex-fill py-3" style="border-radius:12px" @click="fileComplaint()">
       <i class="fas fa-flag ms-2"></i> تقديم شكوى
     </button>
-    <button class="btn btn-primary flex-fill py-3" :disabled="!canConfirm" style="border-radius:12px;font-size:1rem"
-      @click="loading=true; setTimeout(()=>{ location.href='rate-service.html' }, 1500)">
+    <button class="btn btn-primary flex-fill py-3" :disabled="!canConfirm || loading" style="border-radius:12px;font-size:1rem"
+      @click="confirmRelease()">
       <span x-show="!loading"><i class="fas fa-check-circle ms-2"></i> تحرير المبلغ للمزود</span>
       <span x-show="loading"><i class="fas fa-spinner fa-spin ms-2"></i> جاري المعالجة...</span>
     </button>
   </div>
+
+  <!-- Success overlay -->
+  <div x-show="released" x-transition style="position:fixed;inset:0;background:rgba(16,185,129,0.95);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;color:#fff;text-align:center;padding:2rem">
+    <div style="width:96px;height:96px;background:rgba(255,255,255,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2.5rem;margin-bottom:1.5rem">
+      <i class="fas fa-check-circle"></i>
+    </div>
+    <h3 style="font-weight:900;margin-bottom:0.5rem">تم تحرير المبلغ!</h3>
+    <p style="opacity:0.9;margin-bottom:2rem">شكراً لتأكيدك. يتم توجيهك لتقييم المزود...</p>
+    <div style="width:200px;height:4px;background:rgba(255,255,255,0.3);border-radius:2px;overflow:hidden">
+      <div style="height:100%;background:#fff;animation:progressBar 2s linear forwards;border-radius:2px"></div>
+    </div>
+  </div>
+  <style>
+    @keyframes progressBar { from { width:0 } to { width:100% } }
+  </style>
 
   <p style="color:var(--k-gray);font-size:0.8rem;text-align:center;margin-top:1rem">
     <i class="fas fa-exclamation-triangle ms-1" style="color:var(--k-warning)"></i>
@@ -184,17 +200,100 @@
       q1: null, q2: null, q3: null,
       canConfirm: false,
       loading: false,
+      released: false,
       countdown: '47 ساعة و 23 دقيقة',
+      _bookingId: null,
+      _booking: null,
+
       init() {
-        let hours = 47, mins = 23;
-        setInterval(() => {
+        /* ── Countdown timer ── */
+        var self = this;
+        var hours = 47, mins = 23;
+        setInterval(function() {
           mins--;
           if (mins < 0) { mins = 59; hours--; }
-          if (hours >= 0) this.countdown = hours + ' ساعة و ' + mins + ' دقيقة';
+          if (hours >= 0) self.countdown = hours + ' ساعة و ' + mins + ' دقيقة';
         }, 60000);
+
+        /* ── Load booking context from sessionStorage ── */
+        this._bookingId = sessionStorage.getItem('bookingId') || null;
+
+        var set = function(id, val) {
+          var el = document.getElementById(id);
+          if (el && val) el.textContent = val;
+        };
+
+        set('sumProvider',  sessionStorage.getItem('quoteProvider')  || 'المزود');
+        set('sumService',   sessionStorage.getItem('quoteService')   || 'خدمة منزلية');
+        set('sumDate',      sessionStorage.getItem('quoteDate')      || '—');
+        set('sumTime',      sessionStorage.getItem('quoteTime')      || '—');
+        set('sumCity',      sessionStorage.getItem('quoteCity')      || '—');
+        set('sumMaterials', sessionStorage.getItem('quoteMaterials') || '—');
+
+        /* ── Fetch full booking if we have an id (to get provider_id) ── */
+        if (this._bookingId && typeof Bookings !== 'undefined') {
+          Bookings.get(this._bookingId).then(function(res) {
+            if (res.ok && res.data) {
+              self._booking = res.data;
+              var prov = res.data.provider;
+              if (prov && prov.full_name) set('sumProvider', prov.full_name);
+              var svc = res.data.service;
+              if (svc && svc.title) set('sumService', svc.title);
+            }
+          }).catch(function(){});
+        }
       },
+
       checkAll() {
         this.canConfirm = this.q1 === true && this.q2 === true && this.q3 === true;
+      },
+
+      async confirmRelease() {
+        if (!this.canConfirm || this.loading) return;
+        this.loading = true;
+
+        var bookingId   = this._bookingId;
+        var booking     = this._booking;
+        var providerId  = booking && (booking.provider_id || (booking.provider && booking.provider.id));
+        var svcTitle    = (booking && ((booking.service && booking.service.title) || booking.description))
+                          || sessionStorage.getItem('quoteService')
+                          || 'الخدمة';
+        var session     = {};
+        try { session = JSON.parse(localStorage.getItem('khedmah_demo') || '{}'); } catch(e){}
+        var customerName = session.name || 'العميل';
+
+        /* Update booking status */
+        if (bookingId && typeof Bookings !== 'undefined') {
+          await Bookings.updateStatus(bookingId, 'payment_released', {
+            confirmed_at: new Date().toISOString()
+          });
+        }
+
+        /* Notify provider */
+        if (providerId && typeof Notifications !== 'undefined') {
+          await Notifications.send(
+            providerId,
+            'payment_released',
+            'تم تحرير المبلغ',
+            customerName + ' أكّد إتمام خدمة: ' + svcTitle + '. تم إضافة المبلغ لرصيدك.',
+            '../provider/dashboard.html'
+          );
+        }
+
+        /* Show success overlay → redirect to rate page */
+        this.released = true;
+        var bid = bookingId;
+        setTimeout(function() {
+          if (bid) sessionStorage.setItem('rateBookingId', bid);
+          window.location.href = 'rate-service.html';
+        }, 2200);
+      },
+
+      fileComplaint() {
+        /* Pass context so complaints page can pre-fill subject */
+        var svc = sessionStorage.getItem('quoteService') || '';
+        if (svc) sessionStorage.setItem('complaintSubject', 'مشكلة في خدمة: ' + svc);
+        window.location.href = 'complaints.html';
       }
     };
   }

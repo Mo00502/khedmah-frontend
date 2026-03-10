@@ -55,8 +55,8 @@
         <li class="nav-item"><a class="nav-link" href="chat.html">المحادثات</a></li>
       </ul>
       <div class="d-flex gap-2 align-items-center">
-        <span style="color:rgba(255,255,255,0.75);font-size:0.9rem">أحمد محمد</span>
-        <div style="width:36px;height:36px;background:linear-gradient(135deg,var(--k-primary),var(--k-accent));border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:0.9rem">أ</div>
+        <span id="navUserName" style="color:rgba(255,255,255,0.75);font-size:0.9rem">—</span>
+        <div id="navUserAvatar" style="width:36px;height:36px;background:linear-gradient(135deg,var(--k-primary),var(--k-accent));border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:0.9rem">؟</div>
       </div>
     </div>
   </div>
@@ -204,49 +204,155 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="../assets/js/khedmah.js"></script>
+<script src="../assets/js/khedmah-data.js"></script>
 <script>
-  var unread = new Set(['n1','n2','n3']);
+  /* ── Session bootstrap ── */
+  (function(){
+    var s = {};
+    try { s = JSON.parse(localStorage.getItem('khedmah_demo')) || {}; } catch(e){}
+    var name = s.name || s.full_name || 'المستخدم';
+    var el = document.getElementById('navUserName');
+    var av = document.getElementById('navUserAvatar');
+    if(el) el.textContent = name;
+    if(av) av.textContent = (name[0] || '؟');
+  })();
 
-  function updateBadges() {
-    var c = unread.size;
-    var ub = document.getElementById('unreadBadge');
-    var sb = document.getElementById('sidebarBadge');
-    var tb = document.getElementById('unreadTabBadge');
-    [ub,sb,tb].forEach(function(el){ if(el){ el.textContent=c; el.style.display=c?'':'none'; } });
+  /* ── Notification type → icon/class mapping ── */
+  var TYPE_MAP = {
+    new_booking:      { cls:'quote',   icon:'fa-bell',          link:'../shared/payment-escrow.html', linkText:'عرض التفاصيل ←' },
+    quote:            { cls:'quote',   icon:'fa-bell',          link:'../shared/payment-escrow.html', linkText:'عرض التفاصيل ←' },
+    booking_reminder: { cls:'remind',  icon:'fa-clock',         link:'service-confirmation.html',     linkText:'تأكيد الخدمة ←' },
+    reminder:         { cls:'remind',  icon:'fa-clock',         link:'service-confirmation.html',     linkText:'تأكيد الخدمة ←' },
+    payment_released: { cls:'payment', icon:'fa-money-bill-wave', link:'invoice.html',                linkText:'عرض الفاتورة ←' },
+    payment:          { cls:'payment', icon:'fa-money-bill-wave', link:'invoice.html',                linkText:'عرض الفاتورة ←' },
+    rating_request:   { cls:'rating',  icon:'fa-star',          link:'rate-service.html',             linkText:'تقييم الآن ←' },
+    rating:           { cls:'rating',  icon:'fa-star',          link:'rate-service.html',             linkText:'تقييم الآن ←' },
+    new_message:      { cls:'chat',    icon:'fa-comment',       link:'chat.html',                     linkText:'فتح المحادثة ←' },
+    chat:             { cls:'chat',    icon:'fa-comment',       link:'chat.html',                     linkText:'فتح المحادثة ←' },
+  };
+
+  function relTime(iso) {
+    if(!iso) return '';
+    var diff = Math.floor((Date.now() - new Date(iso)) / 1000);
+    if(diff < 60)   return 'منذ ' + diff + ' ثانية';
+    if(diff < 3600) return 'منذ ' + Math.floor(diff/60) + ' دقيقة';
+    if(diff < 86400) return 'منذ ' + Math.floor(diff/3600) + ' ساعة';
+    return 'منذ ' + Math.floor(diff/86400) + ' يوم';
   }
 
-  function markRead(id) {
-    if(!unread.has(id)) return;
-    unread.delete(id);
-    var card = document.getElementById(id);
-    if(card){ card.classList.remove('unread'); }
-    var dot = document.getElementById('dot-'+id);
-    if(dot){ dot.style.display='none'; }
+  function buildCard(n) {
+    var t = TYPE_MAP[n.type] || TYPE_MAP['new_booking'];
+    var unreadCls = n.is_read ? '' : ' unread';
+    var dotHide   = n.is_read ? 'display:none' : '';
+    var readBtn   = n.is_read ? '' :
+      '<button class="btn btn-link btn-sm p-0" style="font-size:0.78rem;color:var(--k-gray)" onclick="markRead(\''+n.id+'\',this)">تحديد كمقروء</button>';
+    var link = n.link || t.link;
+    return '<div class="notif-card'+unreadCls+'" id="nc-'+n.id+'">' +
+      '<div class="notif-icon '+t.cls+'"><i class="fas '+t.icon+'"></i></div>' +
+      '<div class="flex-grow-1">' +
+        '<div style="font-weight:700;color:var(--k-dark-2);margin-bottom:0.2rem">'+(n.title_ar||n.type||'إشعار')+'</div>' +
+        '<div style="font-size:0.88rem;color:var(--k-gray);margin-bottom:0.5rem">'+(n.body_ar||'')+'</div>' +
+        '<div class="d-flex align-items-center gap-3 flex-wrap">' +
+          '<span style="font-size:0.78rem;color:var(--k-gray)"><i class="fas fa-clock ms-1"></i> '+relTime(n.created_at)+'</span>' +
+          '<a href="'+link+'" style="font-size:0.82rem;color:var(--k-primary);font-weight:700;text-decoration:none">'+t.linkText+'</a>' +
+          readBtn +
+        '</div>' +
+      '</div>' +
+      '<div class="unread-dot" id="dot-nc-'+n.id+'" style="'+dotHide+'"></div>' +
+    '</div>';
+  }
+
+  /* ── State ── */
+  var _allNotifs = [];   // full list from DB
+  var _unreadIds = new Set();
+
+  function updateBadges() {
+    var c = _unreadIds.size;
+    ['unreadBadge','sidebarBadge','unreadTabBadge'].forEach(function(id){
+      var el = document.getElementById(id);
+      if(el){ el.textContent = c; el.style.display = c ? '' : 'none'; }
+    });
+  }
+
+  async function markRead(id, btn) {
+    if(!_unreadIds.has(id)) return;
+    _unreadIds.delete(id);
+    var card = document.getElementById('nc-'+id);
+    if(card) card.classList.remove('unread');
+    var dot = document.getElementById('dot-nc-'+id);
+    if(dot) dot.style.display = 'none';
+    if(btn) btn.style.display = 'none';
     updateBadges();
     refreshUnread();
+    await Notifications.markRead(id);
     if(typeof kToast==='function') kToast('تم تحديده كمقروء ✓');
   }
 
-  function markAllRead() {
-    unread.forEach(function(id){ markRead(id); });
+  async function markAllRead() {
+    _unreadIds.forEach(function(id) {
+      var card = document.getElementById('nc-'+id);
+      if(card) card.classList.remove('unread');
+      var dot = document.getElementById('dot-nc-'+id);
+      if(dot) dot.style.display = 'none';
+    });
+    _unreadIds.clear();
+    updateBadges();
+    refreshUnread();
+    await Notifications.markAllRead();
     if(typeof kToast==='function') kToast('تم تحديد الكل كمقروء ✓');
   }
 
   function refreshUnread() {
-    var list = document.getElementById('unreadList');
+    var list  = document.getElementById('unreadList');
     var empty = document.getElementById('emptyUnread');
-    list.innerHTML='';
-    var cards = document.querySelectorAll('#tabAll .notif-card.unread');
-    if(cards.length===0){ empty.style.display='block'; return; }
-    empty.style.display='none';
-    cards.forEach(function(c){ list.appendChild(c.cloneNode(true)); });
+    var unreadNotifs = _allNotifs.filter(function(n){ return _unreadIds.has(n.id); });
+    if(unreadNotifs.length === 0){
+      list.innerHTML = '';
+      empty.style.display = 'block';
+    } else {
+      empty.style.display = 'none';
+      list.innerHTML = unreadNotifs.map(buildCard).join('');
+    }
   }
+
+  async function loadNotifications() {
+    var allContainer = document.getElementById('tabAll');
+    allContainer.innerHTML = '<div class="text-center py-4"><i class="fas fa-spinner fa-spin" style="color:var(--k-primary);font-size:1.5rem"></i></div>';
+
+    var res = await Notifications.list();
+
+    if(!res.ok || !res.data || res.data.length === 0) {
+      // No real data — restore demo cards
+      allContainer.innerHTML = _demoHTML;
+      // Re-init demo badge state
+      _unreadIds = new Set(['demo1','demo2','demo3']);
+      updateBadges();
+      document.getElementById('notifTabs').addEventListener('shown.bs.tab', function(e){
+        if(e.target.getAttribute('href')==='#tabUnread') refreshUnread();
+      });
+      return;
+    }
+
+    _allNotifs = res.data;
+    _unreadIds = new Set(res.data.filter(function(n){ return !n.is_read; }).map(function(n){ return n.id; }));
+
+    allContainer.innerHTML = res.data.length
+      ? res.data.map(buildCard).join('')
+      : '<div class="text-center py-5"><div style="font-size:3rem;margin-bottom:1rem">📭</div><h5 style="font-weight:700">لا توجد إشعارات بعد</h5><p style="color:var(--k-gray)">ستظهر هنا عند وصول أي تحديثات</p></div>';
+
+    updateBadges();
+    refreshUnread();
+  }
+
+  /* Save demo HTML before overwriting */
+  var _demoHTML = document.getElementById('tabAll').innerHTML;
 
   document.getElementById('notifTabs').addEventListener('shown.bs.tab', function(e){
     if(e.target.getAttribute('href')==='#tabUnread') refreshUnread();
   });
 
-  updateBadges();
+  /* Kick off */
+  loadNotifications();
 </script>
 </body>
 </html>

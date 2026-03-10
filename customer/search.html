@@ -482,10 +482,91 @@
   </div>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
 <script src="../assets/js/khedmah.js"></script>
+<script src="../assets/js/supabase-client.js"></script>
+<script src="../assets/js/khedmah-data.js"></script>
 <script>
+  // ── Dynamic service loader (Supabase → replaces demo cards) ───
+  var CARD_GRADS = [
+    'linear-gradient(135deg,var(--k-primary),var(--k-accent))',
+    'linear-gradient(135deg,#f59e0b,#d97706)',
+    'linear-gradient(135deg,#10b981,#059669)',
+    'linear-gradient(135deg,#6366f1,#8b5cf6)',
+    'linear-gradient(135deg,#ef4444,#dc2626)',
+    'linear-gradient(135deg,#8b5cf6,#7c3aed)',
+  ];
+
+  function starsHtml(n) {
+    var h = '';
+    for (var i = 1; i <= 5; i++)
+      h += i <= n ? '<i class="fas fa-star"></i>' : '<i class="far fa-star"></i>';
+    return h;
+  }
+
+  function buildCard(svc, idx) {
+    var grad      = CARD_GRADS[idx % CARD_GRADS.length];
+    var provName  = (svc.provider && svc.provider.full_name) || 'مزود الخدمة';
+    var letter    = provName[0] || '؟';
+    var category  = svc.category || svc.title || 'خدمة';
+    var price     = svc.price || 0;
+    var priceLabel = { hourly:'/ساعة', visit:'/زيارة', fixed:'' }[svc.price_type] || '';
+    var safeName  = provName.replace(/'/g, "\\'");
+    var safeCat   = category.replace(/'/g, "\\'");
+    return '<div class="col-md-6 col-xl-4" data-aos="fade-up" data-aos-delay="'+(idx*50)+'"'
+      +' data-service="'+category+'" data-price="'+price+'" data-stars="5" data-name="'+provName.toLowerCase()+'">'
+      +'<div class="k-provider-card h-100">'
+        +'<div class="k-provider-img" style="height:130px;font-size:2.5rem;background:'+grad+'">'
+          +'<span style="color:#fff;font-weight:900;font-size:2.2rem">'+letter+'</span>'
+        +'</div>'
+        +'<div class="k-provider-body">'
+          +'<div class="d-flex justify-content-between align-items-start mb-1">'
+            +'<h6>'+provName+' <i class="fas fa-badge-check" style="color:var(--k-primary);font-size:0.85rem"></i></h6>'
+          +'</div>'
+          +'<div class="k-rating-stars mb-1">'+starsHtml(5)+'<small style="color:var(--k-gray)">(جديد)</small></div>'
+          +'<div style="font-size:0.82rem;color:var(--k-gray);margin-bottom:0.5rem">'+category+'</div>'
+          +'<div class="d-flex justify-content-between align-items-center mb-2">'
+            +'<strong style="color:var(--k-primary)">'+price+' ر.س'+priceLabel+'</strong>'
+            +'<span class="k-badge-available">متاح الآن</span>'
+          +'</div>'
+          +'<div class="d-flex gap-2">'
+            +'<a href="../provider/profile.html" class="btn btn-outline-primary btn-sm flex-fill">الملف الشخصي</a>'
+            +'<button class="btn btn-primary btn-sm flex-fill"'
+              +' onclick="selectProvider(\''+( svc.provider_id||'')+'\',\''+safeName+'\',\''+safeCat+'\')">'
+              +'طلب عرض'
+            +'</button>'
+          +'</div>'
+        +'</div>'
+      +'</div>'
+    +'</div>';
+  }
+
+  function selectProvider(providerId, provName, category) {
+    sessionStorage.setItem('quoteProviderId', providerId);
+    sessionStorage.setItem('quoteProvider',   provName);
+    sessionStorage.setItem('quoteCategory',   category);
+    window.location.href = 'quote-request.html';
+  }
+
+  async function loadServices() {
+    if (typeof Services === 'undefined') return;
+    var res = await Services.search('', '');
+    if (!res.ok || !res.data || res.data.length === 0) return; // keep demo cards
+
+    var grid = document.getElementById('providerGrid');
+    if (!grid) return;
+
+    grid.innerHTML = res.data.map(function(svc, i){ return buildCard(svc, i); }).join('');
+
+    var countEl = document.getElementById('resultCount');
+    if (countEl) countEl.textContent = res.data.length;
+
+    if (typeof AOS !== 'undefined') AOS.refresh();
+    applyFilters(); // re-apply any active URL/filter state
+  }
+
   // ── Filter & Search ───────────────────────────────────────────
   function getCards() {
     return Array.from(document.querySelectorAll('#providerGrid [data-service]'));
@@ -580,12 +661,42 @@
   // Sort on change
   document.querySelector('.form-select[style]')?.addEventListener('change', () => applyFilters());
 
-  // Auto-apply URL params on load
+  // Auto-apply URL params on load + load real services
   (function() {
-    const p = new URLSearchParams(window.location.search);
-    const cat = p.get('cat'), q = p.get('q');
-    if (cat) { filterService(cat); }
-    else if (q) { document.getElementById('searchInput').value = q; applyFilters(); }
+    var p      = new URLSearchParams(window.location.search);
+    var cat    = p.get('cat');
+    var q      = p.get('q');
+    var aiReq  = p.get('ai_request');
+
+    if (aiReq) {
+      /* Show AI-search banner above results */
+      var decoded = decodeURIComponent(aiReq);
+      var banner  = document.createElement('div');
+      banner.id   = 'aiBanner';
+      banner.style.cssText = 'background:linear-gradient(135deg,rgba(2,128,144,0.07),rgba(2,195,154,0.07));border:1.5px solid rgba(2,128,144,0.2);border-radius:12px;padding:0.85rem 1.25rem;margin-bottom:1rem;display:flex;align-items:center;gap:0.75rem';
+      banner.innerHTML = '<i class="fas fa-robot" style="color:var(--k-primary);font-size:1.2rem;flex-shrink:0"></i>'
+        +'<div><strong style="color:var(--k-primary);font-size:0.9rem">نتائج بحث المساعد الذكي</strong>'
+        +'<div style="font-size:0.82rem;color:var(--k-gray);margin-top:0.15rem">'+decoded.slice(0,120)+'</div></div>'
+        +'<button onclick="document.getElementById(\'aiBanner\').remove();resetFilters()" style="margin-right:auto;background:none;border:none;color:var(--k-gray);cursor:pointer;font-size:1rem">✕</button>';
+
+      var resultsCol = document.querySelector('#providerGrid')?.closest('.col-lg-9');
+      var resHeader  = resultsCol?.querySelector('.d-flex.justify-content-between');
+      if (resHeader) resHeader.after(banner);
+
+      /* Pre-fill search with first meaningful token from AI summary */
+      var keyword = decoded.split(/[·,،\.\s]/)[0].trim().slice(0, 40);
+      var inp = document.getElementById('searchInput');
+      if (inp && keyword) { inp.value = keyword; applyFilters(); }
+
+    } else if (cat) {
+      filterService(cat);
+    } else if (q) {
+      document.getElementById('searchInput').value = q;
+      applyFilters();
+    }
+
+    /* Load real services from Supabase (replaces demo cards if data exists) */
+    loadServices();
   })();
 
   // Init AOS

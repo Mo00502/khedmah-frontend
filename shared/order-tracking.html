@@ -73,6 +73,7 @@
   </style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../assets/js/supabase-client.js"></script>
+  <script src="../assets/js/khedmah-data.js"></script>
 </head>
 <body>
 <script>
@@ -92,8 +93,8 @@
         <li class="nav-item"><a class="nav-link" href="../customer/notifications.html">الإشعارات</a></li>
       </ul>
       <div class="d-flex gap-2 align-items-center">
-        <span style="color:rgba(255,255,255,0.75);font-size:0.9rem">أحمد محمد</span>
-        <div style="width:36px;height:36px;background:linear-gradient(135deg,var(--k-primary),var(--k-accent));border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:0.9rem">أ</div>
+        <span style="color:rgba(255,255,255,0.75);font-size:0.9rem" id="navUserName">أحمد محمد</span>
+        <div style="width:36px;height:36px;background:linear-gradient(135deg,var(--k-primary),var(--k-accent));border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:0.9rem" id="navAvatar">أ</div>
       </div>
     </div>
   </div>
@@ -119,13 +120,13 @@
         <div class="d-flex align-items-center gap-3">
           <div style="width:56px;height:56px;background:rgba(255,255,255,0.2);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.8rem">🔧</div>
           <div>
-            <div style="font-size:1.15rem;font-weight:700;margin-bottom:0.2rem">إصلاح تسريب مياه</div>
-            <div style="font-size:0.88rem;opacity:0.9">أحمد السباك المحترف · طلب #KH-0451</div>
+            <div style="font-size:1.15rem;font-weight:700;margin-bottom:0.2rem" id="bannerSvcTitle">إصلاح تسريب مياه</div>
+            <div style="font-size:0.88rem;opacity:0.9" id="bannerProvInfo">أحمد السباك المحترف · طلب #KH-0451</div>
           </div>
         </div>
         <div style="text-align:left">
           <div style="font-size:0.8rem;opacity:0.85;margin-bottom:3px">موعد الخدمة</div>
-          <div style="font-size:1.05rem;font-weight:700">اليوم، 10:30 ص</div>
+          <div style="font-size:1.05rem;font-weight:700" id="bannerScheduled">اليوم، 10:30 ص</div>
         </div>
       </div>
     </div>
@@ -191,13 +192,13 @@
           <div class="card-body">
             <h6 class="fw-bold mb-3" style="color:var(--k-gray);font-size:0.85rem">مزود الخدمة</h6>
             <div class="d-flex align-items-center gap-3 mb-3">
-              <div style="width:52px;height:52px;background:linear-gradient(135deg,var(--k-primary),var(--k-accent));border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:1.2rem;flex-shrink:0">أ</div>
+              <div style="width:52px;height:52px;background:linear-gradient(135deg,var(--k-primary),var(--k-accent));border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:1.2rem;flex-shrink:0" id="providerInitial">أ</div>
               <div>
-                <div style="font-weight:700;font-size:1rem">أحمد السباك المحترف</div>
+                <div style="font-weight:700;font-size:1rem" id="providerName">أحمد السباك المحترف</div>
                 <div class="k-rating-stars" style="font-size:0.85rem"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i> <span style="color:var(--k-gray);font-size:0.78rem">(128) · 4.9</span></div>
               </div>
             </div>
-            <button class="btn btn-outline-success w-100" onclick="callProvider()"><i class="fas fa-phone ms-2"></i> اتصل بالمزود</button>
+            <button class="btn btn-outline-success w-100" id="callBtn" onclick="callProvider()"><i class="fas fa-phone ms-2"></i> اتصل بالمزود</button>
           </div>
         </div>
 
@@ -207,7 +208,7 @@
             <h6 class="fw-bold mb-3" style="color:var(--k-gray);font-size:0.85rem">الموقع التقريبي</h6>
             <div class="map-area">
               <div class="map-pin"></div>
-              <div class="map-label">📍 الرياض، حي النرجس</div>
+              <div class="map-label" id="mapLabel">📍 الرياض، حي النرجس</div>
             </div>
           </div>
         </div>
@@ -226,45 +227,181 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="../assets/js/khedmah.js"></script>
 <script>
-  var currentStep=2, etaSecs=12*60;
+  var currentStep  = 2;
+  var etaSecs      = 12 * 60;
+  var _etaInterval = null;
+  var _provPhone   = null;   // real provider phone if available
 
-  function pad(n){ return String(n).padStart(2,'0'); }
+  /* ── Status → stepper step index ── */
+  var STATUS_STEP = {
+    'pending':          1,
+    'accepted':         2,
+    'on_the_way':       2,
+    'in_progress':      3,
+    'started':          3,
+    'working':          3,
+    'completed':        4,
+    'payment_released': 4
+  };
 
-  var timer=setInterval(function(){
-    if(etaSecs>0){ etaSecs--; }
-    else{
-      clearInterval(timer);
-      document.getElementById('etaCard').style.display='none';
-      advanceStep(3);
-      if(typeof kToast==='function') kToast('🛎️ وصل المزود! بدأ العمل.');
-    }
-    var m=Math.floor(etaSecs/60), s=etaSecs%60;
-    document.getElementById('etaTimer').textContent=pad(m)+':'+pad(s);
-  },1000);
+  function pad(n) { return String(n).padStart(2, '0'); }
 
-  function advanceStep(n){
-    currentStep=n;
-    for(var i=1;i<n;i++){
-      var s=document.getElementById('step'+i);
-      s.className='step done';
-      s.querySelector('.step-circle').innerHTML='<i class="fas fa-check"></i>';
-    }
-    var active=document.getElementById('step'+n);
-    if(active) active.className='step active';
-    if(n>1) document.getElementById('cancelBtn').disabled=true;
+  /* ── Start ETA countdown from given seconds ── */
+  function startEtaTimer(seconds) {
+    etaSecs = seconds > 0 ? seconds : 12 * 60;
+    if (_etaInterval) clearInterval(_etaInterval);
+    var timerEl = document.getElementById('etaTimer');
+    _etaInterval = setInterval(function() {
+      if (etaSecs > 0) {
+        etaSecs--;
+      } else {
+        clearInterval(_etaInterval);
+        document.getElementById('etaCard').style.display = 'none';
+        advanceStep(3);
+        if (typeof kToast === 'function') kToast('🛎️ وصل المزود! بدأ العمل.');
+        return;
+      }
+      var m = Math.floor(etaSecs / 60), s = etaSecs % 60;
+      if (timerEl) timerEl.textContent = pad(m) + ':' + pad(s);
+    }, 1000);
   }
 
-  function callProvider(){
-    if(typeof kToast==='function') kToast('📞 جارٍ الاتصال بأحمد السباك...');
-  }
-
-  function cancelOrder(){
-    if(currentStep>1) return;
-    if(confirm('هل تريد إلغاء الطلب؟\n\nسيتم استرداد المبلغ خلال 2-5 أيام عمل.')){
-      document.getElementById('cancelBtn').disabled=true;
-      if(typeof kToast==='function') kToast('✓ تم إلغاء الطلب. سيُسترد المبلغ قريباً.');
+  /* ── Advance stepper to step n ── */
+  function advanceStep(n) {
+    currentStep = n;
+    /* Mark previous steps done */
+    for (var i = 1; i < n; i++) {
+      var el = document.getElementById('step' + i);
+      if (!el) continue;
+      el.className = 'step done';
+      el.querySelector('.step-circle').innerHTML = '<i class="fas fa-check"></i>';
+    }
+    /* Mark current step active */
+    var active = document.getElementById('step' + n);
+    if (active) active.className = 'step active';
+    /* Mark future steps pending */
+    for (var j = n + 1; j <= 4; j++) {
+      var p = document.getElementById('step' + j);
+      if (p) p.className = 'step pending';
+    }
+    /* Disable cancel button once accepted or beyond */
+    if (n > 1) {
+      var btn = document.getElementById('cancelBtn');
+      if (btn) btn.disabled = true;
+    }
+    /* Hide ETA card when not on step 2 */
+    if (n !== 2) {
+      var card = document.getElementById('etaCard');
+      if (card) card.style.display = 'none';
     }
   }
+
+  /* ── Call provider ── */
+  function callProvider() {
+    if (_provPhone) {
+      if (typeof kToast === 'function') kToast('📞 جارٍ الاتصال بـ ' + _provPhone);
+      window.location.href = 'tel:' + _provPhone;
+    } else {
+      if (typeof kToast === 'function') kToast('📞 جارٍ الاتصال بالمزود...');
+    }
+  }
+
+  /* ── Cancel order ── */
+  function cancelOrder() {
+    if (currentStep > 1) return;
+    if (confirm('هل تريد إلغاء الطلب؟\n\nسيتم استرداد المبلغ خلال 2-5 أيام عمل.')) {
+      var bookingId = sessionStorage.getItem('trackingBookingId')
+                   || sessionStorage.getItem('bookingId');
+      if (bookingId && typeof Bookings !== 'undefined') {
+        Bookings.updateStatus(bookingId, 'cancelled').catch(function() {});
+      }
+      var btn = document.getElementById('cancelBtn');
+      if (btn) btn.disabled = true;
+      if (typeof kToast === 'function') kToast('✓ تم إلغاء الطلب. سيُسترد المبلغ قريباً.');
+      setTimeout(function() { window.location.href = '../customer/dashboard.html'; }, 2000);
+    }
+  }
+
+  /* ── Fill page from booking object ── */
+  function fillTracking(b) {
+    var svcTitle  = (b.service   && b.service.title)     || b.description                          || sessionStorage.getItem('quoteService')  || 'خدمة منزلية';
+    var provName  = (b.provider  && b.provider.full_name) || sessionStorage.getItem('quoteProvider') || 'المزود';
+    _provPhone    = (b.provider  && b.provider.phone)     || null;
+    var city      = b.address                             || sessionStorage.getItem('quoteCity')    || '';
+    var shortId   = (b.id || '').slice(-4).toUpperCase() || '0000';
+
+    /* Scheduled time string */
+    var schedStr = 'اليوم، 10:30 ص';
+    if (b.scheduled_at) {
+      try {
+        var d = new Date(b.scheduled_at);
+        var timeStr = d.toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' });
+        var isToday = d.toDateString() === new Date().toDateString();
+        var dayStr  = isToday ? 'اليوم' : d.toLocaleDateString('ar-SA', { month: 'long', day: 'numeric' });
+        schedStr = dayStr + '، ' + timeStr;
+      } catch(e) {}
+    }
+
+    /* Banner */
+    var el;
+    el = document.getElementById('bannerSvcTitle'); if (el) el.textContent = svcTitle;
+    el = document.getElementById('bannerProvInfo');  if (el) el.textContent = provName + ' · طلب #KH-' + shortId;
+    el = document.getElementById('bannerScheduled'); if (el) el.textContent = schedStr;
+
+    /* Provider card */
+    el = document.getElementById('providerName');    if (el) el.textContent = provName;
+    el = document.getElementById('providerInitial'); if (el) el.textContent = provName.charAt(0) || 'م';
+
+    /* Map label */
+    el = document.getElementById('mapLabel');
+    if (el && city) el.textContent = '📍 ' + city;
+
+    /* Stepper */
+    var step = STATUS_STEP[b.status] || 1;
+    advanceStep(step);
+
+    /* ETA countdown: only relevant when step = 2 (en route) */
+    if (step === 2) {
+      var etaSeconds = 12 * 60;
+      if (b.scheduled_at) {
+        var diffMs = new Date(b.scheduled_at) - Date.now();
+        if (diffMs > 0 && diffMs < 3600000) etaSeconds = Math.floor(diffMs / 1000);
+      }
+      startEtaTimer(etaSeconds);
+    }
+  }
+
+  /* ── Load booking and populate page ── */
+  async function loadTracking() {
+    /* Navbar user name */
+    try {
+      var sess = JSON.parse(localStorage.getItem('khedmah_demo') || '{}');
+      if (sess.name) {
+        var el = document.getElementById('navUserName'); if (el) el.textContent = sess.name;
+        el = document.getElementById('navAvatar');       if (el) el.textContent = sess.name.charAt(0) || 'أ';
+      }
+    } catch(e) {}
+
+    var bookingId = sessionStorage.getItem('trackingBookingId')
+                 || sessionStorage.getItem('bookingId')
+                 || null;
+
+    if (!bookingId || typeof Bookings === 'undefined') {
+      startEtaTimer(12 * 60); // demo fallback
+      return;
+    }
+
+    try {
+      var res = await Bookings.get(bookingId);
+      if (!res.ok || !res.data) { startEtaTimer(12 * 60); return; }
+      fillTracking(res.data);
+    } catch(e) {
+      console.warn('loadTracking:', e);
+      startEtaTimer(12 * 60);
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', loadTracking);
 </script>
 </body>
 </html>
