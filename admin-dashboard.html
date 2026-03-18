@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم الإدارة - Khedmah</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --primary: #028090;
+            --secondary: #00A896;
+            --accent: #02C39A;
+            --dark: #1E293B;
+            --dark2: #0f172a;
+            --light: #F8FAFC;
+            --white: #FFFFFF;
+            --gray: #64748B;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --error: #EF4444;
+            --info: #3B82F6;
+            --purple: #8B5CF6;
+        }
+
+        body { font-family: 'Tajawal', sans-serif; background: var(--light); color: var(--dark); min-height: 100vh; display: flex; }
+
+        input, select, textarea { font-size: 16px; }
+
+        /* Sidebar */
+        .sidebar {
+            width: 240px;
+            background: var(--dark2);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0; right: 0; bottom: 0;
+            z-index: 200;
+            overflow-y: auto;
+        }
+        .sidebar-logo {
+            padding: 1.5rem 1.25rem;
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--accent);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .sidebar-logo span { font-size: 0.7rem; font-weight: 400; color: rgba(255,255,255,0.4); }
+        .sidebar-nav { flex: 1; padding: 1rem 0; }
+        .nav-section { font-size: 0.7rem; color: rgba(255,255,255,0.35); padding: 0.75rem 1.25rem 0.25rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; }
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.7rem 1.25rem;
+            color: rgba(255,255,255,0.65);
+            text-decoration: none;
+            font-size: 0.88rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .nav-item:hover { background: rgba(255,255,255,0.06); color: white; }
+        .nav-item.active { background: rgba(2,195,154,0.15); color: var(--accent); border-right: 3px solid var(--accent); }
+        .nav-item .nav-icon { font-size: 1rem; width: 20px; text-align: center; }
+        .nav-badge {
+            margin-right: auto;
+            background: var(--error);
+            color: white;
+            font-size: 0.68rem;
+            font-weight: 700;
+            padding: 1px 6px;
+            border-radius: 10px;
+        }
+        .sidebar-footer {
+            padding: 1rem 1.25rem;
+            border-top: 1px solid rgba(255,255,255,0.08);
+        }
+        .admin-info { display: flex; align-items: center; gap: 0.75rem; }
+        .admin-avatar {
+            width: 36px; height: 36px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-weight: 700; font-size: 0.9rem;
+        }
+        .admin-name { font-size: 0.85rem; font-weight: 600; }
+        .admin-role { font-size: 0.72rem; color: var(--accent); }
+        .logout-btn {
+            background: none; border: none; color: rgba(255,255,255,0.4);
+            cursor: pointer; font-size: 1rem; margin-right: auto;
+            transition: color 0.2s;
+        }
+        .logout-btn:hover { color: var(--error); }
+
+        /* Main Content */
+        .main {
+            margin-right: 240px;
+            flex: 1;
+            min-height: 100vh;
+        }
+
+        /* Top Bar */
+        .topbar {
+            background: white;
+            padding: 1rem 2rem;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky; top: 0; z-index: 100;
+        }
+        .topbar-title { font-size: 1.1rem; font-weight: 700; }
+        .topbar-actions { display: flex; gap: 0.75rem; align-items: center; }
+        .topbar-time { font-size: 0.8rem; color: var(--gray); }
+        .refresh-btn {
+            background: var(--primary); color: white;
+            border: none; border-radius: 10px;
+            padding: 0.45rem 1rem;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 0.82rem; font-weight: 600;
+            cursor: pointer; transition: opacity 0.2s;
+        }
+        .refresh-btn:hover { opacity: 0.88; }
+
+        /* Container */
+        .container { padding: 1.75rem 2rem; }
+
+        /* KPI Cards */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.75rem;
+        }
+        .kpi-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.25rem 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: 0; right: 0;
+            width: 4px; height: 100%;
+        }
+        .kpi-card.teal::before { background: var(--primary); }
+        .kpi-card.green::before { background: var(--success); }
+        .kpi-card.amber::before { background: var(--warning); }
+        .kpi-card.blue::before { background: var(--info); }
+        .kpi-card.red::before { background: var(--error); }
+        .kpi-card.purple::before { background: var(--purple); }
+        .kpi-icon { font-size: 2rem; flex-shrink: 0; }
+        .kpi-info { flex: 1; }
+        .kpi-value { font-size: 1.7rem; font-weight: 800; line-height: 1; }
+        .kpi-label { font-size: 0.78rem; color: var(--gray); margin-top: 0.2rem; }
+        .kpi-delta { font-size: 0.72rem; margin-top: 0.3rem; }
+        .kpi-delta.up { color: var(--success); }
+        .kpi-delta.down { color: var(--error); }
+
+        /* Two-col layout */
+        .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.75rem; }
+
+        /* Panel */
+        .panel {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+        .panel-header {
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .panel-title { font-weight: 700; font-size: 0.95rem; }
+        .panel-link { color: var(--primary); font-size: 0.8rem; text-decoration: none; }
+        .panel-link:hover { text-decoration: underline; }
+        .panel-body { padding: 1rem 1.25rem; }
+
+        /* Verification list */
+        .verify-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .verify-item:last-child { border-bottom: none; }
+        .verify-avatar {
+            width: 38px; height: 38px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-weight: 700; font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+        .verify-info { flex: 1; min-width: 0; }
+        .verify-name { font-weight: 600; font-size: 0.88rem; }
+        .verify-meta { font-size: 0.75rem; color: var(--gray); }
+        .verify-actions { display: flex; gap: 0.4rem; }
+        .btn-xs {
+            padding: 0.3rem 0.65rem;
+            border-radius: 8px;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+        .btn-approve { background: rgba(16,185,129,0.1); color: #065f46; }
+        .btn-approve:hover { background: rgba(16,185,129,0.2); }
+        .btn-reject { background: rgba(239,68,68,0.1); color: #991b1b; }
+        .btn-reject:hover { background: rgba(239,68,68,0.2); }
+        .btn-review { background: rgba(59,130,246,0.1); color: #1d4ed8; }
+        .btn-review:hover { background: rgba(59,130,246,0.2); }
+
+        /* Badge */
+        .badge {
+            display: inline-block; padding: 0.2rem 0.6rem;
+            border-radius: 20px; font-size: 0.72rem; font-weight: 600;
+        }
+        .badge-pending { background: rgba(245,158,11,0.12); color: #b45309; }
+        .badge-review { background: rgba(59,130,246,0.12); color: #1d4ed8; }
+        .badge-open { background: rgba(239,68,68,0.12); color: #991b1b; }
+        .badge-resolved { background: rgba(16,185,129,0.12); color: #065f46; }
+
+        /* Dispute list */
+        .dispute-item {
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .dispute-item:last-child { border-bottom: none; }
+        .dispute-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.25rem; }
+        .dispute-title { font-weight: 600; font-size: 0.88rem; }
+        .dispute-meta { font-size: 0.75rem; color: var(--gray); }
+
+        /* Health metrics */
+        .health-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+        .health-metric {
+            background: var(--light);
+            border-radius: 12px;
+            padding: 0.85rem 1rem;
+        }
+        .health-metric-label { font-size: 0.75rem; color: var(--gray); margin-bottom: 0.3rem; }
+        .health-metric-value { font-size: 1.2rem; font-weight: 800; }
+        .health-metric-value.ok { color: var(--success); }
+        .health-metric-value.warn { color: var(--warning); }
+        .health-metric-value.err { color: var(--error); }
+
+        /* Recent Requests Table */
+        .table-wrap { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        th {
+            background: var(--light); padding: 0.75rem 1rem;
+            text-align: right; font-size: 0.78rem; color: var(--gray); font-weight: 600;
+        }
+        td { padding: 0.75rem 1rem; border-bottom: 1px solid #f1f5f9; }
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: #f8fafc; }
+
+        @media (max-width: 900px) {
+            .sidebar { display: none; }
+            .main { margin-right: 0; }
+            .two-col { grid-template-columns: 1fr; }
+        }
+
+        /* ── Dark Mode ── */
+        html.dark body { background: #0f172a !important; color: #e2e8f0; }
+        html.dark nav, html.dark .navbar, html.dark header, html.dark .topbar, html.dark .admin-nav, html.dark .sidebar, html.dark aside { background: #1e293b !important; border-color: #334155; }
+        html.dark .card, html.dark .stats-card, html.dark .data-card, html.dark .section-card, html.dark .tracking-card, html.dark .step-card, html.dark .referral-card, html.dark .gantt-card, html.dark .provider-card, html.dark .filter-panel { background: #1e293b !important; box-shadow: 0 2px 12px rgba(0,0,0,0.3); }
+        html.dark .sidebar-link, html.dark .nav-link, html.dark .admin-link { color: #94a3b8; }
+        html.dark .sidebar-link:hover, html.dark .sidebar-link.active, html.dark .nav-link.active { background: rgba(2,128,144,0.15); color: #02C39A; }
+        html.dark .form-control, html.dark input[type="text"], html.dark input[type="email"], html.dark input[type="password"], html.dark input[type="search"], html.dark select, html.dark textarea { background: #0f172a !important; color: #e2e8f0 !important; border-color: #334155 !important; }
+        html.dark .form-control::placeholder, html.dark input::placeholder { color: #64748b; }
+        html.dark .form-label, html.dark label { color: #cbd5e1; }
+        html.dark .divider, html.dark hr { border-color: #334155; }
+        html.dark .table, html.dark table { color: #e2e8f0; border-color: #334155; }
+        html.dark .table th, html.dark table th, html.dark thead th { background: #0f172a !important; color: #94a3b8; border-color: #334155; }
+        html.dark .table td, html.dark table td, html.dark tbody td { border-color: #334155; }
+        html.dark .table tbody tr:hover, html.dark tbody tr:hover { background: rgba(255,255,255,0.03); }
+        html.dark .badge, html.dark .tag, html.dark .status-badge { border: 1px solid #334155; }
+        html.dark .modal, html.dark .modal-content { background: #1e293b !important; color: #e2e8f0; }
+        html.dark .map-placeholder, html.dark #liveMap { filter: invert(0.85) hue-rotate(180deg); }
+        html.dark .stepper-line { background: #334155; }
+        html.dark .gantt-row { background: #1e293b; border-color: #334155; }
+        html.dark .gantt-header { background: #0f172a; color: #94a3b8; border-color: #334155; }
+        html.dark .gantt-bar { opacity: 0.9; }
+        html.dark .filter-option label { color: #cbd5e1; }
+        html.dark .filter-option input[type="checkbox"] { accent-color: #02C39A; }
+        html.dark .tag { background: #0f172a; color: #94a3b8; }
+        html.dark .panel, html.dark .kpi-card { background: #1e293b !important; }
+        html.dark .panel-header { border-color: #334155; }
+        html.dark .verify-item, html.dark .dispute-item { border-color: #334155; }
+        html.dark .health-metric { background: #0f172a; }
+        html.dark .topbar { background: #1e293b !important; border-color: #334155; }
+        html.dark tr:hover td { background: rgba(255,255,255,0.03) !important; }
+        .theme-toggle { width: 36px; height: 36px; border: 1.5px solid #e2e8f0; border-radius: 10px; background: transparent; cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; }
+        html.dark .theme-toggle { border-color: #334155; color: #e2e8f0; }
+    </style>
+</head>
+<body>
+    <script>
+        (function() {
+            try {
+                const adm = JSON.parse(localStorage.getItem('khedmah_admin') || '{}');
+                if (!adm.loggedIn) window.location.href = 'admin-login.html';
+            } catch(e) { window.location.href = 'admin-login.html'; }
+        })();
+    </script>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            KHEDMAH
+            <span>ADMIN</span>
+        </div>
+        <nav class="sidebar-nav">
+            <div class="nav-section">الرئيسية</div>
+            <a class="nav-item active" href="admin-dashboard.html">
+                <span class="nav-icon">📊</span> لوحة التحكم
+            </a>
+
+            <div class="nav-section">إدارة المستخدمين</div>
+            <a class="nav-item" href="admin-dashboard.html">
+                <span class="nav-icon">✅</span> التحقق من المزودين
+                <span class="nav-badge">4</span>
+            </a>
+            <a class="nav-item" href="admin-dashboard.html">
+                <span class="nav-icon">👥</span> جميع المستخدمين
+            </a>
+            <a class="nav-item" href="admin-dashboard.html">
+                <span class="nav-icon">🏢</span> الشركات
+            </a>
+
+            <div class="nav-section">العمليات</div>
+            <a class="nav-item" href="admin-dashboard.html">
+                <span class="nav-icon">⚖️</span> النزاعات
+                <span class="nav-badge">2</span>
+            </a>
+            <a class="nav-item" href="admin-dashboard.html">
+                <span class="nav-icon">💰</span> العمولات المتأخرة
+            </a>
+            <a class="nav-item" href="admin-dashboard.html">
+                <span class="nav-icon">🔒</span> الضمانات
+            </a>
+
+            <div class="nav-section">التقارير</div>
+            <a class="nav-item" href="admin-dashboard.html">
+                <span class="nav-icon">📈</span> إحصائيات شهرية
+            </a>
+            <a class="nav-item" href="admin-dashboard.html">
+                <span class="nav-icon">📋</span> التقرير الأسبوعي
+            </a>
+            <a class="nav-item" href="admin-dashboard.html">
+                <span class="nav-icon">🔧</span> صحة النظام
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="admin-info">
+                <div class="admin-avatar">أ</div>
+                <div>
+                    <div class="admin-name">أحمد المدير</div>
+                    <div class="admin-role">SUPER_ADMIN</div>
+                </div>
+                <button class="logout-btn" onclick="logout()" title="تسجيل الخروج">⏻</button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="topbar">
+            <div class="topbar-title">📊 لوحة التحكم الإدارية</div>
+            <div class="topbar-actions">
+                <span class="topbar-time" id="clockEl"></span>
+                <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙</button>
+                <button class="refresh-btn" onclick="refreshData()">🔄 تحديث</button>
+            </div>
+        </div>
+
+        <div class="container">
+
+            <!-- KPIs -->
+            <div class="kpi-grid">
+                <div class="kpi-card teal">
+                    <div class="kpi-icon">👥</div>
+                    <div class="kpi-info">
+                        <div class="kpi-value">2,847</div>
+                        <div class="kpi-label">إجمالي المستخدمين</div>
+                        <div class="kpi-delta up">▲ +34 هذا الأسبوع</div>
+                    </div>
+                </div>
+                <div class="kpi-card green">
+                    <div class="kpi-icon">🔧</div>
+                    <div class="kpi-info">
+                        <div class="kpi-value">438</div>
+                        <div class="kpi-label">مزودو الخدمة</div>
+                        <div class="kpi-delta up">▲ +7 هذا الأسبوع</div>
+                    </div>
+                </div>
+                <div class="kpi-card amber">
+                    <div class="kpi-icon">📋</div>
+                    <div class="kpi-info">
+                        <div class="kpi-value">1,204</div>
+                        <div class="kpi-label">إجمالي الطلبات</div>
+                        <div class="kpi-delta up">▲ +89 هذا الشهر</div>
+                    </div>
+                </div>
+                <div class="kpi-card blue">
+                    <div class="kpi-icon">💰</div>
+                    <div class="kpi-info">
+                        <div class="kpi-value">84,320</div>
+                        <div class="kpi-label">إيرادات المنصة (ر.س)</div>
+                        <div class="kpi-delta up">▲ +12% هذا الشهر</div>
+                    </div>
+                </div>
+                <div class="kpi-card red">
+                    <div class="kpi-icon">⚖️</div>
+                    <div class="kpi-info">
+                        <div class="kpi-value">2</div>
+                        <div class="kpi-label">نزاعات مفتوحة</div>
+                        <div class="kpi-delta down">▼ يحتاج مراجعة</div>
+                    </div>
+                </div>
+                <div class="kpi-card purple">
+                    <div class="kpi-icon">⏳</div>
+                    <div class="kpi-info">
+                        <div class="kpi-value">4</div>
+                        <div class="kpi-label">تحقق معلق</div>
+                        <div class="kpi-delta down">▼ يحتاج مراجعة</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Verifications + Disputes -->
+            <div class="two-col">
+                <!-- Pending Verifications -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">✅ طلبات التحقق المعلقة</div>
+                        <a href="admin-dashboard.html" class="panel-link">عرض الكل →</a>
+                    </div>
+                    <div class="panel-body">
+                        <div class="verify-item">
+                            <div class="verify-avatar">م</div>
+                            <div class="verify-info">
+                                <div class="verify-name">محمد الزهراني</div>
+                                <div class="verify-meta">كهرباء • منذ 3 أيام <span class="badge badge-pending">قيد الانتظار</span></div>
+                            </div>
+                            <div class="verify-actions">
+                                <button class="btn-xs btn-review" onclick="quickAction(this,'مراجعة')">مراجعة</button>
+                                <button class="btn-xs btn-approve" onclick="quickAction(this,'قبول')">قبول</button>
+                            </div>
+                        </div>
+                        <div class="verify-item">
+                            <div class="verify-avatar">ع</div>
+                            <div class="verify-info">
+                                <div class="verify-name">عبدالله الحربي</div>
+                                <div class="verify-meta">سباكة • منذ 5 أيام <span class="badge badge-review">تحت المراجعة</span></div>
+                            </div>
+                            <div class="verify-actions">
+                                <button class="btn-xs btn-approve" onclick="quickAction(this,'قبول')">قبول</button>
+                                <button class="btn-xs btn-reject" onclick="quickAction(this,'رفض')">رفض</button>
+                            </div>
+                        </div>
+                        <div class="verify-item">
+                            <div class="verify-avatar">ن</div>
+                            <div class="verify-info">
+                                <div class="verify-name">نايف القحطاني</div>
+                                <div class="verify-meta">دهانات • منذ 7 أيام <span class="badge badge-pending">قيد الانتظار</span></div>
+                            </div>
+                            <div class="verify-actions">
+                                <button class="btn-xs btn-review" onclick="quickAction(this,'مراجعة')">مراجعة</button>
+                                <button class="btn-xs btn-approve" onclick="quickAction(this,'قبول')">قبول</button>
+                            </div>
+                        </div>
+                        <div class="verify-item">
+                            <div class="verify-avatar">ر</div>
+                            <div class="verify-info">
+                                <div class="verify-name">رائد المطيري</div>
+                                <div class="verify-meta">تكييف • منذ 10 أيام <span class="badge badge-pending">قيد الانتظار</span></div>
+                            </div>
+                            <div class="verify-actions">
+                                <button class="btn-xs btn-review" onclick="quickAction(this,'مراجعة')">مراجعة</button>
+                                <button class="btn-xs btn-approve" onclick="quickAction(this,'قبول')">قبول</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Open Disputes -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">⚖️ النزاعات المفتوحة</div>
+                        <a href="admin-dashboard.html" class="panel-link">عرض الكل →</a>
+                    </div>
+                    <div class="panel-body">
+                        <div class="dispute-item">
+                            <div class="dispute-top">
+                                <div class="dispute-title">نزاع على جودة العمل</div>
+                                <span class="badge badge-open">مفتوح</span>
+                            </div>
+                            <div class="dispute-meta">أحمد خالد ← سالم المزود • منذ يومين</div>
+                            <div style="margin-top:0.5rem;display:flex;gap:0.4rem">
+                                <button class="btn-xs btn-approve" onclick="quickAction(this,'تحرير')">تحرير المبلغ</button>
+                                <button class="btn-xs btn-reject" onclick="quickAction(this,'استرداد')">استرداد</button>
+                                <button class="btn-xs btn-review" onclick="quickAction(this,'رفض النزاع')">رفض</button>
+                            </div>
+                        </div>
+                        <div class="dispute-item">
+                            <div class="dispute-top">
+                                <div class="dispute-title">مزود لم يكمل العمل</div>
+                                <span class="badge badge-open">مفتوح</span>
+                            </div>
+                            <div class="dispute-meta">فاطمة محمد ← خالد العمري • منذ 4 أيام</div>
+                            <div style="margin-top:0.5rem;display:flex;gap:0.4rem">
+                                <button class="btn-xs btn-approve" onclick="quickAction(this,'تحرير')">تحرير المبلغ</button>
+                                <button class="btn-xs btn-reject" onclick="quickAction(this,'استرداد')">استرداد</button>
+                                <button class="btn-xs btn-review" onclick="quickAction(this,'رفض النزاع')">رفض</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- System Health -->
+                    <div class="panel-header" style="margin-top:0;border-top:1px solid #f1f5f9">
+                        <div class="panel-title">🔧 صحة النظام اللحظية</div>
+                    </div>
+                    <div class="panel-body">
+                        <div class="health-grid">
+                            <div class="health-metric">
+                                <div class="health-metric-label">مستخدمون جدد اليوم</div>
+                                <div class="health-metric-value ok">12</div>
+                            </div>
+                            <div class="health-metric">
+                                <div class="health-metric-label">طلبات اليوم</div>
+                                <div class="health-metric-value ok">47</div>
+                            </div>
+                            <div class="health-metric">
+                                <div class="health-metric-label">مدفوعات فاشلة</div>
+                                <div class="health-metric-value warn">3</div>
+                            </div>
+                            <div class="health-metric">
+                                <div class="health-metric-label">ضمانات محجوزة</div>
+                                <div class="health-metric-value ok">23,450 ر.س</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Requests -->
+            <div class="panel" style="margin-bottom:1.75rem">
+                <div class="panel-header">
+                    <div class="panel-title">📋 آخر الطلبات</div>
+                    <a href="admin-dashboard.html" class="panel-link">عرض الكل →</a>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>الخدمة</th>
+                                <th>العميل</th>
+                                <th>المزود</th>
+                                <th>المبلغ</th>
+                                <th>الحالة</th>
+                                <th>التاريخ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="color:var(--gray);font-size:0.78rem">#1204</td>
+                                <td>🔧 صيانة تكييف</td>
+                                <td>محمد أحمد</td>
+                                <td>خالد العمري</td>
+                                <td>450 ر.س</td>
+                                <td><span class="badge badge-review" style="background:rgba(245,158,11,0.12);color:#b45309">جارٍ</span></td>
+                                <td style="color:var(--gray);font-size:0.78rem">اليوم، 3:00 م</td>
+                            </tr>
+                            <tr>
+                                <td style="color:var(--gray);font-size:0.78rem">#1203</td>
+                                <td>🚿 سباكة</td>
+                                <td>فاطمة خالد</td>
+                                <td>فهد الدوسري</td>
+                                <td>280 ر.س</td>
+                                <td><span class="badge" style="background:rgba(16,185,129,0.12);color:#065f46">مكتمل</span></td>
+                                <td style="color:var(--gray);font-size:0.78rem">اليوم، 1:30 م</td>
+                            </tr>
+                            <tr>
+                                <td style="color:var(--gray);font-size:0.78rem">#1202</td>
+                                <td>🎨 دهانات</td>
+                                <td>عمر العتيبي</td>
+                                <td>سالم القحطاني</td>
+                                <td>650 ر.س</td>
+                                <td><span class="badge" style="background:rgba(16,185,129,0.12);color:#065f46">مكتمل</span></td>
+                                <td style="color:var(--gray);font-size:0.78rem">أمس، 5:00 م</td>
+                            </tr>
+                            <tr>
+                                <td style="color:var(--gray);font-size:0.78rem">#1201</td>
+                                <td>🔌 كهرباء</td>
+                                <td>نورة السبيعي</td>
+                                <td>—</td>
+                                <td>—</td>
+                                <td><span class="badge badge-pending">في الانتظار</span></td>
+                                <td style="color:var(--gray);font-size:0.78rem">أمس، 2:15 م</td>
+                            </tr>
+                            <tr>
+                                <td style="color:var(--gray);font-size:0.78rem">#1200</td>
+                                <td>🚪 نجارة</td>
+                                <td>سارة الحربي</td>
+                                <td>رائد المطيري</td>
+                                <td>380 ر.س</td>
+                                <td><span class="badge" style="background:rgba(16,185,129,0.12);color:#065f46">مكتمل</span></td>
+                                <td style="color:var(--gray);font-size:0.78rem">12 مارس، 11:00 ص</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Monthly Stats Mini Chart -->
+            <div class="panel">
+                <div class="panel-header">
+                    <div class="panel-title">📈 ملخص آخر 30 يوم</div>
+                </div>
+                <div class="panel-body">
+                    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;text-align:center">
+                        <div>
+                            <div style="font-size:1.8rem;font-weight:800;color:var(--primary)">347</div>
+                            <div style="font-size:0.8rem;color:var(--gray)">طلب جديد</div>
+                            <div style="font-size:0.75rem;color:var(--success)">▲ 18% عن الشهر الماضي</div>
+                        </div>
+                        <div>
+                            <div style="font-size:1.8rem;font-weight:800;color:var(--success)">291</div>
+                            <div style="font-size:0.8rem;color:var(--gray)">طلب مكتمل</div>
+                            <div style="font-size:0.75rem;color:var(--success)">▲ 83.9% معدل إتمام</div>
+                        </div>
+                        <div>
+                            <div style="font-size:1.8rem;font-weight:800;color:var(--warning)">28,600</div>
+                            <div style="font-size:0.8rem;color:var(--gray)">إيرادات المنصة (ر.س)</div>
+                            <div style="font-size:0.75rem;color:var(--success)">▲ 12% عن الشهر الماضي</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        function updateClock() {
+            const now = new Date();
+            const days = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+            const h = String(now.getHours()).padStart(2,'0');
+            const m = String(now.getMinutes()).padStart(2,'0');
+            document.getElementById('clockEl').textContent = `${days[now.getDay()]} — ${h}:${m}`;
+        }
+        updateClock();
+        setInterval(updateClock, 30000);
+
+        function quickAction(btn, action) {
+            const item = btn.closest('.verify-item') || btn.closest('.dispute-item');
+            if (item) {
+                item.style.opacity = '0.4';
+                item.style.pointerEvents = 'none';
+            }
+            // Toast
+            const toast = document.createElement('div');
+            toast.style.cssText = 'position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);background:#1e293b;color:white;padding:.65rem 1.5rem;border-radius:12px;font-family:Tajawal,sans-serif;font-size:.88rem;z-index:9999;';
+            toast.textContent = `✅ تم: ${action}`;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 2500);
+        }
+
+        function refreshData() {
+            const btn = event.currentTarget;
+            btn.textContent = '⏳ جاري التحديث...';
+            setTimeout(() => { btn.textContent = '🔄 تحديث'; }, 1200);
+        }
+
+        function logout() {
+            if (confirm('تسجيل الخروج من لوحة الإدارة؟')) {
+                localStorage.removeItem('khedmah_admin');
+                window.location.href = 'admin-login.html';
+            }
+        }
+
+        function toggleTheme() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.setItem('khedmah_theme', isDark ? 'dark' : 'light');
+            const btn = document.getElementById('themeToggle');
+            if (btn) btn.textContent = isDark ? '☀️' : '🌙';
+        }
+        (function() {
+            if (localStorage.getItem('khedmah_theme') === 'dark') {
+                document.documentElement.classList.add('dark');
+                const btn = document.getElementById('themeToggle');
+                if (btn) btn.textContent = '☀️';
+            }
+        })();
+    </script>
+</body>
+</html>
