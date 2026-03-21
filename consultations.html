@@ -134,6 +134,17 @@
         }
     </style>
 </head>
+<script>
+  (function() {
+    if (localStorage.getItem('khedmah_theme') === 'dark') {
+      document.documentElement.classList.add('dark');
+    }
+    if (!localStorage.getItem('khedmah_demo')) {
+      window.location.href = 'login.html';
+    }
+  })();
+</script>
+
 <body>
     <nav>
         <div class="nav-content">
@@ -484,6 +495,15 @@
         })();
 
         document.querySelectorAll('.modal-overlay').forEach(o => o.addEventListener('click', e => { if (e.target === o) o.classList.remove('show'); }));
+
+        // Role-aware dashboard link
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                const user = JSON.parse(localStorage.getItem('khedmah_user') || '{}');
+                const btn = document.querySelector('.avatar-btn');
+                if (btn && user.role === 'provider') btn.href = 'provider-dashboard.html';
+            } catch(e) {}
+        });
     </script>
 </body>
 </html>

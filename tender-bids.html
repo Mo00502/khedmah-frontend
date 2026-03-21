@@ -396,7 +396,8 @@ const BIDS = [
             else if (b.status === 'pending' || b.status === 'shortlisted') b.status = 'rejected';
         });
         updateShortlistedCount(this.bids);
-        showToast('🎉 تم قبول العرض! سيتم إشعار المزود.');
+        showToast('🎉 تم قبول العرض! جارٍ الانتقال إلى دفعات المراحل...');
+        setTimeout(() => { window.location.href = 'milestone-payments.html'; }, 1800);
     },
     rejectBid(id) {
         const bid = this.bids.find(b => b.id === id);
