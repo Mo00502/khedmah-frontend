@@ -623,8 +623,8 @@
                 <div class="service-summary">
                     <div class="service-icon">🔧</div>
                     <div>
-                        <div style="font-weight:700;margin-bottom:.3rem;">إصلاح تسريب مياه</div>
-                        <div style="color:var(--gray);font-size:.88rem;">أحمد المحترف • ⭐ 4.9</div>
+                        <div style="font-weight:700;margin-bottom:.3rem;" x-text="serviceName"></div>
+                        <div style="color:var(--gray);font-size:.88rem;" x-text="'طلب: ' + currentRequestId"></div>
                     </div>
                 </div>
 
@@ -730,9 +730,7 @@
                 </div>
             </div>
 
-            <button class="success-btn" onclick="window.location.href='order-tracking.html'">
-                متابعة تفاصيل الطلب ←
-            </button>
+            <p style="color:var(--success);font-weight:600;margin-top:1rem;">جارٍ الانتقال للمحادثة مع المزود... 💬</p>
         </div>
     </div>
 
@@ -776,11 +774,24 @@
             cardExpiry:        '',
             processing:        false,
             showSuccess:       false,
+            currentRequestId:  'REQ-demo-001',
+            serviceName:       'إصلاح تسريب مياه',
 
             init() {
                 // Auth guard
                 if (!localStorage.getItem('khedmah_demo')) {
                     window.location.href = 'login.html';
+                }
+                // Read params forwarded from quote-request.html
+                const p = new URLSearchParams(location.search);
+                if (p.get('requestId'))    this.currentRequestId = p.get('requestId');
+                if (p.get('service'))      this.serviceName      = p.get('service');
+                if (p.get('serviceAmount')) this.baseFee = parseFloat(p.get('serviceAmount'));
+                const hasMat  = p.get('hasMaterials') === 'true';
+                const matEst  = parseFloat(p.get('materialsEst') || '0');
+                if (hasMat) {
+                    this.setOrderType('materials');
+                    if (matEst > 0) this.materialsEstimate = matEst;
                 }
                 this.updateBreakdown();
             },
@@ -832,6 +843,24 @@
                 setTimeout(() => {
                     this.processing  = false;
                     this.showSuccess = true;
+                    // Save payment state so chat + tracking can read it
+                    const req = JSON.parse(localStorage.getItem('khedmah_current_request') || '{}');
+                    req.paid = true;
+                    req.serviceAmount = this.serviceAmount;
+                    req.materialsEst  = this.orderType === 'materials' ? this.materialsEstimate : 0;
+                    localStorage.setItem('khedmah_current_request', JSON.stringify(req));
+                    // Auto-redirect to chat after 1.5s
+                    setTimeout(() => {
+                        const p = new URLSearchParams({
+                            type:      'service',
+                            requestId: this.currentRequestId,
+                            service:   this.serviceName,
+                            paid:      '1',
+                            serviceAmount: String(Math.round(this.serviceAmount)),
+                            materialsEst:  String(this.orderType === 'materials' ? this.materialsEstimate : 0),
+                        });
+                        window.location.href = 'chat.html?' + p.toString();
+                    }, 1500);
                 }, 2200);
             }
         }

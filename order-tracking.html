@@ -229,6 +229,20 @@
         .btn-cancel:hover { background: var(--error); color: white; }
         .btn-cancel:disabled { opacity: 0.35; cursor: not-allowed; }
         .btn-cancel:disabled:hover { background: white; color: var(--error); }
+        .btn-confirm-service {
+            width: 100%; padding: 1.1rem;
+            background: linear-gradient(135deg, var(--success), #059669);
+            color: white; border: none; border-radius: 14px;
+            font-family: 'Tajawal', sans-serif; font-size: 1.1rem; font-weight: 800;
+            cursor: pointer; transition: all 0.2s; text-decoration: none;
+            display: flex; align-items: center; justify-content: center; gap: 0.6rem;
+            margin-bottom: 1rem; animation: pulse-green 1.5s infinite;
+        }
+        .btn-confirm-service:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(16,185,129,0.4); }
+        @keyframes pulse-green {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(16,185,129,0.4); }
+            50% { box-shadow: 0 0 0 8px rgba(16,185,129,0); }
+        }
 
         /* Toast */
         .toast {
@@ -308,7 +322,7 @@
             <div class="service-icon-box">🔧</div>
             <div>
                 <div class="order-title">إصلاح تسريب مياه</div>
-                <div class="order-subtitle">أحمد السباك المحترف • طلب #KH-0451</div>
+                <div class="order-subtitle" id="orderSubtitle">أحمد السباك المحترف • طلب #KH-0451</div>
             </div>
         </div>
         <div class="order-time-box">
@@ -397,10 +411,21 @@
 
     </div>
 
+    <!-- Confirm Service Button (shown when step 4 reached) -->
+    <a href="service-confirmation.html" id="confirmServiceLink" class="btn-confirm-service" style="display:none;">
+        ✅ تأكيد إتمام الخدمة وإطلاق الدفع →
+    </a>
+
     <!-- Action Buttons -->
     <div class="action-buttons">
-        <a href="chat.html" class="btn-chat">💬 تواصل مع المزود</a>
+        <a href="chat.html" id="chatLink" class="btn-chat">💬 تواصل مع المزود</a>
         <button class="btn-cancel" id="cancelBtn" onclick="cancelOrder()">إلغاء الطلب</button>
+    </div>
+
+    <!-- Demo helper: simulate service completion instantly -->
+    <div id="demoBar" style="background:rgba(245,158,11,0.1);border:1.5px solid rgba(245,158,11,0.4);border-radius:14px;padding:0.875rem 1rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;">
+        <span style="font-size:0.82rem;color:#92400e;font-weight:600;">🔧 وضع العرض التجريبي — لمحاكاة الخدمة</span>
+        <button onclick="simulateCompletion()" style="background:#f59e0b;color:white;border:none;border-radius:10px;padding:0.5rem 1rem;font-family:'Tajawal',sans-serif;font-size:0.85rem;font-weight:700;cursor:pointer;">⚡ محاكاة اكتمال الخدمة</button>
     </div>
 
 </div>
@@ -409,9 +434,26 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
+    // Thread requestId from URL params — store globally so advanceStep() can use it
+    const _urlParams = new URLSearchParams(location.search);
+    const _currentRequestId = _urlParams.get('requestId')     || 'REQ-demo-001';
+    const _service          = _urlParams.get('service')       || 'إصلاح تسريب مياه';
+    const _serviceAmount    = _urlParams.get('serviceAmount') || '180';
+    const _materialsEst     = _urlParams.get('materialsEst')  || '0';
+    (function() {
+        const sub = document.getElementById('orderSubtitle');
+        if (sub) sub.textContent = 'أحمد السباك المحترف • طلب #' + _currentRequestId;
+        const titleEl = document.querySelector('.order-title');
+        if (titleEl && _urlParams.get('service')) titleEl.textContent = decodeURIComponent(_service);
+        const chatLink = document.getElementById('chatLink');
+        if (chatLink) chatLink.href = 'chat.html?type=service&requestId=' + _currentRequestId;
+    })();
+
     // Current step (1-4). 2 = provider en route.
     let currentStep = 2;
-    let etaSeconds = 12 * 60; // 12 minutes in seconds
+    // Use shorter ETA for new requests arriving from payment flow (30s demo), else 12min
+    const _isNewRequest = !!_urlParams.get('requestId') && !['REQ-demo-001'].includes(_currentRequestId);
+    let etaSeconds = _isNewRequest ? 30 : 12 * 60;
 
     // ── Live Map ─────────────────────────────────────────────────────────────
     // Demo coordinates: Riyadh, Saudi Arabia
@@ -496,6 +538,11 @@
             document.getElementById('etaCard').style.display = 'none';
             advanceStep(3);
             showToast('🛎️ وصل المزود! بدأ العمل.');
+            // Auto-advance to step 4 (work complete) after 8 seconds for demo
+            setTimeout(() => {
+                advanceStep(4);
+                showToast('🎉 اكتملت الخدمة! يرجى تأكيد الاستلام وإطلاق الدفع.');
+            }, 8000);
         }
     }
 
@@ -523,11 +570,21 @@
             document.getElementById('cancelBtn').disabled = true;
         }
 
-        // If step 4, show completion
+        // If step 4, show completion — reveal confirm-service button
         if (newStep === 4) {
+            const confirmLink = document.getElementById('confirmServiceLink');
+            if (confirmLink) {
+                confirmLink.href = 'service-confirmation.html?requestId=' + _currentRequestId
+                    + '&service='       + encodeURIComponent(_service)
+                    + '&serviceAmount=' + _serviceAmount
+                    + '&materialsEst='  + _materialsEst;
+                confirmLink.style.display = 'flex';
+            }
+            const cancelBtn = document.getElementById('cancelBtn');
+            if (cancelBtn) cancelBtn.style.display = 'none';
             setTimeout(() => {
-                showToast('🎉 اكتملت الخدمة! يرجى التأكيد.');
-            }, 1000);
+                showToast('🎉 اكتملت الخدمة! يرجى تأكيد الإتمام وإطلاق الدفع.');
+            }, 800);
         }
     }
 
@@ -541,6 +598,20 @@
             showToast('✓ تم إلغاء الطلب. سيتم استرداد المبلغ قريباً.');
             document.getElementById('cancelBtn').disabled = true;
         }
+    }
+
+    function simulateCompletion() {
+        clearInterval(timerInterval);
+        clearInterval(moveInterval);
+        document.getElementById('etaCard').style.display = 'none';
+        document.getElementById('demoBar').style.display = 'none';
+        // Advance through all steps instantly
+        if (currentStep < 2) advanceStep(2);
+        if (currentStep < 3) advanceStep(3);
+        setTimeout(() => {
+            advanceStep(4);
+            showToast('🎉 اكتملت الخدمة! الرجاء تأكيد الاستلام وإطلاق الدفع.');
+        }, 400);
     }
 
     // Demo: simulate step advancement for testing

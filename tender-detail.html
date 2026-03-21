@@ -810,6 +810,10 @@ function loadTender() {
     // Wire chat button to this tender's conversation
     const chatBtn = document.getElementById('btnChatTender');
     if (chatBtn) chatBtn.href = `chat.html?type=tender&id=${tenderId}`;
+
+    // Wire bids link to pass tenderId
+    const bidsLink = document.querySelector('.btn-my-bids-link');
+    if (bidsLink) bidsLink.href = `tender-bids.html?tenderId=${tenderId}`;
 }
 
 loadTender();

@@ -990,7 +990,14 @@
       },
 
       /* ─── Init ─── */
-      init() { /* reactive computed handle init */ },
+      init() {
+        // Read tenderId from URL and update back-link
+        const _tndId = new URLSearchParams(location.search).get('tenderId');
+        if (_tndId) {
+          const backLink = document.querySelector('a.nav-back');
+          if (backLink) backLink.href = 'tender-bids.html?tenderId=' + _tndId;
+        }
+      },
 
       /* ─── Helpers ─── */
       fmt(n) {

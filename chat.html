@@ -821,6 +821,24 @@ const CONVS = {
             { from: 'me', text: 'هل تقدمون خدمة التوصيل للموقع؟', time: '06:30' },
             { from: 'them', text: 'نعم، التوصيل متاح داخل الرياض مجاناً', time: '06:31' }
         ]
+    },
+
+    // ── Support / Dispute thread (routed from service-confirmation "Report Issue") ──
+    'support-1': {
+        peer: 'دعم خدمة العملاء',
+        initial: 'د',
+        avatarGrad: 'linear-gradient(135deg,#EF4444,#dc2626)',
+        status: '● متصل الآن',
+        ctxClass: 'service',
+        ctxIcon: '🛡️',
+        ctxText: 'نزاع / بلاغ — فريق الدعم',
+        ctxLink: 'customer-dashboard.html',
+        ctxLinkLabel: 'لوحة التحكم ←',
+        quickReplies: ['لم تكتمل الخدمة', 'المزود لم يحضر', 'جودة العمل سيئة', 'مشكلة في المواد'],
+        messages: [
+            { from: 'them', text: 'مرحباً، وصلنا بلاغك. فريق الدعم معك الآن لحل المشكلة في أسرع وقت.', time: new Date().toLocaleTimeString('ar', {hour:'2-digit',minute:'2-digit'}) },
+            { from: 'them', text: 'يرجى شرح المشكلة بالتفصيل وسنعمل على حلها فوراً.', time: new Date().toLocaleTimeString('ar', {hour:'2-digit',minute:'2-digit'}) }
+        ]
     }
 };
 
@@ -828,25 +846,160 @@ const CONVS = {
 let activeConv = null;
 
 // ─── Init from URL params ─────────────────────────────────────────────────────
+// Accepts: ?type=service&requestId=REQ-001001&providerId=khalid-001
+//          ?type=support&requestId=REQ-001001
+//          ?type=tender&id=tender-1
+//          ?type=service&id=1  (legacy)
 function initFromURL() {
-    const p = new URLSearchParams(window.location.search);
-    const type = p.get('type');
-    const id   = p.get('id');
+    const p        = new URLSearchParams(window.location.search);
+    const type     = p.get('type');
+    const id       = p.get('id') || p.get('providerId');
+    const reqId    = p.get('requestId');
 
-    if (type && id) {
-        const convKey = type + '-' + id;
-        if (CONVS[convKey]) {
-            const el = document.querySelector(`[data-conv="${convKey}"]`);
-            if (el) {
-                document.querySelectorAll('.contact-item').forEach(c => c.classList.remove('active'));
-                el.classList.add('active');
-            }
-            openConv(convKey, el);
-            return;
+    // Helper: open a conv and highlight its contact item
+    function openByKey(convKey) {
+        const el = document.querySelector(`[data-conv="${convKey}"]`);
+        if (el) {
+            document.querySelectorAll('.contact-item').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
         }
+        openConv(convKey, el);
     }
 
-    // Default: open first conv
+    // 1. Try exact key: type + '-' + id (legacy / numeric IDs)
+    if (type && id) {
+        const exactKey = type + '-' + id;
+        if (CONVS[exactKey]) { openByKey(exactKey); return; }
+    }
+
+    // 2. Support type — always route to support-1
+    if (type === 'support') {
+        // Patch context text with requestId if available
+        if (reqId && CONVS['support-1']) {
+            CONVS['support-1'].ctxText = 'نزاع / بلاغ — طلب #' + reqId;
+            CONVS['support-1'].ctxLink = 'service-confirmation.html?requestId=' + reqId;
+            CONVS['support-1'].ctxLinkLabel = 'تفاصيل الطلب ←';
+            // Prepend a system-style message if pending issue stored
+            try {
+                const pending = JSON.parse(localStorage.getItem('khedmah_pending_issue') || 'null');
+                if (pending && pending.issues && pending.issues.length) {
+                    CONVS['support-1'].messages.unshift({
+                        from: 'me',
+                        text: 'المشاكل المبلغ عنها:\n• ' + pending.issues.join('\n• '),
+                        time: new Date().toLocaleTimeString('ar', {hour:'2-digit',minute:'2-digit'})
+                    });
+                    localStorage.removeItem('khedmah_pending_issue');
+                }
+            } catch(e) {}
+        }
+        openByKey('support-1');
+        return;
+    }
+
+    // 3. Service type with requestId — map known IDs; create new thread for new requests
+    if (type === 'service' && reqId) {
+        const reqMap = {
+            'REQ-001001': 'service-1',
+            'REQ-001002': 'service-2',
+            'REQ-Q001':   'service-3',
+            'REQ-Q002':   'service-4',
+        };
+        const mappedKey = reqMap[reqId];
+        if (mappedKey && CONVS[mappedKey]) { openByKey(mappedKey); return; }
+
+        // ── New request arriving from quote-request → payment-escrow ──
+        const paid          = p.get('paid') === '1';
+        const service       = p.get('service') ? decodeURIComponent(p.get('service')) : 'خدمة';
+        const serviceAmount = p.get('serviceAmount') || '0';
+        const materialsEst  = p.get('materialsEst')  || '0';
+        const now           = new Date();
+        const timeStr       = String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
+        const convKey       = 'live-' + reqId;
+
+        CONVS[convKey] = {
+            peer:         'منصة خدمة (جارٍ التعيين)',
+            initial:      'م',
+            avatarGrad:   'linear-gradient(135deg,#028090,#02C39A)',
+            status:       '● جارٍ البحث عن مزود...',
+            ctxClass:     'ctx-service',
+            ctxIcon:      '🔧',
+            ctxText:      service + ' — طلب #' + reqId,
+            ctxLink:      'order-tracking.html?requestId=' + encodeURIComponent(reqId)
+                          + '&service=' + encodeURIComponent(service)
+                          + '&serviceAmount=' + serviceAmount
+                          + '&materialsEst=' + materialsEst,
+            ctxLinkLabel: 'تتبع الطلب →',
+            messages: [
+                { type: 'sys', text: '— تم إنشاء المحادثة —' },
+                { type: 'sys', text: paid ? '✅ تم استلام الدفع · المبلغ محجوز في الضمان' : '⏳ في انتظار تأكيد الدفع' },
+                { from: 'in', text: 'مرحباً! وصل طلبك رقم ' + reqId + ' للخدمة: ' + service + '. جارٍ تعيين أفضل مزود متاح في منطقتك...', time: timeStr },
+            ],
+            quickReplies: ['شكراً', 'متى يصل المزود؟', 'هل يمكن تغيير الموعد؟'],
+        };
+
+        // Inject contact item at top of sidebar
+        const contactList = document.querySelector('.contacts-list');
+        if (contactList) {
+            const newItem = document.createElement('div');
+            newItem.className = 'contact-item active';
+            newItem.dataset.module = 'service';
+            newItem.dataset.conv   = convKey;
+            newItem.onclick = function() { openConv(convKey, this); };
+            newItem.innerHTML = `
+                <div class="c-avatar" style="background:linear-gradient(135deg,#028090,#02C39A)">م<div class="c-online"></div></div>
+                <div class="c-info">
+                    <div class="c-name">مزود الخدمة <span class="c-type-badge badge-service">جديد</span></div>
+                    <div class="c-preview">جارٍ تعيين مزود...</div>
+                    <div class="c-ctx">${service} · ${reqId}</div>
+                </div>
+                <div class="c-meta"><div class="c-time">${timeStr}</div></div>`;
+            contactList.querySelectorAll('.contact-item').forEach(c => c.classList.remove('active'));
+            contactList.prepend(newItem);
+        }
+
+        openByKey(convKey);
+
+        // Simulate provider accepting after 3s
+        setTimeout(() => {
+            const cd = CONVS[convKey];
+            if (!cd) return;
+            cd.status = '● قبل المزود — في الطريق';
+            cd.peer   = 'فهد الكهربائي';
+            cd.initial = 'ف';
+            cd.avatarGrad = 'linear-gradient(135deg,#f59e0b,#fbbf24)';
+            if (activeConv === convKey) {
+                document.getElementById('chName').textContent   = 'فهد الكهربائي';
+                document.getElementById('chStatus').textContent = '● قبل المزود — في الطريق';
+                document.getElementById('chStatus').style.color = '#10b981';
+                document.getElementById('chAvatar').style.background = cd.avatarGrad;
+                document.getElementById('chAvatar').textContent = 'ف';
+            }
+            const nowR  = new Date();
+            const timeR = String(nowR.getHours()).padStart(2,'0') + ':' + String(nowR.getMinutes()).padStart(2,'0');
+            renderMessage({
+                from: 'in',
+                text: 'قبلت طلبك! أنا فهد الكهربائي. سأصل إليك خلال 12 دقيقة. يمكنك تتبع موقعي الآن من الرابط أعلاه 📍',
+                time: timeR,
+            }, cd);
+            const msgArea = document.getElementById('messagesArea');
+            if (msgArea) msgArea.scrollTop = msgArea.scrollHeight;
+            // Update sidebar contact preview
+            const sideItem = document.querySelector(`[data-conv="${convKey}"] .c-preview`);
+            if (sideItem) sideItem.textContent = 'قبلت طلبك! في الطريق إليك...';
+            const sideAvatar = document.querySelector(`[data-conv="${convKey}"] .c-avatar`);
+            if (sideAvatar) { sideAvatar.style.background = cd.avatarGrad; sideAvatar.childNodes[0].textContent = 'ف'; }
+        }, 3000);
+
+        return;
+    }
+
+    // 4. Tender with requestId / tenderId
+    if (type === 'tender' && reqId) {
+        openByKey('tender-1');
+        return;
+    }
+
+    // 5. Fallback: open first conv
     const first = document.querySelector('.contact-item');
     if (first) {
         openConv(first.dataset.conv, first);

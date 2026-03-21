@@ -398,7 +398,8 @@ const BIDS = [
         });
         updateShortlistedCount(this.bids);
         showToast('🎉 تم قبول العرض! جارٍ الانتقال إلى دفعات المراحل...');
-        setTimeout(() => { window.location.href = 'milestone-payments.html'; }, 1800);
+        const _tid = new URLSearchParams(location.search).get('tenderId') || TENDER.id;
+        setTimeout(() => { window.location.href = 'milestone-payments.html?tenderId=' + _tid; }, 1800);
     },
     rejectBid(id) {
         const bid = this.bids.find(b => b.id === id);
@@ -511,7 +512,7 @@ const BIDS = [
                         <span x-text="expandedBid === bid.id ? '▲ إخفاء التفاصيل' : '▼ عرض التفاصيل'"></span>
                     </button>
                     <div class="bid-action-btns">
-                        <a :href="'chat.html?type=tender&id=' + bid.id" class="btn-chat-bid">💬 تواصل</a>
+                        <a :href="'chat.html?type=tender&requestId=' + (new URLSearchParams(location.search).get('tenderId') || 'T001') + '&id=' + bid.id" class="btn-chat-bid">💬 تواصل</a>
                         <button class="btn-shortlist"
                             :class="{ active: bid.status === 'shortlisted' }"
                             @click="shortlistBid(bid.id)"
@@ -562,8 +563,14 @@ function updateShortlistedCount(bids) {
 }
 
 function initPage() {
+    // Read tenderId from URL (passed from tender-create, tender-detail, tender-bids award)
+    const _tndId = new URLSearchParams(location.search).get('tenderId');
+    if (_tndId) {
+        const tidEl = document.getElementById('tenderId');
+        if (tidEl) tidEl.textContent = _tndId;
+    }
     document.getElementById('tenderTitle').textContent = TENDER.title;
-    document.getElementById('tenderId').textContent = TENDER.id;
+    if (!_tndId) document.getElementById('tenderId').textContent = TENDER.id;
     document.getElementById('tenderCity').textContent = '📍 ' + TENDER.city;
     document.getElementById('tenderBudgetDisplay').textContent = '💰 ' + TENDER.budget;
     document.getElementById('tenderStatus').textContent = TENDER.status === 'open' ? 'مفتوحة' : 'مغلقة';

@@ -506,8 +506,23 @@
             reader.readAsDataURL(file);
         }
 
+        // Read requestId and service context from URL
+        (function() {
+            const p = new URLSearchParams(location.search);
+            const reqId   = p.get('requestId');
+            const service = p.get('service') ? decodeURIComponent(p.get('service')) : null;
+            if (reqId) {
+                // Try to populate service name from URL or localStorage
+                const stored = (() => { try { return JSON.parse(localStorage.getItem('khedmah_current_request') || '{}'); } catch(e) { return {}; } })();
+                const svcName = service || stored.service || null;
+                const svcEl = document.querySelector('.prov-service');
+                if (svcEl && svcName) svcEl.textContent = '🔧 ' + svcName;
+            }
+        })();
+
         function submitReview() {
             if (!mainRating) return;
+            const reqId = new URLSearchParams(location.search).get('requestId') || '';
             document.getElementById('formBody').style.display = 'none';
             document.getElementById('successOverlay').style.display = 'block';
         }

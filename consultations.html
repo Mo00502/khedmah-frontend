@@ -452,7 +452,12 @@
             applyFilters();
         }
 
+        let _bookingConsultantName = '';
+        let _bookingConsultantPrice = 0;
+
         function openBookModal(name, price) {
+            _bookingConsultantName  = name;
+            _bookingConsultantPrice = price;
             document.getElementById('bookConsName').textContent = name;
             document.getElementById('bookPrice').textContent = price.toLocaleString() + ' ر.س';
             document.getElementById('bookDate').value = '';
@@ -469,11 +474,23 @@
         function closeModal(id) { document.getElementById(id).classList.remove('show'); }
 
         function confirmBook() {
-            const date = document.getElementById('bookDate').value;
-            const slot = document.querySelector('.slot-btn.selected');
+            const date  = document.getElementById('bookDate').value;
+            const slot  = document.querySelector('.slot-btn.selected');
+            const topic = document.getElementById('bookTopic').value.trim() || 'استشارة';
             if (!date || !slot) { alert('يرجى اختيار التاريخ والوقت'); return; }
             closeModal('bookModal');
-            showToast('تم تأكيد حجز جلستك ✅');
+            showToast('تم تأكيد الحجز ✅ — جارٍ الانتقال للدفع...');
+            setTimeout(() => {
+                const reqId = 'CONS-' + Date.now().toString().slice(-6);
+                const params = new URLSearchParams({
+                    requestId:    reqId,
+                    service:      'استشارة — ' + _bookingConsultantName,
+                    hasMaterials: 'false',
+                    materialsEst: '0',
+                    serviceAmount: _bookingConsultantPrice,
+                });
+                window.location.href = 'payment-escrow.html?' + params.toString();
+            }, 1000);
         }
 
         function showToast(msg) {

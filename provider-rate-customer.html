@@ -420,6 +420,21 @@
     </div>
 
     <script>
+        // Read URL params
+        (function() {
+            const p = new URLSearchParams(location.search);
+            const service = p.get('service') ? decodeURIComponent(p.get('service')) : null;
+            const reqId = p.get('requestId') || null;
+            if (service || reqId) {
+                const serviceTypeEl = document.querySelector('.service-type');
+                if (serviceTypeEl) {
+                    const label = service || 'خدمة';
+                    const id = reqId ? ` — ${reqId}` : '';
+                    serviceTypeEl.textContent = `🔧 ${label}${id}`;
+                }
+            }
+        })();
+
         let overallRating = 0;
 
         const ratingLabels = {
@@ -506,10 +521,9 @@
             submitBtn.disabled = true;
 
             setTimeout(() => {
-                alert('✅ شكراً لتقييمك!\n\nتقييمك يساعد في تحسين جودة المنصة والعملاء.');
-                
                 submitBtn.innerHTML = '✓ تم إرسال التقييم';
                 submitBtn.style.background = '#10B981';
+                setTimeout(() => { window.location.href = 'provider-dashboard.html'; }, 1200);
             }, 2000);
         });
     </script>

@@ -500,7 +500,9 @@
             applyFilters();
         }
 
+        let _rentEquipName = '';
         function openRentModal(name, price) {
+            _rentEquipName  = name;
             currentDailyPrice = price;
             document.getElementById('rentEquipName').textContent = name;
             ['rentStart','rentEnd','rentLocation'].forEach(id => document.getElementById(id).value = '');
@@ -527,10 +529,23 @@
         function closeModal(id) { document.getElementById(id).classList.remove('show'); }
 
         function confirmRent() {
-            if (!document.getElementById('rentStart').value || !document.getElementById('rentEnd').value) {
-                alert('يرجى تحديد تاريخ البداية والانتهاء'); return;
-            }
-            closeModal('rentModal'); showToast('تم تأكيد حجزك بنجاح ✅');
+            const start = document.getElementById('rentStart').value;
+            const end   = document.getElementById('rentEnd').value;
+            if (!start || !end) { alert('يرجى تحديد تاريخ البداية والانتهاء'); return; }
+            const totalText = document.getElementById('rentTotal').textContent.replace(/[^\d.]/g, '') || '0';
+            closeModal('rentModal');
+            showToast('تم تأكيد الحجز ✅ — جارٍ الانتقال للدفع...');
+            setTimeout(() => {
+                const reqId  = 'EQ-' + Date.now().toString().slice(-6);
+                const params = new URLSearchParams({
+                    requestId:    reqId,
+                    service:      'استئجار معدة — ' + _rentEquipName,
+                    hasMaterials: 'false',
+                    materialsEst: '0',
+                    serviceAmount: totalText,
+                });
+                window.location.href = 'payment-escrow.html?' + params.toString();
+            }, 1000);
         }
 
         function submitList() { closeModal('listModal'); showToast('تم إدراج المعدة بنجاح ✅'); }

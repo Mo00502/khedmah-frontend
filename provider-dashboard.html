@@ -376,7 +376,7 @@
                 <div class="section-title">طلبات جديدة تنتظر ردك <span style="background:rgba(139,92,246,0.12);color:#5b21b6;padding:2px 8px;border-radius:10px;font-size:0.8rem;margin-right:6px;">3</span></div>
             </div>
             <div class="requests-list" id="newRequestsList">
-                <div class="request-card">
+                <div class="request-card" data-req-id="REQ-P001" data-service="تمديد كهربائي">
                     <div class="req-icon">🔌</div>
                     <div class="req-info">
                         <div class="req-name">تمديد كهربائي — 3 غرف</div>
@@ -391,7 +391,7 @@
                         <button class="btn-sm btn-ghost" onclick="dismissRequest(this)">رفض</button>
                     </div>
                 </div>
-                <div class="request-card">
+                <div class="request-card" data-req-id="REQ-P002" data-service="صيانة لوحة كهربائية">
                     <div class="req-icon">🔧</div>
                     <div class="req-info">
                         <div class="req-name">صيانة لوحة كهربائية</div>
@@ -406,7 +406,7 @@
                         <button class="btn-sm btn-ghost" onclick="dismissRequest(this)">رفض</button>
                     </div>
                 </div>
-                <div class="request-card">
+                <div class="request-card" data-req-id="REQ-P003" data-service="تركيب إضاءة LED">
                     <div class="req-icon">💡</div>
                     <div class="req-info">
                         <div class="req-name">تركيب إضاءة LED خارجية</div>
@@ -436,7 +436,7 @@
                     <div class="panel-title">الطلبات الجارية</div>
                 </div>
                 <div class="panel-body" style="padding:0.75rem 1.25rem">
-                    <div class="request-card" style="box-shadow:none;padding:1rem 0;border-bottom:1px solid #f1f5f9;border-radius:0">
+                    <div class="request-card" data-req-id="REQ-001001" data-service="صيانة تكييف" style="box-shadow:none;padding:1rem 0;border-bottom:1px solid #f1f5f9;border-radius:0">
                         <div class="req-icon">🔧</div>
                         <div class="req-info">
                             <div class="req-name">صيانة تكييف مركزي</div>
@@ -447,8 +447,8 @@
                         </div>
                         <span class="badge badge-progress">جارٍ</span>
                         <div class="req-actions">
-                            <a href="chat.html" class="btn-sm btn-outline">💬</a>
-                            <button class="btn-sm btn-success" onclick="completeWork(this)">اكتمل</button>
+                            <a href="chat.html?type=service&requestId=REQ-001001" class="btn-sm btn-outline">💬</a>
+                            <button class="btn-sm btn-success" onclick="completeWork(this)">اكتمل ✓</button>
                         </div>
                     </div>
                 </div>
@@ -493,23 +493,45 @@
         }
 
         function acceptRequest(btn) {
-            const card = btn.closest('.request-card');
+            const card    = btn.closest('.request-card');
+            const reqId   = card.dataset.reqId   || 'REQ-P001';
+            const service = card.dataset.service || 'خدمة';
             card.querySelector('.badge').className = 'badge badge-progress';
             card.querySelector('.badge').textContent = 'مقبول';
             btn.textContent = '✅ مقبول';
             btn.disabled = true;
             btn.style.opacity = '0.6';
-            showToast('تم قبول الطلب وإشعار العميل');
+            showToast('تم قبول الطلب ✓ — جارٍ فتح المحادثة مع العميل...');
+            // Auto-open chat with the customer for this request
+            setTimeout(() => {
+                window.location.href = 'chat.html?type=service&requestId=' + reqId + '&service=' + encodeURIComponent(service);
+            }, 1200);
         }
 
         function completeWork(btn) {
             if (!confirm('هل أكملت العمل وتريد إشعار العميل للتأكيد؟')) return;
-            const card = btn.closest('.request-card');
+            const card    = btn.closest('.request-card');
+            const reqId   = card.dataset.reqId || 'REQ-P001';
+            const service = card.dataset.service || 'خدمة';
             card.querySelector('.badge').className = 'badge badge-completed';
             card.querySelector('.badge').textContent = 'مكتمل';
             btn.textContent = '✅ تم';
             btn.disabled = true;
-            showToast('تم إشعار العميل — في انتظار تأكيد الاستلام');
+            showToast('تم إشعار العميل — في انتظار تأكيد الاستلام وإطلاق الدفع');
+            // Add a "chat with customer" link in the card actions
+            const actionsEl = card.querySelector('.req-actions');
+            if (actionsEl) {
+                const chatBtn = document.createElement('a');
+                chatBtn.href = 'chat.html?type=service&requestId=' + reqId + '&service=' + encodeURIComponent(service);
+                chatBtn.className = 'btn-sm btn-outline';
+                chatBtn.textContent = '💬 محادثة';
+                actionsEl.appendChild(chatBtn);
+                const rateBtn = document.createElement('a');
+                rateBtn.href = 'provider-rate-customer.html?requestId=' + reqId + '&service=' + encodeURIComponent(service);
+                rateBtn.className = 'btn-sm btn-primary';
+                rateBtn.textContent = '⭐ قيّم العميل';
+                actionsEl.appendChild(rateBtn);
+            }
         }
 
         function showWithdraw() {

@@ -1105,7 +1105,7 @@
         document.getElementById('ctaPriceNum').textContent = `من ${data.startingPrice} ر.س`;
         document.getElementById('ctaPriceUnit').textContent = `/ ${data.priceUnit}`;
         document.getElementById('ctaBookBtn').href = `quote-request.html?category=${encodeURIComponent(data.category)}`;
-        document.getElementById('ctaChatBtn').href = `chat.html?type=service&id=1`;
+        document.getElementById('ctaChatBtn').href = `chat.html?type=service&providerId=${encodeURIComponent(id)}`;
     }
 
     loadProfile();

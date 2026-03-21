@@ -345,7 +345,7 @@
                 <p>ستصلك إشعارات عند تقديم عروض جديدة</p>
                 <p style="font-size:0.82rem;margin-top:0.5rem">يتم إخطار المزودين المتطابقين تلقائياً</p>
                 <div class="success-actions">
-                    <a href="tender-bids.html" class="btn-primary-action">متابعة العروض</a>
+                    <a :href="'tender-bids.html?tenderId='+tenderId.replace('#','')" class="btn-primary-action">متابعة العروض</a>
                     <a href="tenders.html" class="btn-secondary-action">تصفح المناقصات</a>
                 </div>
             </div>

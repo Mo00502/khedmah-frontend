@@ -591,6 +591,23 @@
             }
         })();
 
+        // ── Read URL params globally (used by all handlers below) ──
+        const _confParams = new URLSearchParams(location.search);
+        const _pageRequestId  = _confParams.get('requestId')     || 'REQ-demo-001';
+        const _pageService    = _confParams.get('service')        ? decodeURIComponent(_confParams.get('service')) : 'إصلاح تسريب مياه';
+        const _serviceAmount  = _confParams.get('serviceAmount')  || (() => {
+            try { return JSON.parse(localStorage.getItem('khedmah_current_request') || '{}').serviceAmount || '180'; } catch(e) { return '180'; }
+        })();
+        const _materialsAmt   = _confParams.get('materialsEst')   || (() => {
+            try { return JSON.parse(localStorage.getItem('khedmah_current_request') || '{}').materialsEst || '0'; } catch(e) { return '0'; }
+        })();
+
+        // Patch dynamic service info on page
+        (function() {
+            const titleEl = document.querySelector('.service-title h3');
+            if (titleEl) titleEl.textContent = _pageService;
+        })();
+
         let answers = {
             q1: null,
             q2: null,
@@ -633,24 +650,24 @@
         }
 
         document.getElementById('confirmBtn').addEventListener('click', function() {
-            if (confirm('هل أنت متأكد من تأكيد إتمام الخدمة؟\n\nسيتم إطلاق المبلغ (180 ريال) لمزود الخدمة فوراً.')) {
-                // Simulate confirmation
-                this.innerHTML = 'جاري التأكيد...';
+            if (confirm(`هل أنت متأكد من تأكيد إتمام الخدمة؟\n\nسيتم إطلاق رسوم الخدمة (${_serviceAmount} ريال) لمزود الخدمة فوراً ولن تتمكن من التراجع.`)) {
+                // Simulate escrow release confirmation
+                this.innerHTML = 'جاري تأكيد الإطلاق...';
                 this.disabled = true;
 
                 setTimeout(() => {
-                    this.innerHTML = '✅ تم تأكيد الخدمة بنجاح!';
+                    this.innerHTML = '✅ تم تأكيد الخدمة وإطلاق المبلغ!';
                     this.style.background = 'linear-gradient(135deg, #10B981, #059669)';
 
-                    // Show invoice + rating links
+                    // Show invoice + rating links with requestId threaded
                     const actionButtons = document.querySelector('.action-buttons');
                     const successLinks = document.createElement('div');
                     successLinks.style.cssText = 'display:grid; gap:0.75rem; margin-top:1rem;';
                     successLinks.innerHTML = `
-                        <a href="customer-invoice.html" style="display:block; padding:1rem; background:rgba(2,128,144,0.08); border:2px solid #028090; border-radius:12px; text-align:center; color:#028090; font-weight:700; text-decoration:none; font-family:'Tajawal',sans-serif; font-size:1rem;">
+                        <a href="customer-invoice.html?requestId=${_pageRequestId}" style="display:block; padding:1rem; background:rgba(2,128,144,0.08); border:2px solid #028090; border-radius:12px; text-align:center; color:#028090; font-weight:700; text-decoration:none; font-family:'Tajawal',sans-serif; font-size:1rem;">
                             🧾 عرض الفاتورة
                         </a>
-                        <a href="rate-service.html" style="display:block; padding:1rem; background:rgba(245,158,11,0.08); border:2px solid #F59E0B; border-radius:12px; text-align:center; color:#d97706; font-weight:700; text-decoration:none; font-family:'Tajawal',sans-serif; font-size:1rem;">
+                        <a href="rate-service.html?requestId=${_pageRequestId}" style="display:block; padding:1rem; background:rgba(245,158,11,0.08); border:2px solid #F59E0B; border-radius:12px; text-align:center; color:#d97706; font-weight:700; text-decoration:none; font-family:'Tajawal',sans-serif; font-size:1rem;">
                             ⭐ تقييم الخدمة
                         </a>
                         <a href="customer-dashboard.html" style="display:block; padding:1rem; background:rgba(15,23,42,0.05); border:2px solid #64748B; border-radius:12px; text-align:center; color:#475569; font-weight:700; text-decoration:none; font-family:'Tajawal',sans-serif; font-size:1rem;">
@@ -662,9 +679,18 @@
         });
 
         document.querySelector('.btn-report').addEventListener('click', function() {
-            alert('⚠️ سيتم فتح نموذج الشكوى\n\n' +
-                  'فريق الدعم سيتواصل معك خلال 24 ساعة\n' +
-                  'المبلغ سيبقى محجوزاً حتى حل المشكلة');
+            // Collect any issue text entered in the visible textareas
+            const issues = [];
+            document.querySelectorAll('.issue-report.show textarea').forEach((ta, i) => {
+                if (ta.value.trim()) issues.push(ta.value.trim());
+            });
+            if (issues.length === 0) {
+                alert('الرجاء تحديد المشكلة أولاً بالضغط على "لا" في أحد الأسئلة وشرح التفاصيل');
+                return;
+            }
+            // Persist issue summary for the support/dispute page
+            localStorage.setItem('khedmah_pending_issue', JSON.stringify({ requestId: _pageRequestId, issues }));
+            window.location.href = 'chat.html?type=support&requestId=' + _pageRequestId;
         });
     </script>
 </body>

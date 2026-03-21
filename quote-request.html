@@ -195,24 +195,100 @@
             reqNumber: '',
             errors: {},
             stepLabels: ['نوع الخدمة','وصف المشكلة','الموقع والوقت','مراجعة وإرسال'],
+            DISTRICTS: {
+                'الرياض': [
+                    'حي العليا','حي النزهة','حي الملقا','حي الياسمين','حي الروضة',
+                    'حي العقيق','حي الورود','حي الربوة','حي السليمانية','حي المحمدية',
+                    'حي الشفا','حي الخزامى','حي الوادي','حي الريان','حي النخيل',
+                    'حي الرمال','حي العزيزية','حي البديعة','حي الفيحاء','حي القادسية',
+                    'حي المنصورة','حي أم الحمام الغربي','حي أم الحمام الشرقي','حي الفلاح',
+                    'حي المربع','حي العود','حي الديرة','حي القرى','حي الوزارات',
+                    'حي الغدير','حي الصحافة','حي حطين','حي الحمراء','حي الشهداء',
+                    'حي الجزيرة','حي الدار البيضاء','حي الشرق','حي المونسية',
+                    'حي طويق','حي الدريهمية','حي الضباط','حي لبن','حي عرقة',
+                    'حي الشعلة','حي الرحمانية','حي المرسلات','حي التعاون','حي الخليج',
+                    'حي الحزم','حي السعادة','حي النهضة','حي منفوحة','حي بدر',
+                    'حي السويدي','حي ظهرة البديعة','حي الروابي','حي الجنادرية',
+                    'حي الصناعية الأولى','حي الصناعية الثانية','حي الصناعية الثالثة',
+                    'حي ثليم','حي الرفيعة','حي العرض','حي الهضبة','حي المصيف',
+                    'حي النسيم الغربي','حي النسيم الشرقي','حي المروج','حي الملز',
+                    'حي السفارات','حي الواحة','حي الفيصلية','حي العزيزية الجنوبية',
+                ],
+                'جدة': [
+                    'حي الروضة','حي البلد','حي الحمدانية','حي الصفا','حي الزهراء',
+                    'حي النعيم','حي البوادي','حي العزيزية','حي النسيم','حي الفيصلية',
+                    'حي أبحر الشمالية','حي أبحر الجنوبية','حي السلامة','حي المرجان',
+                    'حي الكوثر','حي ذهبان','حي مريخ','حي بحرة','حي الرحمانية',
+                    'حي الشاطئ','حي المنتزهات','حي الجامعة','حي الثغر','حي القريات',
+                    'حي الفروسية','حي الأجاويد','حي الحرازات','حي البشائر','حي مدائن الفهد',
+                    'حي الواجهة البحرية','حي الأندلس','حي الفيحاء','حي الرويس',
+                    'حي المسفلة','حي السامر','حي المحجر','حي الربوة','حي الوادي',
+                    'حي الأمير فواز الجنوبي','حي الأمير فواز الشمالي','حي المحمدية',
+                    'حي الخمرة','حي مشرفة','حي الرحاب','حي الصواري','حي قويزة',
+                    'حي الجوهرة','حي الرياض','حي الهنداوية','حي طيبة','حي المطار',
+                    'حي الدغيثر','حي الأمواج','حي السروات','حي الجنادرية','حي غليل',
+                    'حي السنابل','حي المصيف','حي الحسينية','حي البرج','حي الشراع',
+                    'حي بريمان','حي الضاحية','حي الأمير عبدالمجيد','حي الورود',
+                    'حي الوزيرية','حي الرغامة','حي العمارية','حي ابن سينا',
+                ],
+                'الدمام': [
+                    'حي الفيصلية','حي العنود','حي الشاطئ','حي القزاز','حي الجلوية',
+                    'حي الروضة','حي النزهة','حي البادية','حي المنار','حي الأندلس',
+                    'حي الضباب','حي الواجهة البحرية','حي الريان','حي الفردوس',
+                    'حي الإسكان','حي الشرق','حي المريكبات','حي الأحساء','حي الخليج',
+                    'حي الصناعية','حي ضاحية الملك فهد','حي الحمراء','حي بحري',
+                    'حي الطبيشي','حي العمامرة','حي المنصورة','حي السيف','حي الجامعة',
+                    'حي الدواسر','حي العزيزية','حي الدوحة الجنوبية','حي الدوحة الشمالية',
+                    'حي قصر الخليج','حي اليرموك','حي الحزام الأخضر','حي الشمال',
+                    'حي الربيع','حي اليرموك الجنوبي','حي الوسام','حي السلام',
+                    'حي المزروعية','حي الأمانة','حي الضيافة','حي النور','حي سناء',
+                    'حي الإتحاد','حي الفنار','حي النهضة','حي ابن خلدون',
+                    'حي المحمدية','حي الزهور','حي المريح','حي الشفق',
+                ],
+            },
             get progressPct() { return ((this.step - 1) / (this.totalSteps - 1)) * 100; },
             goNext() {
                 this.errors = {};
                 if (this.step === 1 && !this.selectedService) { this.errors.service = 'يرجى اختيار نوع الخدمة'; return; }
                 if (this.step === 2 && this.description.trim().length < 10) { this.errors.description = 'يرجى كتابة وصف أوضح (10 أحرف على الأقل)'; return; }
                 if (this.step === 3 && !this.district.trim()) { this.errors.district = 'يرجى إدخال الحي'; return; }
+                if (this.step === 4 && this.timing === 'custom') {
+                    if (!this.customDate) { this.errors.timing = 'يرجى اختيار التاريخ والوقت'; return; }
+                    if (new Date(this.customDate) <= new Date()) { this.errors.timing = 'يجب أن يكون الموعد في المستقبل'; return; }
+                }
                 if (this.step < this.totalSteps) { this.step++; window.scrollTo(0, 0); }
             },
             goPrev() {
                 if (this.step > 1) { this.step--; window.scrollTo(0, 0); }
             },
             submitRequest() {
-                this.reqNumber = '#REQ-' + Date.now().toString().slice(-6);
+                this.reqNumber = 'REQ-' + Date.now().toString().slice(-6);
+                localStorage.setItem('khedmah_current_request', JSON.stringify({
+                    id:           this.reqNumber,
+                    service:      this.selectedService,
+                    hasMaterials: this.hasMaterials,
+                    materialsEst: this.materialsEst || 0,
+                    city:         this.city,
+                    district:     this.district,
+                }));
                 this.submitted = true;
                 window.scrollTo(0, 0);
+                // Auto-redirect to payment — no manual click needed
+                setTimeout(() => {
+                    const p = new URLSearchParams({
+                        requestId:    this.reqNumber,
+                        service:      this.selectedService,
+                        hasMaterials: String(this.hasMaterials),
+                        materialsEst: String(this.materialsEst || 0),
+                    });
+                    window.location.href = 'payment-escrow.html?' + p.toString();
+                }, 1500);
             }
         }"
-        x-init="const c = new URLSearchParams(location.search).get('category'); if(c) selectedService = c">
+        x-init="
+            const c = new URLSearchParams(location.search).get('category'); if(c) selectedService = c;
+            $watch('city', () => { district = ''; });
+        ">
 
         <!-- Progress header — sticky -->
         <div class="wizard-header" x-show="!submitted">
@@ -353,7 +429,17 @@
 
                 <div class="field-group">
                     <label class="field-label">الحي <span class="field-required">*</span></label>
-                    <input type="text" class="form-input" x-model="district" placeholder="مثال: حي النزهة">
+                    <template x-if="['الرياض','جدة','الدمام'].includes(city)">
+                        <select class="form-select" x-model="district">
+                            <option value="">— اختر الحي —</option>
+                            <template x-for="d in (DISTRICTS[city] || [])" :key="d">
+                                <option :value="d" x-text="d"></option>
+                            </template>
+                        </select>
+                    </template>
+                    <template x-if="!['الرياض','جدة','الدمام'].includes(city)">
+                        <input type="text" class="form-input" x-model="district" placeholder="مثال: حي النزهة">
+                    </template>
                     <p class="step-error" x-show="errors.district" x-text="errors.district"></p>
                 </div>
 
@@ -366,7 +452,8 @@
                         <button type="button" class="timing-chip" :class="{ selected: timing === 'custom' }" @click="timing = 'custom'">📅 اختر تاريخاً</button>
                     </div>
                     <div x-show="timing === 'custom'" style="margin-top:0.75rem">
-                        <input type="datetime-local" class="form-input" x-model="customDate">
+                        <input type="datetime-local" class="form-input" x-model="customDate"
+                            :min="new Date(Date.now() + 60000).toISOString().slice(0,16)">
                     </div>
                 </div>
             </div>
@@ -417,12 +504,12 @@
                 <div class="success-icon">🎉</div>
                 <h2>تم إرسال طلبك!</h2>
                 <p>رقم الطلب: <strong x-text="reqNumber"></strong></p>
-                <p class="success-sub">ستصلك عروض من مزودين معتمدين خلال 30 دقيقة</p>
-                <div class="success-actions">
-                    <a href="customer-dashboard.html" class="btn-primary-action">متابعة الطلبات</a>
-                    <a href="search-services.html" class="btn-secondary-action">طلب جديد</a>
+                <p class="success-sub" style="color:var(--primary);font-weight:600;">جارٍ الانتقال لصفحة الدفع...</p>
+                <div style="margin-top:1.5rem;">
+                    <div style="width:40px;height:40px;border:4px solid #e2e8f0;border-top-color:var(--primary);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto;"></div>
                 </div>
             </div>
+            <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
 
         </div><!-- .wizard-body -->
 

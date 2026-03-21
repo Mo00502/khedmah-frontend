@@ -497,7 +497,43 @@
     }
 
     function saveSchedule() {
+        const slots = document.querySelectorAll('.slot-btn[data-slot]');
+        const schedule = {};
+        slots.forEach(slot => {
+            schedule[slot.dataset.slot] = slot.classList.contains('available');
+        });
+        const vacation = document.getElementById('vacationToggle').checked;
+        const vacFrom = document.getElementById('vacFrom').value;
+        const vacTo = document.getElementById('vacTo').value;
+        localStorage.setItem('khedmah_availability', JSON.stringify({ schedule, vacation, vacFrom, vacTo }));
         showToast('✓ تم حفظ جدول التوفر بنجاح');
+    }
+
+    function loadSchedule() {
+        const saved = localStorage.getItem('khedmah_availability');
+        if (!saved) return;
+        try {
+            const data = JSON.parse(saved);
+            if (data.schedule) {
+                document.querySelectorAll('.slot-btn[data-slot]').forEach(slot => {
+                    const available = data.schedule[slot.dataset.slot];
+                    if (available) {
+                        slot.classList.add('available');
+                        slot.textContent = 'متاح';
+                    } else {
+                        slot.classList.remove('available');
+                        slot.textContent = 'غير متاح';
+                    }
+                });
+            }
+            if (data.vacation) {
+                const toggle = document.getElementById('vacationToggle');
+                toggle.checked = true;
+                toggleVacation(toggle);
+                if (data.vacFrom) document.getElementById('vacFrom').value = data.vacFrom;
+                if (data.vacTo) document.getElementById('vacTo').value = data.vacTo;
+            }
+        } catch(e) {}
     }
 
     function resetSchedule() {
@@ -506,7 +542,8 @@
         }
     }
 
-    // Initialize status
+    // Initialize status and load saved schedule
+    loadSchedule();
     updateCurrentStatus();
 
     function toggleTheme() {
