@@ -596,8 +596,130 @@
       html.dark .ai-fab { box-shadow: 0 4px 15px rgba(2,195,154,0.3); }
     </style>
 
+    <script src="js/api.js"></script>
     <script>
-        function dismissQuote(btn) {
+    /* ── Dashboard Data Loader ─────────────────────────────────────────────── */
+    (async function initDashboard() {
+        if (!API.isLoggedIn()) return;
+
+        const STATUS_LABEL = {
+            PENDING:      { text: 'قيد الانتظار', cls: 'badge-pending' },
+            QUOTED:       { text: 'عروض جديدة',   cls: 'badge-quote'   },
+            ACCEPTED:     { text: 'مقبول',         cls: 'badge-pending' },
+            IN_PROGRESS:  { text: 'جارٍ',          cls: 'badge-progress'},
+            COMPLETED:    { text: 'مكتمل',         cls: 'badge-success' },
+            CANCELLED:    { text: 'ملغى',          cls: 'badge-cancel'  },
+        };
+        const SVC_ICON = { cleaning:'🧹', electrical:'⚡', plumbing:'🔧', hvac:'❄️', moving:'🚛', carpentry:'🪚', painting:'🎨', default:'🔧' };
+        const svcIcon = (s) => SVC_ICON[(s||'').toLowerCase()] || SVC_ICON.default;
+
+        try {
+            // Load user + all requests in parallel
+            const [user, { data: reqs }] = await Promise.all([
+                API.auth.me().catch(() => API.currentUser()),
+                API.get('/requests?limit=50').catch(() => ({ data: [] })),
+            ]);
+
+            // Update welcome banner
+            const name = user?.profile?.nameAr || user?.username || 'بك';
+            const h2   = document.querySelector('.welcome-text h2');
+            if (h2) h2.textContent = 'مرحباً، ' + name + ' 👋';
+            const avatar = document.querySelector('.avatar-btn');
+            if (avatar) avatar.textContent = name.charAt(0);
+
+            if (!Array.isArray(reqs) || reqs.length === 0) return;
+
+            // Compute stats
+            const active    = reqs.filter(r => ['PENDING','QUOTED','ACCEPTED','IN_PROGRESS'].includes(r.status)).length;
+            const pending   = reqs.filter(r => r.status === 'QUOTED').length;
+            const completed = reqs.filter(r => r.status === 'COMPLETED').length;
+
+            const statVals = document.querySelectorAll('.stat-value');
+            if (statVals[0]) statVals[0].textContent = active;
+            if (statVals[1]) statVals[1].textContent = pending;
+            if (statVals[2]) statVals[2].textContent = completed;
+
+            const activeReqs  = reqs.filter(r => ['PENDING','ACCEPTED','IN_PROGRESS'].includes(r.status));
+            const quotedReqs  = reqs.filter(r => r.status === 'QUOTED');
+            const recentDone  = reqs.filter(r => r.status === 'COMPLETED').slice(0, 3);
+
+            // Render active requests
+            const reqList = document.querySelector('.requests-list');
+            if (reqList && activeReqs.length > 0) {
+                reqList.innerHTML = activeReqs.map(r => {
+                    const st  = STATUS_LABEL[r.status] || STATUS_LABEL.PENDING;
+                    const svc = r.service?.nameAr || 'خدمة';
+                    return `
+                    <div class="request-card">
+                        <div class="request-service-icon">${svcIcon(r.service?.category)}</div>
+                        <div class="request-info">
+                            <div class="request-name">${svc}</div>
+                            <div class="request-meta">
+                                <span>${r.providerId ? 'مزود محدد' : 'في انتظار المزود'}</span>
+                                <span>📍 ${r.city || ''}</span>
+                                <span>📅 ${new Date(r.createdAt).toLocaleDateString('ar-SA')}</span>
+                            </div>
+                        </div>
+                        <span class="badge ${st.cls}">${st.text}</span>
+                        <div class="request-actions">
+                            <a href="order-tracking.html?requestId=${r.id}" class="btn-sm btn-primary">📍 تتبع</a>
+                            <a href="chat.html?type=service&requestId=${r.id}" class="btn-sm btn-outline">💬 محادثة</a>
+                        </div>
+                    </div>`;
+                }).join('');
+            }
+
+            // Render pending quotes
+            const quotesList = document.getElementById('quotesList');
+            if (quotesList && quotedReqs.length > 0) {
+                quotesList.innerHTML = '';
+                for (const req of quotedReqs) {
+                    const detail = await API.requests.get(req.id).catch(() => null);
+                    if (!detail?.quotes?.length) continue;
+                    detail.quotes.filter(q => q.status === 'PENDING').forEach(q => {
+                        const pName = q.provider?.profile?.nameAr || q.provider?.username || 'مزود';
+                        const init  = pName.charAt(0);
+                        quotesList.insertAdjacentHTML('beforeend', `
+                        <div class="quote-card" data-quote="${q.id}" data-req="${req.id}">
+                            <div class="quote-avatar">${init}</div>
+                            <div class="quote-info">
+                                <div class="quote-provider">${pName}</div>
+                                <div class="quote-service">${req.service?.nameAr || 'خدمة'}</div>
+                                <div class="quote-rating">⭐ ${q.provider?.providerProfile?.ratingAvg || '—'} (${q.provider?.providerProfile?.ratingCount || 0} تقييم)</div>
+                            </div>
+                            <div><div class="quote-price">${q.amount} ر.س <small>+ ضريبة</small></div></div>
+                            <div class="request-actions">
+                                <button class="btn-sm btn-primary" onclick="acceptQuote('${req.id}','${q.id}','${req.service?.nameAr||''}')">قبول</button>
+                                <button class="btn-sm btn-ghost" onclick="rejectQuote('${req.id}','${q.id}',this)">رفض</button>
+                            </div>
+                        </div>`);
+                    });
+                }
+                if (!quotesList.innerHTML.trim()) {
+                    quotesList.innerHTML = '<p id="quotesEmpty" style="color:#94a3b8;text-align:center;padding:1rem">لا توجد عروض في انتظارك</p>';
+                }
+            }
+        } catch (err) {
+            console.warn('Dashboard load error:', err);
+        }
+    })();
+
+    async function acceptQuote(reqId, quoteId, serviceName) {
+        try {
+            await API.requests.acceptQuote(reqId, quoteId);
+            const params = new URLSearchParams({ requestId: reqId, service: serviceName, hasMaterials: 'false', materialsEst: '0' });
+            window.location.href = 'payment-escrow.html?' + params;
+        } catch(err) { API.toast('❌ ' + API.errorMsg(err)); }
+    }
+
+    async function rejectQuote(reqId, quoteId, btn) {
+        try {
+            await API.patch(`/requests/${reqId}/quotes/${quoteId}/reject`);
+            btn.closest('.quote-card')?.remove();
+        } catch(err) { API.toast('❌ ' + API.errorMsg(err)); }
+    }
+
+    function dismissQuote(btn) {
             const card = btn.closest('.quote-card');
             card.style.display = 'none';
             const list = document.getElementById('quotesList');
@@ -619,12 +741,11 @@
             }
         })();
 
-        // Logout on avatar click (demo)
-        document.querySelector('.avatar-btn').addEventListener('click', function(e) {
+        // Logout on avatar click
+        document.querySelector('.avatar-btn').addEventListener('click', async function(e) {
             e.preventDefault();
             if (confirm('تسجيل الخروج؟')) {
-                localStorage.removeItem('khedmah_demo');
-                localStorage.removeItem('khedmah_user');
+                await API.auth.logout().catch(() => {});
                 window.location.href = 'login.html';
             }
         });

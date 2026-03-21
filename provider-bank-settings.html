@@ -285,6 +285,7 @@
     </style>
 </head>
 <body>
+<script src="js/api.js"></script>
 <script>
     (function() {
         const demo = localStorage.getItem('khedmah_demo');
@@ -510,7 +511,7 @@
         })();
 
         // Form submission
-        document.getElementById('bankForm').addEventListener('submit', function(e) {
+        document.getElementById('bankForm').addEventListener('submit', async function(e) {
             e.preventDefault();
 
             if (!selectedBank) {
@@ -532,11 +533,18 @@
                 return;
             }
 
-            alert('✅ تم حفظ الحساب البنكي بنجاح!\n\n' +
-                  'البنك: ' + bankNames[selectedBank] + '\n' +
-                  'الآيبان: ' + iban + '\n' +
-                  'صاحب الحساب: ' + accountName + '\n\n' +
-                  '💰 سيتم تحويل أرباحك فوراً إلى هذا الحساب بعد إتمام كل خدمة!');
+            const btn = this.querySelector('button[type="submit"]');
+            btn.disabled = true;
+            btn.textContent = '⏳ جاري الحفظ...';
+            try {
+                await API.providers.updateBank({ bankName: bankNames[selectedBank] || selectedBank, iban, accountName });
+                API.toast('✅ تم حفظ الحساب البنكي بنجاح!', 'success');
+            } catch(err) {
+                API.toast('❌ ' + API.errorMsg(err));
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '💾 حفظ الحساب البنكي';
+            }
         });
     </script>
 </body>

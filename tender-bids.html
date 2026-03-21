@@ -166,6 +166,7 @@
     </style>
 </head>
 <body>
+<script src="js/api.js"></script>
 
 <!-- Auth guard -->
 <script>
@@ -386,7 +387,7 @@ const BIDS = [
         if (bid) bid.status = bid.status === 'shortlisted' ? 'pending' : 'shortlisted';
         updateShortlistedCount(this.bids);
     },
-    acceptBid(id) {
+    async acceptBid(id) {
         // First, un-accept any previously accepted bid
         this.bids.forEach(b => {
             if (b.status === 'accepted') b.status = 'pending';
@@ -399,6 +400,7 @@ const BIDS = [
         updateShortlistedCount(this.bids);
         showToast('🎉 تم قبول العرض! جارٍ الانتقال إلى دفعات المراحل...');
         const _tid = new URLSearchParams(location.search).get('tenderId') || TENDER.id;
+        API.tenders.award(_tid, id).catch(() => {});
         setTimeout(() => { window.location.href = 'milestone-payments.html?tenderId=' + _tid; }, 1800);
     },
     rejectBid(id) {

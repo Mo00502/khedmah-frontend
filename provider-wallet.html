@@ -448,11 +448,10 @@
 <body>
 
 <!-- Auth guard -->
+<script src="js/api.js"></script>
 <script>
   (function() {
-    const demo = localStorage.getItem('khedmah_demo');
-    const user = JSON.parse(localStorage.getItem('khedmah_user') || '{}');
-    if (!demo || user.role !== 'provider') {
+    if (!API.isLoggedIn() || API.auth.getRole() !== 'provider') {
       window.location.href = 'login.html';
     }
   })();
@@ -521,6 +520,7 @@
 
 <!-- MAIN -->
 <div class="page-wrap"
+  x-init="$nextTick(() => initWalletData(this))"
   x-data="{
     tab: 'all',
     period: '3months',
@@ -550,10 +550,19 @@
 
       return list;
     },
-    requestWithdrawal() {
-      if (!this.withdrawAmount || Number(this.withdrawAmount) <= 0 || Number(this.withdrawAmount) > 3240) return;
-      showToast('تم إرسال طلب السحب بنجاح');
-      this.withdrawAmount = '';
+    async requestWithdrawal() {
+      const amount = Number(this.withdrawAmount);
+      if (!amount || amount <= 0) return;
+      try {
+        await API.wallet.withdraw({ amount });
+        API.toast('✅ تم إرسال طلب السحب بنجاح', 'success');
+        this.withdrawAmount = '';
+        // Reload balance
+        const w = await API.wallet.balance();
+        if (w) updateBalanceCards(w);
+      } catch(err) {
+        API.toast('❌ ' + API.errorMsg(err));
+      }
     },
     statusLabel(s) {
       const map = { released: 'محرر', completed: 'مكتمل', held: 'قيد التحرير', disputed: 'نزاع', pending: 'معلق' };
@@ -822,5 +831,52 @@
 </script>
 
 <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+<script>
+  function updateBalanceCards(w) {
+    const cards = document.querySelectorAll('.card-amount');
+    if (cards[0]) cards[0].innerHTML = Number(w.balance ?? 0).toLocaleString('ar-SA') + ' <span>ريال</span>';
+    if (cards[1]) cards[1].innerHTML = Number(w.heldBalance ?? 0).toLocaleString('ar-SA') + ' <span>ريال</span>';
+    if (cards[2]) cards[2].innerHTML = Number(w.frozenBalance ?? 0).toLocaleString('ar-SA') + ' <span>ريال</span>';
+    if (cards[3]) cards[3].innerHTML = Number(w.totalEarned ?? 0).toLocaleString('ar-SA') + ' <span>ريال</span>';
+    const avAmt = document.querySelector('.av-amount');
+    if (avAmt) avAmt.textContent = 'SAR ' + Number(w.balance ?? 0).toLocaleString('ar-SA');
+    const maxInput = document.querySelector('.withdraw-input');
+    if (maxInput) maxInput.max = w.balance ?? 9999999;
+  }
+
+  async function initWalletData(comp) {
+    try {
+      const [walletRes, txRes, userRes] = await Promise.allSettled([
+        API.wallet.balance(),
+        API.wallet.transactions({ limit: 50 }),
+        API.auth.me(),
+      ]);
+      if (walletRes.status === 'fulfilled') updateBalanceCards(walletRes.value);
+      if (txRes.status === 'fulfilled') {
+        const items = txRes.value?.items ?? txRes.value ?? [];
+        if (items.length) {
+          comp.transactions = items.map(t => ({
+            id: t.id,
+            type: t.type?.toLowerCase() || 'service',
+            desc: t.description || t.note || 'معاملة',
+            date: t.createdAt?.slice(0, 10) || '',
+            amount: t.type === 'WITHDRAWAL' || t.amount < 0 ? -Math.abs(t.amount) : t.amount,
+            status: (t.status || 'released').toLowerCase(),
+            icon: t.type === 'WITHDRAWAL' ? 'arrow-up' : 'bolt',
+          }));
+        }
+      }
+      if (userRes.status === 'fulfilled') {
+        const u = userRes.value;
+        const name = u.profile?.nameAr || u.username || 'مزود';
+        const nameEl = document.querySelector('.avatar-pill span');
+        if (nameEl) nameEl.textContent = name;
+        const avatarEl = document.querySelector('.avatar-circle');
+        if (avatarEl) avatarEl.textContent = name.charAt(0);
+      }
+    } catch(e) { /* silent */ }
+  }
+</script>
 </body>
 </html>

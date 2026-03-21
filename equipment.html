@@ -146,6 +146,7 @@
 </script>
 
 <body>
+<script src="js/api.js"></script>
     <nav>
         <div class="nav-content">
             <a href="home.html" class="logo">KHEDMAH</a>
@@ -501,8 +502,10 @@
         }
 
         let _rentEquipName = '';
-        function openRentModal(name, price) {
+        let _rentEquipId = null;
+        function openRentModal(name, price, id) {
             _rentEquipName  = name;
+            _rentEquipId = id || null;
             currentDailyPrice = price;
             document.getElementById('rentEquipName').textContent = name;
             ['rentStart','rentEnd','rentLocation'].forEach(id => document.getElementById(id).value = '');
@@ -528,15 +531,21 @@
         function openListModal() { document.getElementById('listModal').classList.add('show'); }
         function closeModal(id) { document.getElementById(id).classList.remove('show'); }
 
-        function confirmRent() {
+        async function confirmRent() {
             const start = document.getElementById('rentStart').value;
             const end   = document.getElementById('rentEnd').value;
             if (!start || !end) { alert('يرجى تحديد تاريخ البداية والانتهاء'); return; }
             const totalText = document.getElementById('rentTotal').textContent.replace(/[^\d.]/g, '') || '0';
             closeModal('rentModal');
             showToast('تم تأكيد الحجز ✅ — جارٍ الانتقال للدفع...');
+            let reqId = 'EQ-' + Date.now().toString().slice(-6);
+            if (_rentEquipId) {
+                try {
+                    const rental = await API.equipment.rent(_rentEquipId, { startDate: start, endDate: end });
+                    if (rental?.id) reqId = rental.id;
+                } catch(e) { /* proceed with demo ID */ }
+            }
             setTimeout(() => {
-                const reqId  = 'EQ-' + Date.now().toString().slice(-6);
                 const params = new URLSearchParams({
                     requestId:    reqId,
                     service:      'استئجار معدة — ' + _rentEquipName,

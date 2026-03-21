@@ -278,6 +278,7 @@
     </style>
 </head>
 <body>
+    <script src="js/api.js"></script>
     <script>
         (function() {
             const demo = localStorage.getItem('khedmah_demo');
@@ -520,11 +521,24 @@
             }
         })();
 
-        function submitReview() {
+        async function submitReview() {
             if (!mainRating) return;
             const reqId = new URLSearchParams(location.search).get('requestId') || '';
-            document.getElementById('formBody').style.display = 'none';
-            document.getElementById('successOverlay').style.display = 'block';
+            const btn = document.getElementById('submitBtn');
+            btn.disabled = true;
+            btn.textContent = 'جاري الإرسال...';
+            try {
+                await API.reviews.create(reqId, {
+                    score: mainRating,
+                    comment: document.getElementById('reviewText')?.value?.trim() || '',
+                });
+                document.getElementById('formBody').style.display = 'none';
+                document.getElementById('successOverlay').style.display = 'block';
+            } catch(err) {
+                btn.disabled = false;
+                btn.textContent = 'إرسال التقييم';
+                API.toast('❌ ' + API.errorMsg(err));
+            }
         }
     </script>
 </body>

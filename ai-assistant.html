@@ -409,6 +409,7 @@
 </head>
 
 <body>
+<script src="js/api.js"></script>
     <script>
         (function() {
             const demo = localStorage.getItem('khedmah_demo');
@@ -874,8 +875,16 @@ const INTENT_SUMMARY_TITLE = {
 function executeAction(intent, entities) {
     const reqId = 'REQ-' + Date.now().toString().slice(-6);
     const record = { intent, entities, reqId, createdAt: new Date().toISOString() };
-    // Persist to localStorage so other pages can pick it up
     localStorage.setItem('khedmah_ai_last_action', JSON.stringify(record));
+
+    // Fire real API call based on intent (fire-and-forget; UI proceeds regardless)
+    if (intent === 'HOME_SERVICE') {
+        API.requests.create({ serviceTitle: entities.serviceType, city: entities.city, description: entities.description || '' }).catch(() => {});
+    } else if (intent === 'TENDER') {
+        API.tenders.create({ title: entities.projectType, city: entities.city, budget: entities.budget, deadline: entities.deadline }).catch(() => {});
+    } else if (intent === 'CONSULTING') {
+        API.consultations.book({ consultationType: entities.consultationType, city: entities.city, scheduledDate: entities.date }).catch(() => {});
+    }
 
     const msgs = {
         HOME_SERVICE: `✅ تم إرسال طلبك بنجاح!\n\n🔢 رقم الطلب: #${reqId}\n🔧 الخدمة: ${entities.serviceType}\n📍 المدينة: ${entities.city}\n⚡ الأولوية: ${entities.urgency}\n\nسيتواصل معك أقرب مزود متاح في منطقتك خلال دقائق. يمكنك متابعة حالة الطلب من لوحة التحكم.`,

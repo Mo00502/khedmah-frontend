@@ -204,6 +204,7 @@
 
     <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙</button>
 
+    <script src="js/api.js"></script>
     <script>
         // Redirect if already logged in
         if (localStorage.getItem('khedmah_demo')) {
@@ -260,35 +261,26 @@
             btn.disabled = true;
             btn.innerHTML = '<span>⏳</span><span>جاري التحقق...</span>';
 
-            // ── Demo mode (no real backend) ───────────────────────────────────
-            await new Promise(r => setTimeout(r, 900));
-
-            // Demo credentials: any email/username + any password ≥ 8 chars
-            if (password.length >= 6) {
-                // Map known demo emails to roles
-                const roleMap = {
-                    'khalid@demo.sa': 'provider',
-                    'salem@demo.sa': 'provider',
-                    'fahad@demo.sa': 'provider',
-                    'customer@demo.sa': 'customer'
-                };
-                const role = roleMap[identifier.toLowerCase()] || (identifier.includes('provider') ? 'provider' : 'customer');
-                localStorage.setItem('khedmah_demo', '1');
-                localStorage.setItem('khedmah_user', JSON.stringify({
-                    identifier,
-                    role,
-                }));
+            try {
+                const user = await API.auth.login(identifier, password);
                 btn.innerHTML = '<span>✅</span><span>تم تسجيل الدخول</span>';
-                showAlert('success', '✅ مرحباً بعودتك!');
+                showAlert('success', '✅ مرحباً بعودتك ' + (user.profile?.nameAr || user.username || '') + '!');
+
                 setTimeout(() => {
-                    window.location.href = role === 'provider'
-                        ? 'provider-dashboard.html'
-                        : 'customer-dashboard.html';
-                }, 1200);
-            } else {
+                    const role = user.role?.toLowerCase() || '';
+                    if (role === 'admin' || role === 'super_admin' || role === 'support') {
+                        window.location.href = 'admin-dashboard.html';
+                    } else if (role === 'provider') {
+                        window.location.href = 'provider-dashboard.html';
+                    } else {
+                        window.location.href = 'customer-dashboard.html';
+                    }
+                }, 1000);
+
+            } catch (err) {
                 btn.disabled = false;
                 btn.innerHTML = '<span>🔓</span><span>تسجيل الدخول</span>';
-                showAlert('error', '❌ بيانات الدخول غير صحيحة. يرجى المحاولة مجدداً');
+                showAlert('error', '❌ ' + API.errorMsg(err));
             }
         });
     </script>

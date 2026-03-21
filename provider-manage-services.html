@@ -416,6 +416,7 @@
     </style>
 </head>
 <body>
+<script src="js/api.js"></script>
 <script>
     (function() {
         const demo = localStorage.getItem('khedmah_demo');
@@ -781,7 +782,7 @@
         document.getElementById('priceInputGroup').style.display = (type === 'agree') ? 'none' : 'block';
     }
 
-    function saveService() {
+    async function saveService() {
         const name = document.getElementById('serviceNameInput').value.trim();
         const category = document.getElementById('categorySelect').value;
         const desc = document.getElementById('serviceDesc').value.trim();
@@ -851,6 +852,11 @@
 
         closeModal();
         showToast(editingId ? '✓ تم تحديث الخدمة بنجاح' : '✓ تمت إضافة الخدمة بنجاح');
+        // Fire API call in background (demo IDs won't match real UUIDs but real adds create new services)
+        if (!editingId) {
+            const rawPrice = selectedPriceType !== 'agree' ? parseFloat(document.getElementById('priceInput')?.value || '0') : null;
+            API.providers.addService({ name, category, description: desc, priceType: selectedPriceType, price: rawPrice }).catch(() => {});
+        }
         editingId = null;
     }
 
@@ -871,6 +877,7 @@
                 card.style.animation = 'fadeOut 0.3s ease forwards';
                 setTimeout(() => { card.remove(); updateStats(); }, 300);
             }
+            API.providers.removeService(deleteTargetId).catch(() => {});
         }
         closeDeleteConfirm();
         showToast('🗑️ تم حذف الخدمة');

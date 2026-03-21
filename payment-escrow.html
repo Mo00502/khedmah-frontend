@@ -5,6 +5,7 @@
     <script>(function(){if(localStorage.getItem("khedmah_theme")==="dark")document.documentElement.classList.add("dark")})()</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>الدفع الآمن - Khedmah</title>
+    <script src="js/api.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap');
@@ -550,6 +551,7 @@
                             <div class="form-group">
                                 <label>CVV</label>
                                 <input type="password" placeholder="•••" maxlength="3"
+                                    x-model="cardCvc"
                                     @input="$event.target.value=$event.target.value.replace(/\D/g,'')"
                                     required>
                             </div>
@@ -772,6 +774,7 @@
             cardDisplay:       '',
             cardName:          '',
             cardExpiry:        '',
+            cardCvc:           '',
             processing:        false,
             showSuccess:       false,
             currentRequestId:  'REQ-demo-001',
@@ -779,8 +782,9 @@
 
             init() {
                 // Auth guard
-                if (!localStorage.getItem('khedmah_demo')) {
+                if (!API.isLoggedIn()) {
                     window.location.href = 'login.html';
+                    return;
                 }
                 // Read params forwarded from quote-request.html
                 const p = new URLSearchParams(location.search);
@@ -832,24 +836,29 @@
                 e.target.value  = v;
             },
 
-            submitPayment() {
+            async submitPayment() {
                 if (this.processing) return;
                 if (this.orderType === 'materials' && this.materialsEstimate <= 0) {
                     alert('⚠️ يرجى إدخال المبلغ التقديري للمواد أولاً');
                     return;
                 }
                 this.processing = true;
-                // Simulate Moyasar charge
-                setTimeout(() => {
+                try {
+                    const [month, year] = (this.cardExpiry || '/').split('/');
+                    const source = this.payMethod === 'card'
+                        ? { type: 'creditcard', name: this.cardName || 'Customer',
+                            number: this.cardRaw.replace(/\s/g, ''),
+                            month: (month || '').trim(),
+                            year: '20' + ((year || '').trim()),
+                            cvc: this.cardCvc }
+                        : { type: this.payMethod === 'stc' ? 'stcpay' : 'applepay' };
+                    await API.payments.initiate(this.currentRequestId, {
+                        source,
+                        serviceAmount: this.serviceAmount,
+                        materialsAmount: this.orderType === 'materials' ? Number(this.materialsEstimate) : 0,
+                    });
                     this.processing  = false;
                     this.showSuccess = true;
-                    // Save payment state so chat + tracking can read it
-                    const req = JSON.parse(localStorage.getItem('khedmah_current_request') || '{}');
-                    req.paid = true;
-                    req.serviceAmount = this.serviceAmount;
-                    req.materialsEst  = this.orderType === 'materials' ? this.materialsEstimate : 0;
-                    localStorage.setItem('khedmah_current_request', JSON.stringify(req));
-                    // Auto-redirect to chat after 1.5s
                     setTimeout(() => {
                         const p = new URLSearchParams({
                             type:      'service',
@@ -861,7 +870,10 @@
                         });
                         window.location.href = 'chat.html?' + p.toString();
                     }, 1500);
-                }, 2200);
+                } catch(err) {
+                    this.processing = false;
+                    API.toast('❌ ' + API.errorMsg(err));
+                }
             }
         }
     }

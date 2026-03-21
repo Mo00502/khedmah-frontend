@@ -576,6 +576,7 @@
         </div>
     </div>
 
+    <script src="js/api.js"></script>
     <script>
         function toggleTheme() {
             const isDark = document.documentElement.classList.toggle('dark');
@@ -649,32 +650,32 @@
             }
         }
 
-        document.getElementById('confirmBtn').addEventListener('click', function() {
-            if (confirm(`هل أنت متأكد من تأكيد إتمام الخدمة؟\n\nسيتم إطلاق رسوم الخدمة (${_serviceAmount} ريال) لمزود الخدمة فوراً ولن تتمكن من التراجع.`)) {
-                // Simulate escrow release confirmation
-                this.innerHTML = 'جاري تأكيد الإطلاق...';
-                this.disabled = true;
-
-                setTimeout(() => {
-                    this.innerHTML = '✅ تم تأكيد الخدمة وإطلاق المبلغ!';
-                    this.style.background = 'linear-gradient(135deg, #10B981, #059669)';
-
-                    // Show invoice + rating links with requestId threaded
-                    const actionButtons = document.querySelector('.action-buttons');
-                    const successLinks = document.createElement('div');
-                    successLinks.style.cssText = 'display:grid; gap:0.75rem; margin-top:1rem;';
-                    successLinks.innerHTML = `
-                        <a href="customer-invoice.html?requestId=${_pageRequestId}" style="display:block; padding:1rem; background:rgba(2,128,144,0.08); border:2px solid #028090; border-radius:12px; text-align:center; color:#028090; font-weight:700; text-decoration:none; font-family:'Tajawal',sans-serif; font-size:1rem;">
-                            🧾 عرض الفاتورة
-                        </a>
-                        <a href="rate-service.html?requestId=${_pageRequestId}" style="display:block; padding:1rem; background:rgba(245,158,11,0.08); border:2px solid #F59E0B; border-radius:12px; text-align:center; color:#d97706; font-weight:700; text-decoration:none; font-family:'Tajawal',sans-serif; font-size:1rem;">
-                            ⭐ تقييم الخدمة
-                        </a>
-                        <a href="customer-dashboard.html" style="display:block; padding:1rem; background:rgba(15,23,42,0.05); border:2px solid #64748B; border-radius:12px; text-align:center; color:#475569; font-weight:700; text-decoration:none; font-family:'Tajawal',sans-serif; font-size:1rem;">
-                            🏠 العودة إلى لوحة التحكم
-                        </a>`;
-                    actionButtons.appendChild(successLinks);
-                }, 2000);
+        document.getElementById('confirmBtn').addEventListener('click', async function() {
+            if (!confirm(`هل أنت متأكد من تأكيد إتمام الخدمة؟\n\nسيتم إطلاق رسوم الخدمة (${_serviceAmount} ريال) لمزود الخدمة فوراً ولن تتمكن من التراجع.`)) return;
+            this.innerHTML = 'جاري تأكيد الإطلاق...';
+            this.disabled = true;
+            try {
+                await API.payments.release(_pageRequestId);
+                this.innerHTML = '✅ تم تأكيد الخدمة وإطلاق المبلغ!';
+                this.style.background = 'linear-gradient(135deg, #10B981, #059669)';
+                const actionButtons = document.querySelector('.action-buttons');
+                const successLinks = document.createElement('div');
+                successLinks.style.cssText = 'display:grid; gap:0.75rem; margin-top:1rem;';
+                successLinks.innerHTML = `
+                    <a href="customer-invoice.html?requestId=${_pageRequestId}" style="display:block; padding:1rem; background:rgba(2,128,144,0.08); border:2px solid #028090; border-radius:12px; text-align:center; color:#028090; font-weight:700; text-decoration:none; font-family:'Tajawal',sans-serif; font-size:1rem;">
+                        🧾 عرض الفاتورة
+                    </a>
+                    <a href="rate-service.html?requestId=${_pageRequestId}" style="display:block; padding:1rem; background:rgba(245,158,11,0.08); border:2px solid #F59E0B; border-radius:12px; text-align:center; color:#d97706; font-weight:700; text-decoration:none; font-family:'Tajawal',sans-serif; font-size:1rem;">
+                        ⭐ تقييم الخدمة
+                    </a>
+                    <a href="customer-dashboard.html" style="display:block; padding:1rem; background:rgba(15,23,42,0.05); border:2px solid #64748B; border-radius:12px; text-align:center; color:#475569; font-weight:700; text-decoration:none; font-family:'Tajawal',sans-serif; font-size:1rem;">
+                        🏠 العودة إلى لوحة التحكم
+                    </a>`;
+                actionButtons.appendChild(successLinks);
+            } catch(err) {
+                this.innerHTML = '✓ تأكيد إتمام الخدمة وإطلاق المبلغ';
+                this.disabled = false;
+                API.toast('❌ ' + API.errorMsg(err));
             }
         });
 

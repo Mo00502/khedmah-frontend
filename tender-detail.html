@@ -158,13 +158,14 @@
     </style>
 </head>
 <body>
+<script src="js/api.js"></script>
 
 <script>
   (function() {
     if (localStorage.getItem('khedmah_theme') === 'dark') {
       document.documentElement.classList.add('dark');
     }
-    if (!localStorage.getItem('khedmah_demo')) {
+    if (!API.isLoggedIn()) {
       window.location.href = 'login.html';
     }
   })();
@@ -827,16 +828,26 @@ function closeModal() {
     document.getElementById('bidModal').classList.remove('show');
 }
 
-function submitBid() {
+async function submitBid() {
     const amt = document.getElementById('bidAmount').value.trim();
     const dur = document.getElementById('bidDuration').value.trim();
     if (!amt) { showToast('يرجى إدخال قيمة العرض المالي'); return; }
     if (!dur) { showToast('يرجى تحديد مدة التنفيذ المقترحة'); return; }
+    const submitBtn = document.querySelector('#bidModal .btn-full.btn-primary-full');
+    if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'جاري الإرسال...'; }
+    const isUUID = tenderId.includes('-') && tenderId.length > 10;
+    if (isUUID) {
+        try {
+            await API.tenders.bid(tenderId, { amount: parseFloat(amt), timeline: dur, notes: document.getElementById('bidNotes')?.value || '' });
+        } catch(err) {
+            if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'إرسال العرض'; }
+            showToast('❌ ' + API.errorMsg(err));
+            return;
+        }
+    }
     closeModal();
-    // Show success state
     document.getElementById('ctaArea').style.display = 'none';
     document.getElementById('successArea').style.display = 'block';
-    // Increment bid count
     const countEl = document.getElementById('sBidCount');
     countEl.textContent = parseInt(countEl.textContent) + 1;
     showToast('✅ تم إرسال عرضك بنجاح — سيتواصل معك صاحب المناقصة');

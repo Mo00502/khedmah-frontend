@@ -256,6 +256,7 @@
     </style>
 </head>
 <body>
+<script src="js/api.js"></script>
 <script>
     (function() {
         const demo = localStorage.getItem('khedmah_demo');
@@ -446,7 +447,7 @@
         }
     }
 
-    function markRead(id) {
+    async function markRead(id) {
         if (!unreadIds.has(id)) return;
         unreadIds.delete(id);
 
@@ -463,9 +464,10 @@
         updateBadge();
         showToast('✓ تم تحديده كمقروء');
         refreshUnreadTab();
+        API.notifications.markRead(id).catch(() => {});
     }
 
-    function markAllRead() {
+    async function markAllRead() {
         unreadIds.clear();
         document.querySelectorAll('.notif-card.unread').forEach(card => {
             card.classList.remove('unread');
@@ -481,6 +483,7 @@
         updateBadge();
         showToast('✓ تم تحديد الكل كمقروء');
         refreshUnreadTab();
+        API.notifications.markAllRead().catch(() => {});
     }
 
     function refreshUnreadTab() {

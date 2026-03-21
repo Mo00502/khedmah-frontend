@@ -561,6 +561,7 @@
     </style>
 </head>
 <body>
+<script src="js/api.js"></script>
 
 <!-- NAV -->
 <nav>
@@ -729,15 +730,9 @@
 <script>
     // Auth guard
     (function() {
-        const demo = localStorage.getItem('khedmah_demo');
-        if (!demo) { window.location.href = 'login.html'; return; }
-        try {
-            const user = JSON.parse(localStorage.getItem('khedmah_user') || '{}');
-            if (user.role && user.role !== 'customer') {
-                if (user.role === 'provider') { window.location.href = 'provider-dashboard.html'; return; }
-                window.location.href = 'login.html';
-            }
-        } catch(e) {}
+        if (!API.isLoggedIn()) { window.location.href = 'login.html'; return; }
+        const role = API.auth.getRole();
+        if (role === 'provider') { window.location.href = 'provider-dashboard.html'; }
     })();
 
     // Provider data
@@ -964,9 +959,7 @@
         }
     };
 
-    function loadProfile() {
-        const id = new URLSearchParams(location.search).get('id') || 'khalid';
-        const data = PROVIDERS[id] || PROVIDERS['khalid'];
+    function applyProfileData(data) {
 
         // Update page title
         document.title = `${data.name} - Khedmah`;
@@ -1108,6 +1101,51 @@
         document.getElementById('ctaChatBtn').href = `chat.html?type=service&providerId=${encodeURIComponent(id)}`;
     }
 
+    function loadProfile() {
+        const id = new URLSearchParams(location.search).get('id') || 'khalid';
+        const isUUID = id.includes('-') && id.length > 10;
+        if (isUUID) {
+            API.providers.getProfile(id).then(p => {
+                // Map API response to the same shape loadProfile uses
+                const data = {
+                    name: p.user?.name || p.name || 'مزود خدمة',
+                    title: p.bio || p.category || '',
+                    category: p.category || '',
+                    city: p.city || '',
+                    rating: parseFloat(p.ratingAvg || 0).toFixed(1),
+                    reviewCount: p.ratingCount || 0,
+                    available: p.available ?? true,
+                    emergency: false, sameDay: false,
+                    jobsCompleted: p.jobsCompleted || 0,
+                    yearsExp: p.yearsOfExperience || 0,
+                    responseTime: 'خلال ساعة',
+                    repeatRate: 0,
+                    bio: p.bio || '',
+                    languages: ['العربية'],
+                    serviceMode: 'both',
+                    verified: p.verificationStatus === 'APPROVED',
+                    districts: [], tags: p.services?.map(s => s.name) || [],
+                    services: (p.services || []).map(s => ({
+                        name: s.name, desc: s.description || '',
+                        price: Number(s.price) || 0, unit: 'للزيارة', featured: false
+                    })),
+                    certifications: [], portfolio: [], reviews: [],
+                    completionRate: 95,
+                    startingPrice: p.services?.[0] ? Number(p.services[0].price) : 0,
+                    priceUnit: 'للزيارة',
+                    schedule: { sun:'09:00-18:00', mon:'09:00-18:00', tue:'09:00-18:00', wed:'09:00-18:00', thu:'09:00-18:00', fri:'closed', sat:'closed' },
+                    bestAt: [], type: 'home',
+                };
+                applyProfileData(data);
+                document.getElementById('ctaBookBtn').href = `quote-request.html?category=${encodeURIComponent(data.category)}&providerId=${id}`;
+            }).catch(() => {
+                // Fall back to demo data
+                applyProfileData(PROVIDERS[id] || PROVIDERS['khalid']);
+            });
+        } else {
+            applyProfileData(PROVIDERS[id] || PROVIDERS['khalid']);
+        }
+    }
     loadProfile();
 
     // Dark mode

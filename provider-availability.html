@@ -276,6 +276,7 @@
     </style>
 </head>
 <body>
+<script src="js/api.js"></script>
 <script>
     (function() {
         const demo = localStorage.getItem('khedmah_demo');
@@ -496,7 +497,7 @@
         }
     }
 
-    function saveSchedule() {
+    async function saveSchedule() {
         const slots = document.querySelectorAll('.slot-btn[data-slot]');
         const schedule = {};
         slots.forEach(slot => {
@@ -506,6 +507,9 @@
         const vacFrom = document.getElementById('vacFrom').value;
         const vacTo = document.getElementById('vacTo').value;
         localStorage.setItem('khedmah_availability', JSON.stringify({ schedule, vacation, vacFrom, vacTo }));
+        try {
+            await API.providers.saveSchedule({ schedule, vacation, vacFrom, vacTo });
+        } catch(e) { /* silent — local save already done */ }
         showToast('✓ تم حفظ جدول التوفر بنجاح');
     }
 

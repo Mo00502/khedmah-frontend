@@ -161,6 +161,7 @@
     </style>
 </head>
 <body>
+<script src="js/api.js"></script>
     <!-- Auth Guard -->
     <script>
         (function() {
@@ -280,11 +281,24 @@
         goPrev() { if (this.step > 1) { this.step--; window.scrollTo(0, 0); } },
         skipStep5() { this.step5Skipped = true; this.step++; window.scrollTo(0, 0); },
 
-        publish() {
+        async publish() {
             if (!this.validate()) return;
-            this.tenderId = '#TND-' + Date.now().toString().slice(-6);
             this.submitted = true;
             window.scrollTo(0, 0);
+            try {
+                const res = await API.tenders.create({
+                    title: this.title,
+                    description: this.description,
+                    category: this.category,
+                    budget: this.budget,
+                    deadline: this.deadline,
+                    location: this.location,
+                    city: this.city,
+                });
+                this.tenderId = res?.id ? ('#TND-' + res.id.slice(-6)) : ('#TND-' + Date.now().toString().slice(-6));
+            } catch(e) {
+                this.tenderId = '#TND-' + Date.now().toString().slice(-6);
+            }
         },
         saveDraft() {
             const draft = {

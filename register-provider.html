@@ -266,6 +266,7 @@
 <body>
 
 <!-- Auth guard: redirect if already logged in as provider -->
+<script src="js/api.js"></script>
 <script>
     (function() {
         if (localStorage.getItem('khedmah_theme') === 'dark') {
@@ -470,11 +471,21 @@
             if (this.step === 6) this.step6Skipped = true;
             this.step++; window.scrollTo(0, 0);
         },
-        submitForm() {
-            localStorage.setItem('khedmah_demo', '1');
-            localStorage.setItem('khedmah_user', JSON.stringify({ role: 'provider', name: this.fullName, type: this.providerType }));
-            this.submitted = true;
-            window.scrollTo(0, 0);
+        async submitForm() {
+            const username = this.email.split('@')[0].replace(/[^a-zA-Z0-9_]/g, '') + Math.floor(Math.random()*900+100);
+            try {
+                await API.auth.registerProvider({
+                    email:    this.email,
+                    username,
+                    password: this.password,
+                    phone:    this.phone || undefined,
+                    nameAr:   this.fullName || undefined,
+                });
+                this.submitted = true;
+                window.scrollTo(0, 0);
+            } catch(err) {
+                API.toast('❌ ' + API.errorMsg(err));
+            }
         }
     }"
     x-init="const c = new URLSearchParams(location.search).get('ref'); if(c) { referralCode = c; showReferral = true; }">

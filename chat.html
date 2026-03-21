@@ -196,8 +196,9 @@
     </style>
 </head>
 <body>
+<script src="js/api.js"></script>
 <script>
-    if (!localStorage.getItem('khedmah_demo')) { window.location.href = 'login.html'; }
+    if (!API.isLoggedIn()) { window.location.href = 'login.html'; }
     if (localStorage.getItem('khedmah_theme') === 'dark') document.documentElement.classList.add('dark');
 </script>
 
@@ -1125,7 +1126,10 @@ function renderQuickReplies(replies) {
 }
 
 // ─── Send message ─────────────────────────────────────────────────────────────
-function sendMessage() {
+// Real conversation ID when user navigates from a service request with UUID
+let _realConvId = null;
+
+async function sendMessage() {
     const input = document.getElementById('msgInput');
     const text = input.value.trim();
     if (!text) return;
@@ -1139,7 +1143,13 @@ function sendMessage() {
     input.value = '';
     input.style.height = 'auto';
 
-    // Show typing indicator then auto-reply
+    // Send via real API if we have a real conversation
+    if (_realConvId) {
+        API.chat.send(_realConvId, { content: text }).catch(() => {});
+        return; // Real messages arrive back via Socket.io
+    }
+
+    // Demo auto-reply fallback
     const typingEl = document.getElementById('typingIndicator');
     typingEl.classList.add('show');
     setTimeout(() => {
@@ -1230,6 +1240,52 @@ function showToast(msg) {
 
 // ─── Boot ─────────────────────────────────────────────────────────────────────
 initFromURL();
+
+// ─── Real-time: try to connect Socket.io if token available ──────────────────
+(async function initRealTime() {
+    const token = localStorage.getItem('khedmah_access_token');
+    if (!token) return;
+
+    // Try to resolve requestId → real conversation ID
+    const p = new URLSearchParams(location.search);
+    const reqId = p.get('requestId');
+    if (reqId && reqId.includes('-') && reqId.length > 10) {
+        // Looks like a real UUID — load or create conversation
+        try {
+            const convs = await API.chat.conversations();
+            const list = convs?.items ?? convs ?? [];
+            const found = list.find(c => c.requestId === reqId || c.serviceRequestId === reqId);
+            if (found) {
+                _realConvId = found.id;
+            } else if (reqId) {
+                // Create conversation for this request
+                const created = await API.chat.create({ requestId: reqId });
+                _realConvId = created?.id || null;
+            }
+        } catch(e) { /* fallback to demo */ }
+    }
+
+    // Connect Socket.io
+    const BASE = (window.KHEDMAH_API_URL || 'http://localhost:3000').replace(/\/api\/v1\/?$/, '');
+    if (!window.io) return; // Socket.io CDN not loaded
+    const socket = io(BASE, { auth: { token }, transports: ['websocket', 'polling'] });
+
+    socket.on('connect', () => {
+        if (_realConvId) socket.emit('join', { conversationId: _realConvId });
+    });
+
+    socket.on('new_message', (msg) => {
+        if (!msg || msg.conversationId !== _realConvId) return;
+        const isMine = msg.senderId === API.auth.currentUser()?.id;
+        if (isMine) return; // already rendered optimistically
+        const data = CONVS[activeConv] || {};
+        const now = new Date(msg.createdAt || Date.now());
+        const time = String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
+        renderMessage({ from: 'in', text: msg.content, time }, data);
+        document.getElementById('messagesArea').scrollTop = 999999;
+    });
+})();
 </script>
+<script defer src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
 </body>
 </html>

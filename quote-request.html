@@ -158,6 +158,7 @@
     </style>
 </head>
 <body>
+    <script src="js/api.js"></script>
     <script>
         (function() {
             const demo = localStorage.getItem('khedmah_demo');
@@ -261,19 +262,24 @@
             goPrev() {
                 if (this.step > 1) { this.step--; window.scrollTo(0, 0); }
             },
-            submitRequest() {
-                this.reqNumber = 'REQ-' + Date.now().toString().slice(-6);
-                localStorage.setItem('khedmah_current_request', JSON.stringify({
-                    id:           this.reqNumber,
-                    service:      this.selectedService,
-                    hasMaterials: this.hasMaterials,
-                    materialsEst: this.materialsEst || 0,
-                    city:         this.city,
-                    district:     this.district,
-                }));
+            async submitRequest() {
                 this.submitted = true;
                 window.scrollTo(0, 0);
-                // Auto-redirect to payment — no manual click needed
+                try {
+                    const req = await API.requests.create({
+                        serviceTitle:    this.selectedService,
+                        serviceCategory: this.selectedService,
+                        city:            this.city,
+                        district:        this.district,
+                        description:     this.description || '',
+                        scheduledAt:     this.scheduledDate ? new Date(this.scheduledDate).toISOString() : undefined,
+                        hasMaterials:    this.hasMaterials,
+                        materialsEst:    this.hasMaterials ? (this.materialsEst || 0) : 0,
+                    });
+                    this.reqNumber = req?.id || ('REQ-' + Date.now().toString().slice(-6));
+                } catch(e) {
+                    this.reqNumber = 'REQ-' + Date.now().toString().slice(-6);
+                }
                 setTimeout(() => {
                     const p = new URLSearchParams({
                         requestId:    this.reqNumber,

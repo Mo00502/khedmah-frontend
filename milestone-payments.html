@@ -591,15 +591,13 @@
   </style>
 </head>
 <body>
+<script src="js/api.js"></script>
 
 <!-- Auth Guard -->
 <script>
   (function() {
-    if (!localStorage.getItem('khedmah_demo')) { window.location.href = 'login.html'; return; }
-    try {
-      const u = JSON.parse(localStorage.getItem('khedmah_user') || '{}');
-      if (u.role === 'provider') { window.location.href = 'provider-dashboard.html'; return; }
-    } catch(e) {}
+    if (!API.isLoggedIn()) { window.location.href = 'login.html'; return; }
+    if (API.auth.getRole() === 'provider') { window.location.href = 'provider-dashboard.html'; return; }
   })();
 </script>
 
@@ -1025,8 +1023,12 @@
       openApproveModal(ms) {
         this.approveModal = { open: true, id: ms.id, label: ms.label, amount: ms.amount };
       },
-      confirmApprove() {
+      async confirmApprove() {
         const ms = this.milestones.find(m => m.id === this.approveModal.id);
+        const _tndId = new URLSearchParams(location.search).get('tenderId');
+        if (_tndId && _tndId.includes('-') && _tndId.length > 10) {
+          try { await API.payments.release(_tndId); } catch(e) {}
+        }
         if (ms) {
           ms.status = 'released';
           ms.releasedAt = new Date().toISOString().split('T')[0];

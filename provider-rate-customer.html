@@ -303,6 +303,7 @@
     </style>
 </head>
 <body>
+<script src="js/api.js"></script>
 <script>
     (function() {
         const demo = localStorage.getItem('khedmah_demo');
@@ -499,32 +500,25 @@
         })();
 
         // Form submission
-        document.getElementById('customerRatingForm').addEventListener('submit', (e) => {
+        document.getElementById('customerRatingForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            
-            const criteria = Array.from(document.querySelectorAll('input[name="criteria"]:checked'))
-                .map(cb => cb.id);
-            
-            const recommendation = document.querySelector('input[name="recommend"]:checked').value;
-            const comment = document.getElementById('comment').value;
-            
-            const ratingData = {
-                rating: overallRating,
-                criteria: criteria,
-                recommendation: recommendation,
-                comment: comment
-            };
 
-            console.log('Customer Rating Data:', ratingData);
+            const recommendation = document.querySelector('input[name="recommend"]:checked')?.value || '';
+            const comment = document.getElementById('comment').value;
+            const reqId = new URLSearchParams(location.search).get('requestId') || '';
 
             submitBtn.innerHTML = 'جاري الإرسال...';
             submitBtn.disabled = true;
-
-            setTimeout(() => {
+            try {
+                await API.reviews.create(reqId, { score: overallRating, comment: comment.trim(), recommendation });
                 submitBtn.innerHTML = '✓ تم إرسال التقييم';
                 submitBtn.style.background = '#10B981';
                 setTimeout(() => { window.location.href = 'provider-dashboard.html'; }, 1200);
-            }, 2000);
+            } catch(err) {
+                submitBtn.innerHTML = 'إرسال التقييم';
+                submitBtn.disabled = false;
+                API.toast('❌ ' + API.errorMsg(err));
+            }
         });
     </script>
 </body>

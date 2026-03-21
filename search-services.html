@@ -309,6 +309,7 @@
     </style>
 </head>
 <body>
+<script src="js/api.js"></script>
     <nav>
         <div class="nav-content">
             <a href="INDEX.html" class="logo">KHEDMAH</a>
@@ -740,7 +741,62 @@
             document.querySelectorAll('.filter-option input').forEach(i => i.checked = false);
             applyFilters();
         }
-        function doSearch() { applyFilters(); }
+        function doSearch() {
+            applyFilters();
+            // Also fetch real providers from API
+            const q = document.getElementById('searchInput').value.trim();
+            const cityChips = [...document.querySelectorAll('[id^="ci"]')].filter(i => i.checked)
+                .map(i => i.nextElementSibling.textContent.trim().replace(/\(\d+\)/, '').trim());
+            if (!q && cityChips.length === 0) return;
+            const params = {};
+            if (q) params.q = q;
+            if (cityChips.length > 0) params.city = cityChips[0];
+            API.search.providers(params).then(res => {
+                const items = res.data || res.items || (Array.isArray(res) ? res : []);
+                if (!items.length) return;
+                const grid = document.getElementById('providersGrid');
+                items.forEach(p => {
+                    const id = p.id || '';
+                    if (grid.querySelector(`[data-api-id="${id}"]`)) return;
+                    const card = document.createElement('div');
+                    card.className = 'provider-card';
+                    card.dataset.apiId = id;
+                    card.dataset.name = (p.user?.name || p.name || '').toLowerCase();
+                    card.dataset.cat = p.category || '';
+                    card.dataset.rating = p.ratingAvg || p.rating || 0;
+                    card.dataset.price = p.startingPrice || 0;
+                    card.dataset.city = p.city || '';
+                    card.dataset.available = p.available ? '1' : '0';
+                    card.dataset.jobs = p.jobsCompleted || 0;
+                    const name = p.user?.name || p.name || 'مزود خدمة';
+                    const initial = name.charAt(0);
+                    const rating = parseFloat(p.ratingAvg || p.rating || 0).toFixed(1);
+                    card.innerHTML = `
+                        <div class="card-top">
+                            <div class="prov-avatar">${initial}</div>
+                            <div style="flex:1">
+                                <div style="font-weight:700">${name}</div>
+                                <div class="prov-service">${p.category || ''}</div>
+                                <div style="font-size:0.82rem;color:var(--gray)">📍 ${p.city || ''}</div>
+                            </div>
+                        </div>
+                        <div class="card-bottom">
+                            <div class="card-avail-price">
+                                <span style="color:var(--success);font-size:0.8rem">${p.available ? '🟢 متاح' : '🔴 غير متاح'}</span>
+                                <span style="font-weight:700;color:var(--primary)">${p.startingPrice ? p.startingPrice + ' ر.س' : 'حسب الاتفاق'}</span>
+                            </div>
+                            <div class="card-actions">
+                                <span style="font-size:0.85rem">⭐ ${rating}</span>
+                                <a href="provider-profile.html?id=${id}" style="background:var(--primary);color:white;padding:0.4rem 1rem;border-radius:8px;text-decoration:none;font-size:0.85rem">عرض الملف</a>
+                            </div>
+                        </div>`;
+                    grid.appendChild(card);
+                });
+                // Update count
+                const countEl = document.querySelector('.results-count strong');
+                if (countEl) countEl.textContent = grid.querySelectorAll('.provider-card:not([style*="none"])').length;
+            }).catch(() => {});
+        }
         function sortResults(val) { sortResultsBy(val); }
 
         // Live filter on any checkbox change

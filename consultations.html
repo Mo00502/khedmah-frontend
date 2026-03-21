@@ -147,6 +147,7 @@
 </script>
 
 <body>
+<script src="js/api.js"></script>
     <nav>
         <div class="nav-content">
             <a href="home.html" class="logo">KHEDMAH</a>
@@ -473,15 +474,25 @@
 
         function closeModal(id) { document.getElementById(id).classList.remove('show'); }
 
-        function confirmBook() {
+        async function confirmBook() {
             const date  = document.getElementById('bookDate').value;
             const slot  = document.querySelector('.slot-btn.selected');
             const topic = document.getElementById('bookTopic').value.trim() || 'استشارة';
             if (!date || !slot) { alert('يرجى اختيار التاريخ والوقت'); return; }
             closeModal('bookModal');
             showToast('تم تأكيد الحجز ✅ — جارٍ الانتقال للدفع...');
+            let reqId = 'CONS-' + Date.now().toString().slice(-6);
+            try {
+                const res = await API.consultations.book({
+                    consultantName: _bookingConsultantName,
+                    topic,
+                    scheduledDate: date,
+                    timeSlot: slot.textContent,
+                    pricePerHour: _bookingConsultantPrice,
+                });
+                if (res?.id) reqId = res.id;
+            } catch(e) { /* proceed with demo ID */ }
             setTimeout(() => {
-                const reqId = 'CONS-' + Date.now().toString().slice(-6);
                 const params = new URLSearchParams({
                     requestId:    reqId,
                     service:      'استشارة — ' + _bookingConsultantName,

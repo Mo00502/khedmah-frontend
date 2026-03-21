@@ -483,7 +483,127 @@
 
     </div>
 
+    <script src="js/api.js"></script>
     <script>
+        /* ── Dashboard Data Loader ───────────────────────────────────────────── */
+        (async function initDashboard() {
+            if (!API.isLoggedIn()) return;
+            try {
+                const [userRes, newReqsRes, activeReqsRes, walletRes, earningsRes] = await Promise.allSettled([
+                    API.auth.me(),
+                    API.requests.list({ status: 'PENDING_QUOTE', limit: 20 }),
+                    API.requests.list({ status: 'IN_PROGRESS', limit: 10 }),
+                    API.wallet.balance(),
+                    API.providers.myEarnings(),
+                ]);
+
+                // Welcome banner
+                if (userRes.status === 'fulfilled') {
+                    const u = userRes.value;
+                    const name = u.profile?.nameAr || u.username || 'مزود';
+                    document.querySelector('.welcome-text h2').textContent = 'أهلاً، ' + name + ' 👋';
+                    const city = u.providerProfile?.city || '';
+                    const specialty = u.providerProfile?.specialty || 'مزود خدمة';
+                    document.querySelector('.welcome-text p').textContent = specialty + (city ? ' • ' + city : '');
+                    document.querySelector('.provider-avatar-lg').textContent = name.charAt(0);
+                    document.querySelector('.avatar-btn').textContent = name.charAt(0);
+                    const rating = u.providerProfile?.ratingAvg;
+                    const ratingCount = u.providerProfile?.ratingCount || 0;
+                    if (rating != null) {
+                        document.querySelector('.rating-big').textContent = Number(rating).toFixed(1) + ' ⭐';
+                        document.querySelector('.rating-sub').textContent = 'بناءً على ' + ratingCount + ' تقييم';
+                    }
+                }
+
+                // Stats
+                const newItems   = newReqsRes.status   === 'fulfilled' ? (newReqsRes.value?.items   ?? newReqsRes.value   ?? []) : [];
+                const activeItems = activeReqsRes.status === 'fulfilled' ? (activeReqsRes.value?.items ?? activeReqsRes.value ?? []) : [];
+                const statCards  = document.querySelectorAll('.stat-value');
+                if (statCards[0]) statCards[0].textContent = activeItems.length;
+                if (statCards[1]) statCards[1].textContent = newItems.length;
+
+                // Monthly earnings stat
+                if (earningsRes.status === 'fulfilled' && statCards[3]) {
+                    const e = earningsRes.value;
+                    statCards[3].textContent = Number(e.thisMonth ?? 0).toLocaleString('ar-SA');
+                    if (statCards[2]) statCards[2].textContent = e.completedCount ?? '—';
+                }
+
+                // Wallet panel
+                if (walletRes.status === 'fulfilled') {
+                    const w = walletRes.value;
+                    document.querySelector('.wallet-amount').textContent = Number(w.balance ?? 0).toLocaleString('ar-SA') + ' ر.س';
+                    const rows = document.querySelectorAll('.earning-value');
+                    if (rows[1]) rows[1].textContent = Number(w.heldBalance ?? 0).toLocaleString('ar-SA') + ' ر.س';
+                }
+                if (earningsRes.status === 'fulfilled') {
+                    const e = earningsRes.value;
+                    const rows = document.querySelectorAll('.earning-value');
+                    if (rows[0]) rows[0].textContent = Number(e.thisMonth ?? 0).toLocaleString('ar-SA') + ' ر.س';
+                    if (rows[2]) rows[2].textContent = Number(e.totalEarnings ?? 0).toLocaleString('ar-SA') + ' ر.س';
+                }
+
+                // New requests list
+                renderNewRequests(newItems);
+
+                // Active jobs
+                renderActiveJobs(activeItems);
+
+            } catch(e) { /* silent */ }
+        })();
+
+        function renderNewRequests(items) {
+            const list = document.getElementById('newRequestsList');
+            if (!items.length) {
+                list.innerHTML = `<div class="empty-state"><div class="emoji">📭</div><p>لا توجد طلبات جديدة حالياً</p></div>`;
+                return;
+            }
+            const icons = { electrical: '🔌', plumbing: '🔧', ac: '❄️', cleaning: '🧹', painting: '🎨' };
+            list.innerHTML = items.map(r => {
+                const icon = icons[(r.serviceCategory || '').toLowerCase()] || '🔧';
+                const dateStr = r.scheduledAt ? new Date(r.scheduledAt).toLocaleDateString('ar-SA', { weekday: 'long', day: 'numeric', month: 'long' }) : '';
+                return `<div class="request-card" data-req-id="${r.id}" data-service="${r.serviceTitle || r.title || 'خدمة'}">
+                    <div class="req-icon">${icon}</div>
+                    <div class="req-info">
+                        <div class="req-name">${r.serviceTitle || r.title || 'طلب خدمة'}</div>
+                        <div class="req-meta">
+                            <span>📍 ${r.city || r.location || ''}</span>
+                            ${dateStr ? `<span>📅 ${dateStr}</span>` : ''}
+                        </div>
+                    </div>
+                    <span class="badge badge-new">جديد</span>
+                    <div class="req-actions">
+                        <button class="btn-sm btn-primary" onclick="acceptRequest(this)">✅ قبول</button>
+                        <button class="btn-sm btn-ghost" onclick="dismissRequest(this)">رفض</button>
+                    </div>
+                </div>`;
+            }).join('');
+            const countEl = document.querySelector('.section-title span');
+            if (countEl) countEl.textContent = items.length;
+        }
+
+        function renderActiveJobs(items) {
+            const panel = document.querySelector('.panel-body[style*="padding:0.75rem"]');
+            if (!panel) return;
+            if (!items.length) {
+                panel.innerHTML = `<div class="empty-state" style="border:none;padding:1.5rem 0;"><div class="emoji">🎯</div><p>لا توجد طلبات جارية حالياً</p></div>`;
+                return;
+            }
+            panel.innerHTML = items.map(r => `
+                <div class="request-card" data-req-id="${r.id}" data-service="${r.serviceTitle || 'خدمة'}" style="box-shadow:none;padding:1rem 0;border-bottom:1px solid #f1f5f9;border-radius:0">
+                    <div class="req-icon">🔧</div>
+                    <div class="req-info">
+                        <div class="req-name">${r.serviceTitle || r.title || 'طلب خدمة'}</div>
+                        <div class="req-meta"><span>${r.customer?.profile?.nameAr || 'عميل'}</span></div>
+                    </div>
+                    <span class="badge badge-progress">جارٍ</span>
+                    <div class="req-actions">
+                        <a href="chat.html?type=service&requestId=${r.id}" class="btn-sm btn-outline">💬</a>
+                        <button class="btn-sm btn-success" onclick="completeWork(this)">اكتمل ✓</button>
+                    </div>
+                </div>`).join('');
+        }
+
         function dismissRequest(btn) {
             const card = btn.closest('.request-card');
             card.style.display = 'none';
@@ -492,45 +612,58 @@
             document.getElementById('newRequestsEmpty').style.display = visible === 0 ? 'block' : 'none';
         }
 
-        function acceptRequest(btn) {
+        async function acceptRequest(btn) {
             const card    = btn.closest('.request-card');
-            const reqId   = card.dataset.reqId   || 'REQ-P001';
+            const reqId   = card.dataset.reqId;
             const service = card.dataset.service || 'خدمة';
-            card.querySelector('.badge').className = 'badge badge-progress';
-            card.querySelector('.badge').textContent = 'مقبول';
-            btn.textContent = '✅ مقبول';
+            const priceStr = prompt('أدخل سعرك المقترح للخدمة (ر.س):');
+            if (!priceStr) return;
+            const price = parseFloat(priceStr);
+            if (isNaN(price) || price <= 0) { API.toast('❌ سعر غير صالح'); return; }
             btn.disabled = true;
-            btn.style.opacity = '0.6';
-            showToast('تم قبول الطلب ✓ — جارٍ فتح المحادثة مع العميل...');
-            // Auto-open chat with the customer for this request
-            setTimeout(() => {
-                window.location.href = 'chat.html?type=service&requestId=' + reqId + '&service=' + encodeURIComponent(service);
-            }, 1200);
+            try {
+                await API.requests.submitQuote(reqId, { price, notes: '' });
+                card.querySelector('.badge').className = 'badge badge-progress';
+                card.querySelector('.badge').textContent = 'تم إرسال العرض';
+                btn.textContent = '✅ تم الإرسال';
+                API.toast('✅ تم إرسال عرضك للعميل', 'success');
+                setTimeout(() => {
+                    window.location.href = 'chat.html?type=service&requestId=' + reqId + '&service=' + encodeURIComponent(service);
+                }, 1500);
+            } catch(err) {
+                btn.disabled = false;
+                API.toast('❌ ' + API.errorMsg(err));
+            }
         }
 
-        function completeWork(btn) {
+        async function completeWork(btn) {
             if (!confirm('هل أكملت العمل وتريد إشعار العميل للتأكيد؟')) return;
             const card    = btn.closest('.request-card');
-            const reqId   = card.dataset.reqId || 'REQ-P001';
+            const reqId   = card.dataset.reqId || '';
             const service = card.dataset.service || 'خدمة';
-            card.querySelector('.badge').className = 'badge badge-completed';
-            card.querySelector('.badge').textContent = 'مكتمل';
-            btn.textContent = '✅ تم';
             btn.disabled = true;
-            showToast('تم إشعار العميل — في انتظار تأكيد الاستلام وإطلاق الدفع');
-            // Add a "chat with customer" link in the card actions
-            const actionsEl = card.querySelector('.req-actions');
-            if (actionsEl) {
-                const chatBtn = document.createElement('a');
-                chatBtn.href = 'chat.html?type=service&requestId=' + reqId + '&service=' + encodeURIComponent(service);
-                chatBtn.className = 'btn-sm btn-outline';
-                chatBtn.textContent = '💬 محادثة';
-                actionsEl.appendChild(chatBtn);
-                const rateBtn = document.createElement('a');
-                rateBtn.href = 'provider-rate-customer.html?requestId=' + reqId + '&service=' + encodeURIComponent(service);
-                rateBtn.className = 'btn-sm btn-primary';
-                rateBtn.textContent = '⭐ قيّم العميل';
-                actionsEl.appendChild(rateBtn);
+            try {
+                await API.requests.complete(reqId);
+                card.querySelector('.badge').className = 'badge badge-completed';
+                card.querySelector('.badge').textContent = 'مكتمل';
+                btn.textContent = '✅ تم';
+                API.toast('✅ تم إشعار العميل — في انتظار تأكيد الاستلام', 'success');
+                const actionsEl = card.querySelector('.req-actions');
+                if (actionsEl) {
+                    const chatBtn = document.createElement('a');
+                    chatBtn.href = 'chat.html?type=service&requestId=' + reqId;
+                    chatBtn.className = 'btn-sm btn-outline';
+                    chatBtn.textContent = '💬 محادثة';
+                    actionsEl.appendChild(chatBtn);
+                    const rateBtn = document.createElement('a');
+                    rateBtn.href = 'provider-rate-customer.html?requestId=' + reqId + '&service=' + encodeURIComponent(service);
+                    rateBtn.className = 'btn-sm btn-primary';
+                    rateBtn.textContent = '⭐ قيّم';
+                    actionsEl.appendChild(rateBtn);
+                }
+            } catch(err) {
+                btn.disabled = false;
+                API.toast('❌ ' + API.errorMsg(err));
             }
         }
 
@@ -546,11 +679,10 @@
             setTimeout(() => t.remove(), 3000);
         }
 
-        document.querySelector('.avatar-btn').addEventListener('click', function(e) {
+        document.querySelector('.avatar-btn').addEventListener('click', async function(e) {
             e.preventDefault();
             if (confirm('تسجيل الخروج؟')) {
-                localStorage.removeItem('khedmah_demo');
-                localStorage.removeItem('khedmah_user');
+                await API.auth.logout().catch(() => {});
                 window.location.href = 'login.html';
             }
         });

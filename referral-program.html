@@ -426,9 +426,10 @@
     </style>
 </head>
 <body>
+<script src="js/api.js"></script>
 <script>
     (function() {
-        if (!localStorage.getItem('khedmah_demo')) window.location.href = 'login.html';
+        if (!API.isLoggedIn()) window.location.href = 'login.html';
     })();
 </script>
     <!-- Navigation -->

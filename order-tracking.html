@@ -291,6 +291,7 @@
     </style>
 </head>
 <body>
+<script src="js/api.js"></script>
 <script>
     (function() {
         const demo = localStorage.getItem('khedmah_demo');
@@ -592,12 +593,16 @@
         showToast('📞 جارٍ الاتصال بأحمد السباك...');
     }
 
-    function cancelOrder() {
+    async function cancelOrder() {
         if (currentStep > 1) return;
-        if (confirm('هل تريد إلغاء الطلب؟\n\nسيتم استرداد المبلغ خلال 2-5 أيام عمل.')) {
-            showToast('✓ تم إلغاء الطلب. سيتم استرداد المبلغ قريباً.');
-            document.getElementById('cancelBtn').disabled = true;
-        }
+        if (!confirm('هل تريد إلغاء الطلب؟\n\nسيتم استرداد المبلغ خلال 2-5 أيام عمل.')) return;
+        const btn = document.getElementById('cancelBtn');
+        btn.disabled = true;
+        const reqId = new URLSearchParams(location.search).get('requestId');
+        try {
+            if (reqId && reqId.includes('-')) await API.requests.cancel(reqId);
+        } catch(e) { /* silent */ }
+        showToast('✓ تم إلغاء الطلب. سيتم استرداد المبلغ قريباً.');
     }
 
     function simulateCompletion() {

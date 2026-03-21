@@ -258,6 +258,7 @@
     </style>
 </head>
 <body>
+    <script src="js/api.js"></script>
     <div class="login-container">
         <div class="login-header">
             <div class="admin-icon">👑</div>
@@ -345,57 +346,47 @@
             }
         }
         
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            
-            const username = document.getElementById('username').value;
+
+            const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value;
             const errorMessage = document.getElementById('errorMessage');
             const attemptsWarning = document.getElementById('attemptsWarning');
             const loginBtn = document.getElementById('loginBtn');
-            
-            // التحقق من بيانات الدخول
-            if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
-                // تسجيل دخول ناجح
-                loginBtn.innerHTML = '<span>✅</span><span>جاري تسجيل الدخول...</span>';
-                loginBtn.disabled = true;
-                
-                setTimeout(() => {
-                    // حفظ حالة الدخول
-                    localStorage.setItem('khedmah_admin', JSON.stringify({ loggedIn: true, username }));
 
-                    
-                    // الانتقال للوحة التحكم
-                    window.location.href = 'admin-dashboard.html';
-                }, 1500);
-            } else {
-                // تسجيل دخول فاشل
+            if (loginAttempts >= maxAttempts) return;
+
+            loginBtn.innerHTML = '<span>⏳</span><span>جاري التحقق...</span>';
+            loginBtn.disabled = true;
+
+            try {
+                const user = await API.auth.login(username, password);
+                const role = (user.role || '').toLowerCase();
+                if (role !== 'admin' && role !== 'super_admin' && role !== 'support') {
+                    // Not an admin — clear tokens and show error
+                    await API.auth.logout().catch(() => {});
+                    throw new Error('ليس لديك صلاحية الوصول للوحة الإدارة');
+                }
+                loginBtn.innerHTML = '<span>✅</span><span>جاري تسجيل الدخول...</span>';
+                setTimeout(() => { window.location.href = 'admin-dashboard.html'; }, 800);
+            } catch(err) {
+                loginBtn.innerHTML = '<span>🔓</span><span>تسجيل الدخول</span>';
                 loginAttempts++;
-                
+                errorMessage.textContent = '❌ ' + API.errorMsg(err);
                 errorMessage.classList.add('show');
-                
                 if (loginAttempts >= maxAttempts) {
-                    // حظر المستخدم
                     loginBtn.disabled = true;
                     loginBtn.innerHTML = '<span>🚫</span><span>تم حظر الدخول</span>';
                     errorMessage.textContent = '🚫 تم حظرك بسبب تجاوز عدد المحاولات المسموحة';
-                    
-                    // في التطبيق الحقيقي: إرسال تنبيه، تسجيل IP، إلخ
-                    console.log('⚠️ محاولة دخول مشبوهة من IP:', 'xxx.xxx.xxx.xxx');
                 } else {
-                    const remainingAttempts = maxAttempts - loginAttempts;
-                    document.getElementById('attemptsLeft').textContent = remainingAttempts;
+                    loginBtn.disabled = false;
+                    document.getElementById('attemptsLeft').textContent = maxAttempts - loginAttempts;
                     attemptsWarning.classList.add('show');
-                    
-                    // مسح الحقول
                     document.getElementById('password').value = '';
                     document.getElementById('password').focus();
                 }
-                
-                // إخفاء رسالة الخطأ بعد 3 ثواني
-                setTimeout(() => {
-                    errorMessage.classList.remove('show');
-                }, 3000);
+                setTimeout(() => { errorMessage.classList.remove('show'); }, 3000);
             }
         });
         

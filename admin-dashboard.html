@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>لوحة تحكم الإدارة - Khedmah</title>
+    <script src="js/api.js"></script>
     <script>
         (function() {
             try { const a = JSON.parse(localStorage.getItem('khedmah_admin') || '{}'); if (!a.loggedIn) window.location.href = 'admin-login.html'; } catch(e) { window.location.href = 'admin-login.html'; }
@@ -788,16 +789,17 @@
             }, 700);
         }
 
-        function approveProvider(btn, name, id) {
+        async function approveProvider(btn, name, id) {
             const item = btn.closest('.verify-item');
             btn.textContent = '⏳...'; btn.disabled = true;
-            setTimeout(() => {
-                if (item) item.style.opacity = '0.3';
-                toast(`✅ تم قبول المزود: ${name}`);
-                const badge = document.getElementById('badge-verify');
-                if (badge) { const n = Math.max(0, parseInt(badge.textContent)-1); badge.textContent = n; if (!n) badge.style.display = 'none'; }
-                setTimeout(() => item && item.remove(), 500);
-            }, 600);
+            try {
+                await API.admin.approveProvider(id);
+            } catch(e) { /* demo IDs won't match; proceed with UI update */ }
+            if (item) item.style.opacity = '0.3';
+            toast(`✅ تم قبول المزود: ${name}`);
+            const badge = document.getElementById('badge-verify');
+            if (badge) { const n = Math.max(0, parseInt(badge.textContent)-1); badge.textContent = n; if (!n) badge.style.display = 'none'; }
+            setTimeout(() => item && item.remove(), 500);
         }
 
         // ── Reject Modal ──
@@ -809,21 +811,26 @@
             document.getElementById('rejectModal').style.display = 'flex';
         }
         function closeModal() { document.getElementById('rejectModal').style.display = 'none'; rejectTarget = null; }
-        function confirmReject() {
+        async function confirmReject() {
             const reason = document.getElementById('rejectReason').value.trim();
             if (!reason) { document.getElementById('rejectReason').style.borderColor = 'var(--error)'; return; }
+            const target = rejectTarget;
             closeModal();
-            const item = document.querySelector(`[data-id="${rejectTarget?.id}"]`);
+            const item = document.querySelector(`[data-id="${target?.id}"]`);
             if (item) { item.style.opacity = '0.3'; setTimeout(() => item.remove(), 500); }
-            toast(`❌ تم رفض طلب التحقق: ${rejectTarget?.name}`);
+            toast(`❌ تم رفض طلب التحقق: ${target?.name}`);
             const badge = document.getElementById('badge-verify');
             if (badge) { const n = Math.max(0, parseInt(badge.textContent)-1); badge.textContent = n; if (!n) badge.style.display = 'none'; }
+            API.admin.rejectProvider(target?.id, { reason }).catch(() => {});
         }
 
         // ── Dispute resolution ──
-        function resolveDispute(btn, id, action) {
+        async function resolveDispute(btn, id, action) {
             const labels = { 'تحرير': 'تحرير المبلغ للمزود', 'استرداد': 'استرداد المبلغ للعميل', 'تقسيم': 'تقسيم المبلغ' };
+            const outcomeMap = { 'تحرير': 'RELEASE', 'استرداد': 'REFUND', 'تقسيم': 'SPLIT' };
             if (!confirm(`تأكيد: ${labels[action] || action}؟`)) return;
+            btn.disabled = true;
+            try { await API.admin.resolveDispute(id, { outcome: outcomeMap[action] || 'RELEASE' }); } catch(e) { /* demo */ }
             const item = document.querySelector(`[data-id="${id}"]`);
             if (item) { item.style.opacity = '0.3'; setTimeout(() => item.remove(), 500); }
             toast(`⚖️ تم: ${labels[action] || action}`);
@@ -863,16 +870,20 @@
         }
 
         // ── Withdrawals ──
-        function approveWithdrawal(btn, id) {
+        async function approveWithdrawal(btn, id) {
             if (!confirm('الموافقة على طلب السحب وتحويل المبلغ؟')) return;
+            btn.disabled = true;
+            try { await API.admin.approveWithdrawal(id); } catch(e) { /* demo */ }
             const row = document.querySelector(`[data-id="${id}"]`);
             if (row) { row.style.opacity = '0.3'; setTimeout(() => row.remove(), 500); }
             toast('✅ تمت الموافقة على السحب وجاري التحويل');
             const badge = document.getElementById('badge-wd');
             if (badge) { const n = Math.max(0, parseInt(badge.textContent)-1); badge.textContent = n; if (!n) badge.style.display = 'none'; }
         }
-        function rejectWithdrawal(btn, id) {
+        async function rejectWithdrawal(btn, id) {
             if (!confirm('رفض طلب السحب؟')) return;
+            btn.disabled = true;
+            try { await API.admin.rejectWithdrawal(id, { reason: 'رفض من قبل الإدارة' }); } catch(e) { /* demo */ }
             const row = document.querySelector(`[data-id="${id}"]`);
             if (row) { row.style.opacity = '0.3'; setTimeout(() => row.remove(), 500); }
             toast('❌ تم رفض طلب السحب وإعادة المبلغ للمحفظة');
@@ -886,8 +897,11 @@
             btn.textContent = '⏳ جارٍ التحديث...'; btn.disabled = true;
             setTimeout(() => { btn.textContent = '🔄 تحديث'; btn.disabled = false; toast('✅ تم تحديث البيانات'); }, 1200);
         }
-        function logout() {
-            if (confirm('تسجيل الخروج من لوحة الإدارة؟')) { localStorage.removeItem('khedmah_admin'); window.location.href = 'admin-login.html'; }
+        async function logout() {
+            if (confirm('تسجيل الخروج من لوحة الإدارة؟')) {
+                await API.auth.logout().catch(() => {});
+                window.location.href = 'admin-login.html';
+            }
         }
         function toggleTheme() {
             const isDark = document.documentElement.classList.toggle('dark');
@@ -896,6 +910,25 @@
         }
         // Apply saved theme icon
         if (localStorage.getItem('khedmah_theme') === 'dark') document.getElementById('themeToggle').textContent = '☀️';
+
+        // ── Load real stats from API ──
+        (async function initAdminStats() {
+            try {
+                const stats = await API.admin.stats();
+                if (!stats) return;
+                const kpiValues = document.querySelectorAll('.kpi-value');
+                if (kpiValues[0] && stats.totalUsers    != null) kpiValues[0].textContent = Number(stats.totalUsers).toLocaleString('ar-SA');
+                if (kpiValues[1] && stats.totalProviders != null) kpiValues[1].textContent = Number(stats.totalProviders).toLocaleString('ar-SA');
+                if (kpiValues[2] && stats.totalRequests  != null) kpiValues[2].textContent = Number(stats.totalRequests).toLocaleString('ar-SA');
+                if (kpiValues[3] && stats.platformRevenue != null) kpiValues[3].textContent = Number(stats.platformRevenue).toLocaleString('ar-SA');
+                if (kpiValues[4] && stats.openDisputes   != null) kpiValues[4].textContent = stats.openDisputes;
+                if (kpiValues[5] && stats.pendingVerifications != null) kpiValues[5].textContent = stats.pendingVerifications;
+                // Update nav badges
+                if (stats.pendingVerifications) { const b = document.getElementById('badge-verify'); if (b) b.textContent = stats.pendingVerifications; }
+                if (stats.openDisputes)          { const b = document.getElementById('badge-disputes'); if (b) b.textContent = stats.openDisputes; }
+                if (stats.pendingWithdrawals)    { const b = document.getElementById('badge-wd'); if (b) b.textContent = stats.pendingWithdrawals; }
+            } catch(e) { /* silent — admin may not have API access yet */ }
+        })();
     </script>
 </body>
 </html>

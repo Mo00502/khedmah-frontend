@@ -228,6 +228,7 @@
 
     <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙</button>
 
+    <script src="js/api.js"></script>
     <script>
         function toggleTheme() {
             const isDark = document.documentElement.classList.toggle('dark');
@@ -316,12 +317,22 @@
             btn.disabled = true;
             btn.innerHTML = '<span>⏳</span><span>جاري إنشاء الحساب...</span>';
 
-            // Demo mode — simulate API call
-            await new Promise(r => setTimeout(r, 1000));
-
-            document.getElementById('regForm').style.display = 'none';
-            document.getElementById('sentToEmail').textContent = email;
-            document.getElementById('successState').classList.add('show');
+            try {
+                const nameAr = document.getElementById('nameAr')?.value?.trim() || '';
+                await API.auth.registerCustomer({ email, username, password, nameAr: nameAr || undefined });
+                document.getElementById('regForm').style.display = 'none';
+                document.getElementById('sentToEmail').textContent = email;
+                document.getElementById('successState').classList.add('show');
+            } catch (err) {
+                btn.disabled = false;
+                btn.innerHTML = '<span>🚀</span><span>إنشاء الحساب</span>';
+                const errEl = document.getElementById('globalErr');
+                if (errEl) {
+                    errEl.textContent = '❌ ' + API.errorMsg(err);
+                    errEl.style.display = 'block';
+                    setTimeout(() => errEl.style.display = 'none', 5000);
+                }
+            }
         });
     </script>
 </body>
