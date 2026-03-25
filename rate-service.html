@@ -522,7 +522,7 @@
         })();
 
         async function submitReview() {
-            if (!mainRating) return;
+            if (!mainRating || mainRating < 1 || mainRating > 5 || !Number.isInteger(mainRating)) return;
             const reqId = new URLSearchParams(location.search).get('requestId') || '';
             const btn = document.getElementById('submitBtn');
             btn.disabled = true;

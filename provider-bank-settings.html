@@ -451,6 +451,28 @@
                     💾 حفظ الحساب البنكي
                 </button>
             </form>
+
+            <!-- Saved confirmation panel — shown after successful save -->
+            <div id="savedConfirmation" style="display:none;margin-top:1.5rem;padding:1.25rem 1.5rem;background:rgba(16,185,129,.08);border:1.5px solid rgba(16,185,129,.3);border-radius:16px;">
+                <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.9rem;">
+                    <span style="font-size:1.3rem;">✅</span>
+                    <span style="font-weight:700;color:var(--success);font-size:1rem;">تم حفظ الحساب البنكي بنجاح</span>
+                </div>
+                <div style="display:grid;gap:.5rem;font-size:.9rem;">
+                    <div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(16,185,129,.2);padding-bottom:.4rem;">
+                        <span style="color:var(--gray);">البنك</span>
+                        <span id="confirmedBank" style="font-weight:600;"></span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;border-bottom:1px solid rgba(16,185,129,.2);padding-bottom:.4rem;">
+                        <span style="color:var(--gray);">اسم الحساب</span>
+                        <span id="confirmedName" style="font-weight:600;"></span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;">
+                        <span style="color:var(--gray);">رقم الآيبان</span>
+                        <span id="confirmedIban" style="font-weight:600;font-family:monospace;letter-spacing:.5px;"></span>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -539,6 +561,12 @@
             try {
                 await API.providers.updateBank({ bankName: bankNames[selectedBank] || selectedBank, iban, accountName });
                 API.toast('✅ تم حفظ الحساب البنكي بنجاح!', 'success');
+                // Show persistent saved confirmation with masked IBAN
+                const maskedIban = iban.slice(0, 4) + ' **** **** **** ' + iban.slice(-4);
+                document.getElementById('confirmedBank').textContent = bankNames[selectedBank] || selectedBank;
+                document.getElementById('confirmedName').textContent = accountName;
+                document.getElementById('confirmedIban').textContent = maskedIban;
+                document.getElementById('savedConfirmation').style.display = 'block';
             } catch(err) {
                 API.toast('❌ ' + API.errorMsg(err));
             } finally {
