@@ -447,7 +447,7 @@ const BIDS = [
                 <!-- Bid card header -->
                 <div class="bid-card-header">
                     <div class="bid-company">
-                        <div class="company-avatar" :style="`background:linear-gradient(135deg,${bid.avatarColor.split(',')[0]},${bid.avatarColor.split(',')[1]})`" x-text="bid.avatar"></div>
+                        <div class="company-avatar" :style="safeCssGradient(bid.avatarColor)" x-text="bid.avatar"></div>
                         <div class="company-info">
                             <div class="company-name-row">
                                 <span class="company-name" x-text="bid.company"></span>
@@ -586,6 +586,21 @@ function showToast(msg) {
     let t = document.getElementById('pageToast');
     t.textContent = msg; t.style.display = 'block';
     setTimeout(() => t.style.display = 'none', 3000);
+}
+
+// Sanitize CSS color values — only allow hex codes, rgb/rgba, hsl, and named colors.
+// Blocks semicolons, quotes, parentheses-with-url, and other CSS injection vectors.
+function safeColor(c) {
+    const s = String(c ?? '').trim();
+    return /^(#[0-9a-fA-F]{3,8}|rgba?\(\d+,\s*\d+,\s*\d+(,\s*[\d.]+)?\)|hsla?\([\d.,\s%]+\)|[a-zA-Z]{2,30})$/.test(s)
+        ? s
+        : '#64748b'; // neutral fallback
+}
+function safeCssGradient(colorStr) {
+    const parts = String(colorStr ?? '').split(',');
+    const c1 = safeColor(parts[0]);
+    const c2 = safeColor(parts[1] || parts[0]);
+    return `background:linear-gradient(135deg,${c1},${c2})`;
 }
 
 function toggleTheme() {
