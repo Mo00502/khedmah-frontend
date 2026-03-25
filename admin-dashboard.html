@@ -203,37 +203,37 @@
         <div class="sidebar-logo">KHEDMAH <span>ADMIN</span></div>
         <nav class="sidebar-nav">
             <div class="nav-section">الرئيسية</div>
-            <button class="nav-item active" onclick="showSection('dashboard',this)">
+            <button class="nav-item active" data-section="dashboard" onclick="showSection('dashboard',this)">
                 <span class="nav-icon">📊</span> لوحة التحكم
             </button>
 
             <div class="nav-section">إدارة المستخدمين</div>
-            <button class="nav-item" onclick="showSection('verifications',this)">
+            <button class="nav-item" data-section="verifications" onclick="showSection('verifications',this)">
                 <span class="nav-icon">✅</span> التحقق من المزودين
                 <span class="nav-badge" id="badge-verify">4</span>
             </button>
-            <button class="nav-item" onclick="showSection('users',this)">
+            <button class="nav-item" data-section="users" onclick="showSection('users',this)">
                 <span class="nav-icon">👥</span> جميع المستخدمين
             </button>
 
             <div class="nav-section">العمليات</div>
-            <button class="nav-item" onclick="showSection('disputes',this)">
+            <button class="nav-item" data-section="disputes" onclick="showSection('disputes',this)">
                 <span class="nav-icon">⚖️</span> النزاعات
                 <span class="nav-badge" id="badge-disputes">2</span>
             </button>
-            <button class="nav-item" onclick="showSection('commissions',this)">
+            <button class="nav-item" data-section="commissions" onclick="showSection('commissions',this)">
                 <span class="nav-icon">💰</span> العمولات المتأخرة
             </button>
-            <button class="nav-item" onclick="showSection('withdrawals',this)">
+            <button class="nav-item" data-section="withdrawals" onclick="showSection('withdrawals',this)">
                 <span class="nav-icon">🏦</span> طلبات السحب
                 <span class="nav-badge" id="badge-wd">3</span>
             </button>
 
             <div class="nav-section">التقارير</div>
-            <button class="nav-item" onclick="showSection('reports',this)">
+            <button class="nav-item" data-section="reports" onclick="showSection('reports',this)">
                 <span class="nav-icon">📈</span> التقارير والإحصاء
             </button>
-            <button class="nav-item" onclick="showSection('health',this)">
+            <button class="nav-item" data-section="health" onclick="showSection('health',this)">
                 <span class="nav-icon">🔧</span> صحة النظام
             </button>
         </nav>
@@ -276,7 +276,7 @@
                 <div class="panel" style="margin-bottom:0">
                     <div class="panel-header">
                         <div class="panel-title">📋 آخر الطلبات</div>
-                        <button class="panel-link" onclick="showSection('users',document.querySelector('.nav-item:nth-of-type(3)'))">عرض الكل →</button>
+                        <button class="panel-link" onclick="showSection('users',document.querySelector('[data-section=\'users\']'))">عرض الكل →</button>
                     </div>
                     <div class="table-wrap">
                         <table>

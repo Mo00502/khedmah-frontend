@@ -775,7 +775,7 @@
 
             <template x-if="ms.status === 'disputed'">
               <div class="milestone-actions">
-                <button class="btn-support">
+                <button class="btn-support" @click="window.location.href='chat.html?support=1&ref=milestone-' + ms.id">
                   <i class="fas fa-headset"></i>
                   تواصل مع الدعم
                 </button>
