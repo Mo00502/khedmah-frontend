@@ -574,6 +574,8 @@
             showToast('تم نشر المناقصة بنجاح ✅');
         }
 
+        function escHtml(s) { return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
         function showToast(msg) {
             const t = document.createElement('div');
             t.style.cssText = 'position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:#1e293b;color:white;padding:0.75rem 1.5rem;border-radius:12px;font-size:0.9rem;z-index:9999;font-family:Tajawal,sans-serif;';
@@ -628,18 +630,18 @@
                         <div style="padding:1.25rem">
                             <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:0.75rem;flex-wrap:wrap">
                                 <div>
-                                    <div style="font-weight:700;font-size:1rem;margin-bottom:0.25rem">${t.title || 'مناقصة'}</div>
-                                    <div style="font-size:0.82rem;color:var(--gray)">🏢 ${t.company?.name || 'شركة'} &nbsp;•&nbsp; 📍 ${t.city || ''} &nbsp;•&nbsp; 🏷️ ${t.category || ''}</div>
+                                    <div style="font-weight:700;font-size:1rem;margin-bottom:0.25rem">${escHtml(t.title || 'مناقصة')}</div>
+                                    <div style="font-size:0.82rem;color:var(--gray)">🏢 ${escHtml(t.company?.name || 'شركة')} &nbsp;•&nbsp; 📍 ${escHtml(t.city || '')} &nbsp;•&nbsp; 🏷️ ${escHtml(t.category || '')}</div>
                                 </div>
                                 <span style="background:#dcfce7;color:#166534;padding:0.25rem 0.75rem;border-radius:999px;font-size:0.75rem;font-weight:600;white-space:nowrap">${t.status === 'OPEN' ? '🟢 مفتوح' : '🔴 مغلق'}</span>
                             </div>
-                            <p style="font-size:0.88rem;color:var(--gray);margin:0.75rem 0 0">${(t.description || '').slice(0, 120)}${t.description?.length > 120 ? '...' : ''}</p>
+                            <p style="font-size:0.88rem;color:var(--gray);margin:0.75rem 0 0">${escHtml((t.description || '').slice(0, 120))}${(t.description?.length ?? 0) > 120 ? '...' : ''}</p>
                             <div style="display:flex;gap:1rem;margin-top:0.875rem;flex-wrap:wrap">
                                 <span style="font-size:0.8rem;color:var(--primary);font-weight:600">💰 ${Number(t.budget || 0).toLocaleString('ar-SA')} ر.س</span>
-                                ${t.deadline ? `<span style="font-size:0.8rem;color:var(--gray)">⏰ الإغلاق: ${t.deadline.split('T')[0]}</span>` : ''}
+                                ${t.deadline ? `<span style="font-size:0.8rem;color:var(--gray)">⏰ الإغلاق: ${escHtml(t.deadline.split('T')[0])}</span>` : ''}
                             </div>
                             <div style="margin-top:1rem;text-align:left">
-                                <a href="tender-detail.html?id=${id}" style="background:var(--primary);color:white;padding:0.45rem 1.25rem;border-radius:8px;text-decoration:none;font-size:0.85rem">عرض التفاصيل</a>
+                                <a href="tender-detail.html?id=${encodeURIComponent(id)}" style="background:var(--primary);color:white;padding:0.45rem 1.25rem;border-radius:8px;text-decoration:none;font-size:0.85rem">عرض التفاصيل</a>
                             </div>
                         </div>`;
                     list.appendChild(card);

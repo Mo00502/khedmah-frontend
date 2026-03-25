@@ -429,7 +429,9 @@
 <script src="js/api.js"></script>
 <script>
     (function() {
-        if (!API.isLoggedIn()) window.location.href = 'login.html';
+        if (!API.isLoggedIn()) { window.location.href = 'login.html'; return; }
+        const u = (() => { try { return JSON.parse(localStorage.getItem('khedmah_user') || '{}'); } catch(e) { return {}; } })();
+        if (u.role && u.role !== 'customer') window.location.href = 'customer-dashboard.html';
     })();
 </script>
     <!-- Navigation -->
