@@ -692,7 +692,8 @@
     function toggleService(id, checkbox) {
         const card = document.querySelector(`[data-id="${id}"]`);
         const lbl = document.getElementById(`lbl-${id}`);
-        if (checkbox.checked) {
+        const isActive = checkbox.checked;
+        if (isActive) {
             card.classList.remove('inactive');
             lbl.textContent = 'نشط';
             showToast('✓ تم تفعيل الخدمة');
@@ -702,6 +703,9 @@
             showToast('⏸ تم إيقاف الخدمة');
         }
         updateStats();
+        // Persist active/inactive state to backend
+        const apiId = card?.dataset?.apiId || id;
+        API.providers.updateService(apiId, { active: isActive }).catch(() => {});
     }
 
     function updateStats() {
@@ -853,10 +857,16 @@
 
         closeModal();
         showToast(editingId ? '✓ تم تحديث الخدمة بنجاح' : '✓ تمت إضافة الخدمة بنجاح');
-        // Fire API call in background (demo IDs won't match real UUIDs but real adds create new services)
+        const rawPrice = selectedPriceType !== 'agree' ? parseFloat(document.getElementById('priceInput')?.value || '0') : null;
         if (!editingId) {
-            const rawPrice = selectedPriceType !== 'agree' ? parseFloat(document.getElementById('priceInput')?.value || '0') : null;
+            // Create new service
             API.providers.addService({ name, category, description: desc, priceType: selectedPriceType, price: rawPrice }).catch(() => {});
+        } else {
+            // Update existing service — editingId is a DOM timestamp ID for static cards;
+            // for API-created cards a real UUID would be stored in data-api-id
+            const card = document.querySelector(`[data-id="${editingId}"]`);
+            const apiId = card?.dataset?.apiId || editingId;
+            API.providers.updateService(apiId, { name, category, description: desc, priceType: selectedPriceType, price: rawPrice }).catch(() => {});
         }
         editingId = null;
     }

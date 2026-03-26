@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <script>(function(){if(localStorage.getItem("khedmah_theme")==="dark")document.documentElement.classList.add("dark")})()</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="سجّل دخولك إلى منصة خدمة للوصول إلى لوحة التحكم وإدارة طلبات الخدمة.">
     <title>تسجيل الدخول - خدمة</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap');
@@ -211,9 +212,14 @@
             const u = localStorage.getItem('khedmah_user');
             try {
                 const parsed = JSON.parse(u);
-                window.location.href = parsed.role === 'provider'
-                    ? 'provider-dashboard.html'
-                    : 'customer-dashboard.html';
+                const role = parsed.role || '';
+                if (role === 'admin' || role === 'super_admin' || role === 'support') {
+                    window.location.href = 'admin-dashboard.html';
+                } else if (role === 'provider') {
+                    window.location.href = 'provider-dashboard.html';
+                } else {
+                    window.location.href = 'customer-dashboard.html';
+                }
             } catch {
                 window.location.href = 'customer-dashboard.html';
             }

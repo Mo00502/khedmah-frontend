@@ -273,7 +273,7 @@
                         city:            this.city,
                         district:        this.district,
                         description:     this.description || '',
-                        scheduledAt:     this.scheduledDate ? new Date(this.scheduledDate).toISOString() : undefined,
+                        scheduledAt:     this.customDate ? new Date(this.customDate).toISOString() : undefined,
                         hasMaterials:    this.hasMaterials,
                         materialsEst:    this.hasMaterials ? (this.materialsEst || 0) : 0,
                     });

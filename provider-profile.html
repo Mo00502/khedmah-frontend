@@ -1099,7 +1099,7 @@
         document.getElementById('ctaPriceNum').textContent = `من ${data.startingPrice} ر.س`;
         document.getElementById('ctaPriceUnit').textContent = `/ ${data.priceUnit}`;
         document.getElementById('ctaBookBtn').href = `quote-request.html?category=${encodeURIComponent(data.category)}`;
-        document.getElementById('ctaChatBtn').href = `chat.html?type=service&providerId=${encodeURIComponent(id)}`;
+        document.getElementById('ctaChatBtn').href = `chat.html?type=service&providerId=${encodeURIComponent(new URLSearchParams(location.search).get('id') || 'khalid')}`;
     }
 
     function loadProfile() {
@@ -1141,10 +1141,14 @@
                 document.getElementById('ctaBookBtn').href = `quote-request.html?category=${encodeURIComponent(data.category)}&providerId=${id}`;
             }).catch(() => {
                 // Fall back to demo data
-                applyProfileData(PROVIDERS[id] || PROVIDERS['khalid']);
+                const d = PROVIDERS[id] || PROVIDERS['khalid'];
+                applyProfileData(d);
+                document.getElementById('ctaBookBtn').href = `quote-request.html?category=${encodeURIComponent(d.category)}&providerId=${encodeURIComponent(id)}`;
             });
         } else {
-            applyProfileData(PROVIDERS[id] || PROVIDERS['khalid']);
+            const d = PROVIDERS[id] || PROVIDERS['khalid'];
+            applyProfileData(d);
+            document.getElementById('ctaBookBtn').href = `quote-request.html?category=${encodeURIComponent(d.category)}&providerId=${encodeURIComponent(id)}`;
         }
     }
     loadProfile();

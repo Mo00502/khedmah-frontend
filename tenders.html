@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <script>(function(){if(localStorage.getItem("khedmah_theme")==="dark")document.documentElement.classList.add("dark")})()</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>المناقصات - Khedmah</title>
+    <meta name="description" content="تصفح وأرسل عروضك على مناقصات المشاريع في المملكة العربية السعودية عبر منصة خدمة. عمولة 2% فقط على العقود المرساة.">
+    <title>المناقصات - خدمة</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -154,6 +155,8 @@
         }
     </style>
 </head>
+<body>
+<script src="js/api.js"></script>
 <script>
   (function() {
     if (localStorage.getItem('khedmah_theme') === 'dark') {
@@ -164,9 +167,6 @@
     }
   })();
 </script>
-
-<body>
-<script src="js/api.js"></script>
     <nav>
         <div class="nav-content">
             <a href="home.html" class="logo">KHEDMAH</a>
@@ -657,5 +657,15 @@
             }).catch(() => {});
         });
     </script>
+
+<footer style="background:#1e293b;color:rgba(255,255,255,0.55);padding:1.5rem 5%;text-align:center;font-family:'Tajawal',sans-serif;font-size:0.85rem;margin-top:2rem;">
+    <div style="display:flex;gap:1.5rem;justify-content:center;flex-wrap:wrap;margin-bottom:0.75rem;">
+        <a href="home.html" style="color:rgba(255,255,255,0.55);text-decoration:none;">الرئيسية</a>
+        <a href="terms.html" style="color:rgba(255,255,255,0.55);text-decoration:none;">شروط الاستخدام</a>
+        <a href="privacy-policy.html" style="color:rgba(255,255,255,0.55);text-decoration:none;">سياسة الخصوصية</a>
+        <a href="support.html" style="color:rgba(255,255,255,0.55);text-decoration:none;">الدعم والمساعدة</a>
+    </div>
+    <p>© 2025 خدمة — جميع الحقوق محفوظة</p>
+</footer>
 </body>
 </html>
