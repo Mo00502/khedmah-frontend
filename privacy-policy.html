@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <script>(function(){if(localStorage.getItem("khedmah_theme")==="dark")document.documentElement.classList.add("dark")})()</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>سياسة الخصوصية — خدمة</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary: #028090;
+      --accent: #02C39A;
+      --dark: #1E293B;
+      --light: #F8FAFC;
+      --gray: #64748B;
+      --border: #e2e8f0;
+    }
+
+    body {
+      font-family: 'Tajawal', sans-serif;
+      background: var(--light);
+      color: var(--dark);
+      min-height: 100vh;
+      line-height: 1.8;
+    }
+
+    /* NAV */
+    nav {
+      background: white;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+      position: sticky;
+      top: 0;
+      z-index: 200;
+    }
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.875rem 5%;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .logo {
+      font-weight: 900;
+      font-size: 1.3rem;
+      color: var(--primary);
+      text-decoration: none;
+    }
+    .nav-actions { display: flex; align-items: center; gap: 0.75rem; }
+    .nav-back {
+      display: flex; align-items: center; gap: 0.4rem;
+      font-size: 0.875rem; color: var(--gray);
+      text-decoration: none; padding: 0.35rem 0.75rem;
+      border-radius: 8px; transition: background 0.15s, color 0.15s;
+    }
+    .nav-back:hover { background: var(--light); color: var(--primary); }
+    .theme-toggle {
+      width: 36px; height: 36px;
+      border: 1.5px solid var(--border); border-radius: 10px;
+      background: transparent; cursor: pointer;
+      font-size: 1rem; display: flex; align-items: center; justify-content: center;
+    }
+
+    /* HERO */
+    .page-hero {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: white;
+      padding: 3rem 5%;
+      text-align: center;
+    }
+    .page-hero h1 { font-size: 2rem; font-weight: 800; margin-bottom: 0.5rem; }
+    .page-hero p { font-size: 0.95rem; opacity: 0.9; }
+
+    /* CONTENT */
+    .content-wrap {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 2.5rem 5%;
+    }
+
+    .section-card {
+      background: white;
+      border-radius: 16px;
+      padding: 1.75rem 2rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      border-right: 4px solid var(--primary);
+    }
+    .section-card h2 {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--primary);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .section-card p {
+      font-size: 0.92rem;
+      color: #475569;
+      margin-bottom: 0.75rem;
+    }
+    .section-card p:last-child { margin-bottom: 0; }
+    .section-card ul {
+      list-style: none;
+      padding: 0;
+      margin: 0.5rem 0 0;
+    }
+    .section-card ul li {
+      font-size: 0.92rem;
+      color: #475569;
+      padding: 0.35rem 0;
+      padding-right: 1.5rem;
+      position: relative;
+    }
+    .section-card ul li::before {
+      content: '•';
+      color: var(--primary);
+      font-weight: 900;
+      position: absolute;
+      right: 0;
+    }
+
+    .last-updated {
+      text-align: center;
+      font-size: 0.82rem;
+      color: var(--gray);
+      margin-top: 2rem;
+      padding-bottom: 2rem;
+    }
+
+    /* DARK MODE */
+    html.dark body { background: #0f172a; color: #e2e8f0; }
+    html.dark nav { background: #1e293b; border-bottom: 1px solid #334155; }
+    html.dark .logo { color: var(--accent); }
+    html.dark .nav-back { color: #94a3b8; }
+    html.dark .nav-back:hover { background: #334155; color: var(--accent); }
+    html.dark .theme-toggle { border-color: #334155; color: #e2e8f0; }
+    html.dark .section-card { background: #1e293b; box-shadow: none; border-color: var(--accent); }
+    html.dark .section-card h2 { color: var(--accent); }
+    html.dark .section-card p, html.dark .section-card ul li { color: #94a3b8; }
+    html.dark .last-updated { color: #64748b; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="home.html" class="logo">خدمة</a>
+    <div class="nav-actions">
+      <a href="home.html" class="nav-back">
+        <i class="fas fa-arrow-right"></i>
+        الرئيسية
+      </a>
+      <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙</button>
+    </div>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <h1>سياسة الخصوصية</h1>
+  <p>نلتزم بحماية خصوصيتك وأمان بياناتك الشخصية</p>
+</div>
+
+<div class="content-wrap">
+
+  <div class="section-card">
+    <h2><i class="fas fa-building"></i> من نحن</h2>
+    <p>
+      خدمة هي منصة إلكترونية سعودية متخصصة في ربط أصحاب المنازل والشركات بمزودي الخدمات المنزلية المحترفين والمعتمدين في المملكة العربية السعودية. نعمل وفق أحكام ومتطلبات نظام حماية البيانات الشخصية السعودي.
+    </p>
+    <p>
+      نحن ملتزمون بحماية خصوصيتك واتخاذ جميع التدابير اللازمة لضمان أمان بياناتك الشخصية. تسري هذه السياسة على جميع مستخدمي منصة خدمة سواء كانوا عملاء أو مزودي خدمات.
+    </p>
+  </div>
+
+  <div class="section-card">
+    <h2><i class="fas fa-database"></i> البيانات التي نجمعها</h2>
+    <p>نجمع البيانات التالية لتقديم خدماتنا بالشكل الأمثل:</p>
+    <ul>
+      <li><strong>بيانات الهوية:</strong> الاسم الكامل، البريد الإلكتروني</li>
+      <li><strong>بيانات التواصل:</strong> رقم الجوال (اختياري، للتواصل مع مزودي الخدمة فقط)</li>
+      <li><strong>بيانات الموقع:</strong> المدينة والحي لتمكين البحث عن الخدمات القريبة</li>
+      <li><strong>بيانات الدفع:</strong> معلومات الفاتورة، وتاريخ المعاملات المالية (لا نخزن أرقام بطاقات الدفع)</li>
+      <li><strong>رموز الإشعارات (Device Tokens):</strong> لإرسال الإشعارات الفورية بموافقتك المسبقة</li>
+      <li><strong>بيانات الاستخدام:</strong> سجل الخدمات المطلوبة، التقييمات، والمحادثات مع مزودي الخدمة</li>
+      <li><strong>بيانات مزودي الخدمة:</strong> الوثائق الرسمية، ترخيص العمل، السجل التجاري، صور المشاريع المنجزة</li>
+    </ul>
+  </div>
+
+  <div class="section-card">
+    <h2><i class="fas fa-cogs"></i> كيف نستخدم بياناتك</h2>
+    <p>نستخدم البيانات التي نجمعها للأغراض التالية:</p>
+    <ul>
+      <li>تقديم الخدمات وتيسير التواصل بين العملاء ومزودي الخدمات</li>
+      <li>معالجة المدفوعات وإدارة نظام الضمان (Escrow)</li>
+      <li>إرسال إشعارات تتعلق بحالة طلباتك وتحديثات الخدمة</li>
+      <li>التحقق من هوية مزودي الخدمة وضمان جودتهم</li>
+      <li>تحسين المنصة وتطويرها بناءً على أنماط الاستخدام</li>
+      <li>الامتثال للمتطلبات القانونية والتنظيمية في المملكة العربية السعودية</li>
+      <li>حل النزاعات ودعم خدمة العملاء</li>
+    </ul>
+  </div>
+
+  <div class="section-card">
+    <h2><i class="fas fa-share-alt"></i> مشاركة البيانات</h2>
+    <p>لا نبيع بياناتك الشخصية لأي طرف ثالث. نشارك بياناتك في الحالات التالية فقط:</p>
+    <ul>
+      <li><strong>مزودو الخدمة:</strong> نشارك بياناتك الضرورية (كالاسم والموقع) مع مزود الخدمة عند إتمام عقد الخدمة</li>
+      <li><strong>بوابة الدفع Moyasar:</strong> تتم معالجة المدفوعات عبر Moyasar وفق سياسة الخصوصية الخاصة بهم</li>
+      <li><strong>الجهات الحكومية:</strong> نلتزم بتقديم البيانات للجهات الرسمية عند الطلب القانوني الرسمي</li>
+      <li><strong>مقدمو الخدمات التقنية:</strong> شركاء موثوقون يساعدوننا في تشغيل المنصة تحت اتفاقيات سرية صارمة</li>
+    </ul>
+  </div>
+
+  <div class="section-card">
+    <h2><i class="fas fa-server"></i> تخزين البيانات وحمايتها</h2>
+    <p>
+      تُخزَّن جميع بياناتك على خوادم آمنة في المملكة العربية السعودية. نطبق معايير الأمان التالية:
+    </p>
+    <ul>
+      <li>تشفير البيانات أثناء النقل باستخدام بروتوكول HTTPS/TLS</li>
+      <li>تشفير كلمات المرور باستخدام خوارزمية bcrypt</li>
+      <li>تشفير الرموز الحساسة قبل تخزينها في قاعدة البيانات</li>
+      <li>نسخ احتياطية دورية مع بروتوكولات استرداد البيانات</li>
+      <li>مراجعات أمنية دورية واختبارات اختراق</li>
+      <li>تقييد الوصول للبيانات على فريق العمل المخوّل فقط</li>
+    </ul>
+  </div>
+
+  <div class="section-card">
+    <h2><i class="fas fa-user-shield"></i> حقوقك كمستخدم</h2>
+    <p>وفق نظام حماية البيانات الشخصية السعودي، لديك الحقوق التالية:</p>
+    <ul>
+      <li><strong>حق الاطلاع:</strong> يمكنك طلب الاطلاع على جميع بياناتك المخزنة لدينا</li>
+      <li><strong>حق التصحيح:</strong> يمكنك تصحيح أي بيانات غير دقيقة من خلال إعدادات حسابك</li>
+      <li><strong>حق الحذف:</strong> يمكنك طلب حذف حسابك وبياناتك، راجع <a href="account-deletion.html" style="color:var(--primary);">صفحة حذف الحساب</a></li>
+      <li><strong>حق التقييد:</strong> يمكنك الاعتراض على معالجة بياناتك لأغراض التسويق</li>
+      <li><strong>حق نقل البيانات:</strong> يمكنك طلب نسخة من بياناتك بصيغة قابلة للقراءة</li>
+    </ul>
+    <p>لممارسة أي من هذه الحقوق، تواصل معنا على: <a href="mailto:privacy@khedmah.sa" style="color:var(--primary);">privacy@khedmah.sa</a></p>
+  </div>
+
+  <div class="section-card">
+    <h2><i class="fas fa-cookie-bite"></i> ملفات تعريف الارتباط والتخزين المحلي</h2>
+    <p>
+      نستخدم التخزين المحلي للمتصفح (localStorage) لإدارة جلسات تسجيل الدخول وتفضيلات الواجهة (كالوضع الليلي). لا نستخدم ملفات تعريف الارتباط التتبعية (Tracking Cookies) أو أدوات تحليل الزوار الخارجية.
+    </p>
+    <p>
+      البيانات المخزنة محلياً تبقى على جهازك ولا تُرسل لأطراف ثالثة. يمكنك مسحها في أي وقت من إعدادات متصفحك.
+    </p>
+  </div>
+
+  <div class="section-card">
+    <h2><i class="fas fa-credit-card"></i> بيانات الدفع</h2>
+    <p>
+      تتم معالجة جميع المدفوعات عبر بوابة <strong>Moyasar</strong> للدفع الإلكتروني، المرخصة من البنك المركزي السعودي (ساما). نحن لا نخزن أرقام بطاقات الائتمان أو بطاقات مدى على خوادمنا.
+    </p>
+    <p>
+      ما نخزنه: معرّف المعاملة، المبالغ المدفوعة، وحالة الدفع — وذلك لأغراض إصدار الفواتير وحل النزاعات.
+    </p>
+  </div>
+
+  <div class="section-card">
+    <h2><i class="fas fa-bell"></i> الإشعارات الفورية</h2>
+    <p>
+      نرسل الإشعارات الفورية فقط بموافقتك الصريحة عند تفعيل الخاصية. تشمل الإشعارات: تحديثات حالة الطلبات، رسائل مزودي الخدمة، وإشعارات المدفوعات.
+    </p>
+    <p>
+      يمكنك إلغاء الاشتراك في الإشعارات في أي وقت من إعدادات حسابك أو إعدادات جهازك.
+    </p>
+  </div>
+
+  <div class="section-card">
+    <h2><i class="fas fa-trash-alt"></i> حذف الحساب</h2>
+    <p>
+      عند طلب حذف حسابك، سيتم إتمام أي طلبات خدمة نشطة أولاً، ثم حذف بياناتك الشخصية نهائياً خلال 30 يوماً. بعض البيانات قد تُحتجز لفترة أطول للامتثال للمتطلبات القانونية أو المالية.
+    </p>
+    <p>
+      للمزيد من التفاصيل وتقديم طلب الحذف: <a href="account-deletion.html" style="color:var(--primary);">صفحة حذف الحساب</a>
+    </p>
+  </div>
+
+  <div class="section-card">
+    <h2><i class="fas fa-envelope"></i> تواصل معنا</h2>
+    <p>
+      لأي استفسار يتعلق بسياسة الخصوصية أو لممارسة حقوقك:
+    </p>
+    <ul>
+      <li>البريد الإلكتروني: <a href="mailto:privacy@khedmah.sa" style="color:var(--primary);">privacy@khedmah.sa</a></li>
+      <li>الموقع الإلكتروني: <a href="home.html" style="color:var(--primary);">khedmah.sa</a></li>
+    </ul>
+    <p style="margin-top:0.75rem;">
+      نلتزم بالرد على طلباتك خلال 15 يوم عمل.
+    </p>
+  </div>
+
+  <div class="last-updated">
+    <i class="fas fa-calendar-alt" style="color:var(--primary);margin-left:0.3rem;"></i>
+    آخر تحديث: مارس 2026 &nbsp;|&nbsp;
+    <a href="terms.html" style="color:var(--primary);">الشروط والأحكام</a>
+    &nbsp;|&nbsp;
+    <a href="account-deletion.html" style="color:var(--primary);">حذف الحساب</a>
+  </div>
+
+</div>
+
+<script>
+  function toggleTheme() {
+    const isDark = document.documentElement.classList.toggle('dark');
+    localStorage.setItem('khedmah_theme', isDark ? 'dark' : 'light');
+    const btn = document.getElementById('themeToggle');
+    if (btn) btn.textContent = isDark ? '☀️' : '🌙';
+  }
+
+  // Set correct icon on load
+  if (localStorage.getItem('khedmah_theme') === 'dark') {
+    const btn = document.getElementById('themeToggle');
+    if (btn) btn.textContent = '☀️';
+  }
+</script>
+
+</body>
+</html>

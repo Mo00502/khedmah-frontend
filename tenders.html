@@ -177,6 +177,7 @@
                 <a href="consultations.html">الاستشارات</a>
                 <a href="tender-create.html" class="btn-post-tender">+ نشر مناقصة</a>
                 <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙</button>
+                <button onclick="doLogout()" class="btn btn-outline-danger btn-sm">خروج</button>
                 <a href="customer-dashboard.html" class="avatar-btn">م</a>
             </div>
         </div>
@@ -582,6 +583,12 @@
             t.textContent = msg;
             document.body.appendChild(t);
             setTimeout(() => t.remove(), 3000);
+        }
+
+        function doLogout() {
+            localStorage.removeItem('khedmah_demo');
+            localStorage.removeItem('khedmah_user');
+            window.location.href = 'login.html';
         }
 
         function toggleTheme() {

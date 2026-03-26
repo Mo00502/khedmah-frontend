@@ -570,6 +570,7 @@
         <div class="nav-actions">
             <a href="search-services.html" class="nav-back">← بحث</a>
             <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙</button>
+            <button onclick="doLogout()" class="btn btn-outline-danger btn-sm" id="logoutBtn" style="display:none;">خروج</button>
             <a href="customer-dashboard.html" class="avatar-btn">م</a>
         </div>
     </div>
@@ -1147,6 +1148,19 @@
         }
     }
     loadProfile();
+
+    // Logout
+    function doLogout() {
+        localStorage.removeItem('khedmah_demo');
+        localStorage.removeItem('khedmah_user');
+        window.location.href = 'login.html';
+    }
+
+    // Show logout button only if logged in
+    if (localStorage.getItem('khedmah_demo')) {
+        const lb = document.getElementById('logoutBtn');
+        if (lb) lb.style.display = '';
+    }
 
     // Dark mode
     function toggleTheme() {

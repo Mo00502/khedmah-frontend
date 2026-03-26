@@ -454,6 +454,7 @@
         <span>آخر تحديث: مارس 2026</span>
         <span style="margin-top:.3rem;opacity:.5;">v1.0 — Gap Analysis</span>
         <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" style="margin-top:.5rem;">🌙</button>
+        <button onclick="doLogout()" style="margin-top:.5rem;background:transparent;border:1.5px solid rgba(255,255,255,0.5);color:white;border-radius:8px;padding:0.3rem 0.8rem;cursor:pointer;font-family:'Tajawal',sans-serif;font-size:0.85rem;">خروج</button>
       </div>
     </div>
 
@@ -965,6 +966,12 @@
 </footer>
 
 <script>
+  function doLogout() {
+    localStorage.removeItem('khedmah_demo');
+    localStorage.removeItem('khedmah_user');
+    window.location.href = 'login.html';
+  }
+
   function toggleTheme() {
     const isDark = document.documentElement.classList.toggle('dark');
     localStorage.setItem('khedmah_theme', isDark ? 'dark' : 'light');

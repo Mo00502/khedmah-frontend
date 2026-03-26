@@ -394,7 +394,7 @@
             </div>
             <div class="form-group">
                 <label class="form-label">تاريخ البداية *</label>
-                <input type="date" class="form-control" id="rentStart" onchange="calcRent()">
+                <input type="date" class="form-control" id="rentStart" onchange="onStartChange()">
             </div>
             <div class="form-group">
                 <label class="form-label">تاريخ الانتهاء *</label>
@@ -508,16 +508,41 @@
             _rentEquipId = id || null;
             currentDailyPrice = price;
             document.getElementById('rentEquipName').textContent = name;
-            ['rentStart','rentEnd','rentLocation'].forEach(id => document.getElementById(id).value = '');
+            const today = new Date().toISOString().split('T')[0];
+            const startEl = document.getElementById('rentStart');
+            const endEl   = document.getElementById('rentEnd');
+            startEl.value = '';
+            startEl.min   = today;
+            endEl.value   = '';
+            endEl.min     = today;
+            document.getElementById('rentLocation').value = '';
             document.getElementById('rentSummary').style.display = 'none';
             document.getElementById('rentModal').classList.add('show');
+        }
+
+        function onStartChange() {
+            const startEl = document.getElementById('rentStart');
+            const endEl   = document.getElementById('rentEnd');
+            if (startEl.value) {
+                endEl.min = startEl.value;
+                // Clear end if it's before the new start
+                if (endEl.value && endEl.value <= startEl.value) {
+                    endEl.value = '';
+                    document.getElementById('rentSummary').style.display = 'none';
+                }
+            }
+            calcRent();
         }
 
         function calcRent() {
             const s = document.getElementById('rentStart').value;
             const e = document.getElementById('rentEnd').value;
             if (!s || !e) return;
-            const days = Math.max(1, Math.ceil((new Date(e) - new Date(s)) / 86400000));
+            const days = Math.ceil((new Date(e) - new Date(s)) / 86400000);
+            if (days <= 0) {
+                document.getElementById('rentSummary').style.display = 'none';
+                return;
+            }
             const sub = days * currentDailyPrice;
             const vat = sub * 0.15;
             document.getElementById('rentDays').textContent = days + ' يوم';

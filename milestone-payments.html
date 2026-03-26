@@ -624,6 +624,7 @@
         <a href="home.html" class="logo">خدمة</a>
       </div>
       <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" aria-label="تبديل الوضع">🌙</button>
+      <button onclick="doLogout()" class="btn btn-outline-danger btn-sm">خروج</button>
     </div>
   </nav>
 
@@ -894,6 +895,13 @@
 <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
 <script>
+  /* ─── Logout ─── */
+  function doLogout() {
+    localStorage.removeItem('khedmah_demo');
+    localStorage.removeItem('khedmah_user');
+    window.location.href = 'login.html';
+  }
+
   /* ─── Dark-mode toggle ─── */
   function toggleTheme() {
     const isDark = document.documentElement.classList.toggle('dark');

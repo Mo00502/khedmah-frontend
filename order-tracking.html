@@ -311,6 +311,7 @@
             <a href="customer-notifications.html">الإشعارات</a>
             <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙</button>
             <a href="customer-dashboard.html" class="avatar-btn">م</a>
+            <button onclick="doLogout()" class="btn btn-sm btn-outline-danger ms-2" title="تسجيل الخروج" style="padding:0.35rem 0.8rem;border:1.5px solid #ef4444;border-radius:10px;background:transparent;color:#ef4444;font-family:Tajawal,sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;">خروج</button>
         </div>
     </div>
 </nav>
@@ -637,6 +638,12 @@
             if (btn) btn.textContent = '☀️';
         }
     })();
+
+    function doLogout() {
+        localStorage.removeItem('khedmah_demo');
+        localStorage.removeItem('khedmah_user');
+        window.location.href = 'login.html';
+    }
 </script>
 </body>
 </html>

@@ -438,7 +438,10 @@
     <nav>
         <div class="nav-content">
             <a href="INDEX.html" class="logo">KHEDMAH</a>
-            <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙</button>
+            <div style="display:flex;align-items:center;gap:0.75rem;">
+                <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙</button>
+                <button onclick="doLogout()" class="btn btn-outline-danger btn-sm">خروج</button>
+            </div>
         </div>
     </nav>
 
@@ -609,6 +612,12 @@
             } else {
                 alert(text);
             }
+        }
+
+        function doLogout() {
+            localStorage.removeItem('khedmah_demo');
+            localStorage.removeItem('khedmah_user');
+            window.location.href = 'login.html';
         }
 
         function toggleTheme() {
