@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <script>(function(){if(localStorage.getItem("khedmah_theme")==="dark")document.documentElement.classList.add("dark")})()</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الشروط والأحكام — خدمة</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary: #028090;
+      --accent: #02C39A;
+      --dark: #1E293B;
+      --light: #F8FAFC;
+      --gray: #64748B;
+      --border: #e2e8f0;
+    }
+
+    body {
+      font-family: 'Tajawal', sans-serif;
+      background: var(--light);
+      color: var(--dark);
+      min-height: 100vh;
+      line-height: 1.8;
+    }
+
+    /* NAV */
+    nav {
+      background: white;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+      position: sticky;
+      top: 0;
+      z-index: 200;
+    }
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.875rem 5%;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .logo {
+      font-weight: 900;
+      font-size: 1.3rem;
+      color: var(--primary);
+      text-decoration: none;
+    }
+    .nav-actions { display: flex; align-items: center; gap: 0.75rem; }
+    .nav-back {
+      display: flex; align-items: center; gap: 0.4rem;
+      font-size: 0.875rem; color: var(--gray);
+      text-decoration: none; padding: 0.35rem 0.75rem;
+      border-radius: 8px; transition: background 0.15s, color 0.15s;
+    }
+    .nav-back:hover { background: var(--light); color: var(--primary); }
+    .theme-toggle {
+      width: 36px; height: 36px;
+      border: 1.5px solid var(--border); border-radius: 10px;
+      background: transparent; cursor: pointer;
+      font-size: 1rem; display: flex; align-items: center; justify-content: center;
+    }
+
+    /* HERO */
+    .page-hero {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: white;
+      padding: 3rem 5%;
+      text-align: center;
+    }
+    .page-hero h1 { font-size: 2rem; font-weight: 800; margin-bottom: 0.5rem; }
+    .page-hero p { font-size: 0.95rem; opacity: 0.9; }
+
+    /* TOC */
+    .toc-card {
+      max-width: 820px;
+      margin: 1.5rem auto 0;
+      padding: 0 5%;
+    }
+    .toc-inner {
+      background: white;
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    .toc-inner h3 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--gray);
+      margin-bottom: 0.75rem;
+    }
+    .toc-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      list-style: none;
+      padding: 0;
+    }
+    .toc-list a {
+      font-size: 0.82rem;
+      color: var(--primary);
+      text-decoration: none;
+      background: rgba(2,128,144,0.08);
+      padding: 0.25rem 0.65rem;
+      border-radius: 20px;
+      transition: background 0.15s;
+    }
+    .toc-list a:hover { background: rgba(2,128,144,0.2); }
+
+    /* CONTENT */
+    .content-wrap {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 2rem 5% 3rem;
+    }
+
+    .section-card {
+      background: white;
+      border-radius: 16px;
+      padding: 1.75rem 2rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      border-right: 4px solid var(--primary);
+    }
+    .section-card h2 {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--primary);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .section-card p {
+      font-size: 0.92rem;
+      color: #475569;
+      margin-bottom: 0.75rem;
+    }
+    .section-card p:last-child { margin-bottom: 0; }
+    .section-card ul {
+      list-style: none;
+      padding: 0;
+      margin: 0.5rem 0 0;
+    }
+    .section-card ul li {
+      font-size: 0.92rem;
+      color: #475569;
+      padding: 0.35rem 0;
+      padding-right: 1.5rem;
+      position: relative;
+    }
+    .section-card ul li::before {
+      content: '•';
+      color: var(--primary);
+      font-weight: 900;
+      position: absolute;
+      right: 0;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 0.75rem;
+      margin-top: 0.75rem;
+    }
+    .info-item {
+      background: var(--light);
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+    }
+    .info-item .label { font-size: 0.75rem; color: var(--gray); margin-bottom: 0.2rem; }
+    .info-item .value { font-size: 0.92rem; font-weight: 700; color: var(--dark); }
+    .info-item .value.highlight { color: var(--primary); }
+
+    .last-updated {
+      text-align: center;
+      font-size: 0.82rem;
+      color: var(--gray);
+      margin-top: 2rem;
+      padding-bottom: 1rem;
+    }
+
+    /* DARK MODE */
+    html.dark body { background: #0f172a; color: #e2e8f0; }
+    html.dark nav { background: #1e293b; border-bottom: 1px solid #334155; }
+    html.dark .logo { color: var(--accent); }
+    html.dark .nav-back { color: #94a3b8; }
+    html.dark .nav-back:hover { background: #334155; color: var(--accent); }
+    html.dark .theme-toggle { border-color: #334155; color: #e2e8f0; }
+    html.dark .toc-inner { background: #1e293b; }
+    html.dark .toc-inner h3 { color: #64748b; }
+    html.dark .toc-list a { background: rgba(2,195,154,0.1); color: var(--accent); }
+    html.dark .section-card { background: #1e293b; box-shadow: none; border-color: var(--accent); }
+    html.dark .section-card h2 { color: var(--accent); }
+    html.dark .section-card p, html.dark .section-card ul li { color: #94a3b8; }
+    html.dark .info-item { background: #0f172a; }
+    html.dark .info-item .value { color: #e2e8f0; }
+    html.dark .last-updated { color: #64748b; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="home.html" class="logo">خدمة</a>
+    <div class="nav-actions">
+      <a href="home.html" class="nav-back">
+        <i class="fas fa-arrow-right"></i>
+        الرئيسية
+      </a>
+      <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙</button>
+    </div>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <h1>الشروط والأحكام</h1>
+  <p>يُرجى قراءة هذه الشروط بعناية قبل استخدام منصة خدمة</p>
+</div>
+
+<div class="toc-card">
+  <div class="toc-inner">
+    <h3>محتويات الصفحة</h3>
+    <ul class="toc-list">
+      <li><a href="#intro">المقدمة والقبول</a></li>
+      <li><a href="#platform">وصف المنصة</a></li>
+      <li><a href="#eligibility">الأهلية</a></li>
+      <li><a href="#accounts">تسجيل الحساب</a></li>
+      <li><a href="#providers">شروط مزودي الخدمة</a></li>
+      <li><a href="#customers">شروط العملاء</a></li>
+      <li><a href="#payments">شروط الدفع</a></li>
+      <li><a href="#equipment">تأجير المعدات</a></li>
+      <li><a href="#tenders">المناقصات</a></li>
+      <li><a href="#consultations">الاستشارات</a></li>
+      <li><a href="#disputes">حل النزاعات</a></li>
+      <li><a href="#prohibited">الأنشطة المحظورة</a></li>
+      <li><a href="#termination">إنهاء الحساب</a></li>
+      <li><a href="#law">القانون الحاكم</a></li>
+    </ul>
+  </div>
+</div>
+
+<div class="content-wrap">
+
+  <div class="section-card" id="intro">
+    <h2><i class="fas fa-handshake"></i> المقدمة والقبول</h2>
+    <p>
+      مرحباً بك في منصة <strong>خدمة</strong>. باستخدامك لهذه المنصة أو التسجيل فيها، فإنك توافق على الالتزام بجميع الشروط والأحكام الواردة في هذه الوثيقة. إذا كنت لا توافق على أي من هذه الشروط، يُرجى عدم استخدام المنصة.
+    </p>
+    <p>
+      تحتفظ منصة خدمة بحق تعديل هذه الشروط في أي وقت. سنُخطرك بأي تعديلات جوهرية عبر البريد الإلكتروني المسجل. استمرارك في استخدام المنصة بعد التعديل يعني موافقتك على الشروط المحدّثة.
+    </p>
+  </div>
+
+  <div class="section-card" id="platform">
+    <h2><i class="fas fa-store"></i> وصف المنصة</h2>
+    <p>
+      خدمة هي سوق إلكتروني يربط أصحاب المنازل والشركات في المملكة العربية السعودية بمزودي الخدمات المنزلية المحترفين والمعتمدين. تشمل الخدمات: الكهرباء، السباكة، التكييف، الدهانات، والتشطيبات وغيرها.
+    </p>
+    <p>
+      تعمل المنصة كوسيط محايد بين الطرفين وتوفر: نظام الطلبات، نظام الدفع الآمن (Escrow)، نظام التقييم، وأدوات حل النزاعات.
+    </p>
+  </div>
+
+  <div class="section-card" id="eligibility">
+    <h2><i class="fas fa-id-card"></i> الأهلية</h2>
+    <p>يحق لك استخدام المنصة إذا كنت تستوفي الشروط التالية:</p>
+    <ul>
+      <li>بلغت 18 عاماً من العمر أو أكثر</li>
+      <li>مقيم في المملكة العربية السعودية أو تعمل بها بصفة نظامية</li>
+      <li>تمتلك عنوان بريد إلكتروني فعّال</li>
+      <li>لم يسبق إيقاف حسابك أو حظرك من المنصة</li>
+      <li>تمتلك الأهلية القانونية لإبرام العقود وفق نظام العقود السعودي</li>
+    </ul>
+  </div>
+
+  <div class="section-card" id="accounts">
+    <h2><i class="fas fa-user-plus"></i> تسجيل الحساب ومسؤولياته</h2>
+    <p>
+      عند التسجيل، تلتزم بتقديم معلومات صحيحة ودقيقة والحفاظ على تحديثها. أنت مسؤول عن:
+    </p>
+    <ul>
+      <li>الحفاظ على سرية كلمة مرورك وعدم مشاركتها مع أي شخص</li>
+      <li>جميع الأنشطة التي تتم باستخدام حسابك</li>
+      <li>إبلاغنا فوراً عن أي استخدام غير مصرح لحسابك</li>
+      <li>امتلاك حساب واحد فقط على المنصة (ما لم يُسمح صراحةً بخلاف ذلك)</li>
+    </ul>
+  </div>
+
+  <div class="section-card" id="providers">
+    <h2><i class="fas fa-hard-hat"></i> شروط مزودي الخدمة</h2>
+    <p>للانضمام كمزود خدمة، يجب عليك:</p>
+    <ul>
+      <li>امتلاك ترخيص عمل ساري المفعول في مجال تخصصك</li>
+      <li>اجتياز عملية التحقق من الوثائق بنجاح واعتماد الحساب من إدارة المنصة</li>
+      <li>الالتزام بتقديم الخدمات وفق المواصفات المتفق عليها في طلب الخدمة</li>
+      <li>الوصول في الموعد المحدد والتواصل الفعّال مع العميل</li>
+      <li>الالتزام بأسعار العروض المقدمة وعدم المطالبة بمبالغ إضافية غير متفق عليها</li>
+      <li>الالتزام بمعايير السلامة المهنية والحرص على حماية ممتلكات العملاء</li>
+      <li>الحفاظ على نسبة تقييم لا تقل عن 3.5 من 5 للاستمرار في المنصة</li>
+    </ul>
+  </div>
+
+  <div class="section-card" id="customers">
+    <h2><i class="fas fa-user"></i> شروط العملاء</h2>
+    <p>باستخدامك المنصة كعميل، تلتزم بما يلي:</p>
+    <ul>
+      <li>دفع المبالغ المتفق عليها كاملةً وفي الوقت المحدد</li>
+      <li>توفير وصول آمن ومناسب لمكان الخدمة لمزود الخدمة</li>
+      <li>معاملة مزودي الخدمة باحترام وفق مبادئ الأخلاق المهنية</li>
+      <li>تقديم وصف دقيق للخدمة المطلوبة عند إنشاء الطلب</li>
+      <li>تأكيد إتمام الخدمة بعد استلامها في المدة المحددة</li>
+      <li>تقديم تقييمات صادقة وموضوعية للخدمات المستلمة</li>
+    </ul>
+  </div>
+
+  <div class="section-card" id="payments">
+    <h2><i class="fas fa-money-bill-wave"></i> شروط الدفع والمالية</h2>
+
+    <p><strong>نظام الضمان (Escrow)</strong></p>
+    <p>
+      يتم تحصيل المبلغ المتفق عليه من العميل وإيداعه في حساب ضمان آمن. يُحرَّر المبلغ لمزود الخدمة فقط بعد تأكيد العميل لإتمام الخدمة بنجاح، أو تلقائياً بعد 48 ساعة من إغلاق الطلب دون نزاع.
+    </p>
+
+    <div class="info-grid">
+      <div class="info-item">
+        <div class="label">عمولة المنصة على الخدمات</div>
+        <div class="value highlight">15% من قيمة الخدمة</div>
+      </div>
+      <div class="info-item">
+        <div class="label">ضريبة القيمة المضافة (VAT)</div>
+        <div class="value highlight">15% على جميع المعاملات</div>
+      </div>
+      <div class="info-item">
+        <div class="label">سياسة رد المبالغ</div>
+        <div class="value">خلال 7 أيام عمل</div>
+      </div>
+      <div class="info-item">
+        <div class="label">الإفراج التلقائي عن الضمان</div>
+        <div class="value">48 ساعة بعد الإتمام</div>
+      </div>
+    </div>
+
+    <p style="margin-top:0.75rem;"><strong>مواد المشروع</strong></p>
+    <p>
+      ميزانية المواد يُدفع بها مباشرةً لمزود الخدمة عند اعتماد الطلب وتكون مستقلة عن مبلغ الضمان. يلتزم المزود بتقديم إيصالات مواد المشروع للعميل.
+    </p>
+
+    <p><strong>سياسة رد المبالغ</strong></p>
+    <ul>
+      <li>يحق للعميل طلب استرداد المبلغ في حال عدم تنفيذ الخدمة أو وجود إخلال جوهري</li>
+      <li>تُفحص جميع طلبات الاسترداد خلال 7 أيام عمل</li>
+      <li>عمولة المنصة (15%) غير قابلة للاسترداد في حالات الإلغاء بعد بدء الخدمة</li>
+    </ul>
+  </div>
+
+  <div class="section-card" id="equipment">
+    <h2><i class="fas fa-tools"></i> تأجير المعدات</h2>
+    <p>تنطبق الشروط التالية على جميع طلبات تأجير المعدات في المنصة:</p>
+    <ul>
+      <li>عمولة المنصة على التأجير: 10% من قيمة الإيجار</li>
+      <li>قد يُطلب تأمين (وديعة) قابلة للاسترداد حسب نوع المعدة وقيمتها</li>
+      <li>المستأجر مسؤول مسؤولية كاملة عن أي تلف أو فقدان للمعدة خلال فترة الاستئجار</li>
+      <li>يجب إعادة المعدة في حالتها الأصلية وفي الموعد المتفق عليه</li>
+      <li>التأخر في الإعادة يستوجب رسوماً إضافية تُحسب بالأيام</li>
+    </ul>
+  </div>
+
+  <div class="section-card" id="tenders">
+    <h2><i class="fas fa-file-contract"></i> المناقصات والعطاءات</h2>
+    <p>تنطبق الشروط التالية على مناقصات المشاريع:</p>
+    <ul>
+      <li>عمولة المنصة على المناقصات: 2% من قيمة العقد المرسى</li>
+      <li>العروض المقدمة ملزمة ولا يجوز سحبها بعد انتهاء مدة التقديم</li>
+      <li>قد تُطبَّق غرامات على الانسحاب من العطاء بعد الإرساء</li>
+      <li>يلتزم مزودو الخدمة بتنفيذ المشروع وفق نطاق العمل المتفق عليه في العطاء</li>
+      <li>يحق لصاحب المناقصة رفض جميع العروض دون إبداء الأسباب</li>
+    </ul>
+  </div>
+
+  <div class="section-card" id="consultations">
+    <h2><i class="fas fa-comments"></i> الاستشارات المهنية</h2>
+    <p>لحجوزات الاستشارة مع الخبراء:</p>
+    <ul>
+      <li>يجب إلغاء الجلسة قبل الموعد بساعتين على الأقل لاسترداد المبلغ كاملاً</li>
+      <li>الإلغاء بعد بدء الجلسة أو خلال ساعتين من موعدها لا يخضع للاسترداد</li>
+      <li>في حال عدم حضور الخبير، يُسترد المبلغ كاملاً أو يُعاد جدولة الجلسة</li>
+      <li>مدة الجلسة محسوبة بالساعة وفق السعر المعلن من الخبير</li>
+    </ul>
+  </div>
+
+  <div class="section-card" id="disputes">
+    <h2><i class="fas fa-balance-scale"></i> حل النزاعات</h2>
+    <p>
+      تعمل منصة خدمة كوسيط محايد في حل النزاعات بين العملاء ومزودي الخدمات. عند نشوء أي نزاع:
+    </p>
+    <ul>
+      <li>يُرفع طلب النزاع خلال 48 ساعة من إغلاق الطلب</li>
+      <li>يُتيح النظام لكلا الطرفين تقديم أدلتهم وموقفهم</li>
+      <li>تتخذ إدارة المنصة قرارها خلال 7 أيام عمل بعد مراجعة جميع الأدلة</li>
+      <li>قرار المنصة في النزاعات نهائي وملزم لكلا الطرفين</li>
+    </ul>
+  </div>
+
+  <div class="section-card" id="prohibited">
+    <h2><i class="fas fa-ban"></i> الأنشطة المحظورة</h2>
+    <p>يُحظر على جميع مستخدمي المنصة القيام بما يلي:</p>
+    <ul>
+      <li>الاحتيال أو تقديم معلومات كاذبة أو مضللة</li>
+      <li>إساءة استخدام نظام التقييمات أو نشر تقييمات مزورة</li>
+      <li>التلاعب بالأسعار أو الاتفاق على تضليل المنصة أو المستخدمين</li>
+      <li>محاولة التواصل المباشر لتجاوز نظام الدفع في المنصة</li>
+      <li>نشر محتوى مسيء أو غير لائق في المنصة أو في التواصل مع الطرف الآخر</li>
+      <li>اختراق أنظمة المنصة أو محاولة الوصول لبيانات مستخدمين آخرين</li>
+      <li>إنشاء حسابات وهمية أو متعددة للتحايل على سياسات المنصة</li>
+    </ul>
+    <p>انتهاك أي من هذه البنود قد يؤدي إلى الإيقاف الفوري للحساب وإحالة الأمر للجهات المختصة.</p>
+  </div>
+
+  <div class="section-card" id="termination">
+    <h2><i class="fas fa-user-slash"></i> إنهاء الحساب</h2>
+    <p>
+      يحق للمستخدم إنهاء حسابه في أي وقت. يحق للمنصة إيقاف أو إنهاء الحساب في الحالات التالية:
+    </p>
+    <ul>
+      <li>انتهاك هذه الشروط والأحكام</li>
+      <li>الاحتيال أو النشاط غير المشروع</li>
+      <li>تلقي شكاوى متكررة موثقة من مستخدمين آخرين</li>
+      <li>انخفاض التقييم بصورة مستمرة دون الحد المقبول</li>
+      <li>عدم الامتثال للمتطلبات القانونية أو التنظيمية</li>
+    </ul>
+    <p>
+      عند إنهاء الحساب، يتم تسوية جميع المعاملات النشطة وصرف الأرصدة المستحقة قبل إغلاق الحساب نهائياً.
+    </p>
+  </div>
+
+  <div class="section-card" id="law">
+    <h2><i class="fas fa-gavel"></i> القانون الحاكم والاختصاص القضائي</h2>
+    <p>
+      تخضع هذه الشروط وتُفسَّر وفق أحكام نظام التجارة الإلكترونية ونظام المعاملات المدنية في المملكة العربية السعودية.
+    </p>
+    <p>
+      في حال وجود أي نزاع ناشئ عن هذه الشروط أو المتعلق بها، تكون المحاكم السعودية المختصة هي الجهة القضائية الحاكمة.
+    </p>
+    <p>
+      للتواصل في الشؤون القانونية:
+      <a href="mailto:legal@khedmah.sa" style="color:var(--primary);">legal@khedmah.sa</a>
+    </p>
+  </div>
+
+  <div class="last-updated">
+    <i class="fas fa-calendar-alt" style="color:var(--primary);margin-left:0.3rem;"></i>
+    آخر تحديث: مارس 2026 &nbsp;|&nbsp;
+    <a href="privacy-policy.html" style="color:var(--primary);">سياسة الخصوصية</a>
+    &nbsp;|&nbsp;
+    <a href="account-deletion.html" style="color:var(--primary);">حذف الحساب</a>
+  </div>
+
+</div>
+
+<script>
+  function toggleTheme() {
+    const isDark = document.documentElement.classList.toggle('dark');
+    localStorage.setItem('khedmah_theme', isDark ? 'dark' : 'light');
+    const btn = document.getElementById('themeToggle');
+    if (btn) btn.textContent = isDark ? '☀️' : '🌙';
+  }
+
+  if (localStorage.getItem('khedmah_theme') === 'dark') {
+    const btn = document.getElementById('themeToggle');
+    if (btn) btn.textContent = '☀️';
+  }
+</script>
+
+</body>
+</html>
