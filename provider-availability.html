@@ -514,7 +514,47 @@
         showToast('✓ تم حفظ جدول التوفر بنجاح');
     }
 
+    function applyScheduleData(data) {
+        if (data.schedule) {
+            document.querySelectorAll('.slot-btn[data-slot]').forEach(slot => {
+                const available = data.schedule[slot.dataset.slot];
+                if (available) {
+                    slot.classList.add('available');
+                    slot.textContent = 'متاح';
+                } else {
+                    slot.classList.remove('available');
+                    slot.textContent = 'غير متاح';
+                }
+            });
+        }
+        if (data.vacation) {
+            const toggle = document.getElementById('vacationToggle');
+            toggle.checked = true;
+            toggleVacation(toggle);
+            if (data.vacFrom) document.getElementById('vacFrom').value = data.vacFrom;
+            if (data.vacTo) document.getElementById('vacTo').value = data.vacTo;
+        }
+    }
+
     function loadSchedule() {
+        // Try to load from API first; fall back to localStorage
+        API.providers.getSchedule().then(data => {
+            if (data) {
+                applyScheduleData(data);
+                // Also update localStorage cache
+                localStorage.setItem('khedmah_availability', JSON.stringify(data));
+            }
+        }).catch(() => {
+            // API unavailable — fall back to localStorage
+            const saved = localStorage.getItem('khedmah_availability');
+            if (!saved) return;
+            try {
+                const data = JSON.parse(saved);
+                applyScheduleData(data);
+            } catch(e) {}
+        });
+
+        // Also apply localStorage immediately for fast render while API loads
         const saved = localStorage.getItem('khedmah_availability');
         if (!saved) return;
         try {

@@ -510,6 +510,31 @@
             });
         });
 
+        // Load existing saved bank settings on page load
+        (async function initBankSettings() {
+            try {
+                const data = await API.providers.getBankSettings();
+                if (!data) return;
+                // Pre-fill account name
+                if (data.accountName) document.getElementById('accountName').value = data.accountName;
+                // Pre-fill IBAN
+                if (data.iban) document.getElementById('iban').value = data.iban;
+                // Select the saved bank
+                if (data.bankName) {
+                    // Find matching bank option by bank name or key
+                    const bankKey = Object.keys(bankNames).find(k => bankNames[k] === data.bankName || k === data.bankName);
+                    if (bankKey) {
+                        const opt = document.querySelector(`.bank-option[data-bank="${bankKey}"]`);
+                        if (opt) {
+                            document.querySelectorAll('.bank-option').forEach(o => o.classList.remove('selected'));
+                            opt.classList.add('selected');
+                            selectedBank = bankKey;
+                        }
+                    }
+                }
+            } catch(e) { /* no saved settings — show blank form */ }
+        })();
+
         // IBAN formatting
         document.getElementById('iban').addEventListener('input', function(e) {
             let value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');

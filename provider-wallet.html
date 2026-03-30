@@ -532,7 +532,7 @@
       let list = this.transactions;
 
       // period filter
-      const now = new Date('2025-03-18');
+      const now = new Date();
       if (this.period === 'month') {
         list = list.filter(t => {
           const d = new Date(t.date);
