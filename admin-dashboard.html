@@ -256,7 +256,7 @@
             <div class="topbar-actions">
                 <span class="topbar-time" id="clockEl"></span>
                 <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙</button>
-                <button class="refresh-btn" onclick="refreshData()">🔄 تحديث</button>
+                <button class="refresh-btn" onclick="refreshData(this)">🔄 تحديث</button>
             </div>
         </div>
 
@@ -770,20 +770,14 @@
             btn.textContent = '⏳ جارٍ...'; btn.disabled = true;
             setTimeout(() => {
                 if (item) {
-                    item.querySelector('.verify-meta').innerHTML = item.querySelector('.verify-meta').innerHTML
-                        .replace('قيد الانتظار', 'تحت المراجعة');
-                    btn.remove();
-                    const badge = item.querySelector('.badge');
-                    if (badge) { badge.className = 'badge badge-review'; badge.textContent = 'تحت المراجعة'; }
-                    // Move to review section
+                    // Move to review section and update actions
                     const reviewList = document.getElementById('verify-review');
-                    const approveBtn = item.querySelector('.btn-approve');
                     const actions = item.querySelector('.verify-actions');
                     if (actions) {
                         actions.innerHTML = `<button class="btn-xs btn-approve" onclick="approveProvider(this,'${name}','${id}')">قبول ✓</button>
                             <button class="btn-xs btn-reject" onclick="openRejectModal('${id}','${name}')">رفض ✕</button>`;
                     }
-                    if (reviewList) reviewList.appendChild(item);
+                    if (reviewList) reviewList.prepend(item);
                 }
                 toast(`✅ بدأت مراجعة ملف ${name}`);
             }, 700);
@@ -839,22 +833,30 @@
         }
 
         // ── User management ──
-        function suspendUser(btn, name) {
+        async function suspendUser(btn, name) {
             if (!confirm(`إيقاف حساب ${name}؟`)) return;
             const row = btn.closest('tr');
-            row.querySelector('.badge-active').className = 'badge badge-suspended';
-            row.querySelector('.badge-suspended').textContent = 'موقوف';
+            const statusBadge = row.querySelector('.badge-active');
+            if (statusBadge) { statusBadge.className = 'badge badge-suspended'; statusBadge.textContent = 'موقوف'; }
             btn.textContent = 'إعادة تفعيل'; btn.className = 'btn-xs btn-approve';
             btn.onclick = function() { reinstateUser(this, name); };
             toast(`🚫 تم إيقاف حساب ${name}`);
+            try {
+                const email = row.querySelector('td:nth-child(2)')?.textContent?.trim();
+                if (email) await API.admin.suspendUser({ email, reason: 'إيقاف من لوحة الإدارة' });
+            } catch(e) { /* demo */ }
         }
-        function reinstateUser(btn, name) {
+        async function reinstateUser(btn, name) {
             const row = btn.closest('tr');
             const badge = row.querySelector('.badge');
-            badge.className = 'badge badge-active'; badge.textContent = 'نشط';
+            if (badge) { badge.className = 'badge badge-active'; badge.textContent = 'نشط'; }
             btn.textContent = 'إيقاف'; btn.className = 'btn-xs btn-warning';
             btn.onclick = function() { suspendUser(this, name); };
             toast(`✅ تم إعادة تفعيل حساب ${name}`);
+            try {
+                const email = row.querySelector('td:nth-child(2)')?.textContent?.trim();
+                if (email) await API.admin.reinstateUser({ email });
+            } catch(e) { /* demo */ }
         }
         function filterUsers(q) {
             const rows = document.querySelectorAll('#usersTable tbody tr');
@@ -862,8 +864,10 @@
         }
 
         // ── Commission ──
-        function markCommissionPaid(btn, id) {
+        async function markCommissionPaid(btn, id) {
             if (!confirm('تأكيد استلام الدفع؟')) return;
+            btn.disabled = true;
+            try { await API.admin.markCommissionPaid(id); } catch(e) { /* demo */ }
             const row = document.querySelector(`[data-id="${id}"]`);
             if (row) { row.style.opacity = '0.3'; setTimeout(() => row.remove(), 500); }
             toast('✅ تم تسجيل الدفع بنجاح');
@@ -892,14 +896,16 @@
         }
 
         // ── Misc ──
-        function refreshData() {
-            const btn = event.currentTarget;
+        function refreshData(btn) {
+            if (!btn) btn = document.querySelector('.refresh-btn');
+            if (!btn) return;
             btn.textContent = '⏳ جارٍ التحديث...'; btn.disabled = true;
             setTimeout(() => { btn.textContent = '🔄 تحديث'; btn.disabled = false; toast('✅ تم تحديث البيانات'); }, 1200);
         }
         async function logout() {
             if (confirm('تسجيل الخروج من لوحة الإدارة؟')) {
                 await API.auth.logout().catch(() => {});
+                localStorage.removeItem('khedmah_admin');
                 window.location.href = 'admin-login.html';
             }
         }

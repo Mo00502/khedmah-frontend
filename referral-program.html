@@ -426,10 +426,9 @@
     </style>
 </head>
 <body>
-<script src="js/api.js"></script>
 <script>
     (function() {
-        if (!API.isLoggedIn()) { window.location.href = 'login.html'; return; }
+        if (!localStorage.getItem('khedmah_demo')) { window.location.href = 'login.html'; return; }
         const u = (() => { try { return JSON.parse(localStorage.getItem('khedmah_user') || '{}'); } catch(e) { return {}; } })();
         if (u.role && u.role !== 'customer') window.location.href = 'customer-dashboard.html';
     })();
@@ -617,6 +616,7 @@
         function doLogout() {
             localStorage.removeItem('khedmah_demo');
             localStorage.removeItem('khedmah_user');
+            localStorage.removeItem('khedmah_admin');
             window.location.href = 'login.html';
         }
 

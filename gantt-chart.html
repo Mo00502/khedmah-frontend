@@ -426,7 +426,6 @@
   </style>
 </head>
 <body>
-<script src="js/api.js"></script>
 <script>
     (function() {
         try {
@@ -805,7 +804,7 @@
             <tr class="row-done">
               <td class="td-num">16</td>
               <td><span class="td-file">admin-login.html</span></td>
-              <td class="td-page">تسجيل دخول الإدارة<span class="en">Admin Login · sessionStorage auth</span></td>
+              <td class="td-page">تسجيل دخول الإدارة<span class="en">Admin Login · localStorage khedmah_admin</span></td>
               <td><span class="cat cat-admin">Admin</span></td>
               <td><span class="badge b-done">Done</span></td>
             </tr>
@@ -967,9 +966,10 @@
 
 <script>
   function doLogout() {
+    localStorage.removeItem('khedmah_admin');
     localStorage.removeItem('khedmah_demo');
     localStorage.removeItem('khedmah_user');
-    window.location.href = 'login.html';
+    window.location.href = 'admin-login.html';
   }
 
   function toggleTheme() {

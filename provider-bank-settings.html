@@ -344,7 +344,7 @@
                 <h4>💡 معلومات مهمة</h4>
                 <ul>
                     <li>التحويل فوري بعد تأكيد العميل إتمام الخدمة</li>
-                    <li>لا يوجد حد أدنى للسحب</li>
+                    <li>الحد الأدنى للسحب 50 ريال</li>
                     <li>بدون رسوم تحويل</li>
                     <li>آمن ومحمي 100%</li>
                     <li>دعم كامل لجميع البنوك السعودية والبنوك الرقمية</li>
@@ -444,7 +444,7 @@
                         required
                     >
                     <div style="font-size: 0.85rem; color: var(--gray); margin-top: 0.5rem;">
-                        💡 يبدأ بـ SA ويتكون من 24 رقم (يمكنك الحصول عليه من تطبيق البنك)
+                        💡 يبدأ بـ SA ويتكون من 24 حرف ورقم (يمكنك الحصول عليه من تطبيق البنك)
                     </div>
                 </div>
 
@@ -509,6 +509,24 @@
                 selectedBank = this.dataset.bank;
             });
         });
+
+        // Load earnings summary from API
+        (async function loadEarnings() {
+            try {
+                const [walletData, earningsData] = await Promise.allSettled([
+                    API.wallet.balance(),
+                    API.providers.myEarnings(),
+                ]);
+                const boxes = document.querySelectorAll('.earning-value');
+                if (walletData.status === 'fulfilled' && walletData.value) {
+                    if (boxes[0]) boxes[0].textContent = Number(walletData.value.balance ?? 0).toLocaleString('ar-SA') + ' ريال';
+                    if (boxes[1]) boxes[1].textContent = Number(walletData.value.heldBalance ?? 0).toLocaleString('ar-SA') + ' ريال';
+                }
+                if (earningsData.status === 'fulfilled' && earningsData.value) {
+                    if (boxes[2]) boxes[2].textContent = Number(earningsData.value.totalEarnings ?? 0).toLocaleString('ar-SA') + ' ريال';
+                }
+            } catch(e) { /* keep hardcoded fallback values */ }
+        })();
 
         // Load existing saved bank settings on page load
         (async function initBankSettings() {

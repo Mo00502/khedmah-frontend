@@ -525,6 +525,10 @@
         async function submitReview() {
             if (!mainRating || mainRating < 1 || mainRating > 5 || !Number.isInteger(mainRating)) return;
             const reqId = new URLSearchParams(location.search).get('requestId') || '';
+            if (!reqId) {
+                API.toast('❌ معرف الطلب مفقود — لا يمكن إرسال التقييم');
+                return;
+            }
             const btn = document.getElementById('submitBtn');
             btn.disabled = true;
             btn.textContent = 'جاري الإرسال...';

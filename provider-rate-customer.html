@@ -508,10 +508,18 @@
             const comment = document.getElementById('comment').value;
             const reqId = new URLSearchParams(location.search).get('requestId') || '';
 
+            if (!reqId) {
+                API.toast('❌ معرف الطلب مفقود — لا يمكن إرسال التقييم');
+                return;
+            }
+
+            // Collect selected criteria
+            const criteria = Array.from(document.querySelectorAll('input[name="criteria"]:checked')).map(cb => cb.id);
+
             submitBtn.innerHTML = 'جاري الإرسال...';
             submitBtn.disabled = true;
             try {
-                await API.reviews.create(reqId, { score: overallRating, comment: comment.trim(), recommendation });
+                await API.reviews.create(reqId, { score: overallRating, comment: comment.trim(), recommendation, criteria });
                 submitBtn.innerHTML = '✓ تم إرسال التقييم';
                 submitBtn.style.background = '#10B981';
                 setTimeout(() => { window.location.href = 'provider-dashboard.html'; }, 1200);

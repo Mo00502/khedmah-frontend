@@ -534,6 +534,54 @@
         localStorage.removeItem('khedmah_user');
         window.location.href = 'login.html';
     }
+
+    // Populate invoice from URL params if present
+    (function populateFromParams() {
+        const p = new URLSearchParams(location.search);
+        const requestId = p.get('requestId');
+        if (!requestId) return;
+
+        // Update invoice reference number
+        const numEl = document.querySelector('.invoice-num');
+        if (numEl) numEl.textContent = '# ' + requestId.toString().toUpperCase();
+
+        // Try to read cached request data from localStorage
+        try {
+            const cached = JSON.parse(localStorage.getItem('khedmah_current_request') || '{}');
+            if (cached.service) {
+                const firstNameCell = document.querySelector('#inv-rows tr:first-child .service-name');
+                if (firstNameCell) firstNameCell.textContent = cached.service;
+            }
+        } catch(e) {}
+
+        // Try live API fetch — first list invoices filtered by requestId, then fetch detail
+        if (typeof API !== 'undefined' && API.isLoggedIn()) {
+            API.invoices.list({ requestId }).then(res => {
+                const inv = Array.isArray(res?.data) ? res.data[0] : (Array.isArray(res) ? res[0] : null);
+                if (!inv) return;
+                // Invoice number
+                if (inv.invoiceNumber && numEl) numEl.textContent = '# ' + inv.invoiceNumber;
+                // Date
+                const dateEl = document.querySelector('.invoice-date');
+                if (dateEl && inv.createdAt) dateEl.textContent = '📅 ' + new Date(inv.createdAt).toLocaleDateString('ar-SA');
+                // Customer name
+                const custName = document.querySelector('.info-block:first-child .name');
+                if (custName && (inv.customer?.profile?.nameAr || inv.customer?.username)) {
+                    custName.textContent = inv.customer.profile?.nameAr || inv.customer.username;
+                }
+                // Provider name
+                const provName = document.querySelector('.info-block:last-child .name');
+                if (provName && (inv.provider?.profile?.nameAr || inv.provider?.username)) {
+                    provName.textContent = inv.provider.profile?.nameAr || inv.provider.username;
+                }
+                // Service name
+                if (inv.serviceRequest?.serviceTitle) {
+                    const firstNameCell = document.querySelector('#inv-rows tr:first-child .service-name');
+                    if (firstNameCell) firstNameCell.textContent = inv.serviceRequest.serviceTitle;
+                }
+            }).catch(() => {});
+        }
+    })();
 </script>
 </body>
 </html>

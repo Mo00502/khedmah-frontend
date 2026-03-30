@@ -474,7 +474,7 @@
     <div class="services-grid" id="servicesGrid">
 
         <div class="service-card" data-id="1">
-            <div class="inactive-badge">موقوفة</div>
+            <div class="inactive-badge" style="display:none;">موقوفة</div>
             <div class="card-top">
                 <div class="service-icon-box">🔧</div>
                 <div class="toggle-wrapper">
@@ -500,7 +500,7 @@
         </div>
 
         <div class="service-card" data-id="2">
-            <div class="inactive-badge">موقوفة</div>
+            <div class="inactive-badge" style="display:none;">موقوفة</div>
             <div class="card-top">
                 <div class="service-icon-box">🚿</div>
                 <div class="toggle-wrapper">
@@ -526,7 +526,7 @@
         </div>
 
         <div class="service-card" data-id="3">
-            <div class="inactive-badge">موقوفة</div>
+            <div class="inactive-badge" style="display:none;">موقوفة</div>
             <div class="card-top">
                 <div class="service-icon-box">🪠</div>
                 <div class="toggle-wrapper">
@@ -855,17 +855,18 @@
             }
         }
 
+        const wasEditing = editingId;
         closeModal();
-        showToast(editingId ? '✓ تم تحديث الخدمة بنجاح' : '✓ تمت إضافة الخدمة بنجاح');
+        showToast(wasEditing ? '✓ تم تحديث الخدمة بنجاح' : '✓ تمت إضافة الخدمة بنجاح');
         const rawPrice = selectedPriceType !== 'agree' ? parseFloat(document.getElementById('priceInput')?.value || '0') : null;
-        if (!editingId) {
+        if (!wasEditing) {
             // Create new service
             API.providers.addService({ name, category, description: desc, priceType: selectedPriceType, price: rawPrice }).catch(() => {});
         } else {
             // Update existing service — editingId is a DOM timestamp ID for static cards;
             // for API-created cards a real UUID would be stored in data-api-id
-            const card = document.querySelector(`[data-id="${editingId}"]`);
-            const apiId = card?.dataset?.apiId || editingId;
+            const card = document.querySelector(`[data-id="${wasEditing}"]`);
+            const apiId = card?.dataset?.apiId || wasEditing;
             API.providers.updateService(apiId, { name, category, description: desc, priceType: selectedPriceType, price: rawPrice }).catch(() => {});
         }
         editingId = null;
@@ -898,6 +899,56 @@
     const style = document.createElement('style');
     style.textContent = '@keyframes fadeOut { to { opacity:0; transform: scale(0.9); } }';
     document.head.appendChild(style);
+
+    // Load services from API and replace static cards if data is available
+    (async function loadServicesFromAPI() {
+        if (!API.isLoggedIn()) return;
+        try {
+            const items = await API.providers.services();
+            const list = Array.isArray(items) ? items : (items?.items ?? []);
+            if (!list.length) return;
+            // Replace static grid with API data
+            const grid = document.getElementById('servicesGrid');
+            grid.innerHTML = '';
+            list.forEach(svc => {
+                const id = svc.id || Date.now();
+                const isActive = svc.active !== false;
+                const priceType = svc.priceType || 'visit';
+                const priceUnit = priceType === 'hour' ? 'ريال / ساعة' : priceType === 'visit' ? 'ريال / زيارة' : '';
+                const priceDisplay = (priceType === 'agree' || !svc.price) ? 'حسب الاتفاق' : String(svc.price);
+                const card = document.createElement('div');
+                card.className = 'service-card' + (isActive ? '' : ' inactive');
+                card.setAttribute('data-id', id);
+                card.setAttribute('data-api-id', id);
+                card.innerHTML = `
+                    <div class="inactive-badge"${isActive ? ' style="display:none;"' : ''}>موقوفة</div>
+                    <div class="card-top">
+                        <div class="service-icon-box">🔧</div>
+                        <div class="toggle-wrapper">
+                            <span class="toggle-label" id="lbl-${id}">${isActive ? 'نشط' : 'موقوف'}</span>
+                            <label class="toggle">
+                                <input type="checkbox" ${isActive ? 'checked' : ''} onchange="toggleService('${id}', this)">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="service-name">${svc.name || ''}</div>
+                    <div class="service-category">${svc.category || ''}</div>
+                    <div class="service-price">
+                        <span class="price-amount">${priceDisplay}</span>
+                        <span class="price-unit">${priceUnit}</span>
+                    </div>
+                    <div class="service-duration">⏱️ مدة الخدمة المتوقعة: ${svc.duration || '—'}</div>
+                    <div class="service-desc-text">${svc.description || ''}</div>
+                    <div class="card-actions">
+                        <button class="btn-edit" onclick="openEditModal('${id}')">✏️ تعديل</button>
+                        <button class="btn-delete" onclick="openDeleteConfirm('${id}')">🗑️ حذف</button>
+                    </div>`;
+                grid.appendChild(card);
+            });
+            updateStats();
+        } catch(e) { /* API unavailable — keep static demo cards */ }
+    })();
 
     // Close modal on overlay click
     document.getElementById('modalOverlay').addEventListener('click', function(e) {

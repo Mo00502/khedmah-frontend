@@ -570,8 +570,8 @@
         <div class="nav-actions">
             <a href="search-services.html" class="nav-back">← بحث</a>
             <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙</button>
-            <button onclick="doLogout()" class="btn btn-outline-danger btn-sm" id="logoutBtn" style="display:none;">خروج</button>
-            <a href="customer-dashboard.html" class="avatar-btn">م</a>
+            <button onclick="doLogout()" id="logoutBtn" style="display:none;padding:0.35rem 0.8rem;border:1.5px solid #ef4444;border-radius:10px;background:transparent;color:#ef4444;font-family:Tajawal,sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;">خروج</button>
+            <a href="customer-dashboard.html" class="avatar-btn" id="navAvatarBtn">م</a>
         </div>
     </div>
 </nav>
@@ -1160,10 +1160,17 @@
         window.location.href = 'login.html';
     }
 
-    // Show logout button only if logged in
+    // Show logout button only if logged in, and update avatar
     if (localStorage.getItem('khedmah_demo')) {
         const lb = document.getElementById('logoutBtn');
         if (lb) lb.style.display = '';
+        try {
+            const u = JSON.parse(localStorage.getItem('khedmah_user') || '{}');
+            const name = u.name || u.username || '';
+            const initial = name.charAt(0) || 'م';
+            const avatarBtn = document.getElementById('navAvatarBtn');
+            if (avatarBtn) avatarBtn.textContent = initial;
+        } catch(e) {}
     }
 
     // Dark mode

@@ -167,6 +167,16 @@
     }
     if (!API.isLoggedIn()) {
       window.location.href = 'login.html';
+      return;
+    }
+    // Providers are allowed to view tender details and submit bids as bidders.
+    // Admins should not submit bids — hide the bid button for admins.
+    const role = API.auth.getRole ? API.auth.getRole() : null;
+    if (role === 'admin') {
+      document.addEventListener('DOMContentLoaded', function() {
+        const cta = document.getElementById('ctaArea');
+        if (cta) cta.style.display = 'none';
+      });
     }
   })();
 </script>
@@ -539,11 +549,11 @@ const TENDERS = {
         orgInitial: 'ح',
         orgMeta: 'مجموعة طبية — 3 عيادات في الرياض',
         sector: 'رعاية صحية',
-        status: 'open',
+        status: 'closed',
         city: 'الرياض، 3 مواقع',
-        deadline: '28 أبريل 2024',
-        deadlinePercent: 45,
-        deadlineRemaining: 'يتبقى 41 يوماً',
+        deadline: '28 مارس 2024',
+        deadlinePercent: 100,
+        deadlineRemaining: 'انتهى استقبال العروض',
         budget: '450,000 ر.س',
         bidCount: 5,
         description: `
@@ -750,8 +760,8 @@ function loadTender() {
     document.getElementById('tSector').textContent = data.sector;
     document.getElementById('tBudget').textContent = data.budget;
 
-    // Description
-    document.getElementById('tDescription').textContent = data.description;
+    // Description (data.description contains trusted static HTML — safe to use innerHTML here)
+    document.getElementById('tDescription').innerHTML = data.description;
 
     // Scope
     const scopeEl = document.getElementById('tScope');

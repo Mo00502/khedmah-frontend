@@ -320,7 +320,7 @@
             <div class="nav-links">
                 <a href="customer-dashboard.html">لوحة التحكم</a>
                 <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙</button>
-                <button onclick="doLogout()" class="btn btn-outline-danger btn-sm">خروج</button>
+                <button onclick="doLogout()" title="تسجيل الخروج" style="padding:0.35rem 0.8rem;border:1.5px solid #ef4444;border-radius:10px;background:transparent;color:#ef4444;font-family:Tajawal,sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;">خروج</button>
                 <a href="customer-dashboard.html" class="avatar-btn">م</a>
             </div>
         </div>
@@ -616,7 +616,7 @@
                 <button class="page-btn" onclick="this.parentNode.querySelectorAll('.page-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active')">2</button>
                 <button class="page-btn" onclick="this.parentNode.querySelectorAll('.page-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active')">3</button>
                 <button class="page-btn" onclick="this.parentNode.querySelectorAll('.page-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active')">4</button>
-                <button class="page-btn">→</button>
+                <button class="page-btn" onclick="const btns=this.parentNode.querySelectorAll('.page-btn');const active=[...btns].find(b=>b.classList.contains('active'));const next=active?.nextElementSibling;if(next&&next!==this){btns.forEach(b=>b.classList.remove('active'));next.classList.add('active');}">→</button>
             </div>
         </main>
     </div>

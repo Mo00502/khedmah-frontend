@@ -599,11 +599,24 @@
         if (!confirm('هل تريد إلغاء الطلب؟\n\nسيتم استرداد المبلغ خلال 2-5 أيام عمل.')) return;
         const btn = document.getElementById('cancelBtn');
         btn.disabled = true;
+        clearInterval(timerInterval);
+        clearInterval(moveInterval);
+        document.getElementById('etaCard').style.display = 'none';
         const reqId = new URLSearchParams(location.search).get('requestId');
         try {
             if (reqId && reqId.includes('-')) await API.requests.cancel(reqId);
         } catch(e) { /* silent */ }
         showToast('✓ تم إلغاء الطلب. سيتم استرداد المبلغ قريباً.');
+        // Update the first step to show cancelled state
+        const step1 = document.getElementById('step-1');
+        if (step1) {
+            step1.className = 'step';
+            step1.querySelector('.step-icon').textContent = '✕';
+            step1.querySelector('.step-icon').style.background = 'var(--error)';
+            step1.querySelector('.step-title').textContent = 'تم إلغاء الطلب';
+            step1.querySelector('.step-title').style.color = 'var(--error)';
+        }
+        setTimeout(() => { window.location.href = 'customer-dashboard.html'; }, 2500);
     }
 
     function simulateCompletion() {

@@ -513,10 +513,10 @@
                 <div class="question-item">
                     <div class="question-text">هل تم إنجاز العمل كما تم الاتفاق عليه؟</div>
                     <div class="answer-options">
-                        <button class="answer-btn yes" onclick="answerQuestion(1, 'yes')">
+                        <button class="answer-btn yes" onclick="answerQuestion(1, 'yes', this)">
                             ✓ نعم
                         </button>
-                        <button class="answer-btn no" onclick="answerQuestion(1, 'no')">
+                        <button class="answer-btn no" onclick="answerQuestion(1, 'no', this)">
                             ✗ لا
                         </button>
                     </div>
@@ -530,10 +530,10 @@
                 <div class="question-item">
                     <div class="question-text">هل جودة العمل مطابقة لتوقعاتك؟</div>
                     <div class="answer-options">
-                        <button class="answer-btn yes" onclick="answerQuestion(2, 'yes')">
+                        <button class="answer-btn yes" onclick="answerQuestion(2, 'yes', this)">
                             ✓ نعم
                         </button>
-                        <button class="answer-btn no" onclick="answerQuestion(2, 'no')">
+                        <button class="answer-btn no" onclick="answerQuestion(2, 'no', this)">
                             ✗ لا
                         </button>
                     </div>
@@ -547,10 +547,10 @@
                 <div class="question-item">
                     <div class="question-text">هل أنت راضٍ عن الخدمة بشكل عام؟</div>
                     <div class="answer-options">
-                        <button class="answer-btn yes" onclick="answerQuestion(3, 'yes')">
+                        <button class="answer-btn yes" onclick="answerQuestion(3, 'yes', this)">
                             ✓ نعم
                         </button>
-                        <button class="answer-btn no" onclick="answerQuestion(3, 'no')">
+                        <button class="answer-btn no" onclick="answerQuestion(3, 'no', this)">
                             ✗ لا
                         </button>
                     </div>
@@ -616,15 +616,15 @@
             q3: null
         };
 
-        function answerQuestion(questionNum, answer) {
+        function answerQuestion(questionNum, answer, btn) {
             const questionKey = `q${questionNum}`;
             answers[questionKey] = answer;
 
             // Update button states
-            const questionItem = event.target.closest('.question-item');
+            const questionItem = btn.closest('.question-item');
             const buttons = questionItem.querySelectorAll('.answer-btn');
-            buttons.forEach(btn => btn.classList.remove('selected'));
-            event.target.classList.add('selected');
+            buttons.forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
 
             // Show/hide issue report
             const issueReport = document.getElementById(`issue${questionNum}`);

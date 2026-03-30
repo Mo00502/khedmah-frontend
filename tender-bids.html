@@ -196,6 +196,7 @@
         </div>
         <div class="nav-actions">
             <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙</button>
+            <button onclick="doLogout()" style="background:none;border:1.5px solid #e2e8f0;border-radius:10px;padding:0.35rem 0.75rem;font-family:'Tajawal',sans-serif;font-size:0.82rem;color:var(--gray);cursor:pointer;">خروج</button>
             <a href="customer-dashboard.html" class="avatar-btn">م</a>
         </div>
     </div>
@@ -388,6 +389,9 @@ const BIDS = [
         updateShortlistedCount(this.bids);
     },
     async acceptBid(id) {
+        const bid = this.bids.find(b => b.id === id);
+        const companyName = bid ? bid.company : '';
+        if (!confirm(`هل أنت متأكد من قبول عرض "${companyName}"؟\nهذا الإجراء سيرفض جميع العروض الأخرى ولا يمكن التراجع عنه.`)) return;
         // First, un-accept any previously accepted bid
         this.bids.forEach(b => {
             if (b.status === 'accepted') b.status = 'pending';
@@ -400,8 +404,9 @@ const BIDS = [
         updateShortlistedCount(this.bids);
         showToast('🎉 تم قبول العرض! جارٍ الانتقال إلى دفعات المراحل...');
         const _tid = new URLSearchParams(location.search).get('tenderId') || TENDER.id;
-        API.tenders.award(_tid, id).catch(() => {});
-        setTimeout(() => { window.location.href = 'milestone-payments.html?tenderId=' + _tid; }, 1800);
+        const _tidClean = String(_tid).replace(/^#/, '');
+        API.tenders.award(_tidClean, id).catch(() => {});
+        setTimeout(() => { window.location.href = 'milestone-payments.html?tenderId=' + encodeURIComponent(_tidClean); }, 1800);
     },
     rejectBid(id) {
         const bid = this.bids.find(b => b.id === id);
@@ -559,6 +564,12 @@ const BIDS = [
 <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
 <script>
+function doLogout() {
+    localStorage.removeItem('khedmah_demo');
+    localStorage.removeItem('khedmah_user');
+    window.location.href = 'login.html';
+}
+
 function updateShortlistedCount(bids) {
     const el = document.getElementById('shortlistedCount');
     if (el) el.textContent = bids.filter(b => b.status === 'shortlisted').length;

@@ -692,7 +692,8 @@
             }
         });
 
-        function doLogout() {
+        async function doLogout() {
+            await API.auth.logout().catch(() => {});
             localStorage.removeItem('khedmah_demo');
             localStorage.removeItem('khedmah_user');
             window.location.href = 'login.html';

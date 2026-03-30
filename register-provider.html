@@ -296,6 +296,7 @@
         confirmPassword: '',
         referralCode: '',
         showPass: false,
+        showConfirmPass: false,
         showReferral: false,
 
         /* Step 2 — Provider type */
@@ -448,9 +449,9 @@
             this.errors = {};
             if (this.step === 1) {
                 if (!this.fullName.trim()) this.errors.fullName = 'الاسم مطلوب';
-                if (!this.email.includes('@')) this.errors.email = 'البريد الإلكتروني غير صحيح';
-                if (this.phone.length < 9) this.errors.phone = 'رقم الجوال غير صحيح';
-                if (this.password.length < 8) this.errors.password = 'كلمة المرور 8 أحرف على الأقل';
+                if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.email)) this.errors.email = 'البريد الإلكتروني غير صحيح';
+                if (!/^(05\d{8}|009665\d{8}|\+9665\d{8})$/.test(this.phone.replace(/\s/g,''))) this.errors.phone = 'رقم الجوال غير صحيح — مثال: 05XXXXXXXX';
+                if (this.password.length < 8 || !/[A-Z]/.test(this.password) || !/[a-z]/.test(this.password) || !/\d/.test(this.password)) this.errors.password = 'كلمة المرور 8 أحرف على الأقل تشمل حرفاً كبيراً وصغيراً ورقماً';
                 if (this.password !== this.confirmPassword) this.errors.confirmPassword = 'كلمتا المرور غير متطابقتين';
             }
             if (this.step === 2 && !this.providerType) this.errors.providerType = 'يرجى اختيار نوع المزود';
@@ -564,9 +565,9 @@
             <div class="field-group">
                 <label class="field-label">تأكيد كلمة المرور <span class="req">*</span></label>
                 <div class="pass-wrap">
-                    <input class="form-input" :class="errors.confirmPassword ? 'is-error' : ''" :type="showPass ? 'text' : 'password'" x-model="confirmPassword" placeholder="أعد كتابة كلمة المرور" autocomplete="new-password" style="padding-left:3rem">
-                    <button type="button" class="pass-toggle" @click="showPass = !showPass">
-                        <i :class="showPass ? 'fa fa-eye-slash' : 'fa fa-eye'"></i>
+                    <input class="form-input" :class="errors.confirmPassword ? 'is-error' : ''" :type="showConfirmPass ? 'text' : 'password'" x-model="confirmPassword" placeholder="أعد كتابة كلمة المرور" autocomplete="new-password" style="padding-left:3rem">
+                    <button type="button" class="pass-toggle" @click="showConfirmPass = !showConfirmPass">
+                        <i :class="showConfirmPass ? 'fa fa-eye-slash' : 'fa fa-eye'"></i>
                     </button>
                 </div>
                 <div class="field-error" x-show="errors.confirmPassword" x-text="errors.confirmPassword"></div>

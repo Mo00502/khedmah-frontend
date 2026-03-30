@@ -95,10 +95,10 @@
       if (refreshed) {
         return _fetch(method, path, body, { ...opts, _retried: true });
       }
-      // Refresh failed — clear session and send to login
-      Store.clearAll();
+      // Read role BEFORE clearing session so we can redirect correctly
       const role = Store.getUser()?.role;
-      window.location.href = role === 'ADMIN' ? 'admin-login.html' : 'login.html';
+      Store.clearAll();
+      window.location.href = (role === 'admin' || role === 'super_admin' || role === 'support') ? 'admin-login.html' : 'login.html';
       throw new ApiError(401, 'انتهت جلستك. يرجى تسجيل الدخول مجدداً.');
     }
 
@@ -253,16 +253,18 @@
   };
 
   const providers = {
-    getProfile:  (id)        => http.get(`/providers/${id}`),
-    myProfile:   ()          => http.get('/providers/me'),
-    myEarnings:  ()          => http.get('/providers/me/earnings'),
-    updateBank:  (data)      => http.patch('/providers/me/bank', data),
-    submitDocs:  (data)      => http.post('/providers/me/documents', data),
-    services:    ()          => http.get('/providers/me/services'),
-    addService:  (data)      => http.post('/providers/me/services', data),
-    removeService: (id)      => http.delete(`/providers/me/services/${id}`),
-    schedule:    ()          => http.get('/providers/me/schedule'),
-    saveSchedule: (data)     => http.post('/providers/me/schedule', data),
+    getProfile:   (id)        => http.get(`/providers/${id}`),
+    myProfile:    ()          => http.get('/providers/me'),
+    myEarnings:   ()          => http.get('/providers/me/earnings'),
+    updateBank:   (data)      => http.patch('/providers/me/bank', data),
+    getBankSettings: ()       => http.get('/providers/me/bank'),
+    submitDocs:   (data)      => http.post('/providers/me/documents', data),
+    services:     ()          => http.get('/providers/me/services'),
+    addService:   (data)      => http.post('/providers/me/services', data),
+    updateService: (id, data) => http.patch(`/providers/me/services/${id}`, data),
+    removeService: (id)       => http.delete(`/providers/me/services/${id}`),
+    getSchedule:  ()          => http.get('/providers/me/schedule'),
+    saveSchedule: (data)      => http.patch('/providers/me/schedule', data),
   };
 
   const services = {
@@ -348,6 +350,14 @@
     autocomplete: (q, tok)  => http.get(`/maps/autocomplete?q=${encodeURIComponent(q)}&sessionToken=${tok}`),
   };
 
+  const addresses = {
+    list:       ()          => http.get('/users/me/addresses'),
+    create:     (data)      => http.post('/users/me/addresses', data),
+    update:     (id, data)  => http.patch(`/users/me/addresses/${id}`, data),
+    remove:     (id)        => http.delete(`/users/me/addresses/${id}`),
+    setDefault: (id)        => http.patch(`/users/me/addresses/${id}/default`),
+  };
+
   /* ─── Toast / UI helpers ─────────────────────────────────────────────────── */
 
   /**
@@ -395,7 +405,7 @@
     // Domain namespaces
     auth, requests, payments, wallet, providers, services,
     search, reviews, notifications, chat, admin, tenders,
-    invoices, equipment, consultations, maps,
+    invoices, equipment, consultations, maps, addresses,
 
     // Auth helpers (frequently needed in guards)
     isLoggedIn:  auth.isLoggedIn,

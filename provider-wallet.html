@@ -500,7 +500,7 @@
 <nav>
   <div class="nav-content">
     <div class="nav-start">
-      <a href="home.html" class="logo">خدمة</a>
+      <a href="INDEX.html" class="logo">KHEDMAH</a>
       <a href="provider-dashboard.html" class="back-btn">
         <i class="fas fa-arrow-right"></i>
         <span>لوحة التحكم</span>
@@ -526,6 +526,7 @@
     tab: 'all',
     period: '3months',
     withdrawAmount: '',
+    availableBalance: 3240,
     feeOpen: false,
     transactions: TRANSACTIONS,
     get filteredTransactions() {
@@ -553,14 +554,19 @@
     },
     async requestWithdrawal() {
       const amount = Number(this.withdrawAmount);
-      if (!amount || amount <= 0) return;
+      if (!amount || amount <= 0) { API.toast('❌ أدخل مبلغاً صحيحاً'); return; }
+      if (amount < 50) { API.toast('❌ الحد الأدنى للسحب 50 ريال'); return; }
+      if (amount > this.availableBalance) { API.toast('❌ المبلغ يتجاوز الرصيد المتاح'); return; }
       try {
         await API.wallet.withdraw({ amount });
         API.toast('✅ تم إرسال طلب السحب بنجاح', 'success');
         this.withdrawAmount = '';
         // Reload balance
         const w = await API.wallet.balance();
-        if (w) updateBalanceCards(w);
+        if (w) {
+          updateBalanceCards(w);
+          this.availableBalance = w.balance ?? this.availableBalance;
+        }
       } catch(err) {
         API.toast('❌ ' + API.errorMsg(err));
       }
@@ -656,17 +662,17 @@
         <input
           type="number"
           class="withdraw-input"
-          placeholder="أدخل المبلغ (SAR)"
+          placeholder="أدخل المبلغ (SAR) — الحد الأدنى 50"
           x-model="withdrawAmount"
-          min="1"
-          max="3240"
+          min="50"
+          :max="availableBalance"
         >
 
         <!-- Withdraw button -->
         <button
           class="withdraw-btn"
           @click="requestWithdrawal()"
-          :disabled="!withdrawAmount || Number(withdrawAmount) <= 0 || Number(withdrawAmount) > 3240"
+          :disabled="!withdrawAmount || Number(withdrawAmount) < 50 || Number(withdrawAmount) > availableBalance"
         >
           <i class="fas fa-paper-plane me-1"></i>
           طلب السحب
@@ -853,7 +859,10 @@
         API.wallet.transactions({ limit: 50 }),
         API.auth.me(),
       ]);
-      if (walletRes.status === 'fulfilled') updateBalanceCards(walletRes.value);
+      if (walletRes.status === 'fulfilled') {
+        updateBalanceCards(walletRes.value);
+        if (comp && walletRes.value.balance != null) comp.availableBalance = walletRes.value.balance;
+      }
       if (txRes.status === 'fulfilled') {
         const items = txRes.value?.items ?? txRes.value ?? [];
         if (items.length) {

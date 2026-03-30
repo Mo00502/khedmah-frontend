@@ -198,7 +198,14 @@
 <body>
 <script src="js/api.js"></script>
 <script>
-    if (!API.isLoggedIn()) { window.location.href = 'login.html'; }
+    (function() {
+        const demo = localStorage.getItem('khedmah_demo');
+        if (!demo) { window.location.href = 'login.html'; return; }
+        try {
+            const u = JSON.parse(localStorage.getItem('khedmah_user') || '{}');
+            if (u.role && u.role !== 'customer') window.location.href = 'provider-dashboard.html';
+        } catch(e) {}
+    })();
     if (localStorage.getItem('khedmah_theme') === 'dark') document.documentElement.classList.add('dark');
 </script>
 
@@ -353,7 +360,7 @@
         </div>
 
         <!-- Chat content (hidden until a conv is selected) -->
-        <div id="activeChatArea" style="display:none; flex:1; display:none; flex-direction:column; overflow:hidden;">
+        <div id="activeChatArea" style="display:none; flex:1; flex-direction:column; overflow:hidden;">
 
             <div class="chat-header" id="chatHeader">
                 <div class="ch-avatar" id="chAvatar" style="background:linear-gradient(135deg,#028090,#02C39A)">خ</div>
@@ -598,9 +605,9 @@ const CONVS = {
         ctxLinkLabel: 'عرض الخدمة ←',
         quickReplies: ['شكراً', 'ما الأبعاد المتاحة؟', 'كم مدة التركيب؟'],
         messages: [
-            { from: 'them', text: 'أهلاً! خبرة 12 سنة في أعمال النجارة والأبواب', time: '9:00' },
-            { from: 'me', text: 'أحتاج تركيب باب خشبي', time: '9:10' },
-            { from: 'them', text: 'ممتاز، ما أبعاد الفتحة؟', time: '9:11' }
+            { from: 'in', text: 'أهلاً! خبرة 12 سنة في أعمال النجارة والأبواب', time: '9:00' },
+            { from: 'out', text: 'أحتاج تركيب باب خشبي', time: '9:10' },
+            { from: 'in', text: 'ممتاز، ما أبعاد الفتحة؟', time: '9:11' }
         ]
     },
     'service-5': {
@@ -615,9 +622,9 @@ const CONVS = {
         ctxLinkLabel: 'عرض الخدمة ←',
         quickReplies: ['شكراً', 'متى يمكنك الحضور؟', 'ما تكلفة تعبئة الغاز؟'],
         messages: [
-            { from: 'them', text: 'مرحباً! متخصص في صيانة وتركيب التكييف', time: '10:30' },
-            { from: 'me', text: 'التكييف لا يبرد جيداً', time: '10:35' },
-            { from: 'them', text: 'غالباً يحتاج تعبئة غاز، يمكنني الحضور اليوم', time: '10:36' }
+            { from: 'in', text: 'مرحباً! متخصص في صيانة وتركيب التكييف', time: '10:30' },
+            { from: 'out', text: 'التكييف لا يبرد جيداً', time: '10:35' },
+            { from: 'in', text: 'غالباً يحتاج تعبئة غاز، يمكنني الحضور اليوم', time: '10:36' }
         ]
     },
     'consult-2': {
@@ -632,9 +639,9 @@ const CONVS = {
         ctxLinkLabel: 'تفاصيل الاستشارة ←',
         quickReplies: ['شكراً', 'ما التكاليف المتوقعة؟', 'متى موعد الجلسة؟'],
         messages: [
-            { from: 'them', text: 'أهلاً، كيف يمكنني مساعدتك في مشروعك؟', time: '10:00' },
-            { from: 'me', text: 'أحتاج استشارة في تصميم الأساسات', time: '10:02' },
-            { from: 'them', text: 'بالتأكيد، يمكنني مساعدتك. هل يمكنك إرسال التصاميم الأولية؟', time: '10:03' }
+            { from: 'in', text: 'أهلاً، كيف يمكنني مساعدتك في مشروعك؟', time: '10:00' },
+            { from: 'out', text: 'أحتاج استشارة في تصميم الأساسات', time: '10:02' },
+            { from: 'in', text: 'بالتأكيد، يمكنني مساعدتك. هل يمكنك إرسال التصاميم الأولية؟', time: '10:03' }
         ]
     },
     'consult-3': {
@@ -649,9 +656,9 @@ const CONVS = {
         ctxLinkLabel: 'تفاصيل الاستشارة ←',
         quickReplies: ['شكراً', 'أرسل المخططات', 'متى موعد المراجعة؟'],
         messages: [
-            { from: 'them', text: 'مرحباً! أنا هنا للمساعدة في الاستشارات الكهربائية', time: '09:30' },
-            { from: 'me', text: 'أحتاج مراجعة لوحة التوزيع الكهربائية', time: '09:32' },
-            { from: 'them', text: 'حسناً، أرسل لي المخططات وسأراجعها', time: '09:34' }
+            { from: 'in', text: 'مرحباً! أنا هنا للمساعدة في الاستشارات الكهربائية', time: '09:30' },
+            { from: 'out', text: 'أحتاج مراجعة لوحة التوزيع الكهربائية', time: '09:32' },
+            { from: 'in', text: 'حسناً، أرسل لي المخططات وسأراجعها', time: '09:34' }
         ]
     },
     'consult-4': {
@@ -666,9 +673,9 @@ const CONVS = {
         ctxLinkLabel: 'تفاصيل الاستشارة ←',
         quickReplies: ['شكراً', 'أرسل الصور', 'ما الميزانية المناسبة؟'],
         messages: [
-            { from: 'them', text: 'أهلاً! سعيدة بتواصلك معي 😊', time: '14:00' },
-            { from: 'me', text: 'أريد استشارة لتصميم غرفة المعيشة', time: '14:02' },
-            { from: 'them', text: 'رائع! ما هي مساحة الغرفة ونمط التصميم المفضل؟', time: '14:03' }
+            { from: 'in', text: 'أهلاً! سعيدة بتواصلك معي 😊', time: '14:00' },
+            { from: 'out', text: 'أريد استشارة لتصميم غرفة المعيشة', time: '14:02' },
+            { from: 'in', text: 'رائع! ما هي مساحة الغرفة ونمط التصميم المفضل؟', time: '14:03' }
         ]
     },
     'consult-5': {
@@ -683,9 +690,9 @@ const CONVS = {
         ctxLinkLabel: 'تفاصيل الاستشارة ←',
         quickReplies: ['شكراً', 'ما الجدول الزمني؟', 'كم التكلفة المتوقعة؟'],
         messages: [
-            { from: 'them', text: 'أهلاً، أنا متخصص في إدارة مشاريع البناء', time: '11:00' },
-            { from: 'me', text: 'أحتاج خطة لإدارة مشروع تجاري', time: '11:05' },
-            { from: 'them', text: 'ممتاز، كم المدة المتوقعة وحجم المشروع؟', time: '11:06' }
+            { from: 'in', text: 'أهلاً، أنا متخصص في إدارة مشاريع البناء', time: '11:00' },
+            { from: 'out', text: 'أحتاج خطة لإدارة مشروع تجاري', time: '11:05' },
+            { from: 'in', text: 'ممتاز، كم المدة المتوقعة وحجم المشروع؟', time: '11:06' }
         ]
     },
     'consult-6': {
@@ -700,9 +707,9 @@ const CONVS = {
         ctxLinkLabel: 'تفاصيل الاستشارة ←',
         quickReplies: ['شكراً', 'متى تنتهين من المراجعة؟', 'هل هناك ملاحظات؟'],
         messages: [
-            { from: 'them', text: 'مرحباً، كيف يمكنني مساعدتك؟', time: '15:00' },
-            { from: 'me', text: 'أحتاج مراجعة عقد مقاولة', time: '15:02' },
-            { from: 'them', text: 'بالتأكيد، أرسل لي العقد وسأراجعه خلال 24 ساعة', time: '15:03' }
+            { from: 'in', text: 'مرحباً، كيف يمكنني مساعدتك؟', time: '15:00' },
+            { from: 'out', text: 'أحتاج مراجعة عقد مقاولة', time: '15:02' },
+            { from: 'in', text: 'بالتأكيد، أرسل لي العقد وسأراجعه خلال 24 ساعة', time: '15:03' }
         ]
     },
     'equip-2': {
@@ -717,9 +724,9 @@ const CONVS = {
         ctxLinkLabel: 'تفاصيل المعدة ←',
         quickReplies: ['شكراً', 'هل يشمل المشغل؟', 'ما شروط الإيجار؟'],
         messages: [
-            { from: 'them', text: 'أهلاً، رافعة شوكية 5 طن متاحة للإيجار', time: '08:00' },
-            { from: 'me', text: 'ما السعر اليومي؟', time: '08:05' },
-            { from: 'them', text: 'السعر 350 ريال/يوم شامل المشغل', time: '08:06' }
+            { from: 'in', text: 'أهلاً، رافعة شوكية 5 طن متاحة للإيجار', time: '08:00' },
+            { from: 'out', text: 'ما السعر اليومي؟', time: '08:05' },
+            { from: 'in', text: 'السعر 350 ريال/يوم شامل المشغل', time: '08:06' }
         ]
     },
     'equip-3': {
@@ -734,9 +741,9 @@ const CONVS = {
         ctxLinkLabel: 'تفاصيل المعدة ←',
         quickReplies: ['شكراً', 'هل يشمل الوقود؟', 'ما مدة الحجز المتاحة؟'],
         messages: [
-            { from: 'them', text: 'مرحباً، لدينا بوم ترك 35 متر متاح', time: '09:00' },
-            { from: 'me', text: 'هل يشمل السعر الوقود؟', time: '09:10' },
-            { from: 'them', text: 'لا، الوقود على العميل. السعر 1200 ريال/يوم', time: '09:11' }
+            { from: 'in', text: 'مرحباً، لدينا بوم ترك 35 متر متاح', time: '09:00' },
+            { from: 'out', text: 'هل يشمل السعر الوقود؟', time: '09:10' },
+            { from: 'in', text: 'لا، الوقود على العميل. السعر 1200 ريال/يوم', time: '09:11' }
         ]
     },
     'equip-4': {
@@ -751,9 +758,9 @@ const CONVS = {
         ctxLinkLabel: 'تفاصيل المعدة ←',
         quickReplies: ['شكراً', 'ما الحد الأدنى للإيجار؟', 'هل يشمل الصيانة؟'],
         messages: [
-            { from: 'them', text: 'أهلاً بك! مولد كهربائي 500 كيلو متاح', time: '10:00' },
-            { from: 'me', text: 'كم يوم أقصى مدة الإيجار؟', time: '10:15' },
-            { from: 'them', text: 'يمكن الإيجار شهرياً بسعر مخفض 8000 ريال/شهر', time: '10:16' }
+            { from: 'in', text: 'أهلاً بك! مولد كهربائي 500 كيلو متاح', time: '10:00' },
+            { from: 'out', text: 'كم يوم أقصى مدة الإيجار؟', time: '10:15' },
+            { from: 'in', text: 'يمكن الإيجار شهرياً بسعر مخفض 8000 ريال/شهر', time: '10:16' }
         ]
     },
     'equip-5': {
@@ -768,9 +775,9 @@ const CONVS = {
         ctxLinkLabel: 'تفاصيل المعدة ←',
         quickReplies: ['شكراً', 'متى تتاح؟', 'ما السعر الأسبوعي؟'],
         messages: [
-            { from: 'them', text: 'مرحباً، تمتلك شاحنة قلابة 20 طن', time: '07:30' },
-            { from: 'me', text: 'هل متاحة هذا الأسبوع؟', time: '07:45' },
-            { from: 'them', text: 'نعم متاحة من الأحد القادم', time: '07:46' }
+            { from: 'in', text: 'مرحباً، تمتلك شاحنة قلابة 20 طن', time: '07:30' },
+            { from: 'out', text: 'هل متاحة هذا الأسبوع؟', time: '07:45' },
+            { from: 'in', text: 'نعم متاحة من الأحد القادم', time: '07:46' }
         ]
     },
     'equip-6': {
@@ -785,9 +792,9 @@ const CONVS = {
         ctxLinkLabel: 'تفاصيل المعدة ←',
         quickReplies: ['شكراً', 'ما الحد الأدنى للإيجار؟', 'هل يأتي مع مشغل؟'],
         messages: [
-            { from: 'them', text: 'أهلاً! كومباكتور أرضية متاح للإيجار', time: '11:00' },
-            { from: 'me', text: 'ما الحد الأدنى للإيجار؟', time: '11:20' },
-            { from: 'them', text: 'الحد الأدنى يومان، السعر 280 ريال/يوم', time: '11:21' }
+            { from: 'in', text: 'أهلاً! كومباكتور أرضية متاح للإيجار', time: '11:00' },
+            { from: 'out', text: 'ما الحد الأدنى للإيجار؟', time: '11:20' },
+            { from: 'in', text: 'الحد الأدنى يومان، السعر 280 ريال/يوم', time: '11:21' }
         ]
     },
     'equip-7': {
@@ -802,9 +809,9 @@ const CONVS = {
         ctxLinkLabel: 'تفاصيل المعدة ←',
         quickReplies: ['شكراً', 'هل يشمل التركيب؟', 'ما مدة التركيب؟'],
         messages: [
-            { from: 'them', text: 'مرحباً! لدينا رافعة برجية للإيجار', time: '08:00' },
-            { from: 'me', text: 'هل تشمل خدمة التركيب والتفكيك؟', time: '08:30' },
-            { from: 'them', text: 'نعم، التركيب والتفكيك مشمولان في السعر', time: '08:31' }
+            { from: 'in', text: 'مرحباً! لدينا رافعة برجية للإيجار', time: '08:00' },
+            { from: 'out', text: 'هل تشمل خدمة التركيب والتفكيك؟', time: '08:30' },
+            { from: 'in', text: 'نعم، التركيب والتفكيك مشمولان في السعر', time: '08:31' }
         ]
     },
     'equip-8': {
@@ -819,9 +826,9 @@ const CONVS = {
         ctxLinkLabel: 'تفاصيل المعدة ←',
         quickReplies: ['شكراً', 'هل يشمل التوصيل؟', 'ما السعر الأسبوعي؟'],
         messages: [
-            { from: 'them', text: 'أهلاً، خلاطة خرسانة 9 متر مكعب متاحة', time: '06:00' },
-            { from: 'me', text: 'هل تقدمون خدمة التوصيل للموقع؟', time: '06:30' },
-            { from: 'them', text: 'نعم، التوصيل متاح داخل الرياض مجاناً', time: '06:31' }
+            { from: 'in', text: 'أهلاً، خلاطة خرسانة 9 متر مكعب متاحة', time: '06:00' },
+            { from: 'out', text: 'هل تقدمون خدمة التوصيل للموقع؟', time: '06:30' },
+            { from: 'in', text: 'نعم، التوصيل متاح داخل الرياض مجاناً', time: '06:31' }
         ]
     },
 
@@ -838,8 +845,8 @@ const CONVS = {
         ctxLinkLabel: 'لوحة التحكم ←',
         quickReplies: ['لم تكتمل الخدمة', 'المزود لم يحضر', 'جودة العمل سيئة', 'مشكلة في المواد'],
         messages: [
-            { from: 'them', text: 'مرحباً، وصلنا بلاغك. فريق الدعم معك الآن لحل المشكلة في أسرع وقت.', time: new Date().toLocaleTimeString('ar', {hour:'2-digit',minute:'2-digit'}) },
-            { from: 'them', text: 'يرجى شرح المشكلة بالتفصيل وسنعمل على حلها فوراً.', time: new Date().toLocaleTimeString('ar', {hour:'2-digit',minute:'2-digit'}) }
+            { from: 'in', text: 'مرحباً، وصلنا بلاغك. فريق الدعم معك الآن لحل المشكلة في أسرع وقت.', time: new Date().toLocaleTimeString('ar', {hour:'2-digit',minute:'2-digit'}) },
+            { from: 'in', text: 'يرجى شرح المشكلة بالتفصيل وسنعمل على حلها فوراً.', time: new Date().toLocaleTimeString('ar', {hour:'2-digit',minute:'2-digit'}) }
         ]
     }
 };
@@ -886,7 +893,7 @@ function initFromURL() {
                 const pending = JSON.parse(localStorage.getItem('khedmah_pending_issue') || 'null');
                 if (pending && pending.issues && pending.issues.length) {
                     CONVS['support-1'].messages.unshift({
-                        from: 'me',
+                        from: 'out',
                         text: 'المشاكل المبلغ عنها:\n• ' + pending.issues.join('\n• '),
                         time: new Date().toLocaleTimeString('ar', {hour:'2-digit',minute:'2-digit'})
                     });
@@ -1293,6 +1300,6 @@ function doLogout() {
     window.location.href = 'login.html';
 }
 </script>
-<script defer src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
 </body>
 </html>

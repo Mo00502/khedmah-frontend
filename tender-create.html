@@ -286,14 +286,24 @@
             this.submitted = true;
             window.scrollTo(0, 0);
             try {
+                const budget = this.budgetType === 'fixed'
+                    ? Number(this.budgetFixed)
+                    : this.budgetType === 'range'
+                        ? { min: Number(this.budgetMin), max: Number(this.budgetMax) }
+                        : null;
                 const res = await API.tenders.create({
                     title: this.title,
                     description: this.description,
                     category: this.category,
-                    budget: this.budget,
+                    subcategory: this.subcategory,
+                    budget: budget,
+                    budgetType: this.budgetType,
                     deadline: this.deadline,
-                    location: this.location,
                     city: this.city,
+                    locationDetail: this.locationDetail,
+                    serviceMode: this.serviceMode,
+                    scopeOfWork: this.scopeOfWork,
+                    visibility: this.visibility,
                 });
                 this.tenderId = res?.id ? ('#TND-' + res.id.slice(-6)) : ('#TND-' + Date.now().toString().slice(-6));
             } catch(e) {
@@ -359,7 +369,7 @@
                 <p>ستصلك إشعارات عند تقديم عروض جديدة</p>
                 <p style="font-size:0.82rem;margin-top:0.5rem">يتم إخطار المزودين المتطابقين تلقائياً</p>
                 <div class="success-actions">
-                    <a :href="'tender-bids.html?tenderId='+tenderId.replace('#','')" class="btn-primary-action">متابعة العروض</a>
+                    <a :href="'tender-bids.html?tenderId='+encodeURIComponent(tenderId.replace('#',''))" class="btn-primary-action">متابعة العروض</a>
                     <a href="tenders.html" class="btn-secondary-action">تصفح المناقصات</a>
                 </div>
             </div>
@@ -711,6 +721,12 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
     <script>
+        function doLogout() {
+            localStorage.removeItem('khedmah_demo');
+            localStorage.removeItem('khedmah_user');
+            window.location.href = 'login.html';
+        }
+
         function showToast(msg) {
             let t = document.getElementById('pageToast');
             if (!t) { t = document.createElement('div'); t.id = 'pageToast'; document.body.appendChild(t); }

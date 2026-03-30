@@ -125,6 +125,28 @@
         .btn-primary-action { background: var(--primary); color: white; padding: 0.95rem; border-radius: 14px; text-decoration: none; font-weight: 700; font-size: 1rem; display: block; text-align: center; }
         .btn-secondary-action { background: var(--light); color: var(--dark); padding: 0.95rem; border-radius: 14px; text-decoration: none; font-weight: 600; font-size: 1rem; display: block; text-align: center; }
 
+        /* ── Saved Addresses chips ── */
+        .saved-addr-section { margin-bottom: 1.25rem; }
+        .saved-addr-label { font-size: 0.88rem; font-weight: 600; color: var(--dark); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.4rem; }
+        .addr-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+        .addr-chip {
+            border: 1.5px solid #e2e8f0; border-radius: 20px;
+            padding: 0.4rem 0.9rem; font-family: 'Tajawal', sans-serif;
+            font-size: 0.82rem; font-weight: 600; background: white;
+            cursor: pointer; transition: all 0.15s; color: var(--dark);
+        }
+        .addr-chip:hover { border-color: var(--primary); color: var(--primary); }
+        .addr-chip.selected { background: var(--primary); border-color: var(--primary); color: white; }
+        .addr-chip.is-default { border-color: var(--success); }
+        .addr-chip.is-default:not(.selected) { color: var(--success); }
+        .addr-empty-note { font-size: 0.8rem; color: var(--gray); font-style: italic; }
+        .addr-spinner { display: inline-block; width: 18px; height: 18px; border: 2.5px solid #e2e8f0; border-top-color: var(--primary); border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; }
+        .save-addr-row { display: flex; align-items: center; gap: 0.6rem; margin-top: 0.75rem; padding: 0.75rem 1rem; background: rgba(2,128,144,0.05); border-radius: 12px; border: 1.5px dashed #e2e8f0; }
+        .save-addr-row label { display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.88rem; font-weight: 600; color: var(--dark); }
+        .save-addr-row input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; accent-color: var(--primary); }
+        .addr-label-input { flex: 1; border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 0.5rem 0.75rem; font-family: 'Tajawal', sans-serif; font-size: 0.88rem; background: white; color: var(--dark); outline: none; }
+        .addr-label-input:focus { border-color: var(--primary); }
+
         /* ── Dark Mode ── */
         html.dark body { background: #0f172a !important; color: #e2e8f0; }
         html.dark nav { background: #1e293b !important; border-color: #334155; }
@@ -155,6 +177,13 @@
         html.dark .btn-secondary-action { background: #1e293b; color: #e2e8f0; }
         html.dark .btn-back { color: #94a3b8; }
         html.dark .wizard-meta { color: #94a3b8; }
+        html.dark .addr-chip { background: #1e293b; border-color: #334155; color: #cbd5e1; }
+        html.dark .addr-chip:hover { border-color: var(--primary); color: var(--accent); }
+        html.dark .addr-chip.selected { background: var(--primary); color: white; }
+        html.dark .saved-addr-label { color: #cbd5e1; }
+        html.dark .save-addr-row { background: rgba(2,128,144,0.08); border-color: #334155; }
+        html.dark .save-addr-row label { color: #e2e8f0; }
+        html.dark .addr-label-input { background: #0f172a; color: #e2e8f0; border-color: #334155; }
     </style>
 </head>
 <body>
@@ -189,14 +218,21 @@
             description: '',
             city: 'الرياض',
             district: '',
+            street: '',
             timing: 'أقرب وقت ممكن',
             customDate: '',
             hasMaterials: false,
             materialsEst: '',
+            providerId: '',
             submitted: false,
             reqNumber: '',
             errors: {},
             stepLabels: ['نوع الخدمة','وصف المشكلة','الموقع والوقت','مراجعة وإرسال'],
+            savedAddresses: [],
+            addrLoading: true,
+            selectedAddrId: null,
+            saveAddress: false,
+            addrLabel: 'المنزل',
             DISTRICTS: {
                 'الرياض': [
                     'حي العليا','حي النزهة','حي الملقا','حي الياسمين','حي الروضة',
@@ -253,20 +289,46 @@
                 this.errors = {};
                 if (this.step === 1 && !this.selectedService) { this.errors.service = 'يرجى اختيار نوع الخدمة'; return; }
                 if (this.step === 2 && this.description.trim().length < 10) { this.errors.description = 'يرجى كتابة وصف أوضح (10 أحرف على الأقل)'; return; }
-                if (this.step === 3 && !this.district.trim()) { this.errors.district = 'يرجى إدخال الحي'; return; }
-                if (this.step === 4 && this.timing === 'custom') {
-                    if (!this.customDate) { this.errors.timing = 'يرجى اختيار التاريخ والوقت'; return; }
-                    if (new Date(this.customDate) <= new Date()) { this.errors.timing = 'يجب أن يكون الموعد في المستقبل'; return; }
+                if (this.step === 3) {
+                    if (!this.district.trim()) { this.errors.district = 'يرجى إدخال الحي'; return; }
+                    if (this.timing === 'custom') {
+                        if (!this.customDate) { this.errors.timing = 'يرجى اختيار التاريخ والوقت'; return; }
+                        if (new Date(this.customDate) <= new Date()) { this.errors.timing = 'يجب أن يكون الموعد في المستقبل'; return; }
+                    }
                 }
                 if (this.step < this.totalSteps) { this.step++; window.scrollTo(0, 0); }
             },
             goPrev() {
                 if (this.step > 1) { this.step--; window.scrollTo(0, 0); }
             },
+            applyAddress(addr) {
+                this.selectedAddrId = addr.id;
+                // Set city first; the $watch will clear district, so we restore it via nextTick
+                const newCity     = addr.city     || this.city;
+                const newDistrict = addr.district || '';
+                const newStreet   = addr.street   || '';
+                this.city = newCity;
+                this.$nextTick(() => {
+                    this.district = newDistrict;
+                    this.street   = newStreet;
+                });
+            },
             async submitRequest() {
                 this.submitted = true;
                 window.scrollTo(0, 0);
                 try {
+                    // Save address if requested
+                    if (this.saveAddress && this.city && this.district) {
+                        try {
+                            await API.addresses.create({
+                                label:     this.addrLabel || 'المنزل',
+                                city:      this.city,
+                                district:  this.district,
+                                street:    this.street || undefined,
+                                isDefault: false,
+                            });
+                        } catch(e) { /* non-fatal */ }
+                    }
                     const req = await API.requests.create({
                         serviceTitle:    this.selectedService,
                         serviceCategory: this.selectedService,
@@ -276,6 +338,7 @@
                         scheduledAt:     this.customDate ? new Date(this.customDate).toISOString() : undefined,
                         hasMaterials:    this.hasMaterials,
                         materialsEst:    this.hasMaterials ? (this.materialsEst || 0) : 0,
+                        ...(this.providerId ? { providerId: this.providerId } : {}),
                     });
                     this.reqNumber = req?.id || ('REQ-' + Date.now().toString().slice(-6));
                 } catch(e) {
@@ -288,13 +351,25 @@
                         hasMaterials: String(this.hasMaterials),
                         materialsEst: String(this.materialsEst || 0),
                     });
+                    if (this.providerId) p.set('providerId', this.providerId);
                     window.location.href = 'payment-escrow.html?' + p.toString();
                 }, 1500);
             }
         }"
         x-init="
-            const c = new URLSearchParams(location.search).get('category'); if(c) selectedService = c;
+            const _qp = new URLSearchParams(location.search);
+            const c = _qp.get('category'); if(c) selectedService = c;
+            const pid = _qp.get('providerId'); if(pid) providerId = pid;
             $watch('city', () => { district = ''; });
+            // Load saved addresses
+            (async () => {
+                try {
+                    savedAddresses = await API.addresses.list();
+                    const def = savedAddresses.find(a => a.isDefault);
+                    if (def) { applyAddress(def); }
+                } catch(e) { savedAddresses = []; }
+                finally { addrLoading = false; }
+            })();
         ">
 
         <!-- Progress header — sticky -->
@@ -420,6 +495,31 @@
                     <p>أين ومتى تحتاج الخدمة؟</p>
                 </div>
 
+                <!-- Saved Addresses Section -->
+                <div class="saved-addr-section">
+                    <div class="saved-addr-label">
+                        📌 العناوين المحفوظة
+                        <span x-show="addrLoading" class="addr-spinner"></span>
+                    </div>
+                    <div x-show="!addrLoading">
+                        <div class="addr-chips" x-show="savedAddresses.length > 0">
+                            <template x-for="addr in savedAddresses" :key="addr.id">
+                                <button type="button"
+                                    class="addr-chip"
+                                    :class="{ selected: selectedAddrId === addr.id, 'is-default': addr.isDefault }"
+                                    @click="applyAddress(addr)"
+                                    :title="addr.city + (addr.district ? ' — ' + addr.district : '') + (addr.street ? '، ' + addr.street : '')">
+                                    <span x-text="addr.label"></span>
+                                    <span x-show="addr.isDefault" style="font-size:0.7rem;opacity:0.75"> ★</span>
+                                </button>
+                            </template>
+                        </div>
+                        <div class="addr-empty-note" x-show="savedAddresses.length === 0">
+                            لا توجد عناوين محفوظة بعد — أدخل عنوانك يدوياً أدناه
+                        </div>
+                    </div>
+                </div>
+
                 <div class="field-group">
                     <label class="field-label">المدينة <span class="field-required">*</span></label>
                     <select class="form-select" x-model="city">
@@ -448,6 +548,27 @@
                         <input type="text" class="form-input" x-model="district" placeholder="مثال: حي النزهة">
                     </template>
                     <p class="step-error" x-show="errors.district" x-text="errors.district"></p>
+                </div>
+
+                <div class="field-group">
+                    <label class="field-label">الشارع <span style="font-weight:400;color:var(--gray)">(اختياري)</span></label>
+                    <input type="text" class="form-input" x-model="street" placeholder="مثال: شارع الملك فهد">
+                </div>
+
+                <!-- Save this address toggle -->
+                <div class="save-addr-row" x-show="city && district">
+                    <label>
+                        <input type="checkbox" x-model="saveAddress">
+                        💾 حفظ هذا العنوان
+                    </label>
+                    <template x-if="saveAddress">
+                        <select class="addr-label-input" x-model="addrLabel" style="max-width:160px">
+                            <option value="المنزل">🏠 المنزل</option>
+                            <option value="العمل">💼 العمل</option>
+                            <option value="المكتب">🏢 المكتب</option>
+                            <option value="أخرى">📍 أخرى</option>
+                        </select>
+                    </template>
                 </div>
 
                 <div class="field-group">

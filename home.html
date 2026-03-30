@@ -719,7 +719,10 @@
         function doSearch() {
             const q = document.getElementById('heroSearch').value.trim();
             const city = document.getElementById('heroCity').value;
-            if (!q) return;
+            if (!q) {
+                location.href = 'search-services.html?city=' + encodeURIComponent(city);
+                return;
+            }
             location.href = 'search-services.html?q=' + encodeURIComponent(q) + '&city=' + encodeURIComponent(city);
         }
 

@@ -296,6 +296,7 @@
         .success-btn { width:100%; padding:1rem; background:linear-gradient(135deg,var(--primary),var(--secondary)); color:white; border:none; border-radius:12px; font-size:1.1rem; font-weight:700; cursor:pointer; font-family:'Tajawal',sans-serif; margin-top:1rem; }
     </style>
 </head>
+<body x-data="paymentApp()" x-init="init()">
 <script>
     (function() {
         const demo = localStorage.getItem('khedmah_demo');
@@ -306,7 +307,6 @@
         } catch(e) {}
     })();
 </script>
-<body x-data="paymentApp()" x-init="init()">
 
     <!-- Nav -->
     <nav>
@@ -849,6 +849,13 @@
                     alert('⚠️ يرجى إدخال المبلغ التقديري للمواد أولاً');
                     return;
                 }
+                if (this.payMethod === 'card') {
+                    const rawDigits = this.cardRaw.replace(/\s/g, '');
+                    if (rawDigits.length < 16) { alert('⚠️ رقم البطاقة غير مكتمل'); return; }
+                    if (!this.cardName.trim()) { alert('⚠️ يرجى إدخال اسم حامل البطاقة'); return; }
+                    if (this.cardExpiry.length < 5) { alert('⚠️ تاريخ انتهاء البطاقة غير صحيح'); return; }
+                    if (this.cardCvc.length < 3) { alert('⚠️ رمز CVV يجب أن يكون 3 أرقام'); return; }
+                }
                 this.processing = true;
                 try {
                     const [month, year] = (this.cardExpiry || '/').split('/');
@@ -868,14 +875,12 @@
                     this.showSuccess = true;
                     setTimeout(() => {
                         const p = new URLSearchParams({
-                            type:      'service',
-                            requestId: this.currentRequestId,
-                            service:   this.serviceName,
-                            paid:      '1',
+                            requestId:     this.currentRequestId,
+                            service:       this.serviceName,
                             serviceAmount: String(Math.round(this.serviceAmount)),
                             materialsEst:  String(this.orderType === 'materials' ? this.materialsEstimate : 0),
                         });
-                        window.location.href = 'chat.html?' + p.toString();
+                        window.location.href = 'service-confirmation.html?' + p.toString();
                     }, 1500);
                 } catch(err) {
                     this.processing = false;

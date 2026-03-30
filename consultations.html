@@ -162,6 +162,7 @@
                 <a href="equipment.html">المعدات</a>
                 <a href="consultations.html" class="active">الاستشارات</a>
                 <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙</button>
+                <button onclick="doLogout()" style="background:none;border:1.5px solid #e2e8f0;border-radius:10px;padding:0.35rem 0.75rem;font-family:'Tajawal',sans-serif;font-size:0.82rem;color:var(--gray);cursor:pointer;">خروج</button>
                 <a href="customer-dashboard.html" class="avatar-btn">م</a>
             </div>
         </div>
@@ -236,7 +237,7 @@
                     <div class="cons-right">
                         <div class="cons-price">350 ر.س<small>/ساعة</small></div>
                         <span class="avail-badge avail-yes">متاح اليوم</span>
-                        <button class="btn-book" onclick="openBookModal('م. خالد العمري', 350)">حجز جلسة</button>
+                        <button class="btn-book" onclick="openBookModal('م. خالد العمري', 350, 1)">حجز جلسة</button>
                         <a href="chat.html?type=consult&id=1" class="btn-chat-cons">💬 تواصل</a>
                     </div>
                 </div>
@@ -260,7 +261,7 @@
                     <div class="cons-right">
                         <div class="cons-price">500 ر.س<small>/ساعة</small></div>
                         <span class="avail-badge avail-yes">متاح اليوم</span>
-                        <button class="btn-book" onclick="openBookModal('أ. سارة الغامدي', 500)">حجز جلسة</button>
+                        <button class="btn-book" onclick="openBookModal('أ. سارة الغامدي', 500, 2)">حجز جلسة</button>
                         <a href="chat.html?type=consult&id=2" class="btn-chat-cons">💬 تواصل</a>
                     </div>
                 </div>
@@ -285,7 +286,7 @@
                     <div class="cons-right">
                         <div class="cons-price">280 ر.س<small>/ساعة</small></div>
                         <span class="avail-badge avail-yes">متاح اليوم</span>
-                        <button class="btn-book" onclick="openBookModal('أ. فهد السلمي', 280)">حجز جلسة</button>
+                        <button class="btn-book" onclick="openBookModal('أ. فهد السلمي', 280, 3)">حجز جلسة</button>
                         <a href="chat.html?type=consult&id=3" class="btn-chat-cons">💬 تواصل</a>
                     </div>
                 </div>
@@ -310,7 +311,7 @@
                     <div class="cons-right">
                         <div class="cons-price">420 ر.س<small>/ساعة</small></div>
                         <span class="avail-badge avail-no">محجوز</span>
-                        <button class="btn-book" onclick="openBookModal('م. ريم الشهري', 420)">حجز جلسة</button>
+                        <button class="btn-book" onclick="openBookModal('م. ريم الشهري', 420, 4)">حجز جلسة</button>
                         <a href="chat.html?type=consult&id=4" class="btn-chat-cons">💬 تواصل</a>
                     </div>
                 </div>
@@ -335,7 +336,7 @@
                     <div class="cons-right">
                         <div class="cons-price">300 ر.س<small>/ساعة</small></div>
                         <span class="avail-badge avail-yes">متاح اليوم</span>
-                        <button class="btn-book" onclick="openBookModal('م. عبدالله المطيري', 300)">حجز جلسة</button>
+                        <button class="btn-book" onclick="openBookModal('م. عبدالله المطيري', 300, 5)">حجز جلسة</button>
                         <a href="chat.html?type=consult&id=5" class="btn-chat-cons">💬 تواصل</a>
                     </div>
                 </div>
@@ -360,7 +361,7 @@
                     <div class="cons-right">
                         <div class="cons-price">600 ر.س<small>/ساعة</small></div>
                         <span class="avail-badge avail-yes">متاح اليوم</span>
-                        <button class="btn-book" onclick="openBookModal('د. نورة الزهراني', 600)">حجز جلسة</button>
+                        <button class="btn-book" onclick="openBookModal('د. نورة الزهراني', 600, 6)">حجز جلسة</button>
                         <a href="chat.html?type=consult&id=6" class="btn-chat-cons">💬 تواصل</a>
                     </div>
                 </div>
@@ -395,7 +396,7 @@
             </div>
             <div class="form-group">
                 <label class="form-label">تاريخ الجلسة *</label>
-                <input type="date" class="form-control" id="bookDate" :min="new Date().toISOString().split('T')[0]">
+                <input type="date" class="form-control" id="bookDate">
             </div>
             <div class="form-group">
                 <label class="form-label">الوقت المفضل *</label>
@@ -467,6 +468,7 @@
         }
 
         let _bookingConsultantName = '';
+        let _bookingConsultantId = null;
         let _bookingConsultantPrice = 0;
         let _consultMode = 'VIDEO';
 
@@ -477,8 +479,9 @@
             if (btn) btn.classList.add('mode-active');
         }
 
-        function openBookModal(name, price) {
+        function openBookModal(name, price, id) {
             _bookingConsultantName  = name;
+            _bookingConsultantId = id || null;
             _bookingConsultantPrice = price;
             document.getElementById('bookConsName').textContent = name;
             document.getElementById('bookPrice').textContent = price.toLocaleString() + ' ر.س';
@@ -508,6 +511,7 @@
             let reqId = 'CONS-' + Date.now().toString().slice(-6);
             try {
                 const res = await API.consultations.book({
+                    consultantId: _bookingConsultantId,
                     consultantName: _bookingConsultantName,
                     topic,
                     scheduledDate: date,
@@ -533,6 +537,12 @@
             const t = document.createElement('div');
             t.style.cssText = 'position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:#1e293b;color:white;padding:0.75rem 1.5rem;border-radius:12px;font-size:0.9rem;z-index:9999;font-family:Tajawal,sans-serif;';
             t.textContent = msg; document.body.appendChild(t); setTimeout(() => t.remove(), 3000);
+        }
+
+        function doLogout() {
+            localStorage.removeItem('khedmah_demo');
+            localStorage.removeItem('khedmah_user');
+            window.location.href = 'login.html';
         }
 
         function toggleTheme() {

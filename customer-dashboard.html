@@ -276,6 +276,71 @@
             th, td { padding: 0.6rem 0.75rem; }
         }
 
+        /* ── Saved Addresses Section ── */
+        .addr-cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; }
+        .addr-card {
+            background: white; border-radius: 16px; padding: 1.25rem 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+            border: 2px solid transparent; transition: border-color 0.15s;
+            position: relative;
+        }
+        .addr-card.is-default { border-color: var(--success); }
+        .addr-card-header { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.6rem; }
+        .addr-card-icon { font-size: 1.5rem; }
+        .addr-card-label { font-weight: 700; font-size: 0.95rem; flex: 1; }
+        .badge-default { background: rgba(16,185,129,0.12); color: #065f46; padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.72rem; font-weight: 700; }
+        .addr-card-body { font-size: 0.88rem; color: var(--gray); line-height: 1.7; }
+        .addr-card-actions { display: flex; gap: 0.5rem; margin-top: 1rem; flex-wrap: wrap; }
+        .btn-addr-default { background: rgba(16,185,129,0.1); color: #065f46; border: 1.5px solid #10b981; border-radius: 10px; padding: 0.35rem 0.75rem; font-family: 'Tajawal', sans-serif; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: background 0.15s; }
+        .btn-addr-default:hover { background: rgba(16,185,129,0.2); }
+        .btn-addr-delete { background: rgba(239,68,68,0.08); color: #991b1b; border: 1.5px solid #ef4444; border-radius: 10px; padding: 0.35rem 0.75rem; font-family: 'Tajawal', sans-serif; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: background 0.15s; }
+        .btn-addr-delete:hover { background: rgba(239,68,68,0.15); }
+        .btn-add-addr {
+            background: var(--primary); color: white; border: none; border-radius: 12px;
+            padding: 0.55rem 1.25rem; font-family: 'Tajawal', sans-serif;
+            font-size: 0.88rem; font-weight: 700; cursor: pointer; transition: background 0.15s;
+        }
+        .btn-add-addr:hover { background: #026f7e; }
+        .btn-add-addr:disabled { background: #94a3b8; cursor: not-allowed; }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.55);
+            z-index: 500; display: flex; align-items: center; justify-content: center;
+            padding: 1rem;
+        }
+        .modal-box {
+            background: white; border-radius: 20px; padding: 1.75rem;
+            max-width: 480px; width: 100%; max-height: 90vh; overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+        }
+        .modal-title { font-size: 1.2rem; font-weight: 800; margin-bottom: 1.25rem; color: var(--dark); }
+        .modal-field { margin-bottom: 1rem; }
+        .modal-label { font-size: 0.85rem; font-weight: 600; color: var(--dark); margin-bottom: 0.35rem; display: block; }
+        .modal-input, .modal-select, .modal-textarea {
+            width: 100%; border: 1.5px solid #e2e8f0; border-radius: 12px;
+            padding: 0.75rem 1rem; font-family: 'Tajawal', sans-serif;
+            font-size: 16px; color: var(--dark); background: white;
+            outline: none; transition: border-color 0.15s;
+        }
+        .modal-input:focus, .modal-select:focus, .modal-textarea:focus { border-color: var(--primary); }
+        .modal-textarea { resize: vertical; min-height: 80px; }
+        .modal-label-chips { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.25rem; }
+        .modal-label-chip {
+            border: 1.5px solid #e2e8f0; border-radius: 20px; padding: 0.35rem 0.9rem;
+            font-family: 'Tajawal', sans-serif; font-size: 0.82rem; font-weight: 600;
+            cursor: pointer; background: white; color: var(--dark); transition: all 0.15s;
+        }
+        .modal-label-chip.active { background: var(--primary); border-color: var(--primary); color: white; }
+        .modal-actions { display: flex; gap: 0.75rem; margin-top: 1.25rem; }
+        .btn-modal-save { flex: 1; background: var(--primary); color: white; border: none; border-radius: 12px; padding: 0.85rem; font-family: 'Tajawal', sans-serif; font-size: 1rem; font-weight: 700; cursor: pointer; transition: background 0.15s; }
+        .btn-modal-save:hover { background: #026f7e; }
+        .btn-modal-save:disabled { background: #94a3b8; cursor: not-allowed; }
+        .btn-modal-cancel { background: var(--light); color: var(--dark); border: none; border-radius: 12px; padding: 0.85rem 1.25rem; font-family: 'Tajawal', sans-serif; font-size: 1rem; font-weight: 600; cursor: pointer; }
+        .addr-spinner { display: inline-block; width: 18px; height: 18px; border: 2.5px solid #e2e8f0; border-top-color: var(--primary); border-radius: 50%; animation: addr-spin 0.7s linear infinite; vertical-align: middle; }
+        @keyframes addr-spin { to { transform: rotate(360deg); } }
+        .addr-section-loading { text-align: center; padding: 2rem; color: var(--gray); }
+
         /* ── Dark Mode ── */
         html.dark body { background: #0f172a !important; color: #e2e8f0; }
         html.dark nav { background: #1e293b !important; border-color: #334155; }
@@ -293,10 +358,22 @@
         html.dark .btn-outline { color: #02C39A; border-color: #02C39A; }
         html.dark .quick-btn:hover { border-color: #02C39A; }
         html.dark .empty-state { color: #94a3b8; }
+        html.dark .addr-card { background: #1e293b !important; }
+        html.dark .addr-card-label { color: #e2e8f0; }
+        html.dark .addr-card-body { color: #94a3b8; }
+        html.dark .modal-box { background: #1e293b; }
+        html.dark .modal-title { color: #e2e8f0; }
+        html.dark .modal-label { color: #cbd5e1; }
+        html.dark .modal-input, html.dark .modal-select, html.dark .modal-textarea { background: #0f172a; color: #e2e8f0; border-color: #334155; }
+        html.dark .modal-label-chip { background: #0f172a; border-color: #334155; color: #cbd5e1; }
+        html.dark .modal-label-chip.active { background: var(--primary); color: white; }
+        html.dark .btn-modal-cancel { background: #334155; color: #e2e8f0; }
 
         .theme-toggle { width: 36px; height: 36px; border: 1.5px solid #e2e8f0; border-radius: 10px; background: transparent; cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; }
         html.dark .theme-toggle { border-color: #334155; color: #e2e8f0; }
+        [x-cloak] { display: none !important; }
     </style>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body>
     <script>
@@ -318,7 +395,7 @@
             <a href="INDEX.html" class="logo">KHEDMAH</a>
             <div class="nav-links">
                 <a href="customer-dashboard.html" class="active">لوحة التحكم</a>
-                <a href="payment-escrow.html">المدفوعات</a>
+                <a href="customer-invoice.html">الفواتير</a>
                 <a href="customer-notifications.html">الإشعارات <span class="nav-badge">3</span></a>
                 <a href="ai-assistant.html">🤖 المساعد الذكي</a>
                 <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙</button>
@@ -504,6 +581,191 @@
             </div>
         </div>
 
+        <!-- ── Saved Addresses Section ─────────────────────────────────────────── -->
+        <div class="section"
+            x-data="{
+                addrs: [],
+                loading: true,
+                showModal: false,
+                saving: false,
+                form: { label: 'المنزل', city: 'الرياض', district: '', street: '', buildingNo: '', notes: '', isDefault: false },
+                labelOptions: ['المنزل','العمل','المكتب','أخرى'],
+                cityOptions: ['الرياض','جدة','الدمام','مكة المكرمة','المدينة المنورة','أبها','تبوك','القصيم','حائل','نجران','جازان','أخرى'],
+                addrIcon(label) {
+                    const map = { 'المنزل':'🏠','العمل':'💼','المكتب':'🏢' };
+                    return map[label] || '📍';
+                },
+                async loadAddrs() {
+                    this.loading = true;
+                    try { this.addrs = await API.addresses.list(); }
+                    catch(e) { this.addrs = []; }
+                    finally { this.loading = false; }
+                },
+                async setDefault(id) {
+                    try {
+                        await API.addresses.setDefault(id);
+                        this.addrs = this.addrs.map(a => ({ ...a, isDefault: a.id === id }));
+                        API.toast('✅ تم تعيين العنوان الافتراضي', 'success');
+                    } catch(e) { API.toast('❌ ' + API.errorMsg(e)); }
+                },
+                async deleteAddr(id) {
+                    if (!confirm('هل أنت متأكد من حذف هذا العنوان؟')) return;
+                    try {
+                        await API.addresses.remove(id);
+                        this.addrs = this.addrs.filter(a => a.id !== id);
+                        API.toast('✅ تم حذف العنوان', 'success');
+                    } catch(e) { API.toast('❌ ' + API.errorMsg(e)); }
+                },
+                async saveAddr() {
+                    if (!this.form.city || !this.form.district.trim()) {
+                        API.toast('يرجى تعبئة المدينة والحي على الأقل', 'warning');
+                        return;
+                    }
+                    this.saving = true;
+                    try {
+                        const created = await API.addresses.create({
+                            label:      this.form.label,
+                            city:       this.form.city,
+                            district:   this.form.district.trim(),
+                            street:     this.form.street.trim() || undefined,
+                            buildingNo: this.form.buildingNo.trim() || undefined,
+                            notes:      this.form.notes.trim() || undefined,
+                            isDefault:  this.form.isDefault,
+                        });
+                        if (this.form.isDefault) {
+                            this.addrs = this.addrs.map(a => ({ ...a, isDefault: false }));
+                        }
+                        this.addrs.push(created);
+                        this.showModal = false;
+                        this.form = { label: 'المنزل', city: 'الرياض', district: '', street: '', buildingNo: '', notes: '', isDefault: false };
+                        API.toast('✅ تم حفظ العنوان بنجاح', 'success');
+                    } catch(e) { API.toast('❌ ' + API.errorMsg(e)); }
+                    finally { this.saving = false; }
+                }
+            }"
+            x-init="loadAddrs()">
+
+            <div class="section-header">
+                <div class="section-title">📌 العناوين المحفوظة</div>
+                <button class="btn-add-addr"
+                    @click="showModal = true"
+                    :disabled="addrs.length >= 10"
+                    :title="addrs.length >= 10 ? 'الحد الأقصى 10 عناوين' : 'إضافة عنوان جديد'">
+                    + إضافة عنوان
+                </button>
+            </div>
+
+            <!-- Loading state -->
+            <div class="addr-section-loading" x-show="loading">
+                <span class="addr-spinner"></span>
+                <span style="margin-right:0.5rem;font-size:0.9rem">جارٍ تحميل العناوين...</span>
+            </div>
+
+            <!-- Address cards -->
+            <div class="addr-cards-grid" x-show="!loading && addrs.length > 0">
+                <template x-for="addr in addrs" :key="addr.id">
+                    <div class="addr-card" :class="{'is-default': addr.isDefault}">
+                        <div class="addr-card-header">
+                            <span class="addr-card-icon" x-text="addrIcon(addr.label)"></span>
+                            <span class="addr-card-label" x-text="addr.label"></span>
+                            <span class="badge-default" x-show="addr.isDefault">افتراضي</span>
+                        </div>
+                        <div class="addr-card-body">
+                            <div x-text="addr.city + (addr.district ? ' — ' + addr.district : '')"></div>
+                            <div x-show="addr.street" x-text="addr.street"></div>
+                            <div x-show="addr.buildingNo" x-text="'مبنى: ' + addr.buildingNo" style="font-size:0.82rem"></div>
+                            <div x-show="addr.notes" x-text="addr.notes" style="font-size:0.82rem;margin-top:0.25rem;opacity:0.75"></div>
+                        </div>
+                        <div class="addr-card-actions">
+                            <button class="btn-addr-default" x-show="!addr.isDefault"
+                                @click="setDefault(addr.id)">
+                                ★ تعيين كافتراضي
+                            </button>
+                            <button class="btn-addr-delete" @click="deleteAddr(addr.id)">
+                                🗑 حذف
+                            </button>
+                        </div>
+                    </div>
+                </template>
+            </div>
+
+            <!-- Empty state -->
+            <div class="empty-state" x-show="!loading && addrs.length === 0">
+                <div class="emoji">📍</div>
+                <p>لا توجد عناوين محفوظة بعد</p>
+                <p style="font-size:0.82rem;margin-top:0.35rem">أضف عناوينك المفضلة لتسريع طلباتك القادمة</p>
+            </div>
+
+            <!-- Add Address Modal -->
+            <div class="modal-overlay" x-show="showModal" x-cloak @click.self="showModal = false" style="display:none">
+                <div class="modal-box">
+                    <div class="modal-title">إضافة عنوان جديد</div>
+
+                    <!-- Label chips -->
+                    <div class="modal-field">
+                        <label class="modal-label">تسمية العنوان</label>
+                        <div class="modal-label-chips">
+                            <template x-for="opt in labelOptions" :key="opt">
+                                <button type="button" class="modal-label-chip"
+                                    :class="{ active: form.label === opt }"
+                                    @click="form.label = opt"
+                                    x-text="opt"></button>
+                            </template>
+                        </div>
+                    </div>
+
+                    <!-- City -->
+                    <div class="modal-field">
+                        <label class="modal-label">المدينة <span style="color:var(--error)">*</span></label>
+                        <select class="modal-select" x-model="form.city">
+                            <template x-for="c in cityOptions" :key="c">
+                                <option :value="c" x-text="c"></option>
+                            </template>
+                        </select>
+                    </div>
+
+                    <!-- District -->
+                    <div class="modal-field">
+                        <label class="modal-label">الحي <span style="color:var(--error)">*</span></label>
+                        <input type="text" class="modal-input" x-model="form.district" placeholder="مثال: حي النزهة">
+                    </div>
+
+                    <!-- Street -->
+                    <div class="modal-field">
+                        <label class="modal-label">الشارع <span style="color:var(--gray);font-weight:400">(اختياري)</span></label>
+                        <input type="text" class="modal-input" x-model="form.street" placeholder="مثال: شارع الملك فهد">
+                    </div>
+
+                    <!-- Building No -->
+                    <div class="modal-field">
+                        <label class="modal-label">رقم المبنى <span style="color:var(--gray);font-weight:400">(اختياري)</span></label>
+                        <input type="text" class="modal-input" x-model="form.buildingNo" placeholder="مثال: 1234">
+                    </div>
+
+                    <!-- Notes -->
+                    <div class="modal-field">
+                        <label class="modal-label">ملاحظات <span style="color:var(--gray);font-weight:400">(اختياري)</span></label>
+                        <textarea class="modal-textarea" x-model="form.notes" placeholder="أي تفاصيل إضافية للمزود..."></textarea>
+                    </div>
+
+                    <!-- Default checkbox -->
+                    <div class="modal-field" style="display:flex;align-items:center;gap:0.6rem">
+                        <input type="checkbox" id="addrIsDefault" x-model="form.isDefault" style="width:18px;height:18px;accent-color:var(--primary);cursor:pointer">
+                        <label for="addrIsDefault" style="font-size:0.88rem;font-weight:600;cursor:pointer">تعيين كعنوان افتراضي</label>
+                    </div>
+
+                    <div class="modal-actions">
+                        <button class="btn-modal-save" @click="saveAddr()" :disabled="saving">
+                            <span x-show="!saving">💾 حفظ العنوان</span>
+                            <span x-show="saving">جارٍ الحفظ...</span>
+                        </button>
+                        <button class="btn-modal-cancel" @click="showModal = false">إلغاء</button>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- end addresses section -->
+
         <!-- Completed Orders -->
         <div class="section">
             <div class="section-header">
@@ -529,8 +791,8 @@
                             <td>650 ر.س</td>
                             <td><span class="badge badge-completed">مكتمل</span></td>
                             <td>
-                                <a href="customer-invoice.html" class="btn-sm btn-outline" style="margin-left:4px">🧾 فاتورة</a>
-                                <a href="rate-service.html" class="btn-sm btn-ghost">⭐ تقييم</a>
+                                <a href="customer-invoice.html?requestId=REQ-D001" class="btn-sm btn-outline" style="margin-left:4px">🧾 فاتورة</a>
+                                <a href="rate-service.html?requestId=REQ-D001" class="btn-sm btn-ghost">⭐ تقييم</a>
                             </td>
                         </tr>
                         <tr>
@@ -540,8 +802,8 @@
                             <td>280 ر.س</td>
                             <td><span class="badge badge-completed">مكتمل</span></td>
                             <td>
-                                <a href="customer-invoice.html" class="btn-sm btn-outline" style="margin-left:4px">🧾 فاتورة</a>
-                                <a href="rate-service.html" class="btn-sm btn-ghost" style="opacity:0.5;cursor:default">✅ قيّمت</a>
+                                <a href="customer-invoice.html?requestId=REQ-D002" class="btn-sm btn-outline" style="margin-left:4px">🧾 فاتورة</a>
+                                <a href="rate-service.html?requestId=REQ-D002" class="btn-sm btn-ghost" style="opacity:0.5;cursor:default">✅ قيّمت</a>
                             </td>
                         </tr>
                         <tr>
@@ -551,8 +813,8 @@
                             <td>340 ر.س</td>
                             <td><span class="badge badge-completed">مكتمل</span></td>
                             <td>
-                                <a href="customer-invoice.html" class="btn-sm btn-outline" style="margin-left:4px">🧾 فاتورة</a>
-                                <a href="rate-service.html" class="btn-sm btn-ghost" style="opacity:0.5;cursor:default">✅ قيّمت</a>
+                                <a href="customer-invoice.html?requestId=REQ-D003" class="btn-sm btn-outline" style="margin-left:4px">🧾 فاتورة</a>
+                                <a href="rate-service.html?requestId=REQ-D003" class="btn-sm btn-ghost" style="opacity:0.5;cursor:default">✅ قيّمت</a>
                             </td>
                         </tr>
                         <tr>
@@ -562,8 +824,8 @@
                             <td>570 ر.س</td>
                             <td><span class="badge badge-completed">مكتمل</span></td>
                             <td>
-                                <a href="customer-invoice.html" class="btn-sm btn-outline" style="margin-left:4px">🧾 فاتورة</a>
-                                <a href="rate-service.html" class="btn-sm btn-ghost" style="opacity:0.5;cursor:default">✅ قيّمت</a>
+                                <a href="customer-invoice.html?requestId=REQ-D004" class="btn-sm btn-outline" style="margin-left:4px">🧾 فاتورة</a>
+                                <a href="rate-service.html?requestId=REQ-D004" class="btn-sm btn-ghost" style="opacity:0.5;cursor:default">✅ قيّمت</a>
                             </td>
                         </tr>
                     </tbody>
@@ -726,10 +988,12 @@
 
     function dismissQuote(btn) {
             const card = btn.closest('.quote-card');
-            card.style.display = 'none';
+            if (card) card.style.display = 'none';
             const list = document.getElementById('quotesList');
+            if (!list) return;
             const visible = list.querySelectorAll('.quote-card:not([style*="display: none"]):not([style*="display:none"])').length;
-            document.getElementById('quotesEmpty').style.display = visible === 0 ? 'block' : 'none';
+            const emptyEl = document.getElementById('quotesEmpty');
+            if (emptyEl) emptyEl.style.display = visible === 0 ? 'block' : 'none';
         }
 
         function toggleTheme() {
