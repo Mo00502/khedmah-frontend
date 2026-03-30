@@ -326,7 +326,7 @@
                 document.getElementById('successState').classList.add('show');
             } catch (err) {
                 btn.disabled = false;
-                btn.innerHTML = '<span>🚀</span><span>إنشاء الحساب</span>';
+                btn.innerHTML = '<span>✨</span><span>إنشاء الحساب</span>';
                 const errEl = document.getElementById('errorAlert');
                 if (errEl) {
                     errEl.textContent = '❌ ' + API.errorMsg(err);

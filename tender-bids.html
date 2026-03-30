@@ -410,7 +410,10 @@ const BIDS = [
     },
     rejectBid(id) {
         const bid = this.bids.find(b => b.id === id);
-        if (bid) { bid.status = 'rejected'; this.expandedBid = null; }
+        if (!bid) return;
+        const company = bid.company || bid.companyName || 'هذا العرض';
+        if (!confirm(`هل أنت متأكد من رفض عرض "${company}"؟ لا يمكن التراجع عن هذا القرار.`)) return;
+        bid.status = 'rejected'; this.expandedBid = null;
         updateShortlistedCount(this.bids);
         showToast('تم رفض العرض');
     }
@@ -567,6 +570,7 @@ const BIDS = [
 function doLogout() {
     localStorage.removeItem('khedmah_demo');
     localStorage.removeItem('khedmah_user');
+            localStorage.removeItem('khedmah_admin');
     window.location.href = 'login.html';
 }
 

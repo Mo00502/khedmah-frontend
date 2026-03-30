@@ -637,7 +637,7 @@
         function shareVia(platform) {
             const code = document.getElementById('referralCode').textContent;
             const text = `🎁 انضم لـ Khedmah واحصل على خصم 50 ريال! استخدم كود: ${code}`;
-            const url = 'https://khedmah.sa/signup?ref=' + code;
+            const url = 'https://khedmah.sa/signup?ref=' + encodeURIComponent(code);
             
             let shareUrl = '';
             

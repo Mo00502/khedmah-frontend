@@ -696,6 +696,7 @@
             await API.auth.logout().catch(() => {});
             localStorage.removeItem('khedmah_demo');
             localStorage.removeItem('khedmah_user');
+            localStorage.removeItem('khedmah_admin');
             window.location.href = 'login.html';
         }
 

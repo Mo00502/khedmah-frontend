@@ -855,7 +855,7 @@
             toast(`✅ تم إعادة تفعيل حساب ${name}`);
             try {
                 const email = row.querySelector('td:nth-child(2)')?.textContent?.trim();
-                if (email) await API.admin.reinstateUser({ email });
+                if (email) await API.admin.unsuspendUser(email);
             } catch(e) { /* demo */ }
         }
         function filterUsers(q) {
