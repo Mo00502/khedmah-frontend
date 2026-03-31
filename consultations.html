@@ -506,6 +506,7 @@
             const slot  = document.querySelector('.slot-btn.selected');
             const topic = document.getElementById('bookTopic').value.trim() || 'استشارة';
             if (!date || !slot) { alert('يرجى اختيار التاريخ والوقت'); return; }
+            if (new Date(date) < new Date(new Date().toDateString())) { alert('لا يمكن اختيار تاريخ في الماضي'); return; }
             closeModal('bookModal');
             showToast('تم تأكيد الحجز ✅ — جارٍ الانتقال للدفع...');
             let reqId = 'CONS-' + Date.now().toString().slice(-6);

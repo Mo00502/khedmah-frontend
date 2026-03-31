@@ -561,7 +561,10 @@
         async function confirmRent() {
             const start = document.getElementById('rentStart').value;
             const end   = document.getElementById('rentEnd').value;
-            if (!start || !end) { alert('يرجى تحديد تاريخ البداية والانتهاء'); return; }
+            if (!start || !end) { showToast('يرجى تحديد تاريخ البداية والانتهاء ⚠️'); return; }
+            const days = Math.ceil((new Date(end) - new Date(start)) / 86400000);
+            if (days <= 0) { showToast('تاريخ الانتهاء يجب أن يكون بعد تاريخ البداية ⚠️'); return; }
+            if (new Date(start) < new Date(new Date().toDateString())) { showToast('تاريخ البداية لا يمكن أن يكون في الماضي ⚠️'); return; }
             const totalText = document.getElementById('rentTotal').textContent.replace(/[^\d.]/g, '') || '0';
             closeModal('rentModal');
             showToast('تم تأكيد الحجز ✅ — جارٍ الانتقال للدفع...');
