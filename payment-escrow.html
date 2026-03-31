@@ -858,6 +858,21 @@
                     if (this.cardCvc.length < 3) { alert('⚠️ رمز CVV يجب أن يكون 3 أرقام'); return; }
                 }
                 this.processing = true;
+                const doRedirect = () => {
+                    this.processing  = false;
+                    this.showSuccess = true;
+                    setTimeout(() => {
+                        const p = new URLSearchParams({
+                            requestId:     this.currentRequestId,
+                            service:       this.serviceName,
+                            serviceAmount: String(Math.round(this.serviceAmount)),
+                            materialsEst:  String(this.orderType === 'materials' ? this.materialsEstimate : 0),
+                        });
+                        window.location.href = 'service-confirmation.html?' + p.toString();
+                    }, 1500);
+                };
+                // Demo mode: bypass real payment gateway
+                if (localStorage.getItem('khedmah_demo')) { doRedirect(); return; }
                 try {
                     const [month, year] = (this.cardExpiry || '/').split('/');
                     const source = this.payMethod === 'card'
@@ -872,17 +887,7 @@
                         serviceAmount: this.serviceAmount,
                         materialsAmount: this.orderType === 'materials' ? Number(this.materialsEstimate) : 0,
                     });
-                    this.processing  = false;
-                    this.showSuccess = true;
-                    setTimeout(() => {
-                        const p = new URLSearchParams({
-                            requestId:     this.currentRequestId,
-                            service:       this.serviceName,
-                            serviceAmount: String(Math.round(this.serviceAmount)),
-                            materialsEst:  String(this.orderType === 'materials' ? this.materialsEstimate : 0),
-                        });
-                        window.location.href = 'service-confirmation.html?' + p.toString();
-                    }, 1500);
+                    doRedirect();
                 } catch(err) {
                     this.processing = false;
                     API.toast('❌ ' + API.errorMsg(err));

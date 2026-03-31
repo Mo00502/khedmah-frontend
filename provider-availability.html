@@ -507,8 +507,8 @@
         const vacation = document.getElementById('vacationToggle').checked;
         const vacFrom = document.getElementById('vacFrom').value;
         const vacTo = document.getElementById('vacTo').value;
-        if (vacation && vacFrom && vacTo && new Date(vacFrom) >= new Date(vacTo)) {
-            showToast('❌ تاريخ نهاية الإجازة يجب أن يكون بعد تاريخ البداية');
+        if (vacation && vacFrom && vacTo && new Date(vacFrom) > new Date(vacTo)) {
+            showToast('❌ تاريخ نهاية الإجازة يجب أن يكون في نفس يوم البداية أو بعده');
             return;
         }
         localStorage.setItem('khedmah_availability', JSON.stringify({ schedule, vacation, vacFrom, vacTo }));

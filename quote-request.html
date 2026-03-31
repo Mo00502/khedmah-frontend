@@ -341,9 +341,9 @@
                         materialsEst:    this.hasMaterials ? (this.materialsEst || 0) : 0,
                         ...(this.providerId ? { providerId: this.providerId } : {}),
                     });
-                    this.reqNumber = req?.id || ('REQ-' + Date.now().toString().slice(-6));
+                    this.reqNumber = req?.id || ('REQ-' + Date.now().toString().slice(-6) + '-' + Math.random().toString(36).slice(2, 6).toUpperCase());
                 } catch(e) {
-                    this.reqNumber = 'REQ-' + Date.now().toString().slice(-6);
+                    this.reqNumber = 'REQ-' + Date.now().toString().slice(-6) + '-' + Math.random().toString(36).slice(2, 6).toUpperCase();
                 }
                 setTimeout(() => {
                     const p = new URLSearchParams({

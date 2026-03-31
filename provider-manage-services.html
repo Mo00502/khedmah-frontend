@@ -920,30 +920,37 @@
                 card.className = 'service-card' + (isActive ? '' : ' inactive');
                 card.setAttribute('data-id', id);
                 card.setAttribute('data-api-id', id);
+                const safeId = String(id).replace(/[^a-zA-Z0-9_-]/g, '');
                 card.innerHTML = `
                     <div class="inactive-badge"${isActive ? ' style="display:none;"' : ''}>موقوفة</div>
                     <div class="card-top">
                         <div class="service-icon-box">🔧</div>
                         <div class="toggle-wrapper">
-                            <span class="toggle-label" id="lbl-${id}">${isActive ? 'نشط' : 'موقوف'}</span>
+                            <span class="toggle-label" id="lbl-${safeId}">${isActive ? 'نشط' : 'موقوف'}</span>
                             <label class="toggle">
-                                <input type="checkbox" ${isActive ? 'checked' : ''} onchange="toggleService('${id}', this)">
+                                <input type="checkbox" ${isActive ? 'checked' : ''} onchange="toggleService('${safeId}', this)">
                                 <span class="toggle-slider"></span>
                             </label>
                         </div>
                     </div>
-                    <div class="service-name">${svc.name || ''}</div>
-                    <div class="service-category">${svc.category || ''}</div>
+                    <div class="service-name"></div>
+                    <div class="service-category"></div>
                     <div class="service-price">
-                        <span class="price-amount">${priceDisplay}</span>
-                        <span class="price-unit">${priceUnit}</span>
+                        <span class="price-amount"></span>
+                        <span class="price-unit"></span>
                     </div>
-                    <div class="service-duration">⏱️ مدة الخدمة المتوقعة: ${svc.duration || '—'}</div>
-                    <div class="service-desc-text">${svc.description || ''}</div>
+                    <div class="service-duration"></div>
+                    <div class="service-desc-text"></div>
                     <div class="card-actions">
-                        <button class="btn-edit" onclick="openEditModal('${id}')">✏️ تعديل</button>
-                        <button class="btn-delete" onclick="openDeleteConfirm('${id}')">🗑️ حذف</button>
+                        <button class="btn-edit" onclick="openEditModal('${safeId}')">✏️ تعديل</button>
+                        <button class="btn-delete" onclick="openDeleteConfirm('${safeId}')">🗑️ حذف</button>
                     </div>`;
+                card.querySelector('.service-name').textContent = svc.name || '';
+                card.querySelector('.service-category').textContent = svc.category || '';
+                card.querySelector('.price-amount').textContent = priceDisplay;
+                card.querySelector('.price-unit').textContent = priceUnit;
+                card.querySelector('.service-duration').textContent = '⏱️ مدة الخدمة المتوقعة: ' + (svc.duration || '—');
+                card.querySelector('.service-desc-text').textContent = svc.description || '';
                 grid.appendChild(card);
             });
             updateStats();

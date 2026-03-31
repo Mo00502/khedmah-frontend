@@ -618,14 +618,15 @@
         }
 
         async function acceptRequest(btn) {
+            if (btn.disabled) return;
+            btn.disabled = true;
             const card    = btn.closest('.request-card');
             const reqId   = card.dataset.reqId;
             const service = card.dataset.service || 'خدمة';
             const priceStr = prompt('أدخل سعرك المقترح للخدمة (ر.س):');
-            if (!priceStr) return;
+            if (!priceStr) { btn.disabled = false; return; }
             const price = parseFloat(priceStr);
-            if (isNaN(price) || price <= 0) { API.toast('❌ سعر غير صالح'); return; }
-            btn.disabled = true;
+            if (isNaN(price) || price <= 0) { API.toast('❌ سعر غير صالح'); btn.disabled = false; return; }
             try {
                 await API.requests.submitQuote(reqId, { price, notes: '' });
                 card.querySelector('.badge').className = 'badge badge-progress';
@@ -642,11 +643,12 @@
         }
 
         async function completeWork(btn) {
-            if (!confirm('هل أكملت العمل وتريد إشعار العميل للتأكيد؟')) return;
+            if (btn.disabled) return;
+            btn.disabled = true;
+            if (!confirm('هل أكملت العمل وتريد إشعار العميل للتأكيد؟')) { btn.disabled = false; return; }
             const card    = btn.closest('.request-card');
             const reqId   = card.dataset.reqId || '';
             const service = card.dataset.service || 'خدمة';
-            btn.disabled = true;
             try {
                 await API.requests.complete(reqId);
                 card.querySelector('.badge').className = 'badge badge-completed';
