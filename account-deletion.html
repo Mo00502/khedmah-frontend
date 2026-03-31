@@ -509,7 +509,8 @@
         confirmed: false
       },
       get canSubmit() {
-        return this.form.email.trim() !== '' &&
+        const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.form.email.trim());
+        return emailOk &&
                this.form.password.trim() !== '' &&
                this.form.reason !== '' &&
                this.form.confirmed;

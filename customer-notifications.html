@@ -465,7 +465,7 @@
         updateBadge();
         showToast('✓ تم تحديده كمقروء');
         refreshUnreadTab();
-        API.notifications.markRead(id).catch(() => {});
+        API.notifications.markRead(id).catch(e => API.toast('❌ ' + API.errorMsg(e)));
     }
 
     async function markAllRead() {
@@ -484,7 +484,7 @@
         updateBadge();
         showToast('✓ تم تحديد الكل كمقروء');
         refreshUnreadTab();
-        API.notifications.markAllRead().catch(() => {});
+        API.notifications.markAllRead().catch(e => API.toast('❌ ' + API.errorMsg(e)));
     }
 
     function refreshUnreadTab() {

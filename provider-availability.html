@@ -507,10 +507,14 @@
         const vacation = document.getElementById('vacationToggle').checked;
         const vacFrom = document.getElementById('vacFrom').value;
         const vacTo = document.getElementById('vacTo').value;
+        if (vacation && vacFrom && vacTo && new Date(vacFrom) >= new Date(vacTo)) {
+            showToast('❌ تاريخ نهاية الإجازة يجب أن يكون بعد تاريخ البداية');
+            return;
+        }
         localStorage.setItem('khedmah_availability', JSON.stringify({ schedule, vacation, vacFrom, vacTo }));
         try {
             await API.providers.saveSchedule({ schedule, vacation, vacFrom, vacTo });
-        } catch(e) { /* silent — local save already done */ }
+        } catch(e) { showToast('❌ ' + API.errorMsg(e)); return; }
         showToast('✓ تم حفظ جدول التوفر بنجاح');
     }
 

@@ -842,8 +842,8 @@
             btn.onclick = function() { reinstateUser(this, name); };
             toast(`🚫 تم إيقاف حساب ${name}`);
             try {
-                const email = row.querySelector('td:nth-child(2)')?.textContent?.trim();
-                if (email) await API.admin.suspendUser({ email, reason: 'إيقاف من لوحة الإدارة' });
+                const userId = row.dataset.userId || row.querySelector('td:nth-child(1)')?.dataset?.id;
+                if (userId) await API.admin.suspendUser(userId, { reason: 'إيقاف من لوحة الإدارة' });
             } catch(e) { /* demo */ }
         }
         async function reinstateUser(btn, name) {
@@ -854,8 +854,8 @@
             btn.onclick = function() { suspendUser(this, name); };
             toast(`✅ تم إعادة تفعيل حساب ${name}`);
             try {
-                const email = row.querySelector('td:nth-child(2)')?.textContent?.trim();
-                if (email) await API.admin.unsuspendUser(email);
+                const userId = row.dataset.userId || row.querySelector('td:nth-child(1)')?.dataset?.id;
+                if (userId) await API.admin.unsuspendUser(userId);
             } catch(e) { /* demo */ }
         }
         function filterUsers(q) {
@@ -906,9 +906,13 @@
             if (confirm('تسجيل الخروج من لوحة الإدارة؟')) {
                 await API.auth.logout().catch(() => {});
                 localStorage.removeItem('khedmah_admin');
+                localStorage.removeItem('khedmah_demo');
+                localStorage.removeItem('khedmah_user');
                 window.location.href = 'admin-login.html';
             }
         }
+        // Alias so any page that calls doLogout() also works
+        function doLogout() { logout(); }
         function toggleTheme() {
             const isDark = document.documentElement.classList.toggle('dark');
             localStorage.setItem('khedmah_theme', isDark ? 'dark' : 'light');

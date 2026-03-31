@@ -705,7 +705,7 @@
         updateStats();
         // Persist active/inactive state to backend
         const apiId = card?.dataset?.apiId || id;
-        API.providers.updateService(apiId, { active: isActive }).catch(() => {});
+        API.providers.updateService(apiId, { active: isActive }).catch(e => API.toast('❌ ' + API.errorMsg(e)));
     }
 
     function updateStats() {
@@ -861,13 +861,13 @@
         const rawPrice = selectedPriceType !== 'agree' ? parseFloat(document.getElementById('priceInput')?.value || '0') : null;
         if (!wasEditing) {
             // Create new service
-            API.providers.addService({ name, category, description: desc, priceType: selectedPriceType, price: rawPrice }).catch(() => {});
+            API.providers.addService({ name, category, description: desc, priceType: selectedPriceType, price: rawPrice }).catch(e => API.toast('❌ ' + API.errorMsg(e)));
         } else {
             // Update existing service — editingId is a DOM timestamp ID for static cards;
             // for API-created cards a real UUID would be stored in data-api-id
             const card = document.querySelector(`[data-id="${wasEditing}"]`);
             const apiId = card?.dataset?.apiId || wasEditing;
-            API.providers.updateService(apiId, { name, category, description: desc, priceType: selectedPriceType, price: rawPrice }).catch(() => {});
+            API.providers.updateService(apiId, { name, category, description: desc, priceType: selectedPriceType, price: rawPrice }).catch(e => API.toast('❌ ' + API.errorMsg(e)));
         }
         editingId = null;
     }
@@ -889,7 +889,7 @@
                 card.style.animation = 'fadeOut 0.3s ease forwards';
                 setTimeout(() => { card.remove(); updateStats(); }, 300);
             }
-            API.providers.removeService(deleteTargetId).catch(() => {});
+            API.providers.removeService(deleteTargetId).catch(e => API.toast('❌ ' + API.errorMsg(e)));
         }
         closeDeleteConfirm();
         showToast('🗑️ تم حذف الخدمة');

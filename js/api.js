@@ -312,6 +312,7 @@
     rejectWithdrawal:    (id, data) => http.patch(`/wallet/admin/withdrawals/${id}/reject`, data),
     health:              ()       => http.get('/health'),
     auditLogs:           (p = {}) => http.get('/admin/audit?' + new URLSearchParams(p)),
+    markCommissionPaid:  (id)     => http.patch(`/admin/commissions/${id}/mark-paid`),
   };
 
   const tenders = {

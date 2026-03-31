@@ -594,9 +594,16 @@
     <script>
         function copyCode() {
             const code = document.getElementById('referralCode').textContent;
-            navigator.clipboard.writeText(code).then(() => {
-                alert('✅ تم نسخ الكود: ' + code);
-            });
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(code)
+                    .then(() => alert('✅ تم نسخ الكود: ' + code))
+                    .catch(() => {
+                        // Fallback for denied clipboard permission
+                        prompt('انسخ الكود يدوياً:', code);
+                    });
+            } else {
+                prompt('انسخ الكود يدوياً:', code);
+            }
         }
 
         function shareCode() {
