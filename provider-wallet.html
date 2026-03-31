@@ -445,6 +445,7 @@
       .wallet-card, .section-card, .tx-row { box-shadow: none !important; border: 1px solid #ccc !important; }
     }
   </style>
+<link rel="stylesheet" href="css/khedmah-ux.css">
 </head>
 <body>
 
@@ -895,6 +896,10 @@
     localStorage.removeItem('khedmah_admin');
     window.location.href = 'login.html';
   }
+</script>
+<button id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="للأعلى">↑</button>
+<script>
+window.addEventListener('scroll',function(){document.getElementById('scrollTopBtn')?.classList.toggle('visible',window.scrollY>400);});
 </script>
 </body>
 </html>

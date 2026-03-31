@@ -235,6 +235,8 @@
         /* Dashboard-specific dark overrides */
         html.dark .stat-card { background: #1e293b !important; box-shadow: 0 2px 12px rgba(0,0,0,0.3); }
         html.dark .stat-value { color: #e2e8f0; }
+        html.dark #newRequestsEmpty p { color: #94a3b8 !important; }
+        html.dark #newRequestsEmpty p:first-of-type { color: #e2e8f0 !important; }
         html.dark .quick-btn { background: #1e293b !important; color: #e2e8f0; border-color: #334155; }
         html.dark .quick-btn:hover { border-color: var(--primary); }
         html.dark .panel { background: #1e293b !important; box-shadow: 0 2px 12px rgba(0,0,0,0.3); }
@@ -247,6 +249,7 @@
         .theme-toggle { width: 36px; height: 36px; border: 1.5px solid #e2e8f0; border-radius: 10px; background: transparent; cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; }
         html.dark .theme-toggle { border-color: #334155; color: #e2e8f0; }
     </style>
+    <link rel="stylesheet" href="css/khedmah-ux.css">
 </head>
 <body>
     <script>
@@ -307,6 +310,7 @@
                 <div>
                     <div class="stat-value">1</div>
                     <div class="stat-label">طلب جارٍ</div>
+                    <div style="font-size:0.72rem;color:#94a3b8;margin-top:0.2rem">الطلبات قيد التنفيذ الآن</div>
                 </div>
             </div>
             <div class="stat-card">
@@ -314,6 +318,7 @@
                 <div>
                     <div class="stat-value">3</div>
                     <div class="stat-label">طلبات جديدة</div>
+                    <div style="font-size:0.72rem;color:#94a3b8;margin-top:0.2rem">تنتظر ردك — لا تفوّتها</div>
                 </div>
             </div>
             <div class="stat-card">
@@ -321,6 +326,7 @@
                 <div>
                     <div class="stat-value">127</div>
                     <div class="stat-label">خدمة مكتملة</div>
+                    <div style="font-size:0.72rem;color:#94a3b8;margin-top:0.2rem">إجمالي خدماتك المنجزة</div>
                 </div>
             </div>
             <div class="stat-card">
@@ -328,6 +334,7 @@
                 <div>
                     <div class="stat-value">3,240</div>
                     <div class="stat-label">أرباح هذا الشهر (ر.س)</div>
+                    <div style="font-size:0.72rem;color:#94a3b8;margin-top:0.2rem">بعد خصم عمولة المنصة</div>
                 </div>
             </div>
         </div>
@@ -427,8 +434,9 @@
                     </div>
                 </div>
                 <div id="newRequestsEmpty" class="empty-state" style="display:none;">
-                    <div class="emoji">📭</div>
-                    <p>لا توجد طلبات جديدة حالياً</p>
+                    <div class="emoji">🎉</div>
+                    <p style="font-weight:700;font-size:0.95rem;color:var(--dark)">أحسنت! لا توجد طلبات معلقة حالياً</p>
+                    <p style="font-size:0.82rem;margin-top:0.35rem">ستصلك إشعارات فور وصول طلبات جديدة في منطقتك</p>
                 </div>
             </div>
         </div>
@@ -716,5 +724,9 @@
             }
         })();
     </script>
+<button id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="للأعلى">↑</button>
+<script>
+window.addEventListener('scroll',function(){document.getElementById('scrollTopBtn')?.classList.toggle('visible',window.scrollY>400);});
+</script>
 </body>
 </html>

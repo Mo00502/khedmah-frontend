@@ -590,6 +590,7 @@
     html.dark .section-title { color: #e2e8f0; }
     html.dark .breakdown-title { color: #e2e8f0; }
   </style>
+<link rel="stylesheet" href="css/khedmah-ux.css">
 </head>
 <body>
 <script src="js/api.js"></script>
@@ -1082,5 +1083,9 @@
   }
 </script>
 
+<button id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="للأعلى">↑</button>
+<script>
+window.addEventListener('scroll',function(){document.getElementById('scrollTopBtn')?.classList.toggle('visible',window.scrollY>400);});
+</script>
 </body>
 </html>

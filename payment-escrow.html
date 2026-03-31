@@ -296,6 +296,7 @@
         .split-result-row.materials-row-result { border-right:3px solid var(--materials); }
         .success-btn { width:100%; padding:1rem; background:linear-gradient(135deg,var(--primary),var(--secondary)); color:white; border:none; border-radius:12px; font-size:1.1rem; font-weight:700; cursor:pointer; font-family:'Tajawal',sans-serif; margin-top:1rem; }
     </style>
+<link rel="stylesheet" href="css/khedmah-ux.css">
 </head>
 <body x-data="paymentApp()" x-init="init()">
 <script>
@@ -919,5 +920,9 @@
         }
     })();
     </script>
+<button id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="للأعلى">↑</button>
+<script>
+window.addEventListener('scroll',function(){document.getElementById('scrollTopBtn')?.classList.toggle('visible',window.scrollY>400);});
+</script>
 </body>
 </html>

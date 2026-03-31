@@ -186,6 +186,7 @@
         html.dark .save-addr-row label { color: #e2e8f0; }
         html.dark .addr-label-input { background: #0f172a; color: #e2e8f0; border-color: #334155; }
     </style>
+<link rel="stylesheet" href="css/khedmah-ux.css">
 </head>
 <body>
     <script src="js/api.js"></script>
@@ -678,5 +679,9 @@
             window.location.href = 'login.html';
         }
     </script>
+<button id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="للأعلى">↑</button>
+<script>
+window.addEventListener('scroll',function(){document.getElementById('scrollTopBtn')?.classList.toggle('visible',window.scrollY>400);});
+</script>
 </body>
 </html>

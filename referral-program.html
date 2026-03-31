@@ -424,6 +424,7 @@
         .theme-toggle { width: 36px; height: 36px; border: 1.5px solid #e2e8f0; border-radius: 10px; background: transparent; cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; }
         html.dark .theme-toggle { border-color: #334155; color: #e2e8f0; }
     </style>
+<link rel="stylesheet" href="css/khedmah-ux.css">
 </head>
 <body>
 <script>
@@ -666,5 +667,9 @@
             window.open(shareUrl, '_blank');
         }
     </script>
+<button id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="للأعلى">↑</button>
+<script>
+window.addEventListener('scroll',function(){document.getElementById('scrollTopBtn')?.classList.toggle('visible',window.scrollY>400);});
+</script>
 </body>
 </html>

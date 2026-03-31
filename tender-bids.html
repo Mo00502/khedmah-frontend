@@ -165,6 +165,7 @@
         html.dark .empty-bids { background: #1e293b; }
         html.dark .notes-label { color: #e2e8f0; }
     </style>
+<link rel="stylesheet" href="css/khedmah-ux.css">
 </head>
 <body>
 <script src="js/api.js"></script>
@@ -636,5 +637,9 @@ function toggleTheme() {
 })();
 </script>
 
+<button id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="للأعلى">↑</button>
+<script>
+window.addEventListener('scroll',function(){document.getElementById('scrollTopBtn')?.classList.toggle('visible',window.scrollY>400);});
+</script>
 </body>
 </html>

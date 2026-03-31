@@ -407,6 +407,7 @@
         .page-wrap { display: flex; flex-direction: column; height: 100%; max-width: 680px; margin: 0 auto; width: 100%; }
         .page-wrap .messages-area { flex: 1; overflow-y: auto; }
     </style>
+<link rel="stylesheet" href="css/khedmah-ux.css">
 </head>
 
 <body>
@@ -1329,5 +1330,9 @@ function chatApp() {
 }
 </script>
 
+<button id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="للأعلى">↑</button>
+<script>
+window.addEventListener('scroll',function(){document.getElementById('scrollTopBtn')?.classList.toggle('visible',window.scrollY>400);});
+</script>
 </body>
 </html>

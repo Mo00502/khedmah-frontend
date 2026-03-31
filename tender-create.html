@@ -160,6 +160,7 @@
         html.dark .warn-box { background: rgba(245,158,11,0.1); }
         html.dark .success-id { background: #1e293b; }
     </style>
+<link rel="stylesheet" href="css/khedmah-ux.css">
 </head>
 <body>
 <script src="js/api.js"></script>
@@ -751,5 +752,9 @@
             }
         })();
     </script>
+<button id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="للأعلى">↑</button>
+<script>
+window.addEventListener('scroll',function(){document.getElementById('scrollTopBtn')?.classList.toggle('visible',window.scrollY>400);});
+</script>
 </body>
 </html>

@@ -308,6 +308,7 @@
         .theme-toggle { width: 36px; height: 36px; border: 1.5px solid #e2e8f0; border-radius: 10px; background: transparent; cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; }
         html.dark .theme-toggle { border-color: #334155; color: #e2e8f0; }
     </style>
+    <link rel="stylesheet" href="css/khedmah-ux.css">
 </head>
 <body>
 <script src="js/api.js"></script>
@@ -607,9 +608,10 @@
 
             <!-- Empty state (shown when no results visible) -->
             <div id="emptyResultsState" style="display:none;text-align:center;padding:3rem 1rem;color:var(--gray);">
-                <div style="font-size:3rem;margin-bottom:1rem;">🔍</div>
-                <h5 style="font-weight:700;margin-bottom:0.5rem;">لا توجد نتائج</h5>
-                <p>جرب تغيير معايير البحث أو اختر فئة مختلفة</p>
+                <div style="font-size:3.5rem;margin-bottom:1rem;">🔍</div>
+                <h5 style="font-weight:800;margin-bottom:0.5rem;font-size:1.1rem;color:var(--dark);">لم نجد نتائج لبحثك</h5>
+                <p style="margin-bottom:1.25rem;">جرّب تغيير الفلاتر أو البحث بكلمات مختلفة</p>
+                <button onclick="document.getElementById('searchInput').value='';clearCat();" style="background:var(--primary);color:white;border:none;border-radius:10px;padding:0.65rem 1.5rem;font-family:'Tajawal',sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer;">مسح الفلاتر</button>
             </div>
 
             <div class="pagination">
@@ -885,5 +887,9 @@
             }
         })();
     </script>
+<button id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="للأعلى">↑</button>
+<script>
+window.addEventListener('scroll',function(){document.getElementById('scrollTopBtn')?.classList.toggle('visible',window.scrollY>400);});
+</script>
 </body>
 </html>

@@ -476,6 +476,7 @@
 
         html.dark footer { background: #0a0f1c; }
     </style>
+    <link rel="stylesheet" href="css/khedmah-ux.css">
 </head>
 <body>
 <script src="js/api.js"></script>
@@ -752,6 +753,41 @@
             window.location.href = 'login.html';
         }
 
+        // Animate stat counters when visible
+        (function() {
+          function animateCounter(el) {
+            const raw = el.textContent.trim();
+            const match = raw.match(/[\d,،]+/);
+            if (!match) return;
+            const target = parseInt(match[0].replace(/[,،]/g, ''));
+            if (!target || isNaN(target)) return;
+            const suffix = raw.replace(match[0], '').trim();
+            const prefix = raw.substring(0, raw.indexOf(match[0]));
+            let start = null;
+            const duration = 1600;
+            function step(ts) {
+              if (!start) start = ts;
+              const p = Math.min((ts - start) / duration, 1);
+              const ease = 1 - Math.pow(1 - p, 3);
+              const val = Math.round(ease * target);
+              el.textContent = prefix + val.toLocaleString('ar-SA') + (suffix ? ' ' + suffix : '');
+              if (p < 1) requestAnimationFrame(step);
+            }
+            requestAnimationFrame(step);
+          }
+
+          const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+              if (entry.isIntersecting) {
+                animateCounter(entry.target);
+                observer.unobserve(entry.target);
+              }
+            });
+          }, { threshold: 0.5 });
+
+          document.querySelectorAll('.stat-num').forEach(el => observer.observe(el));
+        })();
+
         // Show logout button if logged in
         (function() {
             if (localStorage.getItem('khedmah_demo')) {
@@ -762,5 +798,9 @@
             }
         })();
     </script>
+<button id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="للأعلى">↑</button>
+<script>
+window.addEventListener('scroll', function(){ document.getElementById('scrollTopBtn')?.classList.toggle('visible', window.scrollY > 400); });
+</script>
 </body>
 </html>

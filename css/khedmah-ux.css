@@ -1,0 +1,72 @@
+/* Khedmah Global UX Enhancements */
+
+/* Page fade-in */
+@keyframes kPageIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+body { animation: kPageIn .35s ease forwards; }
+
+/* Smooth focus rings */
+:focus-visible { outline: 2.5px solid #028090; outline-offset: 2px; border-radius: 4px; }
+
+/* Button hover lift */
+button, .btn, a.btn, [role="button"] {
+  transition: transform .15s ease, box-shadow .15s ease, background .15s ease, opacity .15s ease;
+}
+button:not(:disabled):hover, .btn:not(:disabled):hover { transform: translateY(-1px); }
+button:active, .btn:active { transform: translateY(0) !important; }
+
+/* Skeleton shimmer */
+@keyframes kSkeleton { 0%,100% { opacity:.5; } 50% { opacity:1; } }
+.skeleton {
+  background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
+  background-size: 200% 100%;
+  animation: kSkeleton 1.4s ease infinite;
+  border-radius: 8px;
+  color: transparent !important;
+}
+html.dark .skeleton { background: linear-gradient(90deg,#1e293b 25%,#334155 50%,#1e293b 75%); background-size:200% 100%; }
+
+/* Scroll-to-top button */
+#scrollTopBtn {
+  position: fixed; bottom: 5rem; left: 1.5rem; z-index: 900;
+  width: 42px; height: 42px; border-radius: 50%;
+  background: #028090; color: white; border: none; cursor: pointer;
+  font-size: 1.1rem; display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 16px rgba(2,128,144,.35);
+  opacity: 0; transform: scale(.8); pointer-events: none;
+  transition: opacity .25s ease, transform .25s ease;
+}
+#scrollTopBtn.visible { opacity: 1; transform: scale(1); pointer-events: auto; }
+#scrollTopBtn:hover { background: #026f7e; }
+
+/* Card hover lift */
+.service-card, .request-card, .provider-card, .stat-card, .notif-card {
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.service-card:hover, .request-card:hover, .provider-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px rgba(0,0,0,.12) !important;
+}
+
+/* Empty state helper */
+.empty-state-ux {
+  text-align: center; padding: 3rem 1rem; color: #64748b;
+}
+.empty-state-ux .empty-icon { font-size: 3rem; margin-bottom: 1rem; }
+.empty-state-ux h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: .5rem; color: #1e293b; }
+.empty-state-ux p { font-size: .9rem; margin-bottom: 1.25rem; }
+html.dark .empty-state-ux h3 { color: #e2e8f0; }
+
+/* Input focus glow */
+input:focus, select:focus, textarea:focus {
+  border-color: #028090 !important;
+  box-shadow: 0 0 0 3px rgba(2,128,144,.15) !important;
+  outline: none;
+}
+
+/* Disabled state */
+button:disabled { opacity: .55; cursor: not-allowed; transform: none !important; }
+
+/* Toast container spacing from bottom nav if present */
+@media (max-width: 768px) {
+  #api-toast-container { bottom: 5rem !important; left: .75rem !important; width: calc(100% - 1.5rem); }
+}

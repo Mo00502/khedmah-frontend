@@ -95,6 +95,9 @@
             30%    { transform: translateX(-8px); }
             70%    { transform: translateX(8px); }
         }
+        .alert.error, #errorAlert { animation: slideDown .25s ease; }
+        @keyframes slideDown { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
         .submit-btn {
             width: 100%; padding: 1.1rem;
@@ -144,6 +147,7 @@
         .theme-toggle { position: fixed; bottom: 1.5rem; left: 1.5rem; width: 40px; height: 40px; border-radius: 50%; background: white; border: 1.5px solid #e2e8f0; cursor: pointer; font-size: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.15); z-index: 999; }
         html.dark .theme-toggle { background: #1e293b; border-color: #334155; }
     </style>
+    <link rel="stylesheet" href="css/khedmah-ux.css">
 </head>
 <body>
     <div class="card">
@@ -265,7 +269,7 @@
             }
 
             btn.disabled = true;
-            btn.innerHTML = '<span>⏳</span><span>جاري التحقق...</span>';
+            btn.innerHTML = '<span style="display:inline-flex;align-items:center;gap:.5rem"><span style="width:16px;height:16px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:inline-block"></span>جاري الدخول...</span>';
 
             try {
                 const user = await API.auth.login(identifier, password);
@@ -290,5 +294,9 @@
             }
         });
     </script>
+<button id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="للأعلى">↑</button>
+<script>
+window.addEventListener('scroll', function(){ document.getElementById('scrollTopBtn')?.classList.toggle('visible', window.scrollY > 400); });
+</script>
 </body>
 </html>

@@ -263,6 +263,7 @@
         html.dark .best-at-chip { background: #1e293b; border-color: #334155; color: #cbd5e1; }
         html.dark .best-at-chip.selected { background: rgba(245,158,11,0.15); color: #fcd34d; border-color: var(--warning); }
     </style>
+    <link rel="stylesheet" href="css/khedmah-ux.css">
 </head>
 <body>
 
@@ -1093,6 +1094,10 @@
             if (btn) btn.textContent = '☀️';
         }
     })();
+</script>
+<button id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="للأعلى">↑</button>
+<script>
+window.addEventListener('scroll', function(){ document.getElementById('scrollTopBtn')?.classList.toggle('visible', window.scrollY > 400); });
 </script>
 </body>
 </html>

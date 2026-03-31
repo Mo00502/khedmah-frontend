@@ -194,6 +194,7 @@
             .sidebar { display: none; }
         }
     </style>
+<link rel="stylesheet" href="css/khedmah-ux.css">
 </head>
 <body>
 <script src="js/api.js"></script>
@@ -1302,5 +1303,9 @@ function doLogout() {
 }
 </script>
 <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+<button id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="للأعلى">↑</button>
+<script>
+window.addEventListener('scroll',function(){document.getElementById('scrollTopBtn')?.classList.toggle('visible',window.scrollY>400);});
+</script>
 </body>
 </html>

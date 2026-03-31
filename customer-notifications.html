@@ -149,10 +149,11 @@
             display: flex;
             gap: 1rem;
             align-items: flex-start;
-            transition: all 0.2s;
+            transition: all 0.2s, opacity .3s ease, background .3s ease;
             border-right: 4px solid transparent;
             position: relative;
         }
+        .notif-card.fading { opacity: .5; }
         .notif-card.unread { border-right-color: var(--primary); background: rgba(2, 128, 144, 0.02); }
         .notif-card:hover { transform: translateX(-3px); box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
 
@@ -254,6 +255,7 @@
         }
         .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
     </style>
+<link rel="stylesheet" href="css/khedmah-ux.css">
 </head>
 <body>
 <script src="js/api.js"></script>
@@ -450,22 +452,28 @@
 
     async function markRead(id) {
         if (!unreadIds.has(id)) return;
-        unreadIds.delete(id);
 
         const card = document.querySelector(`[data-id="${id}"]`);
-        if (card) {
-            card.classList.remove('unread');
-            card.dataset.status = 'read';
-            const dot = document.getElementById(`dot-${id}`);
-            if (dot) dot.style.display = 'none';
-            const btn = card.querySelector('.read-btn');
-            if (btn) { btn.textContent = 'مقروء'; btn.style.opacity = '0.4'; btn.style.cursor = 'default'; btn.onclick = null; }
-        }
+        if (card) card.classList.add('fading');
 
-        updateBadge();
-        showToast('✓ تم تحديده كمقروء');
-        refreshUnreadTab();
-        API.notifications.markRead(id).catch(e => API.toast('❌ ' + API.errorMsg(e)));
+        setTimeout(() => {
+            unreadIds.delete(id);
+
+            if (card) {
+                card.classList.remove('fading');
+                card.classList.remove('unread');
+                card.dataset.status = 'read';
+                const dot = document.getElementById(`dot-${id}`);
+                if (dot) dot.style.display = 'none';
+                const btn = card.querySelector('.read-btn');
+                if (btn) { btn.textContent = 'مقروء'; btn.style.opacity = '0.4'; btn.style.cursor = 'default'; btn.onclick = null; }
+            }
+
+            updateBadge();
+            showToast('✓ تم تحديده كمقروء');
+            refreshUnreadTab();
+            API.notifications.markRead(id).catch(e => API.toast('❌ ' + API.errorMsg(e)));
+        }, 200);
     }
 
     async function markAllRead() {
@@ -525,6 +533,10 @@
         localStorage.removeItem('khedmah_admin');
         window.location.href = 'login.html';
     }
+</script>
+<button id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="للأعلى">↑</button>
+<script>
+window.addEventListener('scroll',function(){document.getElementById('scrollTopBtn')?.classList.toggle('visible',window.scrollY>400);});
 </script>
 </body>
 </html>

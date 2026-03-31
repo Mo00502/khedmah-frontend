@@ -372,8 +372,32 @@
         .theme-toggle { width: 36px; height: 36px; border: 1.5px solid #e2e8f0; border-radius: 10px; background: transparent; cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; }
         html.dark .theme-toggle { border-color: #334155; color: #e2e8f0; }
         [x-cloak] { display: none !important; }
+
+        /* ── Skeleton Loading ── */
+        .skeleton-card {
+            background: #f1f5f9; border-radius: 16px; padding: 1.5rem;
+            margin-bottom: 1rem; animation: skeletonPulse 1.4s ease infinite;
+        }
+        .skeleton-line { background: #e2e8f0; border-radius: 6px; height: 14px; margin-bottom: .75rem; }
+        .skeleton-line.wide { width: 70%; }
+        .skeleton-line.medium { width: 45%; }
+        .skeleton-line.short { width: 25%; }
+        @keyframes skeletonPulse { 0%,100%{opacity:.6} 50%{opacity:1} }
+        html.dark .skeleton-card { background: #1e293b; }
+        html.dark .skeleton-line { background: #334155; }
+
+        /* ── Improved empty state CTA ── */
+        .empty-state .cta-link {
+            display: inline-block; margin-top: 1rem;
+            background: var(--primary); color: white;
+            padding: 0.55rem 1.4rem; border-radius: 12px;
+            font-weight: 700; font-size: 0.88rem; text-decoration: none;
+            transition: background 0.2s;
+        }
+        .empty-state .cta-link:hover { background: #026f7e; }
     </style>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="css/khedmah-ux.css">
 </head>
 <body>
     <script>
@@ -453,7 +477,23 @@
             <div class="section-header">
                 <div class="section-title">الطلبات النشطة</div>
             </div>
-            <div class="requests-list">
+
+            <!-- Skeleton loader — shown for 800ms before content appears -->
+            <div id="requestsSkeleton">
+                <div class="skeleton-card">
+                    <div class="skeleton-line wide"></div>
+                    <div class="skeleton-line medium"></div>
+                    <div class="skeleton-line short"></div>
+                </div>
+                <div class="skeleton-card">
+                    <div class="skeleton-line wide"></div>
+                    <div class="skeleton-line medium"></div>
+                    <div class="skeleton-line short"></div>
+                </div>
+            </div>
+
+            <!-- Actual requests list — hidden until skeleton fades -->
+            <div class="requests-list" id="activeRequestsContent" style="display:none">
                 <div class="request-card">
                     <div class="request-service-icon">🔧</div>
                     <div class="request-info">
@@ -487,6 +527,13 @@
                         <a href="order-tracking.html?requestId=REQ-001002" class="btn-sm btn-primary">📍 تتبع</a>
                         <a href="chat.html?type=service&requestId=REQ-001002&providerId=salem-001" class="btn-sm btn-outline">💬 محادثة</a>
                     </div>
+                </div>
+
+                <!-- Empty state for active requests -->
+                <div id="activeRequestsEmpty" class="empty-state" style="display:none;">
+                    <div class="emoji">📋</div>
+                    <p>لا توجد طلبات نشطة حالياً</p>
+                    <a href="search-services.html" class="cta-link">ابحث عن خدمة الآن ←</a>
                 </div>
             </div>
         </div>
@@ -996,6 +1043,22 @@
             if (emptyEl) emptyEl.style.display = visible === 0 ? 'block' : 'none';
         }
 
+        // Skeleton loader: hide after 800ms and show actual content
+        (function() {
+            setTimeout(function() {
+                const skeleton = document.getElementById('requestsSkeleton');
+                const content  = document.getElementById('activeRequestsContent');
+                if (skeleton) skeleton.style.display = 'none';
+                if (content)  content.style.display  = 'flex';
+                // Show empty state if no request cards visible
+                if (content) {
+                    const cards = content.querySelectorAll('.request-card');
+                    const empty = document.getElementById('activeRequestsEmpty');
+                    if (empty && cards.length === 0) empty.style.display = 'block';
+                }
+            }, 800);
+        })();
+
         function toggleTheme() {
             const isDark = document.documentElement.classList.toggle('dark');
             localStorage.setItem('khedmah_theme', isDark ? 'dark' : 'light');
@@ -1026,5 +1089,9 @@
             window.location.href = 'login.html';
         }
     </script>
+<button id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="للأعلى">↑</button>
+<script>
+window.addEventListener('scroll', function(){ document.getElementById('scrollTopBtn')?.classList.toggle('visible', window.scrollY > 400); });
+</script>
 </body>
 </html>

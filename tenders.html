@@ -154,6 +154,7 @@
             .page-layout { flex-direction: column; }
         }
     </style>
+<link rel="stylesheet" href="css/khedmah-ux.css">
 </head>
 <body>
 <script src="js/api.js"></script>
@@ -685,5 +686,9 @@
     </div>
     <p>© 2025 خدمة — جميع الحقوق محفوظة</p>
 </footer>
+<button id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="للأعلى">↑</button>
+<script>
+window.addEventListener('scroll',function(){document.getElementById('scrollTopBtn')?.classList.toggle('visible',window.scrollY>400);});
+</script>
 </body>
 </html>

@@ -361,27 +361,68 @@
 
   /* ─── Toast / UI helpers ─────────────────────────────────────────────────── */
 
-  /**
-   * Show a simple Bootstrap toast message.
-   * Assumes a <div id="api-toast"> exists — injects one if not.
-   */
   function toast(message, type = 'danger') {
     let container = document.getElementById('api-toast-container');
     if (!container) {
       container = document.createElement('div');
       container.id = 'api-toast-container';
-      container.style.cssText = 'position:fixed;top:1rem;left:50%;transform:translateX(-50%);z-index:9999;min-width:320px;';
+      container.style.cssText = [
+        'position:fixed',
+        'bottom:1.5rem',
+        'left:1.5rem',
+        'z-index:99999',
+        'display:flex',
+        'flex-direction:column-reverse',
+        'gap:.6rem',
+        'max-width:360px',
+        'width:calc(100% - 3rem)'
+      ].join(';');
       document.body.appendChild(container);
+      const style = document.createElement('style');
+      style.textContent = `
+        @keyframes toastIn { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes toastOut { from { opacity:1; transform:translateY(0); } to { opacity:0; transform:translateY(20px); } }
+        @keyframes toastProgress { from { width:100%; } to { width:0%; } }
+        .api-toast-item { animation: toastIn .25s ease forwards; border-radius:12px; overflow:hidden;
+          box-shadow:0 8px 32px rgba(0,0,0,.18); display:flex; flex-direction:column; }
+        .api-toast-item.removing { animation: toastOut .25s ease forwards; }
+        .api-toast-body { display:flex; align-items:flex-start; gap:.75rem; padding:.85rem 1rem; }
+        .api-toast-icon { font-size:1.2rem; flex-shrink:0; margin-top:.05rem; }
+        .api-toast-msg { flex:1; font-size:.9rem; line-height:1.45; font-family:'Tajawal',sans-serif; direction:rtl; }
+        .api-toast-close { background:none; border:none; color:inherit; opacity:.7; cursor:pointer; font-size:1.1rem; padding:0 .25rem; flex-shrink:0; line-height:1; }
+        .api-toast-close:hover { opacity:1; }
+        .api-toast-progress { height:3px; animation:toastProgress linear forwards; }
+      `;
+      document.head.appendChild(style);
     }
-    const id  = 'toast-' + Date.now();
-    const bg  = type === 'success' ? '#198754' : type === 'warning' ? '#fd7e14' : '#dc3545';
-    container.insertAdjacentHTML('beforeend', `
-      <div id="${id}" style="background:${bg};color:#fff;border-radius:8px;padding:.9rem 1.2rem;
-           margin-bottom:.5rem;box-shadow:0 4px 16px rgba(0,0,0,.25);font-size:.92rem;
-           animation:fadeIn .2s ease;direction:rtl">
-        ${message}
-      </div>`);
-    setTimeout(() => document.getElementById(id)?.remove(), 4000);
+    const id = 'toast-' + Date.now() + Math.random().toString(36).slice(2,6);
+    const cfg = {
+      success: { bg:'#065f46', accent:'#10b981', icon:'✅' },
+      danger:  { bg:'#7f1d1d', accent:'#ef4444', icon:'❌' },
+      warning: { bg:'#78350f', accent:'#f59e0b', icon:'⚠️' },
+      info:    { bg:'#1e3a5f', accent:'#3b82f6', icon:'ℹ️' },
+    };
+    const c = cfg[type] || cfg.danger;
+    const duration = 4500;
+    const el = document.createElement('div');
+    el.className = 'api-toast-item';
+    el.id = id;
+    el.style.background = c.bg;
+    el.style.color = '#fff';
+    el.innerHTML = `
+      <div class="api-toast-body">
+        <span class="api-toast-icon">${c.icon}</span>
+        <span class="api-toast-msg">${message}</span>
+        <button class="api-toast-close" onclick="document.getElementById('${id}')?.remove()">✕</button>
+      </div>
+      <div class="api-toast-progress" style="background:${c.accent};animation-duration:${duration}ms;"></div>`;
+    container.appendChild(el);
+    setTimeout(() => {
+      const t = document.getElementById(id);
+      if (!t) return;
+      t.classList.add('removing');
+      setTimeout(() => t?.remove(), 280);
+    }, duration);
   }
 
   /** Extract a user-facing error message from an ApiError or unknown error. */
@@ -422,9 +463,6 @@
     ApiError,
   };
 
-  /* ─── CSS for toast fade-in ─────────────────────────────────────────────── */
-  const style = document.createElement('style');
-  style.textContent = '@keyframes fadeIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}';
-  document.head.appendChild(style);
+  /* ─── CSS for toast fade-in (handled inside toast() now) ────────────────── */
 
 })();

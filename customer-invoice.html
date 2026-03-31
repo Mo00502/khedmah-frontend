@@ -325,6 +325,7 @@
             .payment-info { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
         }
     </style>
+<link rel="stylesheet" href="css/khedmah-ux.css">
 </head>
 <body>
 <script src="js/api.js"></script>
@@ -583,6 +584,10 @@
             }).catch(() => {});
         }
     })();
+</script>
+<button id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="للأعلى">↑</button>
+<script>
+window.addEventListener('scroll',function(){document.getElementById('scrollTopBtn')?.classList.toggle('visible',window.scrollY>400);});
 </script>
 </body>
 </html>
