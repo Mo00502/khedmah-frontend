@@ -474,6 +474,86 @@
             padding-top: 1.25rem;
         }
 
+        /* ── Stats Strip ── */
+        .stats-strip {
+            background: white;
+            border-bottom: 1px solid #f1f5f9;
+            padding: 1.5rem 5%;
+        }
+        html.dark .stats-strip { background: #1e293b; border-color: #334155; }
+        .stats-inner {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0;
+            justify-content: center;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .stat-block {
+            flex: 1;
+            min-width: 140px;
+            text-align: center;
+            padding: 0.75rem 1rem;
+            border-left: 1px solid #f1f5f9;
+        }
+        .stat-block:last-child { border-left: none; }
+        html.dark .stat-block { border-color: #334155; }
+        .stat-num {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--primary);
+            line-height: 1;
+            margin-bottom: 0.3rem;
+            display: block;
+        }
+        .stat-label {
+            font-size: 0.82rem;
+            color: var(--gray);
+            font-weight: 600;
+        }
+        @media (max-width: 480px) {
+            .stats-inner { gap: 0; }
+            .stat-block { min-width: 100px; padding: 0.6rem; }
+            .stat-num { font-size: 1.4rem; }
+        }
+
+        /* ── Provider Join CTA ── */
+        .provider-join {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            padding: 3rem 5%;
+            text-align: center;
+            color: white;
+        }
+        .provider-join h2 {
+            font-size: 1.5rem;
+            font-weight: 900;
+            margin-bottom: 0.6rem;
+        }
+        .provider-join p {
+            color: #94a3b8;
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+        }
+        .btn-join-provider {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--accent);
+            color: var(--dark);
+            font-weight: 800;
+            font-size: 1rem;
+            padding: 0.9rem 2.5rem;
+            border-radius: 14px;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .btn-join-provider:hover {
+            background: #01c085;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(2,195,154,0.35);
+            color: var(--dark);
+        }
+
         /* ── SCROLL TO TOP ────────────────────────────────────────── */
         #scrollTopBtn {
             position: fixed;
@@ -576,6 +656,28 @@
     </div>
 </section>
 
+<!-- ══ STATS STRIP ══════════════════════════════════════════════════════ -->
+<div class="stats-strip">
+    <div class="stats-inner">
+        <div class="stat-block">
+            <span class="stat-num" id="statProviders">٥٬٠٠٠+</span>
+            <span class="stat-label">مزود معتمد</span>
+        </div>
+        <div class="stat-block">
+            <span class="stat-num" id="statOrders">٣٠٬٠٠٠+</span>
+            <span class="stat-label">طلب مكتمل</span>
+        </div>
+        <div class="stat-block">
+            <span class="stat-num" id="statRating">٤٫٩ ⭐</span>
+            <span class="stat-label">متوسط التقييم</span>
+        </div>
+        <div class="stat-block">
+            <span class="stat-num">٢٤/٧</span>
+            <span class="stat-label">دعم مستمر</span>
+        </div>
+    </div>
+</div>
+
 <!-- ══ SERVICE CARDS ══════════════════════════════════════════════════ -->
 <section class="services-section">
     <div class="section-inner">
@@ -654,6 +756,15 @@
         <div class="trust-item"><span class="ti">📞</span> دعم ٢٤/٧</div>
     </div>
 </div>
+
+<!-- ══ PROVIDER JOIN ═══════════════════════════════════════════════════ -->
+<section class="provider-join">
+    <h2>هل أنت مزود خدمة؟</h2>
+    <p>انضم لأكثر من ٥٬٠٠٠ مزود معتمد واكسب دخلاً إضافياً من طلبات جاهزة</p>
+    <a href="register-provider.html" class="btn-join-provider">
+        انضم كمزود ←
+    </a>
+</section>
 
 <!-- ══ FOOTER ══════════════════════════════════════════════════════════ -->
 <footer>

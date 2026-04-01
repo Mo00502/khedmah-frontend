@@ -70,3 +70,102 @@ button:disabled { opacity: .55; cursor: not-allowed; transform: none !important;
 @media (max-width: 768px) {
   #api-toast-container { bottom: 5rem !important; left: .75rem !important; width: calc(100% - 1.5rem); }
 }
+
+/* ── Button ripple effect ── */
+button, .btn, a.btn, [role="button"] {
+  position: relative;
+  overflow: hidden;
+}
+button::after, .btn::after, a.btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0.15);
+  opacity: 0;
+  transition: opacity .2s;
+  pointer-events: none;
+  border-radius: inherit;
+}
+button:active::after, .btn:active::after { opacity: 1; }
+
+/* ── Consistent card radius ── */
+.card, .service-card, .request-card, .provider-card,
+.stat-card, .section-card, .tracking-card {
+  border-radius: 20px !important;
+}
+
+/* ── Smooth scroll offset for sticky nav ── */
+html { scroll-padding-top: 72px; }
+
+/* ── Input placeholder color ── */
+::placeholder { color: #94a3b8; opacity: 1; }
+html.dark ::placeholder { color: #475569; }
+
+/* ── Link text without underline ── */
+a { text-decoration: none; }
+
+/* ── Touch-target minimum for mobile ── */
+@media (max-width: 768px) {
+  button, .btn, a.btn, [role="button"],
+  input[type="submit"], input[type="button"] {
+    min-height: 44px;
+  }
+  .nav-links a, .mobile-menu a {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+}
+
+/* ── Success state animation ── */
+@keyframes kSuccess { 0%{transform:scale(0.8);opacity:0} 60%{transform:scale(1.1)} 100%{transform:scale(1);opacity:1} }
+.success-pop { animation: kSuccess .4s ease forwards; }
+
+/* ── Loading spinner ── */
+@keyframes kSpin { to { transform: rotate(360deg); } }
+.k-spinner {
+  width: 20px; height: 20px;
+  border: 2.5px solid rgba(255,255,255,0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: kSpin .7s linear infinite;
+  display: inline-block;
+  vertical-align: middle;
+}
+.k-spinner-dark {
+  border-color: rgba(2,128,144,0.25);
+  border-top-color: var(--primary, #028090);
+}
+
+/* ── Fade in up (for dynamic content) ── */
+@keyframes kFadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+.fade-up { animation: kFadeUp .3s ease forwards; }
+
+/* ── Status badge variants ── */
+.badge-pending  { background:#fef3c7; color:#d97706; }
+.badge-active   { background:#d1fae5; color:#059669; }
+.badge-done     { background:#dbeafe; color:#2563eb; }
+.badge-cancel   { background:#fee2e2; color:#dc2626; }
+html.dark .badge-pending  { background:rgba(217,119,6,0.15); color:#fcd34d; }
+html.dark .badge-active   { background:rgba(5,150,105,0.15); color:#6ee7b7; }
+html.dark .badge-done     { background:rgba(37,99,235,0.15); color:#93c5fd; }
+html.dark .badge-cancel   { background:rgba(220,38,38,0.15); color:#fca5a5; }
+
+/* ── Section divider ── */
+.section-divider {
+  border: none; border-top: 1px solid #f1f5f9;
+  margin: 2rem 0;
+}
+html.dark .section-divider { border-color: #334155; }
+
+/* ── Avatar initials ── */
+.avatar-initials {
+  background: linear-gradient(135deg, #028090, #02C39A);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-family: 'Tajawal', sans-serif;
+}

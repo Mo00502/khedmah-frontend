@@ -510,14 +510,16 @@
             background: var(--primary);
             color: white;
             border-radius: 12px;
-            padding: 0.75rem 1.5rem;
+            padding: 0.85rem 2rem;
             font-family: 'Tajawal', sans-serif;
-            font-size: 0.9rem;
-            font-weight: 700;
+            font-size: 1rem;
+            font-weight: 800;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
             gap: 0.3rem;
+            animation: ctaPulse 2.5s infinite;
+            box-shadow: 0 4px 16px rgba(2,128,144,0.35);
         }
 
         /* DARK MODE */
@@ -559,6 +561,17 @@
         html.dark .stats-bar .stat-item { border-color: #334155; }
         html.dark .logo { color: var(--accent); }
         html.dark .cta-price-num { color: var(--accent); }
+
+        /* NAV MAIN LINKS */
+        .nav-main-links { display: flex; gap: 1.25rem; align-items: center; }
+        .nav-main-links a { text-decoration: none; color: var(--gray); font-weight: 600; font-size: 0.88rem; transition: color 0.15s; }
+        .nav-main-links a:hover { color: var(--primary); }
+        @media (max-width: 768px) { .nav-main-links { display: none; } }
+
+        @keyframes ctaPulse {
+            0%, 100% { box-shadow: 0 4px 16px rgba(2,128,144,0.35); }
+            50% { box-shadow: 0 4px 24px rgba(2,128,144,0.6), 0 0 0 4px rgba(2,128,144,0.15); }
+        }
     </style>
 <link rel="stylesheet" href="css/khedmah-ux.css">
 </head>
@@ -569,6 +582,12 @@
 <nav>
     <div class="nav-inner">
         <a href="home.html" class="logo">KHEDMAH</a>
+        <div class="nav-main-links">
+            <a href="search-services.html">خدمات</a>
+            <a href="tenders.html">مناقصات</a>
+            <a href="equipment.html">معدات</a>
+            <a href="consultations.html">استشارات</a>
+        </div>
         <div class="nav-actions">
             <a href="search-services.html" class="nav-back">← بحث</a>
             <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙</button>
@@ -601,6 +620,10 @@
         </div>
     </div>
     <div class="avail-indicator" id="availIndicator"></div>
+    <div style="max-width:800px; margin:0.5rem auto 0; display:flex; gap:0.75rem; flex-wrap:wrap;">
+        <span style="background:rgba(16,185,129,0.2); color:#6ee7b7; padding:0.3rem 0.75rem; border-radius:20px; font-size:0.8rem; font-weight:700; display:inline-flex; align-items:center; gap:0.4rem;">⚡ يرد خلال ٣ دقائق</span>
+        <span style="background:rgba(245,158,11,0.2); color:#fcd34d; padding:0.3rem 0.75rem; border-radius:20px; font-size:0.8rem; font-weight:700; display:inline-flex; align-items:center; gap:0.4rem;">🏆 ضمن أفضل ١٠٪ من المزودين</span>
+    </div>
 </div>
 
 <!-- QUICK STATS BAR -->
