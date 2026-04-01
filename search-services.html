@@ -320,13 +320,29 @@
                 <button onclick="doSearch()">بحث</button>
             </div>
             <div class="nav-links">
-                <a href="customer-dashboard.html">لوحة التحكم</a>
+                <a href="search-services.html">خدمات</a>
+                <a href="tenders.html">مناقصات</a>
+                <a href="equipment.html">معدات</a>
+                <a href="consultations.html">استشارات</a>
                 <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙</button>
                 <button onclick="doLogout()" title="تسجيل الخروج" style="padding:0.35rem 0.8rem;border:1.5px solid #ef4444;border-radius:10px;background:transparent;color:#ef4444;font-family:Tajawal,sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;">خروج</button>
                 <a href="customer-dashboard.html" class="avatar-btn">م</a>
             </div>
         </div>
     </nav>
+
+    <div style="background:white;border-bottom:1px solid #e2e8f0;padding:.75rem 5%;overflow-x:auto;white-space:nowrap">
+      <div style="display:inline-flex;gap:.6rem">
+        <button onclick="filterByCategory('كل الخدمات')" style="background:#028090;color:white;border:none;border-radius:20px;padding:.4rem 1rem;font-family:'Tajawal',sans-serif;font-size:.85rem;cursor:pointer;white-space:nowrap">كل الخدمات</button>
+        <button onclick="filterByCategory('سباكة')" style="background:#f1f5f9;color:#475569;border:none;border-radius:20px;padding:.4rem 1rem;font-family:'Tajawal',sans-serif;font-size:.85rem;cursor:pointer;white-space:nowrap">🔧 سباكة</button>
+        <button onclick="filterByCategory('كهرباء')" style="background:#f1f5f9;color:#475569;border:none;border-radius:20px;padding:.4rem 1rem;font-family:'Tajawal',sans-serif;font-size:.85rem;cursor:pointer;white-space:nowrap">⚡ كهرباء</button>
+        <button onclick="filterByCategory('تكييف')" style="background:#f1f5f9;color:#475569;border:none;border-radius:20px;padding:.4rem 1rem;font-family:'Tajawal',sans-serif;font-size:.85rem;cursor:pointer;white-space:nowrap">❄️ تكييف</button>
+        <button onclick="filterByCategory('نجارة')" style="background:#f1f5f9;color:#475569;border:none;border-radius:20px;padding:.4rem 1rem;font-family:'Tajawal',sans-serif;font-size:.85rem;cursor:pointer;white-space:nowrap">🪚 نجارة</button>
+        <button onclick="filterByCategory('دهانات')" style="background:#f1f5f9;color:#475569;border:none;border-radius:20px;padding:.4rem 1rem;font-family:'Tajawal',sans-serif;font-size:.85rem;cursor:pointer;white-space:nowrap">🖌️ دهانات</button>
+        <button onclick="filterByCategory('نظافة')" style="background:#f1f5f9;color:#475569;border:none;border-radius:20px;padding:.4rem 1rem;font-family:'Tajawal',sans-serif;font-size:.85rem;cursor:pointer;white-space:nowrap">🧹 نظافة</button>
+        <button onclick="filterByCategory('صيانة')" style="background:#f1f5f9;color:#475569;border:none;border-radius:20px;padding:.4rem 1rem;font-family:'Tajawal',sans-serif;font-size:.85rem;cursor:pointer;white-space:nowrap">🔨 صيانة</button>
+      </div>
+    </div>
 
     <div class="page-wrap" x-data="{ drawerOpen: false }">
 
@@ -840,6 +856,14 @@
                 showSearchLoading(false);
                 showSearchError('فشل تحميل النتائج. تحقق من اتصالك بالإنترنت.');
             }
+        }
+
+        function filterByCategory(cat) {
+            const input = document.getElementById('searchInput');
+            if (input) {
+                input.value = cat === 'كل الخدمات' ? '' : cat;
+            }
+            applyFilters();
         }
 
         function doSearch() {

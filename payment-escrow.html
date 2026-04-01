@@ -358,6 +358,23 @@
                     </div>
                 </div>
 
+                <!-- ── Payment Explainer Box ── -->
+                <div id="paymentExplainer" style="background:#f0fdf4;border:2px solid #10b981;border-radius:14px;padding:1.25rem 1.5rem;margin:1rem 0">
+                  <div id="explainServiceOnly" style="display:block">
+                    <div style="font-weight:800;color:#065f46;font-size:1rem;margin-bottom:.5rem">🔒 كيف يعمل الدفع؟</div>
+                    <div style="color:#047857;font-size:.9rem;line-height:1.6">
+                      رسوم الخدمة <strong>محجوزة في نظام الضمان</strong> — لن يحصل المزود على المبلغ إلا بعد تأكيدك إتمام الخدمة بنجاح.
+                    </div>
+                  </div>
+                  <div id="explainWithMaterials" style="display:none">
+                    <div style="font-weight:800;color:#065f46;font-size:1rem;margin-bottom:.5rem">💳 دفعتان منفصلتان</div>
+                    <div style="color:#047857;font-size:.9rem;line-height:1.6">
+                      ١. <strong>ميزانية المواد</strong> — تُدفع فوراً للمزود لشراء المواد المطلوبة<br>
+                      ٢. <strong>رسوم الخدمة</strong> — محجوزة في الضمان حتى إتمامك للخدمة
+                    </div>
+                  </div>
+                </div>
+
                 <!-- ── Split Payment Toggle ── -->
                 <div style="margin-bottom:1.2rem;">
                     <h3 style="font-size:1rem;font-weight:700;margin-bottom:.75rem;color:var(--dark);">١أ. نوع الدفع</h3>
@@ -816,6 +833,11 @@
                     this.materialsEstimate = 0;
                 }
                 this.updateBreakdown();
+                // Update payment explainer visibility
+                const se = document.getElementById('explainServiceOnly');
+                const me = document.getElementById('explainWithMaterials');
+                if (se) se.style.display = (type === 'service') ? 'block' : 'none';
+                if (me) me.style.display = (type === 'materials') ? 'block' : 'none';
             },
 
             toggleSplit(val) {

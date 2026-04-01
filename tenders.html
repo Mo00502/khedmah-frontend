@@ -172,17 +172,21 @@
         <div class="nav-content">
             <a href="home.html" class="logo">KHEDMAH</a>
             <div class="nav-links">
-                <a href="search-services.html">الخدمات</a>
-                <a href="tenders.html" class="active">المناقصات</a>
-                <a href="equipment.html">المعدات</a>
-                <a href="consultations.html">الاستشارات</a>
-                <a href="tender-create.html" class="btn-post-tender">+ نشر مناقصة</a>
+                <a href="search-services.html">خدمات</a>
+                <a href="tenders.html">مناقصات</a>
+                <a href="equipment.html">معدات</a>
+                <a href="consultations.html">استشارات</a>
                 <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙</button>
                 <button onclick="doLogout()" class="btn btn-outline-danger btn-sm">خروج</button>
                 <a href="customer-dashboard.html" class="avatar-btn">م</a>
             </div>
         </div>
     </nav>
+
+    <div style="background:linear-gradient(135deg,#028090,#02C39A);padding:1.5rem 5%;text-align:center">
+      <p style="color:rgba(255,255,255,.85);font-size:.9rem;margin-bottom:.75rem;font-family:'Tajawal',sans-serif">هل لديك مشروع؟ انشر مناقصتك واستقبل عروض من متخصصين</p>
+      <a href="tender-create.html" style="background:white;color:#028090;padding:.75rem 2rem;border-radius:12px;text-decoration:none;font-weight:800;font-size:1rem;display:inline-block">+ انشر مناقصة</a>
+    </div>
 
     <div class="page-header">
         <div class="page-header-inner">
@@ -205,8 +209,9 @@
                 <div class="filter-option"><input type="checkbox" id="s1" data-filter="sector" value="بناء" onchange="applyFilters()"><label for="s1">🏗️ بناء وإنشاء</label><span class="count">14</span></div>
                 <div class="filter-option"><input type="checkbox" id="s2" data-filter="sector" value="تقنية" onchange="applyFilters()"><label for="s2">💻 تقنية المعلومات</label><span class="count">9</span></div>
                 <div class="filter-option"><input type="checkbox" id="s3" data-filter="sector" value="صحة" onchange="applyFilters()"><label for="s3">🏥 رعاية صحية</label><span class="count">6</span></div>
-                <div class="filter-option"><input type="checkbox" id="s4" data-filter="sector" value="تعليم" onchange="applyFilters()"><label for="s4">📚 تعليم</label><span class="count">5</span></div>
-                <div class="filter-option"><input type="checkbox" id="s5" data-filter="sector" value="طاقة" onchange="applyFilters()"><label for="s5">⚡ طاقة وبيئة</label><span class="count">7</span></div>
+                <div class="filter-option extra-filter" id="extraFilters" style="display:none"><input type="checkbox" id="s4" data-filter="sector" value="تعليم" onchange="applyFilters()"><label for="s4">📚 تعليم</label><span class="count">5</span></div>
+                <div class="filter-option extra-filter" style="display:none"><input type="checkbox" id="s5" data-filter="sector" value="طاقة" onchange="applyFilters()"><label for="s5">⚡ طاقة وبيئة</label><span class="count">7</span></div>
+                <button onclick="(function(btn){var els=document.querySelectorAll('.extra-filter');var show=els[0].style.display==='none';els.forEach(function(e){e.style.display=show?'flex':'none';});btn.textContent=show?'▲ أقل':'المزيد من الفلاتر ▼';})(this)" style="background:none;border:none;color:var(--primary);font-family:'Tajawal',sans-serif;font-size:0.8rem;font-weight:600;cursor:pointer;padding:0.25rem 0;text-align:right;width:100%">المزيد من الفلاتر ▼</button>
             </div>
 
             <div class="filter-panel">

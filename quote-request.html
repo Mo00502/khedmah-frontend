@@ -229,7 +229,7 @@
             submitted: false,
             reqNumber: '',
             errors: {},
-            stepLabels: ['نوع الخدمة','وصف المشكلة','الموقع والوقت','مراجعة وإرسال'],
+            stepLabels: ['الخدمة','التفاصيل','الموقع والوقت','المراجعة'],
             savedAddresses: [],
             addrLoading: true,
             selectedAddrId: null,
@@ -363,6 +363,15 @@
             const c = _qp.get('category'); if(c) selectedService = c;
             const pid = _qp.get('providerId'); if(pid) providerId = pid;
             $watch('city', () => { district = ''; });
+            $watch('hasMaterials', (val) => {
+                const box = document.getElementById('paymentSummaryBox');
+                if (!box) return;
+                if (val) {
+                    box.innerHTML = 'ميزانية المواد <strong>تُدفع فوراً</strong> للمزود لشراء المواد المطلوبة.<br>رسوم الخدمة ستُحجز في الضمان — يُفرج عنها بعد تأكيدك اكتمال الخدمة.';
+                } else {
+                    box.innerHTML = 'رسوم الخدمة ستُحجز في الضمان — يُفرج عنها بعد تأكيدك اكتمال الخدمة.';
+                }
+            });
             // Load saved addresses
             (async () => {
                 try {
@@ -626,6 +635,13 @@
 
                 <div class="info-notice">
                     💡 سيتلقى المزودون المتاحون طلبك ويرسلون عروض أسعار خلال <strong>30 دقيقة</strong>
+                </div>
+
+                <div style="background:#eff6ff;border:1.5px solid #3b82f6;border-radius:12px;padding:1rem 1.25rem;margin-bottom:1rem;font-size:.875rem">
+                  <div style="font-weight:700;color:#1e40af;margin-bottom:.5rem">📋 ملخص الدفع</div>
+                  <div style="color:#1e3a8a;line-height:1.7" id="paymentSummaryBox">
+                    رسوم الخدمة ستُحجز في الضمان — يُفرج عنها بعد تأكيدك اكتمال الخدمة.
+                  </div>
                 </div>
             </div>
 
