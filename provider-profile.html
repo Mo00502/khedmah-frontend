@@ -572,6 +572,45 @@
             0%, 100% { box-shadow: 0 4px 16px rgba(2,128,144,0.35); }
             50% { box-shadow: 0 4px 24px rgba(2,128,144,0.6), 0 0 0 4px rgba(2,128,144,0.15); }
         }
+
+        /* Inline book CTA strip */
+        .inline-book-strip {
+            background: white;
+            border-bottom: 2px solid #f1f5f9;
+            padding: 0.875rem 5%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+        html.dark .inline-book-strip { background: #1e293b; border-color: #334155; }
+        .inline-book-strip .strip-msg {
+            font-size: 0.9rem;
+            color: var(--gray);
+            font-weight: 600;
+        }
+        html.dark .inline-book-strip .strip-msg { color: #94a3b8; }
+        .btn-strip-book {
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 0.65rem 1.75rem;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 800;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        @media (max-width: 480px) {
+            .inline-book-strip { flex-direction: column; text-align: center; }
+            .btn-strip-book { width: 100%; justify-content: center; }
+        }
     </style>
 <link rel="stylesheet" href="css/khedmah-ux.css">
 </head>
@@ -581,7 +620,7 @@
 <!-- NAV -->
 <nav>
     <div class="nav-inner">
-        <a href="home.html" class="logo">KHEDMAH</a>
+        <a href="home.html" class="logo">خدمة</a>
         <div class="nav-main-links">
             <a href="search-services.html">خدمات</a>
             <a href="tenders.html">مناقصات</a>
@@ -644,6 +683,14 @@
         <div class="stat-num" id="statRepeat"></div>
         <div class="stat-lbl">عملاء متكررون</div>
     </div>
+</div>
+
+<!-- Inline booking CTA -->
+<div class="inline-book-strip" id="inlineBookStrip">
+    <span class="strip-msg">جاهز للحجز؟ احجز مباشرة بدون انتظار</span>
+    <a href="quote-request.html" class="btn-strip-book" id="inlineBookBtn">
+        احجز الآن ←
+    </a>
 </div>
 
 <!-- SERVICE TAGS -->
@@ -1124,6 +1171,11 @@
         document.getElementById('ctaPriceNum').textContent = `من ${data.startingPrice} ر.س`;
         document.getElementById('ctaPriceUnit').textContent = `/ ${data.priceUnit}`;
         document.getElementById('ctaBookBtn').href = `quote-request.html?category=${encodeURIComponent(data.category)}`;
+        // Update inline book button too
+        const inlineBookBtn = document.getElementById('inlineBookBtn');
+        if (inlineBookBtn) {
+            inlineBookBtn.href = `quote-request.html?category=${encodeURIComponent(data.category || '')}&providerId=${data.id || ''}`;
+        }
         document.getElementById('ctaChatBtn').href = `chat.html?type=service&providerId=${encodeURIComponent(new URLSearchParams(location.search).get('id') || 'khalid')}`;
     }
 
@@ -1164,16 +1216,22 @@
                 };
                 applyProfileData(data);
                 document.getElementById('ctaBookBtn').href = `quote-request.html?category=${encodeURIComponent(data.category)}&providerId=${id}`;
+                const ib1 = document.getElementById('inlineBookBtn');
+                if (ib1) ib1.href = `quote-request.html?category=${encodeURIComponent(data.category)}&providerId=${id}`;
             }).catch(() => {
                 // Fall back to demo data
                 const d = PROVIDERS[id] || PROVIDERS['khalid'];
                 applyProfileData(d);
                 document.getElementById('ctaBookBtn').href = `quote-request.html?category=${encodeURIComponent(d.category)}&providerId=${encodeURIComponent(id)}`;
+                const ib2 = document.getElementById('inlineBookBtn');
+                if (ib2) ib2.href = `quote-request.html?category=${encodeURIComponent(d.category)}&providerId=${encodeURIComponent(id)}`;
             });
         } else {
             const d = PROVIDERS[id] || PROVIDERS['khalid'];
             applyProfileData(d);
             document.getElementById('ctaBookBtn').href = `quote-request.html?category=${encodeURIComponent(d.category)}&providerId=${encodeURIComponent(id)}`;
+            const ib3 = document.getElementById('inlineBookBtn');
+            if (ib3) ib3.href = `quote-request.html?category=${encodeURIComponent(d.category)}&providerId=${encodeURIComponent(id)}`;
         }
     }
     loadProfile();

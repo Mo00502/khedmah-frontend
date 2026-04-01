@@ -331,6 +331,35 @@
         </div>
     </nav>
 
+    <!-- Flow Context Banner -->
+    <div id="flowContextBanner" style="display:none; background:linear-gradient(135deg,rgba(2,128,144,0.07),rgba(2,195,154,0.05));
+         border-bottom:1.5px solid rgba(2,128,144,0.15); padding:0.75rem 5%;">
+        <div style="max-width:1200px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap;">
+            <div style="display:flex; align-items:center; gap:0.75rem;">
+                <span style="background:var(--primary,#028090); color:white; width:28px; height:28px; border-radius:50%;
+                             display:inline-flex; align-items:center; justify-content:center; font-size:0.8rem; font-weight:800; flex-shrink:0;">١</span>
+                <span style="font-size:0.9rem; font-weight:700; color:#028090;">اختر مزودك</span>
+                <span style="color:#cbd5e1; font-size:0.85rem;">›</span>
+                <span style="font-size:0.85rem; color:#94a3b8;">تفاصيل الطلب</span>
+                <span style="color:#cbd5e1; font-size:0.85rem;">›</span>
+                <span style="font-size:0.85rem; color:#94a3b8;">الدفع</span>
+                <span style="color:#cbd5e1; font-size:0.85rem;">›</span>
+                <span style="font-size:0.85rem; color:#94a3b8;">التتبع</span>
+            </div>
+            <span style="font-size:0.82rem; color:#64748b;">اختر مزوداً لمتابعة الحجز</span>
+        </div>
+    </div>
+    <script>
+    (function(){
+        // Show banner if user came from search (has ?q= or ?category= params)
+        const p = new URLSearchParams(location.search);
+        if (p.get('q') || p.get('category')) {
+            const banner = document.getElementById('flowContextBanner');
+            if (banner) banner.style.display = 'block';
+        }
+    })();
+    </script>
+
     <div style="background:white;border-bottom:1px solid #e2e8f0;padding:.75rem 5%;overflow-x:auto;white-space:nowrap">
       <div style="display:inline-flex;gap:.6rem">
         <button onclick="filterByCategory('كل الخدمات')" style="background:#028090;color:white;border:none;border-radius:20px;padding:.4rem 1rem;font-family:'Tajawal',sans-serif;font-size:.85rem;cursor:pointer;white-space:nowrap">كل الخدمات</button>

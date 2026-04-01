@@ -667,5 +667,41 @@
 <script>
 window.addEventListener('scroll',function(){document.getElementById('scrollTopBtn')?.classList.toggle('visible',window.scrollY>400);});
 </script>
+
+<!-- Floating Chat FAB -->
+<a href="chat.html" id="floatingChatBtn" title="تواصل مع المزود"
+   style="position:fixed; bottom:1.5rem; right:1.5rem;
+          background:linear-gradient(135deg,#028090,#00A896); color:white;
+          border-radius:28px; padding:0.85rem 1.75rem; font-family:'Tajawal',sans-serif;
+          font-size:0.95rem; font-weight:700; text-decoration:none;
+          display:flex; align-items:center; gap:0.5rem; z-index:800;
+          box-shadow:0 4px 20px rgba(2,128,144,0.45);
+          transition:transform 0.2s, box-shadow 0.2s;">
+    💬 تواصل مع المزود
+</a>
+<script>
+(function(){
+    // Only show if there's a requestId in URL (meaning we're in an active order)
+    const params = new URLSearchParams(location.search);
+    const reqId = params.get('requestId');
+    const fab = document.getElementById('floatingChatBtn');
+    if (fab && reqId) {
+        fab.href = 'chat.html?type=service&requestId=' + encodeURIComponent(reqId);
+    } else if (fab && !reqId) {
+        fab.style.display = 'none';
+    }
+    // Add hover effect
+    if (fab) {
+        fab.addEventListener('mouseenter', function(){
+            this.style.transform = 'translateY(-3px)';
+            this.style.boxShadow = '0 8px 28px rgba(2,128,144,0.55)';
+        });
+        fab.addEventListener('mouseleave', function(){
+            this.style.transform = 'translateY(0)';
+            this.style.boxShadow = '0 4px 20px rgba(2,128,144,0.45)';
+        });
+    }
+})();
+</script>
 </body>
 </html>

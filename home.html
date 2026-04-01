@@ -247,6 +247,7 @@
             cursor: pointer;
             white-space: nowrap;
             transition: background 0.15s;
+            animation: searchPulse 3s ease infinite;
         }
         .search-box button:hover { background: #026f7e; }
 
@@ -576,6 +577,11 @@
         }
         #scrollTopBtn:hover { background: #026f7e; transform: translateY(-2px); }
         #scrollTopBtn.visible { display: flex; }
+
+        @keyframes searchPulse {
+            0%, 100% { background: var(--primary); }
+            50% { background: #02a0b4; }
+        }
     </style>
 </head>
 <body>
@@ -646,12 +652,13 @@
             </div>
         </div>
 
+        <p style="color:rgba(255,255,255,0.75); font-size:0.8rem; font-weight:600; margin-bottom:0.5rem;">⚡ احجز مباشرة:</p>
         <div class="quick-tags">
-            <span class="quick-tag" onclick="doSearch('سباكة')">سباكة</span>
-            <span class="quick-tag" onclick="doSearch('كهرباء')">كهرباء</span>
-            <span class="quick-tag" onclick="doSearch('تكييف')">تكييف</span>
-            <span class="quick-tag" onclick="doSearch('نجارة')">نجارة</span>
-            <span class="quick-tag" onclick="doSearch('دهانات')">دهانات</span>
+            <span class="quick-tag" onclick="quickBook('سباكة')">سباكة</span>
+            <span class="quick-tag" onclick="quickBook('كهرباء')">كهرباء</span>
+            <span class="quick-tag" onclick="quickBook('تكييف')">تكييف</span>
+            <span class="quick-tag" onclick="quickBook('نجارة')">نجارة</span>
+            <span class="quick-tag" onclick="quickBook('دهانات')">دهانات</span>
         </div>
     </div>
 </section>
@@ -839,6 +846,10 @@
         if (q && city) url += '&';
         if (city) url += 'city=' + encodeURIComponent(city);
         window.location.href = url;
+    }
+
+    function quickBook(category) {
+        window.location.href = 'quote-request.html?category=' + encodeURIComponent(category);
     }
 
     // Allow Enter key in search input
