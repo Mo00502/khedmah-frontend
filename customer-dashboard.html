@@ -70,20 +70,21 @@
         .welcome-text h2 { font-size: 1.6rem; font-weight: 800; margin-bottom: 0.3rem; }
         .welcome-text p { opacity: 0.85; font-size: 0.95rem; }
         .welcome-action {
-            background: rgba(255,255,255,0.2);
-            border: 2px solid rgba(255,255,255,0.4);
-            color: white;
-            padding: 0.6rem 1.5rem;
-            border-radius: 12px;
+            background: white;
+            border: 2px solid white;
+            color: var(--primary);
+            padding: 0.8rem 2rem;
+            border-radius: 14px;
             font-family: 'Tajawal', sans-serif;
-            font-size: 0.95rem;
-            font-weight: 600;
+            font-size: 1.05rem;
+            font-weight: 800;
             cursor: pointer;
             text-decoration: none;
             white-space: nowrap;
-            transition: background 0.2s;
+            transition: all 0.2s;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.15);
         }
-        .welcome-action:hover { background: rgba(255,255,255,0.3); }
+        .welcome-action:hover { background: #e0f7f5; color: var(--primary); transform: translateY(-1px); }
 
         /* Stats */
         .stats-grid {
@@ -395,6 +396,38 @@
             transition: background 0.2s;
         }
         .empty-state .cta-link:hover { background: #026f7e; }
+
+        /* ── Dashboard Tabs ── */
+        .dash-tabs {
+            display: flex; gap: 0.5rem;
+            background: white; border-radius: 16px;
+            padding: 0.5rem; box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+            margin-bottom: 1.5rem;
+        }
+        .dash-tab {
+            flex: 1; padding: 0.6rem 1rem; border-radius: 12px; border: none;
+            background: transparent; color: var(--gray);
+            font-family: 'Tajawal', sans-serif; font-size: 0.9rem; font-weight: 600;
+            cursor: pointer; transition: all 0.2s; text-align: center;
+        }
+        .dash-tab.active { background: var(--primary); color: white; }
+        .dash-tab:hover:not(.active) { background: var(--light); color: var(--dark); }
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+        html.dark .dash-tabs { background: #1e293b; }
+        html.dark .dash-tab { color: #94a3b8; }
+        html.dark .dash-tab:hover:not(.active) { background: #0f172a; color: #e2e8f0; }
+
+        /* ── More section ── */
+        .more-section { margin-top: 1rem; }
+        .more-toggle-btn {
+            background: transparent; border: 1.5px solid #e2e8f0;
+            border-radius: 12px; padding: 0.5rem 1.25rem;
+            font-family: 'Tajawal', sans-serif; font-size: 0.85rem; font-weight: 600;
+            color: var(--gray); cursor: pointer; transition: all 0.2s;
+        }
+        .more-toggle-btn:hover { border-color: var(--primary); color: var(--primary); }
+        html.dark .more-toggle-btn { border-color: #334155; color: #94a3b8; }
     </style>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link rel="stylesheet" href="css/khedmah-ux.css">
@@ -466,11 +499,21 @@
             <div class="stat-card">
                 <div class="stat-icon blue">💰</div>
                 <div class="stat-info">
-                    <div class="stat-value">1,840</div>
-                    <div class="stat-label">إجمالي الإنفاق (ر.س)</div>
+                    <div class="stat-value" id="statWalletBalance">—</div>
+                    <div class="stat-label">رصيد المحفظة (ر.س)</div>
                 </div>
             </div>
         </div>
+
+        <!-- Dashboard Tabs -->
+        <div class="dash-tabs" role="tablist">
+            <button class="dash-tab active" onclick="switchTab('orders')" id="tab-orders">طلباتي</button>
+            <button class="dash-tab" onclick="switchTab('invoices')" id="tab-invoices">الفواتير</button>
+            <button class="dash-tab" onclick="switchTab('notifications')" id="tab-notifications">الإشعارات</button>
+        </div>
+
+        <!-- TAB: طلباتي -->
+        <div class="tab-panel active" id="panel-orders">
 
         <!-- Active Requests -->
         <div class="section">
@@ -532,7 +575,7 @@
                 <!-- Empty state for active requests -->
                 <div id="activeRequestsEmpty" class="empty-state" style="display:none;">
                     <div class="emoji">📋</div>
-                    <p>لا توجد طلبات نشطة حالياً</p>
+                    <p style="font-weight:700;font-size:0.95rem">لا توجد طلبات بعد — ابحث عن خدمة الآن</p>
                     <a href="search-services.html" class="cta-link">ابحث عن خدمة الآن ←</a>
                 </div>
             </div>
@@ -582,6 +625,30 @@
                 </div>
             </div>
         </div>
+
+        </div><!-- end tab-panel: orders -->
+
+        <!-- TAB: الفواتير -->
+        <div class="tab-panel" id="panel-invoices">
+            <!-- Invoices tab content (completed orders shown here) -->
+        </div><!-- end tab-panel: invoices -->
+
+        <!-- TAB: الإشعارات -->
+        <div class="tab-panel" id="panel-notifications">
+            <div class="section">
+                <div class="empty-state" style="text-align:center;padding:2rem">
+                    <div class="emoji">🔔</div>
+                    <p style="font-weight:700;font-size:0.95rem">لا توجد إشعارات جديدة</p>
+                    <p style="font-size:0.82rem;margin-top:0.35rem">ستصلك إشعارات عند قبول عروضك أو تحديثات طلباتك</p>
+                    <a href="customer-notifications.html" class="cta-link">عرض كل الإشعارات ←</a>
+                </div>
+            </div>
+        </div><!-- end tab-panel: notifications -->
+
+        <!-- ── المزيد (collapsible: Quick Actions + Addresses) ── -->
+        <div class="more-section">
+            <button class="more-toggle-btn" onclick="toggleMore(this)">▼ المزيد</button>
+            <div id="moreContent" style="display:none;margin-top:1rem">
 
         <!-- Quick Actions -->
         <div class="section">
@@ -813,10 +880,14 @@
 
         </div><!-- end addresses section -->
 
-        <!-- Completed Orders -->
-        <div class="section">
+            </div><!-- end #moreContent -->
+        </div><!-- end more-section -->
+
+        <!-- Completed Orders (shown in Invoices tab) -->
+        <div class="section" id="completedOrdersSection" style="display:none">
             <div class="section-header">
                 <div class="section-title">الطلبات المكتملة</div>
+                <a href="customer-invoice.html" class="section-link">كل الفواتير ←</a>
             </div>
             <div class="completed-table">
                 <table>
@@ -1088,6 +1159,43 @@
             localStorage.removeItem('khedmah_admin');
             window.location.href = 'login.html';
         }
+
+        /* ── Tab switching ── */
+        function switchTab(name) {
+            ['orders','invoices','notifications'].forEach(function(t) {
+                document.getElementById('panel-' + t).classList.toggle('active', t === name);
+                document.getElementById('tab-' + t).classList.toggle('active', t === name);
+            });
+            // Move completed orders into invoices panel on first switch
+            if (name === 'invoices') {
+                const comp = document.getElementById('completedOrdersSection');
+                const panel = document.getElementById('panel-invoices');
+                if (comp && panel && !panel.contains(comp)) {
+                    comp.style.display = 'block';
+                    panel.appendChild(comp);
+                } else if (comp) {
+                    comp.style.display = 'block';
+                }
+            }
+        }
+
+        /* ── More section toggle ── */
+        function toggleMore(btn) {
+            const content = document.getElementById('moreContent');
+            const isOpen = content.style.display !== 'none';
+            content.style.display = isOpen ? 'none' : 'block';
+            btn.textContent = isOpen ? '▼ المزيد' : '▲ إخفاء';
+        }
+
+        /* ── Load wallet balance into stat card ── */
+        (async function loadWalletStat() {
+            if (!API.isLoggedIn()) return;
+            try {
+                const w = await API.wallet.balance();
+                const el = document.getElementById('statWalletBalance');
+                if (el) el.textContent = Number(w.balance ?? 0).toLocaleString('ar-SA');
+            } catch(e) { /* silent */ }
+        })();
     </script>
 <button id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="للأعلى">↑</button>
 <script>

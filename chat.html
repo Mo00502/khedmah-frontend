@@ -212,9 +212,9 @@
 
 <nav>
     <div class="nav-content">
-        <a href="INDEX.html" class="logo">KHEDMAH</a>
+        <a href="home.html" class="logo">خدمة</a>
         <div class="nav-links">
-            <a href="search-services.html">خدمات</a>
+            <a href="search-services.html">خدمات منزلية</a>
             <a href="tenders.html">مناقصات</a>
             <a href="equipment.html">معدات</a>
             <a href="consultations.html">استشارات</a>
@@ -223,6 +223,25 @@
         </div>
     </div>
 </nav>
+<script>
+(function() {
+    var _cp = new URLSearchParams(window.location.search);
+    var _chatReqId = _cp.get('requestId');
+    if (_chatReqId && _cp.get('type') !== 'support') {
+        var backHref = 'order-tracking.html?requestId=' + encodeURIComponent(_chatReqId)
+            + (_cp.get('service') ? '&service=' + encodeURIComponent(_cp.get('service')) : '')
+            + (_cp.get('serviceAmount') ? '&serviceAmount=' + encodeURIComponent(_cp.get('serviceAmount')) : '');
+        var backEl = document.createElement('a');
+        backEl.href = backHref;
+        backEl.textContent = '← تتبع الطلب';
+        backEl.style.cssText = 'display:inline-flex;align-items:center;gap:.4rem;color:#64748b;text-decoration:none;font-size:.88rem;font-weight:600;border:1.5px solid #e2e8f0;border-radius:10px;padding:.35rem .75rem;transition:all .2s;';
+        backEl.onmouseover = function() { this.style.borderColor='#028090'; this.style.color='#028090'; };
+        backEl.onmouseout  = function() { this.style.borderColor='#e2e8f0'; this.style.color='#64748b'; };
+        var navLinks = document.querySelector('nav .nav-links');
+        if (navLinks) navLinks.insertBefore(backEl, navLinks.firstChild);
+    }
+})();
+</script>
 
 <div class="chat-layout">
 

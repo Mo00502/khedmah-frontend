@@ -345,7 +345,13 @@
         <!-- ====== STICKY HEADER ====== -->
         <header class="wizard-header" x-show="!submitted">
             <div class="wiz-top">
-                <a href="tenders.html" class="wizard-logo">KHEDMAH</a>
+                <a href="home.html" class="wizard-logo">خدمة</a>
+                <div style="display:flex;align-items:center;gap:1.1rem;">
+                    <a href="search-services.html" style="text-decoration:none;color:#64748b;font-weight:600;font-size:0.85rem;">خدمات منزلية</a>
+                    <a href="tenders.html" style="text-decoration:none;color:#028090;font-weight:600;font-size:0.85rem;">مناقصات</a>
+                    <a href="equipment.html" style="text-decoration:none;color:#64748b;font-weight:600;font-size:0.85rem;">معدات</a>
+                    <a href="consultations.html" style="text-decoration:none;color:#64748b;font-weight:600;font-size:0.85rem;">استشارات</a>
+                </div>
                 <div class="wizard-actions">
                     <button class="btn-draft" @click="saveDraft()">حفظ مسودة</button>
                     <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙</button>

@@ -891,7 +891,7 @@
                             serviceAmount: String(Math.round(this.serviceAmount)),
                             materialsEst:  String(this.orderType === 'materials' ? this.materialsEstimate : 0),
                         });
-                        window.location.href = 'service-confirmation.html?' + p.toString();
+                        window.location.href = 'order-tracking.html?' + p.toString();
                     }, 1500);
                 };
                 // Demo mode: bypass real payment gateway
