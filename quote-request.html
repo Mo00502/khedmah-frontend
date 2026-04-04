@@ -203,7 +203,7 @@
 
     <nav>
         <div class="nav-content">
-            <a href="INDEX.html" class="logo">KHEDMAH</a>
+            <a href="home.html" class="logo">خدمة</a>
             <div style="display:flex;align-items:center;gap:1rem;">
                 <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙</button>
                 <a href="search-services.html" class="btn-back">← العودة للبحث</a>
@@ -216,7 +216,7 @@
         x-data="{
             step: 1,
             totalSteps: 4,
-            selectedService: '',
+            selectedService: new URLSearchParams(location.search).get('category') || '',
             description: '',
             city: 'الرياض',
             district: '',

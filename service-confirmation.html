@@ -384,13 +384,15 @@
         html.dark .escrow-status strong { color: #e2e8f0; }
 
         .theme-toggle-float {
-            position: fixed; top: 1rem; left: 1rem;
-            width: 36px; height: 36px; border: 1.5px solid #e2e8f0;
-            border-radius: 10px; background: white; cursor: pointer;
-            font-size: 1rem; display: flex; align-items: center; justify-content: center;
-            z-index: 200; box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            width: 32px; height: 32px; border: 1.5px solid #e2e8f0;
+            border-radius: 8px; background: white; cursor: pointer;
+            font-size: 0.9rem; display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
         }
-        html.dark .theme-toggle-float { background: #1e293b; border-color: #334155; color: #e2e8f0; }
+        html.dark .theme-toggle-float { background: #1e293b !important; border-color: #334155 !important; color: #e2e8f0 !important; }
+        html.dark #topNavBar { background: #1e293b !important; border-color: #334155 !important; }
+        html.dark #topNavBar a { color: #94a3b8 !important; }
+        html.dark #topNavBar a:first-child { color: #02C39A !important; }
     </style>
 <link rel="stylesheet" href="css/khedmah-ux.css">
 </head>
@@ -405,8 +407,19 @@
         } catch(e) {}
     })();
 </script>
-    <button class="theme-toggle-float" id="themeToggle" onclick="toggleTheme()">🌙</button>
-    <button onclick="doLogout()" title="تسجيل الخروج" style="position:fixed;top:1rem;left:3.5rem;z-index:300;padding:0.35rem 0.8rem;border:1.5px solid #ef4444;border-radius:10px;background:rgba(255,255,255,0.9);color:#ef4444;font-family:Tajawal,sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;">خروج</button>
+    <!-- Top nav bar -->
+    <div id="topNavBar" style="position:fixed;top:0;right:0;left:0;z-index:100;background:white;border-bottom:1px solid #e2e8f0;padding:0.6rem 1.5rem;display:flex;align-items:center;justify-content:space-between;box-shadow:0 1px 4px rgba(0,0,0,0.06);">
+        <a href="home.html" style="font-weight:900;font-size:1.3rem;color:#028090;text-decoration:none;">خدمة</a>
+        <div style="display:flex;gap:1rem;align-items:center;font-family:'Tajawal',sans-serif;font-size:0.9rem;">
+            <a href="home.html" style="color:#64748B;text-decoration:none;font-weight:600;">الرئيسية</a>
+            <a href="customer-dashboard.html" style="color:#64748B;text-decoration:none;font-weight:600;">لوحة التحكم</a>
+            <a href="order-tracking.html" style="color:#64748B;text-decoration:none;font-weight:600;">تتبع الطلب</a>
+            <a href="customer-notifications.html" style="color:#64748B;text-decoration:none;font-weight:600;">الإشعارات</a>
+            <button class="theme-toggle-float" id="themeToggle" onclick="toggleTheme()" style="position:static;box-shadow:none;margin:0;">🌙</button>
+            <button onclick="doLogout()" style="padding:0.3rem 0.7rem;border:1.5px solid #ef4444;border-radius:8px;background:transparent;color:#ef4444;font-family:'Tajawal',sans-serif;font-size:0.82rem;font-weight:600;cursor:pointer;">خروج</button>
+        </div>
+    </div>
+    <div style="height:52px;"></div>
 
     <div class="confirmation-container">
         <div class="confirmation-header">
