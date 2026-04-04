@@ -254,7 +254,7 @@
 
   const providers = {
     getProfile:   (id)        => http.get(`/providers/${id}`),
-    myProfile:    ()          => http.get('/providers/me'),
+    myProfile:    ()          => http.get('/providers/me/profile'),
     myEarnings:   ()          => http.get('/providers/me/earnings'),
     // Bank settings: ibanNumber + bankName live on ProviderProfile.
     // accountName (beneficiary) is cached in localStorage since schema has no field for it.
@@ -264,8 +264,8 @@
     },
     getBankSettings: async () => {
       const profile = await http.get('/providers/me/profile');
-      // Merge cached accountName
-      return { ...profile, accountName: Store.get('khedmah_bank_account_name') || '' };
+      // Merge cached accountName (not stored on server — kept in localStorage)
+      return { ...(profile || {}), accountName: Store.get('khedmah_bank_account_name') || '' };
     },
     submitDocs:   (data)      => http.post('/providers/me/documents', data),
     services:     ()          => http.get('/providers/me/services'),
