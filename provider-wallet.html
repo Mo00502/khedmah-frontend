@@ -561,7 +561,20 @@
       if (amount < 50) { API.toast('❌ الحد الأدنى للسحب 50 ريال'); return; }
       if (amount > this.availableBalance) { API.toast('❌ المبلغ يتجاوز الرصيد المتاح'); return; }
       try {
-        await API.wallet.withdraw({ amount });
+        // Fetch saved bank settings from provider profile
+        const profile = await API.providers.getBankSettings().catch(() => null);
+        const iban = profile?.ibanNumber || profile?.iban || '';
+        const bankName = profile?.bankName || '';
+        const user = API.auth.currentUser();
+        const beneficiaryName = profile?.accountName
+          || localStorage.getItem('khedmah_bank_account_name')
+          || user?.profile?.nameAr || user?.nameAr || user?.username || 'مزود الخدمة';
+        if (!iban) {
+          API.toast('❌ يرجى إضافة رقم الآيبان في إعدادات الحساب البنكي أولاً');
+          setTimeout(() => { window.location.href = 'provider-bank-settings.html'; }, 1500);
+          return;
+        }
+        await API.wallet.withdraw({ amount, iban, bankName, beneficiaryName });
         API.toast('✅ تم إرسال طلب السحب بنجاح', 'success');
         this.withdrawAmount = '';
         // Reload balance

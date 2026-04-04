@@ -256,8 +256,17 @@
     getProfile:   (id)        => http.get(`/providers/${id}`),
     myProfile:    ()          => http.get('/providers/me'),
     myEarnings:   ()          => http.get('/providers/me/earnings'),
-    updateBank:   (data)      => http.patch('/providers/me/bank', data),
-    getBankSettings: ()       => http.get('/providers/me/bank'),
+    // Bank settings: ibanNumber + bankName live on ProviderProfile.
+    // accountName (beneficiary) is cached in localStorage since schema has no field for it.
+    updateBank: async (data) => {
+      if (data.accountName) Store.set('khedmah_bank_account_name', data.accountName);
+      return http.patch('/providers/me/profile', { ibanNumber: data.iban, bankName: data.bankName });
+    },
+    getBankSettings: async () => {
+      const profile = await http.get('/providers/me/profile');
+      // Merge cached accountName
+      return { ...profile, accountName: Store.get('khedmah_bank_account_name') || '' };
+    },
     submitDocs:   (data)      => http.post('/providers/me/documents', data),
     services:     ()          => http.get('/providers/me/services'),
     addService:   (data)      => http.post('/providers/me/services', data),

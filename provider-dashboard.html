@@ -792,5 +792,79 @@
 <script>
 window.addEventListener('scroll',function(){document.getElementById('scrollTopBtn')?.classList.toggle('visible',window.scrollY>400);});
 </script>
+
+<!-- ── Provider GPS tracking (reports live location to customers) ──────────── -->
+<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+<script>
+(function startLocationReporting() {
+    if (typeof io === 'undefined') return;
+    if (!navigator.geolocation) return;
+    const wsBase = (window.KHEDMAH_WS_URL || (window.KHEDMAH_API_URL || '').replace(/\/api\/v1\/?$/, '')).replace(/\/$/, '');
+    const token  = localStorage.getItem('khedmah_access_token');
+    if (!wsBase || !token) return;
+
+    // Find active in-progress request IDs from the DOM (data-req-id attributes)
+    function getActiveRequestIds() {
+        return Array.from(document.querySelectorAll('#panel-active .request-card[data-req-id]'))
+            .map(el => el.dataset.reqId).filter(Boolean);
+    }
+
+    let trackingSocket = null;
+    let locationWatchId = null;
+    let joinedRooms = new Set();
+
+    function connect() {
+        try {
+            trackingSocket = io(wsBase + '/tracking', {
+                auth: { token },
+                transports: ['websocket', 'polling'],
+                reconnectionAttempts: 5,
+            });
+
+            trackingSocket.on('connect', () => {
+                const reqIds = getActiveRequestIds();
+                reqIds.forEach(id => {
+                    if (!joinedRooms.has(id)) {
+                        trackingSocket.emit('join_request_room', { requestId: id });
+                        joinedRooms.add(id);
+                    }
+                });
+                startWatchingLocation();
+            });
+
+            trackingSocket.on('disconnect', () => { stopWatchingLocation(); });
+            trackingSocket.on('connect_error', () => { stopWatchingLocation(); });
+        } catch(e) { /* GPS reporting unavailable */ }
+    }
+
+    function startWatchingLocation() {
+        if (locationWatchId !== null) return;
+        const reqIds = getActiveRequestIds();
+        if (reqIds.length === 0) return;
+
+        locationWatchId = navigator.geolocation.watchPosition(
+            (pos) => {
+                const { latitude: lat, longitude: lng } = pos.coords;
+                reqIds.forEach(requestId => {
+                    if (!trackingSocket?.connected) return;
+                    trackingSocket.emit('provider_location', { requestId, lat, lng });
+                });
+            },
+            () => { /* permission denied — silent */ },
+            { enableHighAccuracy: true, maximumAge: 5000, timeout: 10000 }
+        );
+    }
+
+    function stopWatchingLocation() {
+        if (locationWatchId !== null) {
+            navigator.geolocation.clearWatch(locationWatchId);
+            locationWatchId = null;
+        }
+    }
+
+    // Start after page settles (data may load asynchronously)
+    setTimeout(connect, 2500);
+})();
+</script>
 </body>
 </html>

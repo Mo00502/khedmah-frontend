@@ -537,8 +537,9 @@
                 if (!data) return;
                 // Pre-fill account name
                 if (data.accountName) document.getElementById('accountName').value = data.accountName;
-                // Pre-fill IBAN
-                if (data.iban) document.getElementById('iban').value = data.iban;
+                // Pre-fill IBAN (backend field is ibanNumber)
+                const ibanVal = data.ibanNumber || data.iban || '';
+                if (ibanVal) document.getElementById('iban').value = ibanVal;
                 // Select the saved bank
                 if (data.bankName) {
                     // Find matching bank option by bank name or key
