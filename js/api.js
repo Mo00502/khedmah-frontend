@@ -297,15 +297,22 @@
     list:      (p = {})  => http.get('/notifications?' + new URLSearchParams(p)),
     markRead:  (id)      => http.patch(`/notifications/${id}/read`),
     markAllRead: ()      => http.patch('/notifications/read-all'),
-    registerToken: (data) => http.post('/notifications/device-tokens', data),
+    registerToken: (data) => http.post('/notifications/device-token', data),
   };
 
   const chat = {
     conversations: ()     => http.get('/chat/conversations'),
     messages:      (id, p = {}) => http.get(`/chat/conversations/${id}/messages?` + new URLSearchParams(p)),
     send:          (id, data)   => http.post(`/chat/conversations/${id}/messages`, data),
-    create:        (data)       => http.post('/chat/conversations', data),
-    markRead:      (id)         => http.patch(`/chat/conversations/${id}/read`),
+    // create() chooses the right endpoint based on context
+    create: (data) => {
+      if (data.requestId) return http.post(`/chat/request/${data.requestId}`);
+      if (data.tenderId)  return http.post(`/chat/tender/${data.tenderId}`);
+      if (data.userId)    return http.post(`/chat/direct/${data.userId}`);
+      return http.post('/chat/direct/' + (data.recipientId || ''));
+    },
+    // markRead not in backend — no-op to avoid 404
+    markRead: () => Promise.resolve(),
   };
 
   const admin = {
@@ -331,8 +338,8 @@
     get:      (id)          => http.get(`/tenders/${id}`),
     create:   (data)        => http.post('/tenders', data),
     bid:      (id, data)    => http.post(`/tenders/${id}/bids`, data),
-    award:    (id, bidId)   => http.patch(`/tenders/${id}/bids/${bidId}/award`),
-    milestones: (id)        => http.get(`/tenders/${id}/milestones`),
+    award:    (id, bidId)   => http.post(`/tenders/${id}/award/${bidId}`),
+    myBids:   ()            => http.get('/tenders/my-bids'),
   };
 
   const invoices = {
@@ -344,8 +351,8 @@
     list:   (p = {})   => http.get('/equipment?' + new URLSearchParams(p)),
     get:    (id)       => http.get(`/equipment/${id}`),
     rent:   (id, data) => http.post(`/equipment/${id}/rentals`, data),
-    myRentals: ()      => http.get('/equipment/my-rentals'),
-    myListings: ()     => http.get('/equipment/my-listings'),
+    myRentals:  ()     => http.get('/equipment/rentals/mine'),
+    myListings: ()     => http.get('/equipment/mine'),
   };
 
   const consultations = {
