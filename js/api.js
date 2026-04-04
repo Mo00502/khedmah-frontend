@@ -337,12 +337,20 @@
   };
 
   const tenders = {
-    list:     (p = {})      => http.get('/tenders?' + new URLSearchParams(p)),
-    get:      (id)          => http.get(`/tenders/${id}`),
-    create:   (data)        => http.post('/tenders', data),
-    bid:      (id, data)    => http.post(`/tenders/${id}/bids`, data),
-    award:    (id, bidId)   => http.post(`/tenders/${id}/award/${bidId}`),
-    myBids:   ()            => http.get('/tenders/my-bids'),
+    list:               (p = {})           => http.get('/tenders?' + new URLSearchParams(p)),
+    get:                (id)               => http.get(`/tenders/${id}`),
+    create:             (data)             => http.post('/tenders', data),
+    bid:                (id, data)         => http.post(`/tenders/${id}/bids`, data),
+    updateBid:          (id, bidId, data)  => http.patch(`/tenders/${id}/bids/${bidId}`, data),
+    withdrawBid:        (id, bidId)        => http.delete(`/tenders/${id}/bids/${bidId}`),
+    listBids:           (id)               => http.get(`/tenders/${id}/bids`),
+    award:              (id, bidId)        => http.post(`/tenders/${id}/award/${bidId}`),
+    myBids:             ()                 => http.get('/tenders/my-bids'),
+    milestones:         (id)               => http.get(`/tenders/${id}/milestones`),
+    createMilestone:    (id, data)         => http.post(`/tenders/${id}/milestones`, data),
+    updateMilestone:    (milestoneId, data) => http.patch(`/tenders/milestones/${milestoneId}/status`, data),
+    commissionSettings: ()                 => http.get('/tenders/settings/commission'),
+    updateCommission:   (module, rate)     => http.patch('/tenders/settings/commission', { module, rate }),
   };
 
   const invoices = {

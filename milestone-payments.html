@@ -1003,8 +1003,7 @@
       },
 
       /* ─── Init ─── */
-      init() {
-        // Read tenderId from URL and update back-link + chat button
+      async init() {
         const _tndId = new URLSearchParams(location.search).get('tenderId');
         if (_tndId) {
           const backLink = document.querySelector('a.nav-back');
@@ -1012,6 +1011,25 @@
           const chatBtn = document.querySelector('.btn-chat');
           if (chatBtn) chatBtn.href = 'chat.html?type=tender&id=' + encodeURIComponent(_tndId);
         }
+        // Load real milestones if tenderId is a UUID
+        const isApiId = _tndId && _tndId.includes('-') && _tndId.length > 10;
+        if (!isApiId) return;
+        try {
+          const apiMilestones = await API.tenders.milestones(_tndId);
+          if (Array.isArray(apiMilestones) && apiMilestones.length > 0) {
+            this.milestones = apiMilestones.map((m, i) => ({
+              id: m.id,
+              label: m.title || `مرحلة ${i + 1}`,
+              amount: Number(m.amount),
+              dueDate: m.dueDate ? m.dueDate.split('T')[0] : null,
+              status: ({'PENDING':'pending','IN_PROGRESS':'held','SUBMITTED':'pending_approval','APPROVED':'pending_approval','RELEASED':'released','DISPUTED':'disputed'})[m.status] || 'pending',
+              escrow: m.escrowStatus || 'PENDING',
+              note: m.notes || '',
+              releasedAt: m.releasedAt ? m.releasedAt.split('T')[0] : null,
+              submittedAt: m.submittedAt ? m.submittedAt.split('T')[0] : null,
+            }));
+          }
+        } catch(e) { /* keep demo milestones on error */ }
       },
 
       /* ─── Helpers ─── */
@@ -1042,20 +1060,21 @@
       },
       async confirmApprove() {
         const ms = this.milestones.find(m => m.id === this.approveModal.id);
+        if (!ms) return;
         const _tndId = new URLSearchParams(location.search).get('tenderId');
-        // In production: await API.tenders.approveMilestone(_tndId, ms.id)
-        // Demo: skip real API call as milestone endpoint is not yet wired up
-        if (_tndId && ms) {
+        const isApiId = _tndId && _tndId.includes('-') && _tndId.length > 10;
+        const isApiMilestone = typeof ms.id === 'string' && ms.id.includes('-');
+        if (isApiId && isApiMilestone) {
           try {
-            // TODO: replace with API.tenders.approveMilestone(_tndId, ms.id)
-            // when backend endpoint POST /tenders/:id/milestones/:milestoneId/approve is ready
-          } catch(e) { API.toast('❌ ' + API.errorMsg(e)); return; }
+            await API.tenders.updateMilestone(ms.id, { status: 'RELEASED', notes: 'تم الإفراج بموافقتك' });
+          } catch(e) {
+            this.showToast('❌ ' + (e?.message || 'حدث خطأ'), 'error');
+            return;
+          }
         }
-        if (ms) {
-          ms.status = 'released';
-          ms.releasedAt = new Date().toISOString().split('T')[0];
-          ms.note = 'تم الإفراج بموافقتك';
-        }
+        ms.status = 'released';
+        ms.releasedAt = new Date().toISOString().split('T')[0];
+        ms.note = 'تم الإفراج بموافقتك';
         this.approveModal.open = false;
         this.showToast('تم الإفراج بنجاح ✓', 'success');
       },

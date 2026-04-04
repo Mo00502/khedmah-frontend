@@ -289,26 +289,25 @@
             this.submitted = true;
             window.scrollTo(0, 0);
             try {
-                const budget = this.budgetType === 'fixed'
+                const budgetMin = this.budgetType === 'fixed'
                     ? Number(this.budgetFixed)
-                    : this.budgetType === 'range'
-                        ? { min: Number(this.budgetMin), max: Number(this.budgetMax) }
-                        : null;
+                    : Number(this.budgetMin) || undefined;
+                const budgetMax = this.budgetType === 'range'
+                    ? Number(this.budgetMax) || undefined
+                    : undefined;
                 const res = await API.tenders.create({
                     title: this.title,
                     description: this.description,
                     category: this.category,
-                    subcategory: this.subcategory,
-                    budget: budget,
-                    budgetType: this.budgetType,
-                    deadline: this.deadline,
-                    city: this.city,
-                    locationDetail: this.locationDetail,
-                    serviceMode: this.serviceMode,
-                    scopeOfWork: this.scopeOfWork,
-                    visibility: this.visibility,
+                    budgetMin,
+                    budgetMax,
+                    budgetMode: this.budgetType,
+                    deadline: this.deadline ? new Date(this.deadline).toISOString() : undefined,
+                    region: this.city || 'الرياض',
+                    scope: Array.isArray(this.scopeOfWork) ? this.scopeOfWork.join('\n') : this.scopeOfWork,
+                    qualifications: this.requirements || undefined,
                 });
-                this.tenderId = res?.id ? ('#TND-' + res.id.slice(-6)) : ('#TND-' + Date.now().toString().slice(-6));
+                this.tenderId = res?.id || ('#TND-' + Date.now().toString().slice(-6));
             } catch(e) {
                 this.tenderId = '#TND-' + Date.now().toString().slice(-6);
             }

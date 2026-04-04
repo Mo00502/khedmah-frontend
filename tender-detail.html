@@ -740,100 +740,162 @@ const TENDERS = {
     }
 };
 
-// ─── Load tender data from URL param ────────────────────────────────────────
+// ─── Load tender data ────────────────────────────────────────────────────────
 const params = new URLSearchParams(window.location.search);
 const tenderId = params.get('id') || '1';
-const data = TENDERS[tenderId] || TENDERS['1'];
+const isApiId = tenderId.includes('-') && tenderId.length > 10;
 
-function loadTender() {
-    // Breadcrumb
-    document.getElementById('bcTitle').textContent = data.title;
-    document.title = data.title + ' - Khedmah';
+function renderTender(t) {
+    const title = escHtml(t.title || '');
+    const org = t.org || (t.company && (t.company.nameAr || t.company.name)) || 'جهة غير محددة';
+    const orgInitial = (org || '-').charAt(0);
+    const status = (t.status || '').toLowerCase();
+    const isOpen = t.status === 'OPEN' || status === 'open';
+    const isSoon = status === 'soon' || t.status === 'UNDER_REVIEW';
+    const isClosed = !isOpen && !isSoon;
 
-    // Header
-    document.getElementById('tTitle').textContent = data.title;
-    document.getElementById('tOrg').textContent = '🏢 ' + data.org;
+    document.getElementById('bcTitle').textContent = t.title;
+    document.title = t.title + ' - خدمة';
+
+    document.getElementById('tTitle').textContent = t.title;
+    document.getElementById('tOrg').textContent = '🏢 ' + org;
 
     const statusEl = document.getElementById('tStatus');
-    if (data.status === 'open') { statusEl.className = 'status-badge status-open'; statusEl.textContent = '🟢 مفتوح'; }
-    else if (data.status === 'soon') { statusEl.className = 'status-badge status-soon'; statusEl.textContent = '🟡 يغلق قريباً'; }
+    if (isOpen) { statusEl.className = 'status-badge status-open'; statusEl.textContent = '🟢 مفتوح'; }
+    else if (isSoon) { statusEl.className = 'status-badge status-soon'; statusEl.textContent = '🟡 يغلق قريباً'; }
     else { statusEl.className = 'status-badge status-closed'; statusEl.textContent = '🔴 مغلق'; }
 
-    // Info row
-    document.getElementById('tCity').textContent = data.city;
-    document.getElementById('tDeadline').textContent = data.deadline;
-    document.getElementById('tSector').textContent = data.sector;
-    document.getElementById('tBudget').textContent = data.budget;
+    const budgetMin = Number(t.budgetMin || 0);
+    const budgetMax = Number(t.budgetMax || 0);
+    const budgetStr = budgetMin > 0 && budgetMax > 0
+        ? `${budgetMin.toLocaleString('ar-SA')} – ${budgetMax.toLocaleString('ar-SA')}`
+        : budgetMin > 0 ? budgetMin.toLocaleString('ar-SA') : (t.budget || '—');
 
-    // Description (data.description contains trusted static HTML — safe to use innerHTML here)
-    document.getElementById('tDescription').innerHTML = data.description;
+    document.getElementById('tCity').textContent = t.region || t.city || '—';
+    document.getElementById('tDeadline').textContent = t.deadline
+        ? new Date(t.deadline).toLocaleDateString('ar-SA', {year:'numeric',month:'long',day:'numeric'})
+        : (t.deadline || '—');
+    document.getElementById('tSector').textContent = t.category || t.sector || '—';
+    document.getElementById('tBudget').textContent = budgetStr + ' ر.س';
+
+    // Description
+    const descEl = document.getElementById('tDescription');
+    const descText = t.description || t.scope || '';
+    descEl.innerHTML = descText.startsWith('<') ? descText : `<p>${escHtml(descText)}</p>`;
 
     // Scope
     const scopeEl = document.getElementById('tScope');
-    data.scope.forEach(item => {
-        const li = document.createElement('li');
-        li.textContent = item;
-        scopeEl.appendChild(li);
+    const scopeItems = Array.isArray(t.scope) ? t.scope : (t.qualifications ? [t.qualifications] : []);
+    scopeItems.forEach(item => {
+        const li = document.createElement('li'); li.textContent = item; scopeEl.appendChild(li);
     });
+    if (!scopeItems.length) scopeEl.closest('div').style.display = 'none';
 
     // Requirements
     const reqGrid = document.getElementById('tReqGrid');
-    data.requirements.forEach(r => {
+    const reqItems = Array.isArray(t.requirements)
+        ? t.requirements.map(r => ({ label: r.label || r.nameAr || r.type, value: r.value || r.quantity || '' }))
+        : [];
+    reqItems.forEach(r => {
         const div = document.createElement('div');
         div.className = 'req-item';
-        div.innerHTML = `<div class="req-label">${escHtml(r.label)}</div><div class="req-value">${escHtml(r.value)}</div>`;
+        div.innerHTML = `<div class="req-label">${escHtml(String(r.label || ''))}</div><div class="req-value">${escHtml(String(r.value || ''))}</div>`;
         reqGrid.appendChild(div);
     });
+    if (!reqItems.length) reqGrid.closest('div').style.display = 'none';
 
-    // Attachments
+    // Attachments — API has no file attachments yet, hide section if empty
     const attEl = document.getElementById('tAttachments');
-    data.attachments.forEach(a => {
-        const div = document.createElement('div');
-        div.className = 'attachment-item';
-        div.innerHTML = `
-            <span class="attachment-icon">${escHtml(a.icon)}</span>
-            <span class="attachment-name">${escHtml(a.name)}</span>
-            <span class="attachment-size">${escHtml(a.size)}</span>
-            <span class="attachment-dl">⬇ ${escHtml(a.ext)}</span>`;
-        div.onclick = () => showToast(`جارٍ تحميل "${a.name}" ...`);
-        attEl.appendChild(div);
-    });
+    const atts = Array.isArray(t.attachments) ? t.attachments : [];
+    if (atts.length) {
+        atts.forEach(a => {
+            const div = document.createElement('div');
+            div.className = 'attachment-item';
+            div.innerHTML = `<span class="attachment-icon">${escHtml(a.icon || '📄')}</span>
+                <span class="attachment-name">${escHtml(a.name || '')}</span>
+                <span class="attachment-size">${escHtml(a.size || '')}</span>
+                <span class="attachment-dl">⬇ ${escHtml(a.ext || '')}</span>`;
+            div.onclick = () => showToast(`جارٍ تحميل "${a.name}" ...`);
+            attEl.appendChild(div);
+        });
+    } else {
+        attEl.closest('.card').style.display = 'none';
+    }
 
     // Notes
-    if (data.notes) {
+    if (t.notes) {
         document.getElementById('notesCard').style.display = 'block';
-        document.getElementById('tNotes').textContent = data.notes;
+        document.getElementById('tNotes').textContent = t.notes;
     }
 
     // Sidebar
-    document.getElementById('sCompanyInitial').textContent = data.orgInitial;
-    document.getElementById('sCompanyName').textContent = data.org;
-    document.getElementById('sCompanyMeta').textContent = data.orgMeta;
-    document.getElementById('sDeadline').textContent = data.deadline;
-    document.getElementById('sDeadlineFill').style.width = data.deadlinePercent + '%';
-    document.getElementById('sDeadlineRemaining').textContent = data.deadlineRemaining;
-    document.getElementById('sBidCount').textContent = data.bidCount;
+    document.getElementById('sCompanyInitial').textContent = orgInitial;
+    document.getElementById('sCompanyName').textContent = org;
+    document.getElementById('sCompanyMeta').textContent = t.company?.classification || t.orgMeta || '';
+    const deadlineDate = t.deadline ? new Date(t.deadline) : null;
+    document.getElementById('sDeadline').textContent = deadlineDate
+        ? deadlineDate.toLocaleDateString('ar-SA', {year:'numeric',month:'long',day:'numeric'})
+        : '—';
 
-    // Disable bidding if closed
-    if (data.status === 'closed') {
+    // Deadline progress bar
+    if (deadlineDate && t.createdAt) {
+        const total = deadlineDate - new Date(t.createdAt);
+        const elapsed = Date.now() - new Date(t.createdAt);
+        const pct = Math.min(100, Math.max(0, Math.round(elapsed / total * 100)));
+        document.getElementById('sDeadlineFill').style.width = pct + '%';
+        const daysLeft = Math.ceil((deadlineDate - Date.now()) / 86400000);
+        document.getElementById('sDeadlineRemaining').textContent =
+            daysLeft > 0 ? `يتبقى ${daysLeft} يوماً` : 'انتهت مدة الاستقبال';
+    }
+
+    // Bid count hidden per privacy rules (backend returns no bid count for list view)
+    document.getElementById('sBidCount').textContent = t.bidCount !== undefined ? t.bidCount : '—';
+
+    // CTA state
+    if (isClosed || (deadlineDate && Date.now() > deadlineDate)) {
         document.getElementById('btnSubmit').disabled = true;
         document.getElementById('btnSubmit').textContent = 'المناقصة مغلقة';
     }
 
-    // Modal info
-    document.getElementById('modalTenderName').textContent = data.title;
-    document.getElementById('modalOrgName').textContent = data.org;
+    // Show "already bid" state
+    if (t.myBid) {
+        document.getElementById('ctaArea').style.display = 'none';
+        document.getElementById('successArea').style.display = 'block';
+        document.getElementById('sBidCount').textContent = '—';
+    }
 
-    // Wire chat button to this tender's conversation
+    // Modal info
+    document.getElementById('modalTenderName').textContent = t.title;
+    document.getElementById('modalOrgName').textContent = org;
+
+    // Wire chat button
     const chatBtn = document.getElementById('btnChatTender');
     if (chatBtn) chatBtn.href = `chat.html?type=tender&id=${tenderId}`;
 
-    // Wire bids link to pass tenderId
+    // Wire bids link
     const bidsLink = document.querySelector('.btn-my-bids-link');
     if (bidsLink) bidsLink.href = `tender-bids.html?tenderId=${tenderId}`;
+
+    // Owner view: replace "submit bid" with "view all bids"
+    const isOwner = t.isOwner || (t.company?.verified && !t.myBid && t._isOwner);
+    if (t._isOwner) {
+        document.getElementById('btnSubmit').style.display = 'none';
+        if (bidsLink) { bidsLink.style.display = 'block'; bidsLink.textContent = '📊 عرض جميع العروض المقدمة'; }
+    }
 }
 
-loadTender();
+// Try API first if UUID, then fall back to demo TENDERS
+(async function() {
+    if (isApiId) {
+        try {
+            const t = await API.tenders.get(tenderId);
+            renderTender(t);
+            return;
+        } catch(e) { /* fall through to demo data */ }
+    }
+    const demo = TENDERS[tenderId] || TENDERS['1'];
+    renderTender(demo);
+})();
 
 // ─── Bid Modal ───────────────────────────────────────────────────────────────
 function openBidModal() {
@@ -847,25 +909,31 @@ function closeModal() {
 async function submitBid() {
     const amt = document.getElementById('bidAmount').value.trim();
     const dur = document.getElementById('bidDuration').value.trim();
+    const qual = document.getElementById('bidQualification')?.value?.trim() || '';
+    const notes = document.getElementById('bidNotes')?.value?.trim() || '';
     if (!amt) { showToast('يرجى إدخال قيمة العرض المالي'); return; }
     if (!dur) { showToast('يرجى تحديد مدة التنفيذ المقترحة'); return; }
     const submitBtn = document.querySelector('#bidModal .btn-full.btn-primary-full');
     if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'جاري الإرسال...'; }
-    const isUUID = tenderId.includes('-') && tenderId.length > 10;
-    if (isUUID) {
+    // Parse duration in months (extract first number)
+    const durationMonths = parseInt(dur.match(/\d+/)?.[0] || '3');
+    if (isApiId) {
         try {
-            await API.tenders.bid(tenderId, { amount: parseFloat(amt), timeline: dur, notes: document.getElementById('bidNotes')?.value || '' });
+            await API.tenders.bid(tenderId, {
+                amount: parseFloat(amt),
+                durationMonths,
+                note: [qual, notes].filter(Boolean).join('\n\n'),
+                termsAccepted: true,
+            });
         } catch(err) {
             if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'إرسال العرض'; }
-            showToast('❌ ' + API.errorMsg(err));
+            showToast('❌ ' + (API.errorMsg ? API.errorMsg(err) : (err.message || 'حدث خطأ')));
             return;
         }
     }
     closeModal();
     document.getElementById('ctaArea').style.display = 'none';
     document.getElementById('successArea').style.display = 'block';
-    const countEl = document.getElementById('sBidCount');
-    countEl.textContent = parseInt(countEl.textContent) + 1;
     showToast('✅ تم إرسال عرضك بنجاح — سيتواصل معك صاحب المناقصة');
 }
 

@@ -410,10 +410,14 @@ const BIDS = [
             else if (b.status === 'pending' || b.status === 'shortlisted') b.status = 'rejected';
         });
         updateShortlistedCount(this.bids);
-        showToast('🎉 تم قبول العرض! جارٍ الانتقال إلى دفعات المراحل...');
         const _tid = new URLSearchParams(location.search).get('tenderId') || TENDER.id;
         const _tidClean = String(_tid).replace(/^#/, '');
-        API.tenders.award(_tidClean, id).catch(() => {});
+        const isApiTender = _tidClean.includes('-') && _tidClean.length > 10;
+        showToast('🎉 تم قبول العرض! جارٍ الانتقال إلى دفعات المراحل...');
+        if (isApiTender) {
+            const bidApiId = bid?.id || id;
+            API.tenders.award(_tidClean, String(bidApiId)).catch(() => {});
+        }
         setTimeout(() => { window.location.href = 'milestone-payments.html?tenderId=' + encodeURIComponent(_tidClean); }, 1800);
     },
     rejectBid(id) {
@@ -587,15 +591,41 @@ function updateShortlistedCount(bids) {
     if (el) el.textContent = bids.filter(b => b.status === 'shortlisted').length;
 }
 
-function initPage() {
-    // Read tenderId from URL (passed from tender-create, tender-detail, tender-bids award)
+function mapApiBid(b) {
+    const nameAr = b.company?.nameAr || b.company?.name || (b.submitter?.username || '?');
+    const initial = nameAr.charAt(0);
+    const colors = ['#028090,#02C39A','#6366f1,#818cf8','#f59e0b,#fcd34d','#059669,#34d399','#dc2626,#f87171'];
+    const color = colors[Math.abs(b.id.charCodeAt(0) - 65) % colors.length];
+    return {
+        id: b.id,
+        company: nameAr,
+        avatar: initial,
+        avatarColor: color,
+        verified: b.company?.verified ?? false,
+        rating: Number(b.company?.rating ?? 0).toFixed(1),
+        reviewCount: b.company?.reviewCount ?? 0,
+        yearsExp: b.company?.yearsExp ?? 0,
+        completedProjects: b.company?.completedProjects ?? 0,
+        price: Number(b.amount),
+        breakdown: b.breakdown || null,
+        duration: b.durationMonths ? `${b.durationMonths} أشهر` : '—',
+        teamSize: b.teamSize || null,
+        proposalSummary: b.note || '',
+        attachmentName: null,
+        startAvailability: b.startAvailability || '—',
+        submittedAt: b.createdAt ? new Date(b.createdAt).toLocaleDateString('ar-SA') : '—',
+        status: b.status === 'WON' ? 'accepted' : b.status === 'SHORTLISTED' ? 'shortlisted' : b.status === 'REJECTED' || b.status === 'WITHDRAWN' ? 'rejected' : 'pending',
+        notes: b.notes || '',
+    };
+}
+
+async function initPage() {
     const _tndId = new URLSearchParams(location.search).get('tenderId');
-    if (_tndId) {
-        const tidEl = document.getElementById('tenderId');
-        if (tidEl) tidEl.textContent = _tndId;
-    }
+    const isApiId = _tndId && _tndId.includes('-') && _tndId.length > 10;
+
+    // Always show demo tender info (will be overwritten if API available)
     document.getElementById('tenderTitle').textContent = TENDER.title;
-    if (!_tndId) document.getElementById('tenderId').textContent = TENDER.id;
+    document.getElementById('tenderId').textContent = _tndId || TENDER.id;
     document.getElementById('tenderCity').textContent = '📍 ' + TENDER.city;
     document.getElementById('tenderBudgetDisplay').textContent = '💰 ' + TENDER.budget;
     document.getElementById('tenderStatus').textContent = TENDER.status === 'open' ? 'مفتوحة' : 'مغلقة';
@@ -603,6 +633,70 @@ function initPage() {
     document.getElementById('totalBids').textContent = TENDER.bidCount;
     updateShortlistedCount(BIDS);
     document.getElementById('viewCount').textContent = TENDER.viewCount;
+
+    if (!isApiId) return;
+
+    // Load tender info + bids from API
+    try {
+        const [tenderRes, bidsRes] = await Promise.all([
+            API.tenders.get(_tndId).catch(() => null),
+            API.tenders.listBids(_tndId).catch(() => null),
+        ]);
+
+        if (tenderRes) {
+            document.getElementById('tenderTitle').textContent = tenderRes.title || '';
+            document.getElementById('tenderId').textContent = _tndId;
+            document.getElementById('tenderCity').textContent = '📍 ' + (tenderRes.region || '');
+            const budgetMin = Number(tenderRes.budgetMin || 0);
+            const budgetMax = Number(tenderRes.budgetMax || 0);
+            const budgetStr = budgetMin && budgetMax ? `${budgetMin.toLocaleString('ar-SA')} – ${budgetMax.toLocaleString('ar-SA')} ر.س` : '—';
+            document.getElementById('tenderBudgetDisplay').textContent = '💰 ' + budgetStr;
+            document.getElementById('tenderStatus').textContent = tenderRes.status === 'OPEN' ? 'مفتوحة' : 'مغلقة';
+            if (tenderRes.deadline) {
+                const daysLeft = Math.max(0, Math.ceil((new Date(tenderRes.deadline) - Date.now()) / 86400000));
+                document.getElementById('daysLeft').textContent = daysLeft;
+            }
+        }
+
+        if (Array.isArray(bidsRes) && bidsRes.length > 0) {
+            const mappedBids = bidsRes.map(mapApiBid);
+            document.getElementById('totalBids').textContent = mappedBids.length;
+            updateShortlistedCount(mappedBids);
+
+            // Update price insight
+            const prices = mappedBids.map(b => b.price).filter(p => p > 0);
+            if (prices.length > 0) {
+                const minP = Math.min(...prices);
+                const maxP = Math.max(...prices);
+                const avgP = Math.round(prices.reduce((a, b) => a + b, 0) / prices.length);
+                const insightEl = document.querySelector('.price-insight');
+                if (insightEl) {
+                    insightEl.querySelector('.price-insight-range').textContent =
+                        `${minP.toLocaleString('ar-SA')} — ${maxP.toLocaleString('ar-SA')} ر.س`;
+                    insightEl.querySelector('.price-insight-avg').textContent =
+                        `متوسط: ${avgP.toLocaleString('ar-SA')} ر.س`;
+                }
+            }
+
+            // Inject into Alpine.js component after it mounts
+            document.addEventListener('alpine:initialized', () => {
+                const comp = document.querySelector('[x-data]');
+                if (comp && comp._x_dataStack) {
+                    const data = comp._x_dataStack[0];
+                    if (data) data.bids = mappedBids;
+                }
+            }, { once: true });
+
+            // Fallback: update after short delay if Alpine already mounted
+            setTimeout(() => {
+                const comp = document.querySelector('[x-data]');
+                if (comp && comp._x_dataStack) {
+                    const data = comp._x_dataStack[0];
+                    if (data && data.bids === BIDS) data.bids = mappedBids;
+                }
+            }, 500);
+        }
+    } catch(e) { /* keep demo data on error */ }
 }
 
 function showToast(msg) {
@@ -633,13 +727,13 @@ function toggleTheme() {
     if (btn) btn.textContent = isDark ? '☀️' : '🌙';
 }
 
-(function() {
+(async function() {
     if (localStorage.getItem('khedmah_theme') === 'dark') {
         document.documentElement.classList.add('dark');
         const btn = document.getElementById('themeToggle');
         if (btn) btn.textContent = '☀️';
     }
-    initPage();
+    await initPage();
 })();
 </script>
 

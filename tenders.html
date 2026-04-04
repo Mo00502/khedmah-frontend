@@ -635,52 +635,76 @@
             overlay.addEventListener('click', e => { if (e.target === overlay) overlay.classList.remove('show'); });
         });
 
+        function buildTenderCard(t) {
+            const statusMap = { OPEN:'open', CLOSED:'closed', AWARDED:'closed', CANCELLED:'closed', DRAFT:'closed', UNDER_REVIEW:'open' };
+            const statusLabelMap = { OPEN:'مفتوح', AWARDED:'مُرسى', CANCELLED:'ملغي', CLOSED:'مغلق', DRAFT:'مسودة', UNDER_REVIEW:'قيد المراجعة' };
+            const badgeClass = t.status === 'OPEN' ? 'status-open' : t.status === 'UNDER_REVIEW' ? 'status-soon' : 'status-closed';
+            const budgetMin = Number(t.budgetMin || t.budgetLow || 0);
+            const budgetMax = Number(t.budgetMax || t.budgetHigh || 0);
+            const budgetAvg = budgetMax > 0 ? Math.round((budgetMin + budgetMax) / 2) : budgetMin;
+            const budgetStr = budgetMin > 0 && budgetMax > 0
+                ? `${budgetMin.toLocaleString('ar-SA')} – ${budgetMax.toLocaleString('ar-SA')}`
+                : budgetAvg > 0 ? budgetAvg.toLocaleString('ar-SA') : '—';
+            const deadline = t.deadline ? new Date(t.deadline).toLocaleDateString('ar-SA', {year:'numeric',month:'long',day:'numeric'}) : '—';
+            const canBid = t.status === 'OPEN' && new Date() < new Date(t.deadline || '9999');
+
+            const card = document.createElement('div');
+            card.className = 'tender-card';
+            card.dataset.apiId  = t.id;
+            card.dataset.sector = t.category || '';
+            card.dataset.status = statusMap[t.status] || 'open';
+            card.dataset.budget = budgetAvg;
+            card.dataset.city   = t.region || '';
+            card.dataset.date   = t.createdAt || '';
+            card.dataset.deadline = t.deadline || '';
+            card.innerHTML = `
+              <div class="tc-header">
+                <div class="tc-info">
+                  <div class="tc-title"><a href="tender-detail.html?id=${encodeURIComponent(t.id)}">${escHtml(t.title)}</a></div>
+                  <div class="tc-org">🏢 ${escHtml(t.company?.nameAr || t.company?.name || 'شركة')}</div>
+                  <div class="tc-desc">${escHtml((t.description || '').slice(0, 150))}${(t.description?.length ?? 0) > 150 ? '...' : ''}</div>
+                </div>
+                <div class="tc-side">
+                  <div class="tc-budget">${budgetStr} <small>ر.س</small></div>
+                  <span class="status-badge ${badgeClass}">${statusLabelMap[t.status] || t.status}</span>
+                </div>
+              </div>
+              <div class="tc-meta">
+                <span>📍 ${escHtml(t.region || '')}</span>
+                <span>⏰ الإغلاق: ${deadline}</span>
+                <span class="sector-tag">${escHtml(t.category || '')}</span>
+                <span class="spacer"></span>
+                <a href="tender-detail.html?id=${encodeURIComponent(t.id)}" class="btn-bid ${canBid ? '' : ''}" ${canBid ? '' : 'style="background:#94a3b8;pointer-events:none"'}>
+                  ${canBid ? 'عرض التفاصيل' : 'مغلق'}
+                </a>
+              </div>`;
+            return card;
+        }
+
         // Role-aware dashboard link
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', async function() {
             const role = API.auth.getRole();
             const btn = document.querySelector('.avatar-btn');
             if (btn && role === 'provider') btn.href = 'provider-dashboard.html';
 
-            // Load real tenders from API and append to list
-            API.tenders.list({ limit: 20 }).then(res => {
-                const items = res.data || res.items || (Array.isArray(res) ? res : []);
-                if (!items.length) return;
-                const list = document.getElementById('tendersList');
-                const statusMap = { OPEN: 'open', CLOSED: 'closed', AWARDED: 'closed', CANCELLED: 'closed' };
-                items.forEach(t => {
-                    const id = t.id;
-                    if (list.querySelector(`[data-api-id="${id}"]`)) return;
-                    const card = document.createElement('div');
-                    card.className = 'tender-card';
-                    card.dataset.apiId = id;
-                    card.dataset.sector = t.category || '';
-                    card.dataset.status = statusMap[t.status] || 'open';
-                    card.dataset.budget = t.budget || 0;
-                    card.dataset.city = t.city || '';
-                    card.dataset.date = t.createdAt || '';
-                    card.dataset.deadline = t.deadline || '';
-                    card.innerHTML = `
-                        <div style="padding:1.25rem">
-                            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:0.75rem;flex-wrap:wrap">
-                                <div>
-                                    <div style="font-weight:700;font-size:1rem;margin-bottom:0.25rem">${escHtml(t.title || 'مناقصة')}</div>
-                                    <div style="font-size:0.82rem;color:var(--gray)">🏢 ${escHtml(t.company?.name || 'شركة')} &nbsp;•&nbsp; 📍 ${escHtml(t.city || '')} &nbsp;•&nbsp; 🏷️ ${escHtml(t.category || '')}</div>
-                                </div>
-                                <span style="background:#dcfce7;color:#166534;padding:0.25rem 0.75rem;border-radius:999px;font-size:0.75rem;font-weight:600;white-space:nowrap">${t.status === 'OPEN' ? '🟢 مفتوح' : '🔴 مغلق'}</span>
-                            </div>
-                            <p style="font-size:0.88rem;color:var(--gray);margin:0.75rem 0 0">${escHtml((t.description || '').slice(0, 120))}${(t.description?.length ?? 0) > 120 ? '...' : ''}</p>
-                            <div style="display:flex;gap:1rem;margin-top:0.875rem;flex-wrap:wrap">
-                                <span style="font-size:0.8rem;color:var(--primary);font-weight:600">💰 ${Number(t.budget || 0).toLocaleString('ar-SA')} ر.س</span>
-                                ${t.deadline ? `<span style="font-size:0.8rem;color:var(--gray)">⏰ الإغلاق: ${escHtml(t.deadline.split('T')[0])}</span>` : ''}
-                            </div>
-                            <div style="margin-top:1rem;text-align:left">
-                                <a href="tender-detail.html?id=${encodeURIComponent(id)}" style="background:var(--primary);color:white;padding:0.45rem 1.25rem;border-radius:8px;text-decoration:none;font-size:0.85rem">عرض التفاصيل</a>
-                            </div>
-                        </div>`;
-                    list.appendChild(card);
-                });
-                applyFilters();
-            }).catch(() => {});
+            // Load real tenders from API — replace demo cards
+            try {
+                const res = await API.tenders.list({ limit: 50 });
+                const items = Array.isArray(res) ? res : (res.data || res.items || []);
+                if (items.length > 0) {
+                    const list = document.getElementById('tendersList');
+                    // Remove demo cards (static HTML)
+                    list.querySelectorAll('.tender-card:not([data-api-id])').forEach(el => el.remove());
+                    items.forEach(t => {
+                        if (!list.querySelector(`[data-api-id="${t.id}"]`)) {
+                            list.insertBefore(buildTenderCard(t), list.firstChild);
+                        }
+                    });
+                    const total = list.querySelectorAll('.tender-card').length;
+                    document.querySelector('.results-count').innerHTML = `عرض <strong id="visibleCount">${total}</strong> من <strong>${total}</strong> مناقصة`;
+                }
+            } catch(e) { /* keep demo cards on error */ }
+            applyFilters();
         });
     </script>
 
