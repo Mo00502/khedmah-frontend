@@ -1,660 +1,1441 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" data-page-title="equipment_page_title">
 <head>
     <meta charset="UTF-8">
     <script>(function(){if(localStorage.getItem("khedmah_theme")==="dark")document.documentElement.classList.add("dark")})()</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="استأجر المعدات الثقيلة والإنشائية بأفضل الأسعار في السعودية عبر منصة خدمة. حفارات، روافع، مولدات وأكثر.">
-    <title>المعدات - خدمة</title>
+    <title>تأجير المعدات الثقيلة - خدمة</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap');
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        :root {
-            --primary: #028090; --accent: #02C39A;
-            --dark: #1E293B; --light: #F8FAFC; --white: #FFFFFF;
-            --gray: #64748B; --success: #10B981; --warning: #F59E0B; --error: #EF4444;
-        }
-        body { font-family: 'Tajawal', sans-serif; background: var(--light); color: var(--dark); min-height: 100vh; }
-
-        nav { background: white; padding: 1rem 5%; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100; }
-        .nav-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
-        .logo { font-size: 1.8rem; font-weight: 800; color: var(--primary); text-decoration: none; flex-shrink: 0; }
-        .nav-links { display: flex; gap: 1rem; align-items: center; flex-shrink: 0; }
-        .nav-links a { text-decoration: none; color: var(--gray); font-weight: 500; font-size: 0.9rem; }
-        .nav-links a:hover, .nav-links a.active { color: var(--primary); }
-        .btn-list { background: var(--primary); color: white !important; padding: 0.45rem 1.1rem; border-radius: 10px; font-weight: 600 !important; }
-        .avatar-btn { width: 36px; height: 36px; background: linear-gradient(135deg, var(--primary), var(--accent)); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; text-decoration: none; font-size: 0.85rem; }
-
-        .page-header { background: white; border-bottom: 1px solid #e2e8f0; padding: 1.25rem 5%; }
-        .page-header-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
-        .page-title { font-size: 1.3rem; font-weight: 800; }
-        .page-title span { color: var(--primary); }
-        .page-subtitle { font-size: 0.85rem; color: var(--gray); margin-top: 0.2rem; }
-        .header-search { display: flex; align-items: center; background: var(--light); border: 1.5px solid #e2e8f0; border-radius: 12px; overflow: hidden; max-width: 360px; flex: 1; }
-        .header-search input { flex: 1; border: none; background: transparent; padding: 0.5rem 1rem; font-family: 'Tajawal', sans-serif; font-size: 16px; outline: none; }
-        .header-search button { background: var(--primary); border: none; color: white; padding: 0.5rem 1rem; cursor: pointer; font-size: 0.9rem; font-family: 'Tajawal', sans-serif; white-space: nowrap; }
-
-        .page-layout { max-width: 1200px; margin: 0 auto; padding: 1.5rem 5%; display: flex; gap: 1.5rem; }
-
-        .filters-sidebar { width: 230px; flex-shrink: 0; }
-        .filter-panel { background: white; border-radius: 16px; padding: 1.25rem; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 1rem; }
-        .filter-title { font-weight: 700; font-size: 0.88rem; margin-bottom: 0.85rem; display: flex; justify-content: space-between; align-items: center; }
-        .filter-clear { font-size: 0.75rem; color: var(--primary); cursor: pointer; font-weight: 500; }
-        .filter-option { display: flex; align-items: center; gap: 0.6rem; padding: 0.4rem 0; cursor: pointer; }
-        .filter-option input[type=checkbox] { accent-color: var(--primary); width: 15px; height: 15px; flex-shrink: 0; }
-        .filter-option label { font-size: 0.85rem; cursor: pointer; flex: 1; }
-        .filter-option .count { font-size: 0.72rem; color: var(--gray); }
-        .range-row { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.5rem; }
-        .range-input { flex: 1; border: 1.5px solid #e2e8f0; border-radius: 8px; padding: 0.4rem 0.6rem; font-family: 'Tajawal', sans-serif; font-size: 16px; outline: none; width: 0; }
-        .range-input:focus { border-color: var(--primary); }
-        .filter-select { width: 100%; border: 1.5px solid #e2e8f0; border-radius: 8px; padding: 0.45rem 0.7rem; font-family: 'Tajawal', sans-serif; font-size: 16px; outline: none; background: white; margin-top: 0.5rem; }
-
-        .results-area { flex: 1; min-width: 0; }
-        .results-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem; }
-        .results-count { font-size: 0.9rem; color: var(--gray); }
-        .results-count strong { color: var(--dark); }
-        .sort-select { border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 0.45rem 0.85rem; font-family: 'Tajawal', sans-serif; font-size: 16px; outline: none; background: white; cursor: pointer; }
-
-        .equip-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; }
-        .equip-card { background: white; border-radius: 16px; box-shadow: 0 2px 10px rgba(0,0,0,0.06); transition: box-shadow 0.2s, transform 0.2s; overflow: hidden; }
-        .equip-card:hover { box-shadow: 0 6px 24px rgba(0,0,0,0.1); transform: translateY(-2px); }
-        .equip-card.hidden { display: none; }
-        .equip-img { height: 130px; display: flex; align-items: center; justify-content: center; font-size: 3.2rem; background: var(--light); }
-        .equip-body { padding: 1rem 1.1rem; }
-        .equip-name { font-weight: 700; font-size: 0.95rem; margin-bottom: 0.2rem; }
-        .equip-owner { font-size: 0.78rem; color: var(--gray); margin-bottom: 0.6rem; }
-        .equip-meta { display: flex; flex-wrap: wrap; gap: 0.4rem; font-size: 0.75rem; color: var(--gray); margin-bottom: 0.75rem; align-items: center; }
-        .avail-badge { font-size: 0.72rem; font-weight: 600; padding: 0.15rem 0.55rem; border-radius: 8px; }
-        .avail-yes { background: rgba(16,185,129,0.12); color: #065f46; }
-        .avail-no { background: rgba(239,68,68,0.1); color: #991b1b; }
-        .equip-footer { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.4rem; padding-top: 0.75rem; border-top: 1px solid #f1f5f9; }
-        .equip-footer-actions { display: flex; gap: 0.4rem; align-items: center; }
-        .equip-price { font-size: 1rem; font-weight: 800; color: var(--primary); }
-        .equip-price small { font-size: 0.72rem; font-weight: 400; color: var(--gray); }
-        .btn-rent { background: var(--primary); color: white; border: none; border-radius: 10px; padding: 0.4rem 1rem; font-family: 'Tajawal', sans-serif; font-size: 0.82rem; font-weight: 600; cursor: pointer; }
-        .btn-rent:hover { background: #026f7e; }
-        .btn-rent:disabled { background: #94a3b8; cursor: not-allowed; }
-        .btn-chat-equip { background: transparent; color: var(--primary); border: 1.5px solid var(--primary); border-radius: 10px; padding: 0.35rem 0.7rem; font-family: 'Tajawal', sans-serif; font-size: 0.78rem; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-block; }
-        .btn-chat-equip:hover { background: rgba(2,128,144,0.08); color: var(--primary); }
-
-        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 1000; align-items: center; justify-content: center; padding: 1rem; }
-        .modal-overlay.show { display: flex; }
-        .modal { background: white; border-radius: 20px; width: 100%; max-width: 480px; max-height: 90vh; overflow-y: auto; padding: 1.75rem; }
-        .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
-        .modal-title { font-size: 1.15rem; font-weight: 800; }
-        .modal-close { width: 32px; height: 32px; background: var(--light); border: none; border-radius: 50%; cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; }
-        .form-group { margin-bottom: 1rem; }
-        .form-label { font-size: 0.85rem; font-weight: 600; display: block; margin-bottom: 0.4rem; }
-        .form-control { width: 100%; border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 0.6rem 0.9rem; font-family: 'Tajawal', sans-serif; font-size: 16px; outline: none; }
-        .form-control:focus { border-color: var(--primary); }
-        textarea.form-control { resize: vertical; min-height: 80px; }
-        .price-summary { background: var(--light); border-radius: 12px; padding: 1rem; margin-top: 0.5rem; }
-        .price-row { display: flex; justify-content: space-between; font-size: 0.88rem; padding: 0.3rem 0; }
-        .price-row.total { font-weight: 800; font-size: 1rem; padding-top: 0.6rem; border-top: 1px solid #e2e8f0; margin-top: 0.3rem; color: var(--primary); }
-        .modal-footer { display: flex; gap: 0.75rem; margin-top: 1.5rem; }
-        .btn-full { flex: 1; padding: 0.7rem; border-radius: 12px; font-family: 'Tajawal', sans-serif; font-size: 0.95rem; font-weight: 700; cursor: pointer; border: none; }
-        .btn-submit { background: var(--primary); color: white; }
-        .btn-submit:hover { background: #026f7e; }
-        .btn-cancel { background: var(--light); color: var(--dark); }
-
-        .empty-state { text-align: center; padding: 3rem 1rem; color: var(--gray); }
-        .empty-state .icon { font-size: 3rem; margin-bottom: 1rem; }
-
-        /* Theme Toggle */
-        .theme-toggle { width: 34px; height: 34px; border: 1.5px solid #e2e8f0; border-radius: 10px; background: transparent; cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; }
-
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--primary:#028090;--accent:#02C39A;--dark:#1E293B;--light:#F8FAFC;--white:#fff;--gray:#64748B;--success:#10B981;--warning:#F59E0B;--error:#EF4444}
+        body{font-family:'Tajawal',sans-serif;background:var(--light);color:var(--dark);min-height:100vh}
+        /* Nav */
+        nav{background:white;padding:1rem 5%;box-shadow:0 2px 10px rgba(0,0,0,.05);position:sticky;top:0;z-index:100}
+        .nav-content{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:1rem}
+        .logo{font-size:1.8rem;font-weight:800;color:var(--primary);text-decoration:none;flex-shrink:0}
+        .nav-links{display:flex;gap:1rem;align-items:center;flex-shrink:0}
+        .nav-links a{text-decoration:none;color:var(--gray);font-weight:500;font-size:.9rem}
+        .nav-links a:hover,.nav-links a.active{color:var(--primary)}
+        .avatar-btn{width:36px;height:36px;background:linear-gradient(135deg,var(--primary),var(--accent));border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-weight:700;text-decoration:none;font-size:.85rem}
+        .theme-toggle{width:34px;height:34px;border:1.5px solid #e2e8f0;border-radius:10px;background:transparent;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center}
+        /* Trust Banner */
+        .trust-banner{background:linear-gradient(135deg,#0f172a,#1e293b);color:white;padding:.75rem 5%}
+        .trust-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem}
+        .trust-left h2{font-size:1.1rem;font-weight:800;margin-bottom:.15rem}
+        .trust-left p{font-size:.8rem;color:#94a3b8}
+        .trust-badges{display:flex;gap:1.25rem;font-size:.8rem;color:#94a3b8}
+        .trust-badges span{display:flex;align-items:center;gap:.3rem}
+        /* Page Header */
+        .page-header{background:white;border-bottom:1px solid #e2e8f0;padding:1.25rem 5%}
+        .page-header-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+        .page-title{font-size:1.3rem;font-weight:800}
+        .page-title span{color:var(--primary)}
+        .page-subtitle{font-size:.85rem;color:var(--gray);margin-top:.2rem}
+        .header-search{display:flex;align-items:center;background:var(--light);border:1.5px solid #e2e8f0;border-radius:12px;overflow:hidden;max-width:360px;flex:1}
+        .header-search input{flex:1;border:none;background:transparent;padding:.5rem 1rem;font-family:'Tajawal',sans-serif;font-size:16px;outline:none}
+        .header-search button{background:var(--primary);border:none;color:white;padding:.5rem 1rem;cursor:pointer;font-size:.9rem;font-family:'Tajawal',sans-serif;white-space:nowrap}
+        /* Active Quotes Strip */
+        .quotes-strip{background:white;border-bottom:2px solid var(--warning);padding:.7rem 5%;display:none}
+        .quotes-strip-inner{max-width:1200px;margin:0 auto}
+        .quotes-list{display:flex;gap:.75rem;overflow-x:auto;padding-bottom:.2rem;margin-top:.4rem}
+        .quote-chip{display:flex;align-items:center;gap:.6rem;background:var(--light);border:1.5px solid #e2e8f0;border-radius:12px;padding:.45rem .85rem;cursor:pointer;min-width:180px;flex-shrink:0;transition:border-color .15s}
+        .quote-chip:hover{border-color:var(--warning)}
+        .qs-pending{background:#fef3c7;color:#92400e;font-size:.7rem;font-weight:700;padding:.1rem .45rem;border-radius:8px}
+        .qs-quoted{background:#d1fae5;color:#065f46;font-size:.7rem;font-weight:700;padding:.1rem .45rem;border-radius:8px}
+        .qs-accepted{background:#dbeafe;color:#1e40af;font-size:.7rem;font-weight:700;padding:.1rem .45rem;border-radius:8px}
+        /* Layout */
+        .page-layout{max-width:1200px;margin:0 auto;padding:1.5rem 5%;display:flex;gap:1.5rem}
+        /* Filters */
+        .filters-sidebar{width:230px;flex-shrink:0}
+        .filter-panel{background:white;border-radius:16px;padding:1.25rem;box-shadow:0 2px 10px rgba(0,0,0,.05);margin-bottom:1rem}
+        .filter-title{font-weight:700;font-size:.88rem;margin-bottom:.85rem;display:flex;justify-content:space-between;align-items:center}
+        .filter-clear{font-size:.75rem;color:var(--primary);cursor:pointer;font-weight:500}
+        .filter-option{display:flex;align-items:center;gap:.6rem;padding:.4rem 0;cursor:pointer}
+        .filter-option input[type=checkbox]{accent-color:var(--primary);width:15px;height:15px;flex-shrink:0}
+        .filter-option label{font-size:.85rem;cursor:pointer;flex:1}
+        .filter-option .count{font-size:.72rem;color:var(--gray)}
+        .range-row{display:flex;align-items:center;gap:.5rem;margin-top:.5rem}
+        .range-input{flex:1;border:1.5px solid #e2e8f0;border-radius:8px;padding:.4rem .6rem;font-family:'Tajawal',sans-serif;font-size:16px;outline:none;width:0}
+        .range-input:focus{border-color:var(--primary)}
+        .filter-select{width:100%;border:1.5px solid #e2e8f0;border-radius:8px;padding:.45rem .7rem;font-family:'Tajawal',sans-serif;font-size:16px;outline:none;background:white;margin-top:.5rem}
+        /* Results */
+        .results-area{flex:1;min-width:0}
+        .results-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem}
+        .results-count{font-size:.9rem;color:var(--gray)}
+        .results-count strong{color:var(--dark)}
+        .sort-select{border:1.5px solid #e2e8f0;border-radius:10px;padding:.45rem .85rem;font-family:'Tajawal',sans-serif;font-size:16px;outline:none;background:white;cursor:pointer}
+        /* Equipment Cards */
+        .equip-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:1.1rem}
+        .equip-card{background:white;border-radius:16px;box-shadow:0 2px 10px rgba(0,0,0,.06);transition:box-shadow .2s,transform .2s;overflow:hidden;display:flex;flex-direction:column}
+        .equip-card:hover{box-shadow:0 6px 24px rgba(0,0,0,.1);transform:translateY(-2px)}
+        .equip-card.hidden{display:none}
+        .equip-img{height:120px;display:flex;align-items:center;justify-content:center;font-size:3rem;background:var(--light);position:relative;flex-shrink:0}
+        .card-badge{position:absolute;top:.5rem;right:.5rem;font-size:.68rem;font-weight:700;padding:.2rem .55rem;border-radius:8px;white-space:nowrap}
+        .badge-deal{background:linear-gradient(135deg,#f59e0b,#fbbf24);color:white}
+        .badge-longterm{background:linear-gradient(135deg,#8b5cf6,#a78bfa);color:white}
+        .badge-new{background:linear-gradient(135deg,#0ea5e9,#38bdf8);color:white}
+        .equip-body{padding:.9rem 1rem;flex:1;display:flex;flex-direction:column;gap:.35rem}
+        .equip-category{font-size:.7rem;font-weight:700;color:var(--primary);text-transform:uppercase;letter-spacing:.5px}
+        .equip-name{font-weight:700;font-size:.95rem}
+        .equip-keyspec{font-size:.78rem;color:var(--gray);font-weight:600}
+        .equip-company{font-size:.75rem;color:var(--gray)}
+        .equip-meta{display:flex;flex-wrap:wrap;gap:.4rem;font-size:.75rem;color:var(--gray);align-items:center;margin-top:.1rem}
+        .avail-badge{font-size:.7rem;font-weight:700;padding:.15rem .55rem;border-radius:8px}
+        .avail-yes{background:rgba(16,185,129,.12);color:#065f46}
+        .avail-no{background:rgba(239,68,68,.1);color:#991b1b}
+        .avail-soon{background:rgba(245,158,11,.12);color:#92400e}
+        .equip-price-row{display:flex;align-items:baseline;gap:.3rem;margin-top:auto;padding-top:.4rem}
+        .equip-price-from{font-size:.72rem;color:var(--gray)}
+        .equip-price{font-size:1rem;font-weight:800;color:var(--primary)}
+        .equip-price small{font-size:.7rem;font-weight:400;color:var(--gray)}
+        .equip-actions{display:grid;grid-template-columns:1fr 1fr;gap:.35rem;padding:.75rem 1rem;border-top:1px solid #f1f5f9}
+        .btn-rent-now{background:var(--primary);color:white;border:none;border-radius:9px;padding:.45rem .6rem;font-family:'Tajawal',sans-serif;font-size:.8rem;font-weight:700;cursor:pointer;text-align:center}
+        .btn-rent-now:hover{background:#026f7e}
+        .btn-rent-now:disabled{background:#94a3b8;cursor:not-allowed}
+        .btn-quote{background:transparent;color:var(--primary);border:1.5px solid var(--primary);border-radius:9px;padding:.4rem .6rem;font-family:'Tajawal',sans-serif;font-size:.78rem;font-weight:600;cursor:pointer;text-align:center}
+        .btn-quote:hover{background:rgba(2,128,144,.08)}
+        .btn-details{background:var(--light);color:var(--dark);border:none;border-radius:9px;padding:.4rem .6rem;font-family:'Tajawal',sans-serif;font-size:.78rem;font-weight:600;cursor:pointer;text-align:center}
+        .btn-chat-eq{background:var(--light);color:var(--primary);border:none;border-radius:9px;padding:.4rem .6rem;font-family:'Tajawal',sans-serif;font-size:.78rem;font-weight:600;cursor:pointer;text-align:center;text-decoration:none;display:flex;align-items:center;justify-content:center}
+        /* Modals */
+        .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;align-items:center;justify-content:center;padding:1rem}
+        .modal-overlay.show{display:flex}
+        .modal{background:white;border-radius:20px;width:100%;max-width:500px;max-height:92vh;overflow-y:auto;padding:1.75rem}
+        .modal-lg{max-width:680px}
+        .modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem}
+        .modal-title{font-size:1.1rem;font-weight:800}
+        .modal-close{width:32px;height:32px;background:var(--light);border:none;border-radius:50%;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+        .form-group{margin-bottom:.9rem}
+        .form-label{font-size:.84rem;font-weight:600;display:block;margin-bottom:.4rem}
+        .form-control{width:100%;border:1.5px solid #e2e8f0;border-radius:10px;padding:.6rem .9rem;font-family:'Tajawal',sans-serif;font-size:16px;outline:none}
+        .form-control:focus{border-color:var(--primary)}
+        textarea.form-control{resize:vertical;min-height:75px}
+        .modal-footer{display:flex;gap:.75rem;margin-top:1.25rem}
+        .btn-full{flex:1;padding:.7rem;border-radius:12px;font-family:'Tajawal',sans-serif;font-size:.93rem;font-weight:700;cursor:pointer;border:none}
+        .btn-submit{background:var(--primary);color:white}
+        .btn-submit:hover{background:#026f7e}
+        .btn-cancel{background:var(--light);color:var(--dark)}
+        .btn-danger{background:#fef2f2;color:var(--error);border:1.5px solid #fecaca}
+        .btn-success{background:#d1fae5;color:#065f46;border:1.5px solid #a7f3d0}
+        /* Price Summary */
+        .price-summary{background:var(--light);border-radius:12px;padding:1rem;margin-top:.5rem}
+        .price-row{display:flex;justify-content:space-between;font-size:.87rem;padding:.3rem 0}
+        .price-row.discount{color:var(--success)}
+        .price-row.commission{color:var(--gray);font-size:.8rem}
+        .price-row.total-row{font-weight:800;font-size:1rem;padding-top:.6rem;border-top:1.5px solid #e2e8f0;margin-top:.3rem;color:var(--primary)}
+        /* Step Indicator */
+        .steps-bar{display:flex;align-items:center;justify-content:center;gap:.5rem;margin-bottom:1.25rem}
+        .step-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;border:2px solid #e2e8f0;color:var(--gray);flex-shrink:0;transition:all .2s}
+        .step-dot.active{background:var(--primary);border-color:var(--primary);color:white}
+        .step-dot.done{background:var(--success);border-color:var(--success);color:white}
+        .step-line{flex:1;height:2px;background:#e2e8f0;max-width:40px}
+        .step-line.done{background:var(--success)}
+        /* Add-ons */
+        .addon-row{display:flex;align-items:center;justify-content:space-between;padding:.65rem .9rem;border:1.5px solid #e2e8f0;border-radius:12px;margin-bottom:.5rem;cursor:pointer;transition:border-color .15s}
+        .addon-row.selected{border-color:var(--primary);background:rgba(2,128,144,.04)}
+        .addon-row:hover{border-color:var(--primary)}
+        .addon-label{font-size:.88rem;font-weight:600}
+        .addon-price{font-size:.82rem;color:var(--primary);font-weight:700}
+        .addon-check{width:18px;height:18px;accent-color:var(--primary)}
+        /* Details Modal Sections */
+        .spec-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem .75rem;margin-top:.5rem}
+        .spec-item{background:var(--light);border-radius:10px;padding:.55rem .75rem}
+        .spec-label{font-size:.72rem;color:var(--gray);margin-bottom:.15rem}
+        .spec-value{font-size:.88rem;font-weight:700}
+        .section-title{font-size:.9rem;font-weight:800;margin:.75rem 0 .5rem;padding-right:.5rem;border-right:3px solid var(--primary)}
+        .pricing-table{width:100%;border-collapse:collapse;margin-top:.4rem}
+        .pricing-table th,.pricing-table td{padding:.5rem .75rem;text-align:right;font-size:.85rem;border-bottom:1px solid #f1f5f9}
+        .pricing-table th{font-weight:700;background:var(--light);color:var(--gray);font-size:.78rem}
+        .pricing-table .price-col{color:var(--primary);font-weight:700}
+        .pricing-table .highlight{background:rgba(2,128,144,.05)}
+        .include-list,.exclude-list{list-style:none;display:flex;flex-direction:column;gap:.35rem;margin-top:.35rem}
+        .include-list li::before{content:"✅ ";font-size:.8rem}
+        .exclude-list li::before{content:"❌ ";font-size:.8rem}
+        .include-list li,.exclude-list li{font-size:.85rem}
+        /* Mini Calendar */
+        .mini-cal{margin-top:.5rem}
+        .cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem}
+        .cal-month{font-weight:700;font-size:.9rem}
+        .cal-nav{background:none;border:1.5px solid #e2e8f0;border-radius:8px;width:28px;height:28px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.9rem}
+        .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+        .cal-day-name{text-align:center;font-size:.68rem;color:var(--gray);padding:.3rem 0;font-weight:600}
+        .cal-day{text-align:center;font-size:.78rem;padding:.35rem .2rem;border-radius:6px;cursor:pointer;transition:all .15s}
+        .cal-day.empty{background:none;cursor:default}
+        .cal-day.booked{background:#fee2e2;color:#991b1b;cursor:not-allowed;font-weight:600}
+        .cal-day.available{background:#f0fdf4;color:#065f46}
+        .cal-day.available:hover{background:var(--primary);color:white}
+        .cal-day.selected{background:var(--primary);color:white;font-weight:700}
+        .cal-day.in-range{background:rgba(2,128,144,.15);color:var(--primary)}
+        .cal-day.today{font-weight:800;border:2px solid var(--primary)}
+        .cal-legend{display:flex;gap:1rem;margin-top:.5rem;font-size:.72rem;color:var(--gray)}
+        .cal-legend span{display:flex;align-items:center;gap:.25rem}
+        .cal-legend .dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+        /* Alert */
+        .alert-warn{background:#fef3c7;color:#92400e;border-radius:10px;padding:.6rem .9rem;font-size:.82rem;margin-bottom:.75rem}
         /* Dark Mode */
-        html.dark body { background: #0f172a; color: #e2e8f0; }
-        html.dark nav { background: #1e293b; box-shadow: 0 2px 10px rgba(0,0,0,0.4); }
-        html.dark .nav-links a { color: #94a3b8; }
-        html.dark .nav-links a.active { color: var(--primary); }
-        html.dark .page-header { background: #1e293b; border-color: #334155; }
-        html.dark .header-search { background: #0f172a; border-color: #334155; }
-        html.dark .header-search input { color: #e2e8f0; }
-        html.dark .filter-panel { background: #1e293b; }
-        html.dark .filter-option label { color: #cbd5e1; }
-        html.dark .filter-select { background: #1e293b; color: #e2e8f0; border-color: #334155; }
-        html.dark .range-input { background: #0f172a; color: #e2e8f0; border-color: #334155; }
-        html.dark .sort-select { background: #1e293b; color: #e2e8f0; border-color: #334155; }
-        html.dark .equip-card { background: #1e293b; }
-        html.dark .equip-img { background: #0f172a; }
-        html.dark .equip-footer { border-color: #334155; }
-        html.dark .modal { background: #1e293b; }
-        html.dark .form-control { background: #0f172a; color: #e2e8f0; border-color: #334155; }
-        html.dark .form-control:focus { border-color: var(--primary); }
-        html.dark .price-summary { background: #0f172a; }
-        html.dark .price-row { border-color: #334155; }
-        html.dark .btn-cancel { background: #334155; color: #e2e8f0; }
-        html.dark .theme-toggle { border-color: #334155; color: #e2e8f0; }
-
-        @media (max-width: 768px) {
-            .filters-sidebar { display: none; }
-            .page-layout { flex-direction: column; }
-            .equip-grid { grid-template-columns: 1fr 1fr; }
-        }
-        @media (max-width: 500px) { .equip-grid { grid-template-columns: 1fr; } }
+        html.dark body{background:#0f172a;color:#e2e8f0}
+        html.dark nav,html.dark .filter-panel,html.dark .modal{background:#1e293b}
+        html.dark .page-header{background:#1e293b;border-color:#334155}
+        html.dark .header-search{background:#0f172a;border-color:#334155}
+        html.dark .header-search input{color:#e2e8f0}
+        html.dark .sort-select,html.dark .filter-select{background:#1e293b;color:#e2e8f0;border-color:#334155}
+        html.dark .range-input{background:#0f172a;color:#e2e8f0;border-color:#334155}
+        html.dark .equip-card,html.dark .quote-chip,html.dark .rec-card{background:#1e293b}
+        html.dark .equip-img,html.dark .spec-item,html.dark .pricing-table th,html.dark .price-summary{background:#0f172a}
+        html.dark .equip-actions,html.dark .pricing-table td{border-color:#334155}
+        html.dark .btn-details,html.dark .btn-chat-eq{background:#0f172a;color:#e2e8f0}
+        html.dark .btn-cancel{background:#334155;color:#e2e8f0}
+        html.dark .form-control{background:#0f172a;color:#e2e8f0;border-color:#334155}
+        html.dark .addon-row{border-color:#334155}
+        html.dark .addon-row.selected{background:rgba(2,128,144,.1)}
+        html.dark .cal-day.available{background:#064e3b;color:#a7f3d0}
+        html.dark .cal-day.booked{background:#450a0a;color:#fca5a5}
+        html.dark .quotes-strip{background:#1e293b;border-color:var(--warning)}
+        html.dark .quote-chip,html.dark .quotes-strip-inner .filter-title{background:#0f172a}
+        html.dark .theme-toggle{border-color:#334155;color:#e2e8f0}
+        html.dark .filter-option label{color:#cbd5e1}
+        /* Description + use-cases */
+        .equip-desc{font-size:.82rem;color:var(--gray);line-height:1.6;margin-bottom:.5rem}
+        .use-case-chips{display:flex;flex-wrap:wrap;gap:.35rem;margin:.35rem 0 .5rem}
+        .use-chip{background:rgba(2,128,144,.08);color:var(--primary);border-radius:20px;padding:.2rem .65rem;font-size:.75rem;font-weight:600}
+        .condition-badge{display:inline-block;font-size:.72rem;font-weight:700;padding:.15rem .55rem;border-radius:8px}
+        .cond-excellent{background:#d1fae5;color:#065f46}
+        .cond-good{background:#dbeafe;color:#1e40af}
+        /* Provider card in details */
+        .provider-card{background:linear-gradient(135deg,#f0fdf4,#ecfdf5);border:1.5px solid #a7f3d0;border-radius:14px;padding:.9rem 1rem;margin-top:.5rem;display:flex;align-items:center;gap:.85rem}
+        .provider-avatar{width:48px;height:48px;background:linear-gradient(135deg,var(--primary),var(--accent));border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:1.15rem;flex-shrink:0}
+        .provider-meta{flex:1}
+        .provider-name{font-weight:700;font-size:.92rem;margin-bottom:.15rem}
+        .provider-stats{display:flex;gap:.75rem;font-size:.75rem;color:var(--gray);flex-wrap:wrap}
+        .provider-verified{font-size:.7rem;font-weight:700;background:#d1fae5;color:#065f46;padding:.1rem .45rem;border-radius:6px}
+        /* Interactive booking calendar */
+        .rent-cal-wrap{border:1.5px solid #e2e8f0;border-radius:14px;padding:.85rem;margin-top:.5rem}
+        .rent-cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem}
+        .rent-cal-month-label{font-weight:700;font-size:.92rem}
+        .cal-nav-btn{background:none;border:1.5px solid #e2e8f0;border-radius:8px;width:30px;height:30px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.9rem;transition:border-color .15s}
+        .cal-nav-btn:hover{border-color:var(--primary)}
+        .rent-cal-status{border-radius:10px;padding:.55rem .9rem;font-size:.84rem;font-weight:600;text-align:center;margin-bottom:.6rem;transition:all .2s}
+        .cal-day.start-day{border-radius:8px 0 0 8px!important}
+        .cal-day.end-day{border-radius:0 8px 8px 0!important}
+        .cal-day.in-range{background:rgba(2,128,144,.15);color:var(--primary);border-radius:0}
+        .cal-day.past{background:#f8fafc;color:#cbd5e1;cursor:not-allowed}
+        /* Location city+address */
+        .location-row{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-top:.75rem}
+        html.dark .rent-cal-wrap{border-color:#334155}
+        html.dark .cal-nav-btn{border-color:#334155;color:#e2e8f0}
+        html.dark .provider-card{background:#0f172a;border-color:#334155}
+        html.dark .use-chip{background:rgba(2,128,144,.15)}
+        @media(max-width:768px){.filters-sidebar{display:none}.page-layout{flex-direction:column}.equip-grid{grid-template-columns:1fr 1fr}.location-row{grid-template-columns:1fr}}
+        @media(max-width:500px){.equip-grid{grid-template-columns:1fr}}
     </style>
-<link rel="stylesheet" href="css/khedmah-ux.css">
+    <link rel="stylesheet" href="css/khedmah-ux.css">
 </head>
 <script>
-  (function() {
-    if (localStorage.getItem('khedmah_theme') === 'dark') {
-      document.documentElement.classList.add('dark');
-    }
-    if (!localStorage.getItem('khedmah_demo')) {
-      window.location.href = 'login.html';
-    }
-  })();
+(function(){
+    if(localStorage.getItem('khedmah_theme')==='dark')document.documentElement.classList.add('dark');
+    if(!localStorage.getItem('khedmah_demo'))window.location.href='login.html';
+})();
 </script>
-
 <body>
 <script src="js/config.js"></script>
-    <script src="js/api.js"></script>
-    <nav>
-        <div class="nav-content">
-            <a href="home.html" class="logo">خدمة</a>
-            <div class="nav-links">
-                <a href="search-services.html">خدمات منزلية</a>
-                <a href="tenders.html">مناقصات</a>
-                <a href="equipment.html">معدات</a>
-                <a href="consultations.html">استشارات</a>
-                <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙</button>
-                <button onclick="doLogout()" style="background:none;border:1.5px solid #e2e8f0;border-radius:10px;padding:0.35rem 0.75rem;font-family:'Tajawal',sans-serif;font-size:0.82rem;color:var(--gray);cursor:pointer;">خروج</button>
-                <a href="customer-dashboard.html" class="avatar-btn">م</a>
-            </div>
-        </div>
-    </nav>
+<script src="js/api.js"></script>
+<script src="js/i18n.js"></script>
 
-    <div style="background:#f8fafc;border-bottom:1px solid #e2e8f0;padding:1rem 5%">
-      <div style="max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem">
+<nav>
+    <div class="nav-content">
+        <a href="home.html" class="logo">خدمة</a>
+        <div class="nav-links">
+            <a href="search-services.html" data-i18n="nav_home_services">خدمات منزلية</a>
+            <a href="tenders.html" data-i18n="nav_tenders">مناقصات</a>
+            <a href="equipment.html" class="active" data-i18n="nav_equipment">معدات</a>
+            <a href="consultations.html" data-i18n="nav_consultations">استشارات</a>
+            <div id="langSwitcherEq" style="display:inline-flex;"></div>
+            <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙</button>
+            <button onclick="doLogout()" data-i18n="nav_logout" style="background:none;border:1.5px solid #e2e8f0;border-radius:10px;padding:.35rem .75rem;font-family:'Tajawal',sans-serif;font-size:.82rem;color:var(--gray);cursor:pointer;">خروج</button>
+            <a href="customer-dashboard.html" class="avatar-btn" id="dashLink">م</a>
+        </div>
+    </div>
+</nav>
+
+<div class="trust-banner">
+    <div class="trust-inner">
+        <div class="trust-left">
+            <h2 data-i18n="equipment_hero_title">🚜 سوق تأجير المعدات الثقيلة</h2>
+            <p data-i18n="equipment_hero_subtitle">إيجار فوري أو عروض أسعار للمشاريع الكبيرة — مع ضمان التوفر والتسليم</p>
+        </div>
+        <div class="trust-badges">
+            <span data-i18n="equipment_trust_verified">✅ مزودون معتمدون</span>
+            <span data-i18n="equipment_trust_secure">🔒 دفع آمن</span>
+            <span data-i18n="equipment_trust_contracts">📋 عقود رسمية</span>
+            <span data-i18n="equipment_trust_insurance">🛡️ تأمين المعدات</span>
+        </div>
+    </div>
+</div>
+
+<div class="page-header">
+    <div class="page-header-inner">
         <div>
-          <div style="font-family:'Tajawal',sans-serif;font-weight:800;font-size:1.1rem;color:#1e293b">🚜 تأجير المعدات الثقيلة</div>
-          <div style="font-family:'Tajawal',sans-serif;font-size:.85rem;color:#64748b">احجز معدات البناء والمشاريع بسهولة — مع ضمان التوفر والتسليم</div>
+            <div class="page-title">تأجير <span>المعدات</span></div>
+            <div class="page-subtitle" data-i18n="equipment_page_subtitle">احجز فوراً أو أرسل طلب عرض سعر للمشاريع الكبيرة</div>
         </div>
-        <div style="font-family:'Tajawal',sans-serif;font-size:.82rem;color:#64748b;display:flex;gap:1.5rem">
-          <span>✓ مزودون معتمدون</span>
-          <span>✓ دفع آمن</span>
-          <span>✓ تأمين المعدات</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="page-header">
-        <div class="page-header-inner">
-            <div>
-                <div class="page-title">تأجير <span>المعدات</span></div>
-                <div class="page-subtitle">أدوات ومعدات احترافية للإيجار اليومي</div>
-            </div>
+        <div style="display:flex;gap:.75rem;align-items:center;">
             <div class="header-search">
-                <input type="text" id="searchInput" placeholder="🔍 ابحث عن معدة..." oninput="applyFilters()">
-                <button onclick="applyFilters()">بحث</button>
+                <input type="text" id="searchInput" placeholder="🔍 ابحث عن معدة..." data-i18n-placeholder="equipment_search_placeholder" oninput="applyFilters()">
+                <button onclick="applyFilters()" data-i18n="equipment_search_btn">بحث</button>
+            </div>
+            <button onclick="openListModal()" data-i18n="equipment_add_btn" style="background:var(--primary);color:white;border:none;border-radius:12px;padding:.55rem 1rem;font-family:'Tajawal',sans-serif;font-size:.85rem;font-weight:700;cursor:pointer;white-space:nowrap;" id="btnListEquip" style="display:none;">+ إدراج معدة</button>
+        </div>
+    </div>
+</div>
+
+<!-- Active Quotes Strip -->
+<div class="quotes-strip" id="quotesStrip">
+    <div class="quotes-strip-inner">
+        <div style="font-size:.82rem;font-weight:700;color:var(--warning);">📋 عروض الأسعار الواردة</div>
+        <div class="quotes-list" id="quotesList"></div>
+    </div>
+</div>
+
+<div class="page-layout">
+    <aside class="filters-sidebar">
+        <div class="filter-panel">
+            <div class="filter-title" data-i18n="equipment_filter_category">الفئة <span class="filter-clear" onclick="clearFilters()" data-i18n="equipment_filter_clear">مسح الكل</span></div>
+            <div class="filter-option"><input type="checkbox" id="c1" data-filter="cat" value="حفر" onchange="applyFilters()"><label for="c1">⛏️ حفر وتجريف</label><span class="count">12</span></div>
+            <div class="filter-option"><input type="checkbox" id="c2" data-filter="cat" value="رفع" onchange="applyFilters()"><label for="c2">🏗️ رفع ونقل</label><span class="count">8</span></div>
+            <div class="filter-option"><input type="checkbox" id="c3" data-filter="cat" value="كهرباء" onchange="applyFilters()"><label for="c3">⚡ كهرباء وطاقة</label><span class="count">15</span></div>
+            <div class="filter-option"><input type="checkbox" id="c4" data-filter="cat" value="تشطيب" onchange="applyFilters()"><label for="c4">🎨 تشطيب وبناء</label><span class="count">20</span></div>
+            <div class="filter-option"><input type="checkbox" id="c5" data-filter="cat" value="زراعة" onchange="applyFilters()"><label for="c5">🌿 زراعة ومناظر</label><span class="count">7</span></div>
+        </div>
+        <div class="filter-panel">
+            <div class="filter-title">التوفر</div>
+            <div class="filter-option"><input type="checkbox" id="av1" data-filter="avail" value="yes" onchange="applyFilters()"><label for="av1">✅ متاح الآن</label></div>
+            <div class="filter-option"><input type="checkbox" id="av2" data-filter="avail" value="no" onchange="applyFilters()"><label for="av2">⏳ محجوز</label></div>
+        </div>
+        <div class="filter-panel">
+            <div class="filter-title">السعر اليومي (ر.س)</div>
+            <div class="range-row">
+                <input type="number" id="priceMin" class="range-input" placeholder="من" oninput="applyFilters()">
+                <span style="color:var(--gray)">—</span>
+                <input type="number" id="priceMax" class="range-input" placeholder="إلى" oninput="applyFilters()">
+            </div>
+        </div>
+        <div class="filter-panel">
+            <div class="filter-title">المدينة</div>
+            <select class="filter-select" id="cityFilter" onchange="applyFilters()">
+                <option value="">جميع المدن</option>
+                <option value="الرياض">الرياض</option>
+                <option value="جدة">جدة</option>
+                <option value="الدمام">الدمام</option>
+                <option value="مكة المكرمة">مكة المكرمة</option>
+            </select>
+        </div>
+        <div class="filter-panel">
+            <div class="filter-title">الخيارات</div>
+            <div class="filter-option"><input type="checkbox" id="fo1" data-filter="operator" value="yes" onchange="applyFilters()"><label for="fo1">👷 مع مشغل</label></div>
+            <div class="filter-option"><input type="checkbox" id="fo2" data-filter="transport" value="yes" onchange="applyFilters()"><label for="fo2">🚚 مع نقل وتوصيل</label></div>
+        </div>
+    </aside>
+
+    <div class="results-area">
+        <div class="results-header">
+            <div class="results-count">عرض <strong id="visibleCount">8</strong> من <strong>8</strong> معدة</div>
+            <select class="sort-select" id="sortSelect" onchange="sortEquip()">
+                <option value="newest" data-i18n="equipment_sort_newest">الأحدث أولاً</option>
+                <option value="price_low" data-i18n="equipment_sort_price_low">السعر: الأقل</option>
+                <option value="price_high" data-i18n="equipment_sort_price_high">السعر: الأعلى</option>
+                <option value="rating" data-i18n="equipment_sort_rating">الأعلى تقييمًا</option>
+            </select>
+        </div>
+        <div class="equip-grid" id="equipGrid"></div>
+        <div class="empty-state-ux" id="emptyState" style="display:none;">
+            <div style="font-size:3rem;margin-bottom:1rem;">🚜</div>
+            <h3>لا توجد معدات مطابقة</h3>
+            <p>جرّب تغيير الفئة أو المدينة أو نطاق السعر</p>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════ DETAILS MODAL ══════════ -->
+<div class="modal-overlay" id="detailsModal">
+<div class="modal modal-lg">
+    <div class="modal-header">
+        <div class="modal-title" id="dtlName">تفاصيل المعدة</div>
+        <button class="modal-close" onclick="closeModal('detailsModal')">✕</button>
+    </div>
+    <div id="dtlContent"></div>
+    <div class="modal-footer" style="margin-top:1.25rem;">
+        <button class="btn-full btn-cancel" onclick="closeModal('detailsModal')">إغلاق</button>
+        <button class="btn-full btn-submit" id="dtlBtnRent" onclick="">استئجار الآن</button>
+        <button class="btn-full btn-quote" style="background:transparent;color:var(--primary);border:1.5px solid var(--primary);" id="dtlBtnQuote" onclick="">طلب عرض سعر</button>
+    </div>
+</div>
+</div>
+
+<!-- ══════════ RENT NOW MODAL (4-Step) ══════════ -->
+<div class="modal-overlay" id="rentModal">
+<div class="modal">
+    <div class="modal-header">
+        <div class="modal-title" id="rentModalTitle">استئجار فوري</div>
+        <button class="modal-close" onclick="closeModal('rentModal')">✕</button>
+    </div>
+    <!-- Steps bar -->
+    <div class="steps-bar" id="stepsBar">
+        <div class="step-dot active" id="sd1">١</div>
+        <div class="step-line" id="sl1"></div>
+        <div class="step-dot" id="sd2">٢</div>
+        <div class="step-line" id="sl2"></div>
+        <div class="step-dot" id="sd3">٣</div>
+        <div class="step-line" id="sl3"></div>
+        <div class="step-dot" id="sd4">٤</div>
+    </div>
+    <!-- Step 1: Calendar date picker + location -->
+    <div id="rentStep1">
+        <!-- Status bar -->
+        <div class="rent-cal-status" id="rentCalStatus" style="background:#f1f5f9;color:var(--gray);">📅 انقر على يوم البداية في التقويم</div>
+        <!-- Interactive calendar -->
+        <div class="rent-cal-wrap">
+            <div class="rent-cal-header">
+                <button class="cal-nav-btn" onclick="calNav(-1)">▶</button>
+                <span class="rent-cal-month-label" id="rentCalMonth"></span>
+                <button class="cal-nav-btn" onclick="calNav(1)">◀</button>
+            </div>
+            <div class="cal-grid" id="rentCalGrid"></div>
+            <div class="cal-legend" style="margin-top:.5rem;">
+                <span><span class="dot" style="background:#d1fae5;border:1px solid #a7f3d0;"></span>متاح</span>
+                <span><span class="dot" style="background:#fee2e2;border:1px solid #fca5a5;"></span>محجوز</span>
+                <span><span class="dot" style="background:var(--primary);"></span>مختار</span>
+                <span><span class="dot" style="background:rgba(2,128,144,.2);"></span>النطاق</span>
+            </div>
+        </div>
+        <!-- Hidden date values used by JS -->
+        <input type="hidden" id="rentStart">
+        <input type="hidden" id="rentEnd">
+        <!-- Location: city + optional address -->
+        <div class="location-row" style="margin-top:.85rem;">
+            <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label">المدينة <span style="color:var(--error)">*</span></label>
+                <select class="form-control" id="rentCity">
+                    <option value="">اختر المدينة</option>
+                    <option>الرياض</option>
+                    <option>جدة</option>
+                    <option>الدمام</option>
+                    <option>الخبر</option>
+                    <option>مكة المكرمة</option>
+                    <option>المدينة المنورة</option>
+                </select>
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label">العنوان التفصيلي (اختياري)</label>
+                <input type="text" class="form-control" id="rentAddress" placeholder="الحي، الشارع، رقم المبنى...">
+            </div>
+        </div>
+        <div id="rentDaysPreview" style="display:none;background:var(--light);border-radius:10px;padding:.6rem .9rem;font-size:.88rem;text-align:center;color:var(--primary);font-weight:700;margin-top:.5rem;"></div>
+    </div>
+    <!-- Step 2: Add-ons -->
+    <div id="rentStep2" style="display:none;">
+        <p style="font-size:.85rem;color:var(--gray);margin-bottom:.85rem;">اختر الخدمات الإضافية (اختياري)</p>
+        <div class="addon-row" id="addonOperator" onclick="toggleAddon('operator')">
+            <div><div class="addon-label">👷 مع مشغل متخصص</div><div style="font-size:.75rem;color:var(--gray)">مشغل معتمد طوال فترة الإيجار</div></div>
+            <div style="display:flex;align-items:center;gap:.5rem;"><span class="addon-price" id="addonOperatorPrice">+0 ر.س/يوم</span><input type="checkbox" class="addon-check" id="chkOperator"></div>
+        </div>
+        <div class="addon-row" id="addonTransport" onclick="toggleAddon('transport')">
+            <div><div class="addon-label">🚚 مع نقل وتوصيل</div><div style="font-size:.75rem;color:var(--gray)">توصيل المعدة إلى موقع المشروع</div></div>
+            <div style="display:flex;align-items:center;gap:.5rem;"><span class="addon-price" id="addonTransportPrice">+0 ر.س/يوم</span><input type="checkbox" class="addon-check" id="chkTransport"></div>
+        </div>
+        <div class="addon-row" id="addonFuel" onclick="toggleAddon('fuel')">
+            <div><div class="addon-label">⛽ مع وقود</div><div style="font-size:.75rem;color:var(--gray)">توفير الوقود طوال مدة الإيجار</div></div>
+            <div style="display:flex;align-items:center;gap:.5rem;"><span class="addon-price" id="addonFuelPrice">+0 ر.س/يوم</span><input type="checkbox" class="addon-check" id="chkFuel"></div>
+        </div>
+    </div>
+    <!-- Step 3: Breakdown -->
+    <div id="rentStep3" style="display:none;">
+        <div class="price-summary">
+            <div class="price-row"><span>المعدة</span><span id="brkName" style="font-weight:700;"></span></div>
+            <div class="price-row"><span>عدد الأيام</span><span id="brkDays"></span></div>
+            <div class="price-row"><span>السعر الأساسي/يوم</span><span id="brkDayRate"></span></div>
+            <div class="price-row discount" id="brkDiscountRow" style="display:none;"><span id="brkDiscountLabel">خصم</span><span id="brkDiscountAmt"></span></div>
+            <div class="price-row"><span>تكلفة الإيجار</span><span id="brkBase"></span></div>
+            <div class="price-row" id="brkAddonsRow" style="display:none;"><span>الإضافات</span><span id="brkAddons"></span></div>
+            <div class="price-row"><span>المجموع قبل الضريبة</span><span id="brkPreTax"></span></div>
+            <div class="price-row commission"><span>عمولة المنصة (5%)</span><span id="brkCommission"></span></div>
+            <div class="price-row"><span>ضريبة القيمة المضافة (15%)</span><span id="brkVAT"></span></div>
+            <div class="price-row total-row"><span>الإجمالي</span><span id="brkTotal"></span></div>
+        </div>
+        <div style="font-size:.75rem;color:var(--gray);margin-top:.6rem;text-align:center;">💡 الدفع محمي — يُحرر للمزود بعد استلام المعدة وتأكيدك</div>
+    </div>
+    <!-- Step 4: Confirm -->
+    <div id="rentStep4" style="display:none;text-align:center;padding:.5rem 0;">
+        <div style="font-size:3rem;margin-bottom:.75rem;">✅</div>
+        <div style="font-size:1.1rem;font-weight:800;margin-bottom:.4rem;">تأكيد الحجز</div>
+        <div style="font-size:.88rem;color:var(--gray);margin-bottom:1rem;" id="confirmSummaryText"></div>
+        <div style="background:var(--light);border-radius:12px;padding:.85rem;font-size:.85rem;text-align:right;" id="confirmFinalBox"></div>
+    </div>
+    <!-- Footer buttons -->
+    <div class="modal-footer" id="rentModalFooter">
+        <button class="btn-full btn-cancel" id="rentBtnBack" onclick="rentStepBack()" style="display:none;">رجوع</button>
+        <button class="btn-full btn-cancel" id="rentBtnCancel" onclick="closeModal('rentModal')">إلغاء</button>
+        <button class="btn-full btn-submit" id="rentBtnNext" onclick="rentStepNext()">التالي</button>
+    </div>
+</div>
+</div>
+
+<!-- ══════════ QUOTE REQUEST MODAL ══════════ -->
+<div class="modal-overlay" id="quoteModal">
+<div class="modal">
+    <div class="modal-header">
+        <div class="modal-title">طلب عرض سعر</div>
+        <button class="modal-close" onclick="closeModal('quoteModal')">✕</button>
+    </div>
+    <div class="alert-warn">📌 هذا الخيار مثالي للمشاريع الكبيرة والإيجار طويل الأمد. سيتواصل معك المزود خلال 24 ساعة.</div>
+    <div class="form-group">
+        <label class="form-label">المعدة</label>
+        <div style="background:var(--light);border-radius:10px;padding:.6rem .9rem;font-size:.9rem;font-weight:700;" id="qEquipName"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;">
+        <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label">تاريخ البداية <span style="color:var(--error)">*</span></label>
+            <input type="date" class="form-control" id="qStart">
+        </div>
+        <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label">تاريخ الانتهاء <span style="color:var(--error)">*</span></label>
+            <input type="date" class="form-control" id="qEnd">
+        </div>
+    </div>
+    <div class="location-row" style="margin-top:.75rem;">
+        <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label">مدينة المشروع <span style="color:var(--error)">*</span></label>
+            <select class="form-control" id="qCity">
+                <option value="">اختر المدينة</option>
+                <option>الرياض</option>
+                <option>جدة</option>
+                <option>الدمام</option>
+                <option>الخبر</option>
+                <option>مكة المكرمة</option>
+                <option>المدينة المنورة</option>
+            </select>
+        </div>
+        <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label">العنوان التفصيلي</label>
+            <input type="text" class="form-control" id="qAddress" placeholder="الحي، الشارع، المشروع...">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="form-label">الغرض من الاستخدام <span style="color:var(--error)">*</span></label>
+        <textarea class="form-control" id="qUsage" placeholder="مثال: حفر أساسات مبنى تجاري 4 طوابق، تجريف منطقة 2000م²..."></textarea>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;">
+        <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label">ساعات العمل/يوم</label>
+            <select class="form-control" id="qHours">
+                <option value="8">8 ساعات</option>
+                <option value="10">10 ساعات</option>
+                <option value="12">12 ساعة</option>
+                <option value="24">24 ساعة (متواصل)</option>
+            </select>
+        </div>
+        <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label">الخيارات المطلوبة</label>
+            <div style="display:flex;flex-direction:column;gap:.3rem;margin-top:.2rem;">
+                <label style="display:flex;align-items:center;gap:.4rem;font-size:.85rem;cursor:pointer;"><input type="checkbox" id="qOperator" style="accent-color:var(--primary)"> مع مشغل</label>
+                <label style="display:flex;align-items:center;gap:.4rem;font-size:.85rem;cursor:pointer;"><input type="checkbox" id="qTransport" style="accent-color:var(--primary)"> مع نقل</label>
             </div>
         </div>
     </div>
-
-    <div class="page-layout">
-        <aside class="filters-sidebar">
-            <div class="filter-panel">
-                <div class="filter-title">الفئة <span class="filter-clear" onclick="clearFilters()">مسح الكل</span></div>
-                <div class="filter-option"><input type="checkbox" id="c1" data-filter="cat" value="حفر" onchange="applyFilters()"><label for="c1">⛏️ حفر وتجريف</label><span class="count">12</span></div>
-                <div class="filter-option"><input type="checkbox" id="c2" data-filter="cat" value="رفع" onchange="applyFilters()"><label for="c2">🏗️ رفع ونقل</label><span class="count">8</span></div>
-                <div class="filter-option"><input type="checkbox" id="c3" data-filter="cat" value="كهرباء" onchange="applyFilters()"><label for="c3">⚡ كهرباء وطاقة</label><span class="count">15</span></div>
-                <div class="filter-option"><input type="checkbox" id="c4" data-filter="cat" value="تشطيب" onchange="applyFilters()"><label for="c4">🎨 تشطيب وبناء</label><span class="count">20</span></div>
-                <div class="filter-option"><input type="checkbox" id="c5" data-filter="cat" value="زراعة" onchange="applyFilters()"><label for="c5">🌿 زراعة ومناظر</label><span class="count">7</span></div>
-            </div>
-            <div class="filter-panel">
-                <div class="filter-title">التوفر</div>
-                <div class="filter-option"><input type="checkbox" id="av1" data-filter="avail" value="yes" onchange="applyFilters()"><label for="av1">✅ متاح الآن</label></div>
-                <div class="filter-option"><input type="checkbox" id="av2" data-filter="avail" value="no" onchange="applyFilters()"><label for="av2">⏳ محجوز</label></div>
-            </div>
-            <div class="filter-panel">
-                <div class="filter-title">الإيجار اليومي (ر.س)</div>
-                <div class="range-row">
-                    <input type="number" id="priceMin" class="range-input" placeholder="من" oninput="applyFilters()">
-                    <span style="color:var(--gray)">—</span>
-                    <input type="number" id="priceMax" class="range-input" placeholder="إلى" oninput="applyFilters()">
-                </div>
-            </div>
-            <div class="filter-panel">
-                <div class="filter-title">المدينة</div>
-                <select class="filter-select" id="cityFilter" onchange="applyFilters()">
-                    <option value="">جميع المدن</option>
-                    <option value="الرياض">الرياض</option>
-                    <option value="جدة">جدة</option>
-                    <option value="الدمام">الدمام</option>
-                    <option value="مكة المكرمة">مكة المكرمة</option>
-                </select>
-            </div>
-        </aside>
-
-        <div class="results-area">
-            <div class="results-header">
-                <div class="results-count">عرض <strong id="visibleCount">8</strong> من <strong>8</strong> معدة</div>
-                <select class="sort-select" id="sortSelect" onchange="sortEquip()">
-                    <option value="newest">الأحدث أولاً</option>
-                    <option value="price_low">السعر: الأقل</option>
-                    <option value="price_high">السعر: الأعلى</option>
-                </select>
-            </div>
-
-            <div class="equip-grid" id="equipGrid">
-                <div class="equip-card" data-cat="حفر" data-avail="yes" data-price="850" data-city="الرياض" data-date="2024-03-10">
-                    <div class="equip-img">🚜</div>
-                    <div class="equip-body">
-                        <div class="equip-name">حفار هيدروليكي 20 طن</div>
-                        <div class="equip-owner">📦 مؤسسة النخبة للمعدات</div>
-                        <div class="equip-meta">
-                            <span>📍 الرياض</span>
-                            <span class="avail-badge avail-yes">متاح</span>
-                        </div>
-                        <div class="equip-footer">
-                            <div class="equip-price">850 ر.س <small>/يوم</small></div>
-                            <div class="equip-footer-actions">
-                                <button class="btn-rent" onclick="openRentModal('حفار هيدروليكي 20 طن', 850, 1)">استئجار</button>
-                                <a href="chat.html?type=equip&id=1" class="btn-chat-equip">💬</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="equip-card" data-cat="رفع" data-avail="yes" data-price="1200" data-city="جدة" data-date="2024-03-09">
-                    <div class="equip-img">🏗️</div>
-                    <div class="equip-body">
-                        <div class="equip-name">رافعة برجية 50 متر</div>
-                        <div class="equip-owner">📦 شركة الجبل للمعدات الثقيلة</div>
-                        <div class="equip-meta">
-                            <span>📍 جدة</span>
-                            <span class="avail-badge avail-yes">متاح</span>
-                        </div>
-                        <div class="equip-footer">
-                            <div class="equip-price">1,200 ر.س <small>/يوم</small></div>
-                            <div class="equip-footer-actions">
-                                <button class="btn-rent" onclick="openRentModal('رافعة برجية 50 متر', 1200, 2)">استئجار</button>
-                                <a href="chat.html?type=equip&id=2" class="btn-chat-equip">💬</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="equip-card" data-cat="كهرباء" data-avail="yes" data-price="350" data-city="الرياض" data-date="2024-03-08">
-                    <div class="equip-img">⚡</div>
-                    <div class="equip-body">
-                        <div class="equip-name">مولد كهربائي 100 كيلوفولت</div>
-                        <div class="equip-owner">📦 مؤسسة الطاقة للمعدات</div>
-                        <div class="equip-meta">
-                            <span>📍 الرياض</span>
-                            <span class="avail-badge avail-yes">متاح</span>
-                        </div>
-                        <div class="equip-footer">
-                            <div class="equip-price">350 ر.س <small>/يوم</small></div>
-                            <div class="equip-footer-actions">
-                                <button class="btn-rent" onclick="openRentModal('مولد كهربائي 100 كيلوفولت', 350, 3)">استئجار</button>
-                                <a href="chat.html?type=equip&id=3" class="btn-chat-equip">💬</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="equip-card" data-cat="تشطيب" data-avail="no" data-price="180" data-city="الدمام" data-date="2024-03-07">
-                    <div class="equip-img">🔨</div>
-                    <div class="equip-body">
-                        <div class="equip-name">آلة خلط الخرسانة الكهربائية</div>
-                        <div class="equip-owner">📦 أدوات البناء الحديث</div>
-                        <div class="equip-meta">
-                            <span>📍 الدمام</span>
-                            <span class="avail-badge avail-no">محجوز</span>
-                        </div>
-                        <div class="equip-footer">
-                            <div class="equip-price">180 ر.س <small>/يوم</small></div>
-                            <div class="equip-footer-actions">
-                                <button class="btn-rent" disabled>محجوز</button>
-                                <a href="chat.html?type=equip&id=4" class="btn-chat-equip">💬</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="equip-card" data-cat="حفر" data-avail="yes" data-price="620" data-city="الرياض" data-date="2024-03-06">
-                    <div class="equip-img">🚧</div>
-                    <div class="equip-body">
-                        <div class="equip-name">جرافة بوبكات مدمجة</div>
-                        <div class="equip-owner">📦 مؤسسة النخبة للمعدات</div>
-                        <div class="equip-meta">
-                            <span>📍 الرياض</span>
-                            <span class="avail-badge avail-yes">متاح</span>
-                        </div>
-                        <div class="equip-footer">
-                            <div class="equip-price">620 ر.س <small>/يوم</small></div>
-                            <div class="equip-footer-actions">
-                                <button class="btn-rent" onclick="openRentModal('جرافة بوبكات مدمجة', 620, 5)">استئجار</button>
-                                <a href="chat.html?type=equip&id=5" class="btn-chat-equip">💬</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="equip-card" data-cat="تشطيب" data-avail="yes" data-price="95" data-city="مكة المكرمة" data-date="2024-03-05">
-                    <div class="equip-img">🎨</div>
-                    <div class="equip-body">
-                        <div class="equip-name">ماكينة رش الدهان الكهربائية</div>
-                        <div class="equip-owner">📦 أدوات التشطيب المتخصصة</div>
-                        <div class="equip-meta">
-                            <span>📍 مكة المكرمة</span>
-                            <span class="avail-badge avail-yes">متاح</span>
-                        </div>
-                        <div class="equip-footer">
-                            <div class="equip-price">95 ر.س <small>/يوم</small></div>
-                            <div class="equip-footer-actions">
-                                <button class="btn-rent" onclick="openRentModal('ماكينة رش الدهان الكهربائية', 95, 6)">استئجار</button>
-                                <a href="chat.html?type=equip&id=6" class="btn-chat-equip">💬</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="equip-card" data-cat="زراعة" data-avail="yes" data-price="280" data-city="جدة" data-date="2024-03-04">
-                    <div class="equip-img">🌿</div>
-                    <div class="equip-body">
-                        <div class="equip-name">جرار زراعي متعدد الاستخدامات</div>
-                        <div class="equip-owner">📦 الخضراء للمعدات الزراعية</div>
-                        <div class="equip-meta">
-                            <span>📍 جدة</span>
-                            <span class="avail-badge avail-yes">متاح</span>
-                        </div>
-                        <div class="equip-footer">
-                            <div class="equip-price">280 ر.س <small>/يوم</small></div>
-                            <div class="equip-footer-actions">
-                                <button class="btn-rent" onclick="openRentModal('جرار زراعي متعدد الاستخدامات', 280, 7)">استئجار</button>
-                                <a href="chat.html?type=equip&id=7" class="btn-chat-equip">💬</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="equip-card" data-cat="رفع" data-avail="yes" data-price="490" data-city="الدمام" data-date="2024-03-03">
-                    <div class="equip-img">🔧</div>
-                    <div class="equip-body">
-                        <div class="equip-name">ونش رفع هيدروليكي 10 طن</div>
-                        <div class="equip-owner">📦 المتحدة للمعدات الثقيلة</div>
-                        <div class="equip-meta">
-                            <span>📍 الدمام</span>
-                            <span class="avail-badge avail-yes">متاح</span>
-                        </div>
-                        <div class="equip-footer">
-                            <div class="equip-price">490 ر.س <small>/يوم</small></div>
-                            <div class="equip-footer-actions">
-                                <button class="btn-rent" onclick="openRentModal('ونش رفع هيدروليكي 10 طن', 490, 8)">استئجار</button>
-                                <a href="chat.html?type=equip&id=8" class="btn-chat-equip">💬</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="empty-state-ux" id="emptyState" style="display:none;">
-                <div class="empty-icon">🚜</div>
-                <h3>لا توجد معدات مطابقة</h3>
-                <p>جرّب تغيير الفئة أو المدينة أو نطاق السعر</p>
-            </div>
-        </div>
+    <div class="form-group">
+        <label class="form-label">ملاحظات إضافية</label>
+        <textarea class="form-control" id="qNotes" placeholder="أي متطلبات خاصة، ظروف الموقع، الجدول الزمني..."></textarea>
     </div>
-
-    <!-- Rent Modal -->
-    <div class="modal-overlay" id="rentModal">
-        <div class="modal">
-            <div class="modal-header">
-                <div class="modal-title">استئجار معدة</div>
-                <button class="modal-close" onclick="closeModal('rentModal')">✕</button>
-            </div>
-            <div class="form-group">
-                <label class="form-label">المعدة</label>
-                <div style="background:var(--light); border-radius:10px; padding:0.65rem 0.9rem; font-size:0.9rem;" id="rentEquipName"></div>
-            </div>
-            <div class="form-group">
-                <label class="form-label">تاريخ البداية *</label>
-                <input type="date" class="form-control" id="rentStart" onchange="onStartChange()">
-            </div>
-            <div class="form-group">
-                <label class="form-label">تاريخ الانتهاء *</label>
-                <input type="date" class="form-control" id="rentEnd" onchange="calcRent()">
-            </div>
-            <div class="form-group">
-                <label class="form-label">موقع التسليم</label>
-                <input type="text" class="form-control" id="rentLocation" placeholder="العنوان الكامل">
-            </div>
-            <div class="price-summary" id="rentSummary" style="display:none;">
-                <div class="price-row"><span>عدد الأيام</span><span id="rentDays">0</span></div>
-                <div class="price-row"><span>السعر اليومي</span><span id="rentDailyPrice">0 ر.س</span></div>
-                <div class="price-row"><span>المجموع</span><span id="rentSubtotal">0 ر.س</span></div>
-                <div class="price-row"><span>ضريبة القيمة المضافة (15%)</span><span id="rentVAT">0 ر.س</span></div>
-                <div class="price-row total"><span>الإجمالي</span><span id="rentTotal">0 ر.س</span></div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn-full btn-cancel" onclick="closeModal('rentModal')">إلغاء</button>
-                <button class="btn-full btn-submit" onclick="confirmRent()">تأكيد الحجز</button>
-            </div>
-        </div>
+    <div class="form-group">
+        <label class="form-label">مرفقات (اختياري)</label>
+        <input type="file" class="form-control" id="qAttach" multiple accept=".pdf,.jpg,.png,.dwg">
+        <div style="font-size:.73rem;color:var(--gray);margin-top:.2rem;">مخططات، صور الموقع، مستندات المشروع</div>
     </div>
-
-    <!-- List Modal -->
-    <div class="modal-overlay" id="listModal">
-        <div class="modal">
-            <div class="modal-header">
-                <div class="modal-title">إدراج معدة جديدة</div>
-                <button class="modal-close" onclick="closeModal('listModal')">✕</button>
-            </div>
-            <div class="form-group">
-                <label class="form-label">اسم المعدة *</label>
-                <input type="text" class="form-control" placeholder="مثال: حفار هيدروليكي 20 طن">
-            </div>
-            <div class="form-group">
-                <label class="form-label">الفئة *</label>
-                <select class="form-control">
-                    <option value="">اختر الفئة</option>
-                    <option>حفر وتجريف</option><option>رفع ونقل</option>
-                    <option>كهرباء وطاقة</option><option>تشطيب وبناء</option><option>زراعة ومناظر</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label class="form-label">السعر اليومي (ر.س) *</label>
-                <input type="number" class="form-control" placeholder="0">
-            </div>
-            <div class="form-group">
-                <label class="form-label">المدينة *</label>
-                <select class="form-control">
-                    <option>الرياض</option><option>جدة</option><option>الدمام</option><option>مكة المكرمة</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label class="form-label">تفاصيل المعدة</label>
-                <textarea class="form-control" placeholder="الحالة، المواصفات، ما يشمله الإيجار..."></textarea>
-            </div>
-            <div class="modal-footer">
-                <button class="btn-full btn-cancel" onclick="closeModal('listModal')">إلغاء</button>
-                <button class="btn-full btn-submit" onclick="submitList()">إدراج المعدة</button>
-            </div>
-        </div>
+    <div class="modal-footer">
+        <button class="btn-full btn-cancel" onclick="closeModal('quoteModal')">إلغاء</button>
+        <button class="btn-full btn-submit" onclick="submitQuote()">إرسال الطلب</button>
     </div>
+</div>
+</div>
 
-    <script>
-        let currentDailyPrice = 0;
-
-        function applyFilters() {
-            const q = document.getElementById('searchInput').value.trim().toLowerCase();
-            const priceMin = parseFloat(document.getElementById('priceMin').value) || 0;
-            const priceMax = parseFloat(document.getElementById('priceMax').value) || Infinity;
-            const city = document.getElementById('cityFilter').value;
-            const cats = [...document.querySelectorAll('[data-filter="cat"]:checked')].map(el => el.value);
-            const avails = [...document.querySelectorAll('[data-filter="avail"]:checked')].map(el => el.value);
-            const cards = document.querySelectorAll('.equip-card');
-            let visible = 0;
-            cards.forEach(card => {
-                const show = (!q || card.textContent.toLowerCase().includes(q))
-                    && (cats.length === 0 || cats.includes(card.dataset.cat))
-                    && (avails.length === 0 || avails.includes(card.dataset.avail))
-                    && (parseFloat(card.dataset.price) >= priceMin && parseFloat(card.dataset.price) <= priceMax)
-                    && (!city || card.dataset.city === city);
-                card.classList.toggle('hidden', !show);
-                if (show) visible++;
-            });
-            document.getElementById('visibleCount').textContent = visible;
-            document.getElementById('emptyState').style.display = visible === 0 ? 'block' : 'none';
-        }
-
-        function sortEquip() {
-            const sort = document.getElementById('sortSelect').value;
-            const grid = document.getElementById('equipGrid');
-            [...grid.querySelectorAll('.equip-card')]
-                .sort((a, b) => sort === 'price_low' ? a.dataset.price - b.dataset.price
-                    : sort === 'price_high' ? b.dataset.price - a.dataset.price
-                    : new Date(b.dataset.date) - new Date(a.dataset.date))
-                .forEach(c => grid.appendChild(c));
-        }
-
-        function clearFilters() {
-            document.querySelectorAll('[data-filter]').forEach(el => el.checked = false);
-            ['priceMin','priceMax'].forEach(id => document.getElementById(id).value = '');
-            document.getElementById('cityFilter').value = '';
-            document.getElementById('searchInput').value = '';
-            applyFilters();
-        }
-
-        let _rentEquipName = '';
-        let _rentEquipId = null;
-        function openRentModal(name, price, id) {
-            _rentEquipName  = name;
-            _rentEquipId = id || null;
-            currentDailyPrice = price;
-            document.getElementById('rentEquipName').textContent = name;
-            const today = new Date().toISOString().split('T')[0];
-            const startEl = document.getElementById('rentStart');
-            const endEl   = document.getElementById('rentEnd');
-            startEl.value = '';
-            startEl.min   = today;
-            endEl.value   = '';
-            endEl.min     = today;
-            document.getElementById('rentLocation').value = '';
-            document.getElementById('rentSummary').style.display = 'none';
-            document.getElementById('rentModal').classList.add('show');
-        }
-
-        function onStartChange() {
-            const startEl = document.getElementById('rentStart');
-            const endEl   = document.getElementById('rentEnd');
-            if (startEl.value) {
-                endEl.min = startEl.value;
-                // Clear end if it's before the new start
-                if (endEl.value && endEl.value <= startEl.value) {
-                    endEl.value = '';
-                    document.getElementById('rentSummary').style.display = 'none';
-                }
-            }
-            calcRent();
-        }
-
-        function calcRent() {
-            const s = document.getElementById('rentStart').value;
-            const e = document.getElementById('rentEnd').value;
-            if (!s || !e) return;
-            const days = Math.ceil((new Date(e) - new Date(s)) / 86400000);
-            if (days <= 0) {
-                document.getElementById('rentSummary').style.display = 'none';
-                return;
-            }
-            const sub = days * currentDailyPrice;
-            const vat = sub * 0.15;
-            document.getElementById('rentDays').textContent = days + ' يوم';
-            document.getElementById('rentDailyPrice').textContent = currentDailyPrice.toLocaleString() + ' ر.س';
-            document.getElementById('rentSubtotal').textContent = sub.toLocaleString() + ' ر.س';
-            document.getElementById('rentVAT').textContent = vat.toFixed(2) + ' ر.س';
-            document.getElementById('rentTotal').textContent = (sub + vat).toFixed(2) + ' ر.س';
-            document.getElementById('rentSummary').style.display = 'block';
-        }
-
-        function openListModal() { document.getElementById('listModal').classList.add('show'); }
-        function closeModal(id) { document.getElementById(id).classList.remove('show'); }
-
-        async function confirmRent() {
-            const start = document.getElementById('rentStart').value;
-            const end   = document.getElementById('rentEnd').value;
-            if (!start || !end) { showToast('يرجى تحديد تاريخ البداية والانتهاء ⚠️'); return; }
-            const days = Math.ceil((new Date(end) - new Date(start)) / 86400000);
-            if (days <= 0) { showToast('تاريخ الانتهاء يجب أن يكون بعد تاريخ البداية ⚠️'); return; }
-            if (new Date(start) < new Date(new Date().toDateString())) { showToast('تاريخ البداية لا يمكن أن يكون في الماضي ⚠️'); return; }
-            const totalText = document.getElementById('rentTotal').textContent.replace(/[^\d.]/g, '') || '0';
-            closeModal('rentModal');
-            showToast('تم تأكيد الحجز ✅ — جارٍ الانتقال للدفع...');
-            let reqId = 'EQ-' + Date.now().toString().slice(-6);
-            if (_rentEquipId) {
-                try {
-                    const rental = await API.equipment.rent(_rentEquipId, { startDate: start, endDate: end });
-                    if (rental?.id) reqId = rental.id;
-                } catch(e) { /* proceed with demo ID */ }
-            }
-            setTimeout(() => {
-                const params = new URLSearchParams({
-                    requestId:    reqId,
-                    service:      'استئجار معدة — ' + _rentEquipName,
-                    hasMaterials: 'false',
-                    materialsEst: '0',
-                    serviceAmount: totalText,
-                });
-                window.location.href = 'payment-escrow.html?' + params.toString();
-            }, 1000);
-        }
-
-        function submitList() { closeModal('listModal'); showToast('تم إدراج المعدة بنجاح ✅'); }
-
-        function showToast(msg) {
-            const t = document.createElement('div');
-            t.style.cssText = 'position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:#1e293b;color:white;padding:0.75rem 1.5rem;border-radius:12px;font-size:0.9rem;z-index:9999;font-family:Tajawal,sans-serif;';
-            t.textContent = msg; document.body.appendChild(t); setTimeout(() => t.remove(), 3000);
-        }
-
-        function doLogout() {
-            localStorage.removeItem('khedmah_demo');
-            localStorage.removeItem('khedmah_user');
-            localStorage.removeItem('khedmah_admin');
-            window.location.href = 'login.html';
-        }
-
-        function toggleTheme() {
-            const isDark = document.documentElement.classList.toggle('dark');
-            localStorage.setItem('khedmah_theme', isDark ? 'dark' : 'light');
-            document.getElementById('themeToggle').textContent = isDark ? '☀️' : '🌙';
-        }
-        (function() {
-            if (localStorage.getItem('khedmah_theme') === 'dark') {
-                document.documentElement.classList.add('dark');
-                const btn = document.getElementById('themeToggle');
-                if (btn) btn.textContent = '☀️';
-            }
-        })();
-
-        document.querySelectorAll('.modal-overlay').forEach(o => o.addEventListener('click', e => { if (e.target === o) o.classList.remove('show'); }));
-
-        // Role-aware dashboard link
-        document.addEventListener('DOMContentLoaded', function() {
-            try {
-                const user = JSON.parse(localStorage.getItem('khedmah_user') || '{}');
-                const btn = document.querySelector('.avatar-btn');
-                if (btn && user.role === 'provider') btn.href = 'provider-dashboard.html';
-            } catch(e) {}
-        });
-    </script>
-
-<footer style="background:#1e293b;color:rgba(255,255,255,0.55);padding:1.5rem 5%;text-align:center;font-family:'Tajawal',sans-serif;font-size:0.85rem;margin-top:2rem;">
-    <div style="display:flex;gap:1.5rem;justify-content:center;flex-wrap:wrap;margin-bottom:0.75rem;">
-        <a href="home.html" style="color:rgba(255,255,255,0.55);text-decoration:none;">الرئيسية</a>
-        <a href="terms.html" style="color:rgba(255,255,255,0.55);text-decoration:none;">شروط الاستخدام</a>
-        <a href="privacy-policy.html" style="color:rgba(255,255,255,0.55);text-decoration:none;">سياسة الخصوصية</a>
-        <a href="support.html" style="color:rgba(255,255,255,0.55);text-decoration:none;">الدعم والمساعدة</a>
+<!-- ══════════ QUOTE RESPONSE MODAL ══════════ -->
+<div class="modal-overlay" id="quoteRespModal">
+<div class="modal">
+    <div class="modal-header">
+        <div class="modal-title">عرض سعر المزود</div>
+        <button class="modal-close" onclick="closeModal('quoteRespModal')">✕</button>
     </div>
-    <p>© 2025 خدمة — جميع الحقوق محفوظة</p>
-</footer>
-<button id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="للأعلى">↑</button>
+    <div id="quoteRespContent"></div>
+    <div class="modal-footer" id="quoteRespFooter"></div>
+</div>
+</div>
+
+<!-- ══════════ ADD EQUIPMENT MODAL (Provider) ══════════ -->
+<div class="modal-overlay" id="listModal">
+<div class="modal modal-lg">
+    <div class="modal-header">
+        <div class="modal-title">إدراج معدة جديدة</div>
+        <button class="modal-close" onclick="closeModal('listModal')">✕</button>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;">
+        <div class="form-group" style="margin-bottom:0;"><label class="form-label">اسم المعدة *</label><input type="text" class="form-control" id="leName" placeholder="حفار هيدروليكي 20 طن"></div>
+        <div class="form-group" style="margin-bottom:0;"><label class="form-label">الفئة *</label><select class="form-control" id="leCat"><option value="">اختر</option><option>حفر</option><option>رفع</option><option>كهرباء</option><option>تشطيب</option><option>زراعة</option></select></div>
+        <div class="form-group" style="margin-bottom:0;"><label class="form-label">الماركة</label><input type="text" class="form-control" id="leBrand" placeholder="Komatsu / CAT..."></div>
+        <div class="form-group" style="margin-bottom:0;"><label class="form-label">الموديل</label><input type="text" class="form-control" id="leModel" placeholder="PC200-8"></div>
+        <div class="form-group" style="margin-bottom:0;"><label class="form-label">سنة الصنع</label><input type="number" class="form-control" id="leYear" placeholder="2022"></div>
+        <div class="form-group" style="margin-bottom:0;"><label class="form-label">المدينة *</label><select class="form-control" id="leCity"><option>الرياض</option><option>جدة</option><option>الدمام</option><option>مكة المكرمة</option></select></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem;margin-top:.75rem;">
+        <div class="form-group" style="margin-bottom:0;"><label class="form-label">السعر اليومي (ر.س) *</label><input type="number" class="form-control" id="lePriceDay" placeholder="850"></div>
+        <div class="form-group" style="margin-bottom:0;"><label class="form-label">السعر الأسبوعي</label><input type="number" class="form-control" id="lePriceWeek" placeholder="5200"></div>
+        <div class="form-group" style="margin-bottom:0;"><label class="form-label">السعر الشهري</label><input type="number" class="form-control" id="lePriceMonth" placeholder="18000"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem;margin-top:.75rem;">
+        <div class="form-group" style="margin-bottom:0;"><label class="form-label">رسوم المشغل/يوم</label><input type="number" class="form-control" id="leOperator" placeholder="300"></div>
+        <div class="form-group" style="margin-bottom:0;"><label class="form-label">رسوم النقل/يوم</label><input type="number" class="form-control" id="leTransport" placeholder="450"></div>
+        <div class="form-group" style="margin-bottom:0;"><label class="form-label">رسوم الوقود/يوم</label><input type="number" class="form-control" id="leFuel" placeholder="200"></div>
+    </div>
+    <div class="form-group" style="margin-top:.75rem;"><label class="form-label">المواصفات التقنية الرئيسية</label><input type="text" class="form-control" id="leSpec" placeholder="20 طن سعة، 9.5م طول الذراع"></div>
+    <div class="form-group"><label class="form-label">وصف المعدة وشروط الإيجار</label><textarea class="form-control" id="leDesc" placeholder="الحالة، ما يشمله الإيجار، الشروط الخاصة..."></textarea></div>
+    <div class="form-group"><label class="form-label">صور المعدة</label><input type="file" class="form-control" accept="image/*" multiple></div>
+    <div class="modal-footer">
+        <button class="btn-full btn-cancel" onclick="closeModal('listModal')">إلغاء</button>
+        <button class="btn-full btn-submit" onclick="submitList()">إدراج المعدة</button>
+    </div>
+</div>
+</div>
+
 <script>
-window.addEventListener('scroll',function(){document.getElementById('scrollTopBtn')?.classList.toggle('visible',window.scrollY>400);});
+// ── Commission (dynamic, admin-configurable) ────────────────────
+function getCommissionRate() {
+    try {
+        const cfg = JSON.parse(localStorage.getItem('khedmah_platform_config') || '{}');
+        return parseFloat(cfg['commission.equipment'] || '0.05');
+    } catch(e) { return 0.05; }
+}
+
+// ── Equipment Data ──────────────────────────────────────────────
+const EQUIPMENT = [
+  {
+    id:1, name:'حفار هيدروليكي 20 طن', cat:'حفر', emoji:'🚜', keySpec:'سعة 20 طن',
+    brand:'Komatsu', model:'PC200-8', year:2022, type:'حفار هيدروليكي', condition:'ممتاز',
+    capacity:'20 طن', dimensions:'9.5م × 3.2م × 3م', weight:'20,000 كغ', fuel:'ديزل',
+    usage:'حفر الأساسات، التجريف، إزالة الأنقاض',
+    description:'حفار هيدروليكي ياباني الصنع بقوة 20 طن مناسب لمشاريع البناء والتطوير العقاري. يتميز بذراع حفر بطول 5.5 متر وعمق حفر يصل إلى 6 أمتار، مع نظام هيدروليكي متطور يضمن دقة عالية في التشغيل. الوحدة بحالة ممتازة وتمر بصيانة دورية كل 200 ساعة.',
+    useCases:['حفر الأساسات','تجريف التربة','إزالة الأنقاض','شق الطرق','حفر الخنادق'],
+    priceDay:850, priceWeek:5200, priceMonth:18000,
+    discountMed:0.08, discountLong:0.15,
+    addons:{operator:300, transport:450, fuel:200},
+    city:'الرياض', company:'مؤسسة النخبة للمعدات', avail:true, bookedUntil:null,
+    badge:'deal', rating:4.8, reviews:24,
+    hasOperator:true, hasTransport:true,
+    includes:['التشغيل الأولي','الصيانة الطارئة','التأمين الأساسي','الفلاتر والزيوت'],
+    excludes:['الوقود','المشغل','النقل','الإطارات الإضافية'],
+    bookedDates:['2026-04-08','2026-04-09','2026-04-10','2026-04-15','2026-04-16'],
+    providerInfo:{name:'مؤسسة النخبة للمعدات', initial:'ن', rating:4.9, totalRentals:180, since:'2018', verified:true},
+  },
+  {
+    id:2, name:'رافعة برجية 50 متر', cat:'رفع', emoji:'🏗️', keySpec:'ارتفاع 50م',
+    brand:'Liebherr', model:'EC-H 40', year:2021, type:'رافعة برجية', condition:'ممتاز',
+    capacity:'3 طن عند 50م', dimensions:'مسافة الذراع 45م', weight:'28,000 كغ', fuel:'كهرباء',
+    usage:'رفع مواد البناء، الأبراج والمباني الشاهقة',
+    description:'رافعة برجية ألمانية الصنع من أفضل الشركات العالمية، مثالية للمشاريع العالية والمجمعات السكنية. ترفع حتى 3 أطنان على مسافة 50 متراً مع نظام تحكم رقمي متطور لضمان السلامة القصوى. تشمل تركيب الرافعة وتفكيكها بواسطة فريق متخصص.',
+    useCases:['رفع مواد البناء','المباني الشاهقة','المجمعات السكنية','الأبراج التجارية','تركيب الهياكل الفولاذية'],
+    priceDay:1200, priceWeek:7500, priceMonth:26000,
+    discountMed:0.10, discountLong:0.18,
+    addons:{operator:400, transport:800, fuel:0},
+    city:'جدة', company:'شركة الجبل للمعدات الثقيلة', avail:true, bookedUntil:null,
+    badge:'longterm', rating:4.9, reviews:31,
+    hasOperator:true, hasTransport:true,
+    includes:['مشغل الرافعة','التركيب والتفكيك','التأمين الشامل','الصيانة الدورية'],
+    excludes:['الكهرباء في الموقع','رسوم الترخيص البلدي','الحماية الإضافية'],
+    bookedDates:['2026-04-12','2026-04-13','2026-04-14'],
+    providerInfo:{name:'شركة الجبل للمعدات الثقيلة', initial:'ج', rating:4.9, totalRentals:95, since:'2015', verified:true},
+  },
+  {
+    id:3, name:'مولد كهربائي 100 كيلوفولت', cat:'كهرباء', emoji:'⚡', keySpec:'100 كيلوفولت',
+    brand:'Caterpillar', model:'C4.4', year:2023, type:'مولد كهربائي', condition:'ممتاز',
+    capacity:'100 كيلوفولت أمبير', dimensions:'3م × 1.2م × 1.5م', weight:'1,800 كغ', fuel:'ديزل',
+    usage:'إمداد الطاقة للمواقع، الفعاليات، الطوارئ',
+    description:'مولد كهربائي صناعي من Caterpillar بقدرة 100 كيلوفولت أمبير، مناسب لإمداد مواقع البناء والأحداث الكبيرة والطوارئ. يعمل بمحرك ديزل موثوق مع نظام بدء تلقائي عند انقطاع الكهرباء. موديل 2023 ويتميز بكفاءة استهلاك وقود عالية.',
+    useCases:['مواقع البناء','الفعاليات والمعارض','الطوارئ والنسخ الاحتياطي','المزارع والمخيمات','المولدات الصناعية'],
+    priceDay:350, priceWeek:2100, priceMonth:7500,
+    discountMed:0.07, discountLong:0.12,
+    addons:{operator:150, transport:250, fuel:180},
+    city:'الرياض', company:'مؤسسة الطاقة للمعدات', avail:true, bookedUntil:null,
+    badge:'new', rating:4.7, reviews:18,
+    hasOperator:true, hasTransport:true,
+    includes:['كابلات الربط','لوحة التوزيع الأساسية','الوقود ليوم واحد','الصيانة الطارئة'],
+    excludes:['الوقود بعد اليوم الأول','التمديدات الكهربائية الإضافية','اللوحات الكهربائية الفرعية'],
+    bookedDates:[],
+    providerInfo:{name:'مؤسسة الطاقة للمعدات', initial:'ط', rating:4.7, totalRentals:142, since:'2019', verified:true},
+  },
+  {
+    id:4, name:'آلة خلط الخرسانة 400 لتر', cat:'تشطيب', emoji:'🔨', keySpec:'سعة 400 لتر',
+    brand:'IMER', model:'SYNTESI 350', year:2020, type:'خلاط خرسانة', condition:'جيد جداً',
+    capacity:'400 لتر', dimensions:'1.8م × 0.9م × 1.6م', weight:'380 كغ', fuel:'كهرباء',
+    usage:'خلط الخرسانة والملاط للبناء والتشطيب',
+    description:'خلاط خرسانة إيطالي الصنع بسعة 400 لتر، مثالي لأعمال البناء والتشطيب والأرضيات. يعمل بمحرك كهربائي قوي بسرعة خلط 28 دورة/دقيقة مع حوض من الفولاذ المقاوم للصدأ. سهل النقل بفضل إطاراته المطاطية.',
+    useCases:['خلط الخرسانة','أعمال البياض','الأرضيات الإسمنتية','الملاط والسيراميك','الإضافات والترميم'],
+    priceDay:180, priceWeek:1050, priceMonth:3600,
+    discountMed:0.05, discountLong:0.10,
+    addons:{operator:100, transport:200, fuel:0},
+    city:'الدمام', company:'أدوات البناء الحديث', avail:false, bookedUntil:'2026-04-20',
+    badge:null, rating:4.5, reviews:11,
+    hasOperator:false, hasTransport:true,
+    includes:['الصيانة الأساسية','التنظيف قبل التسليم'],
+    excludes:['مواد الخرسانة','الكهرباء في الموقع','المشغل'],
+    bookedDates:['2026-04-06','2026-04-07','2026-04-08','2026-04-09','2026-04-10','2026-04-11','2026-04-12','2026-04-13','2026-04-14','2026-04-15','2026-04-16','2026-04-17','2026-04-18','2026-04-19','2026-04-20'],
+    providerInfo:{name:'أدوات البناء الحديث', initial:'ب', rating:4.5, totalRentals:67, since:'2020', verified:true},
+  },
+  {
+    id:5, name:'جرافة بوبكات مدمجة', cat:'حفر', emoji:'🚧', keySpec:'سعة 2.5 طن',
+    brand:'Bobcat', model:'S650', year:2022, type:'جرافة مدمجة', condition:'ممتاز',
+    capacity:'2.5 طن رفع', dimensions:'3.7م × 1.8م × 2.1م', weight:'3,800 كغ', fuel:'ديزل',
+    usage:'الحفر، التجريف، نقل المواد في المساحات الضيقة',
+    description:'جرافة بوبكات أمريكية الصنع بقدرة رفع 2.5 طن، متميزة بمقاساتها المدمجة التي تسمح بالعمل في الأماكن الضيقة كالأحياء السكنية والمستودعات. مزودة بنظام هيدروليكي متطور ومقصورة مكيفة للمشغل.',
+    useCases:['الحفر في المساحات الضيقة','تسوية الأراضي','نقل مواد البناء','تنظيف الأنقاض','أعمال اللاند سكيب'],
+    priceDay:620, priceWeek:3800, priceMonth:13000,
+    discountMed:0.08, discountLong:0.14,
+    addons:{operator:250, transport:380, fuel:160},
+    city:'الرياض', company:'مؤسسة النخبة للمعدات', avail:true, bookedUntil:null,
+    badge:'deal', rating:4.6, reviews:19,
+    hasOperator:true, hasTransport:true,
+    includes:['بكيت الحفر الأساسي','التأمين الأساسي','فلاتر الهواء'],
+    excludes:['المشغل','الوقود','الملحقات الإضافية (البالك، المثقاب)'],
+    bookedDates:['2026-04-11','2026-04-12'],
+    providerInfo:{name:'مؤسسة النخبة للمعدات', initial:'ن', rating:4.9, totalRentals:180, since:'2018', verified:true},
+  },
+  {
+    id:6, name:'ماكينة رش الدهان الكهربائية', cat:'تشطيب', emoji:'🎨', keySpec:'ضغط 250 بار',
+    brand:'Graco', model:'Mark X', year:2023, type:'ماكينة رش', condition:'ممتاز',
+    capacity:'ضغط 250 بار / معدل 4.5 لتر/دقيقة', dimensions:'0.7م × 0.5م × 0.9م', weight:'45 كغ', fuel:'كهرباء',
+    usage:'رش الدهان والطلاء على الجدران والأسطح',
+    description:'ماكينة رش دهان احترافية من Graco الأمريكية موديل 2023 بضغط 250 بار. توفر طلاءً متجانساً بسرعة عالية مقارنة بالدهان اليدوي بـ 5 أضعاف. مناسبة للجدران الداخلية والخارجية وأعمال الجدارين والواجهات.',
+    useCases:['دهان الجدران الداخلية','دهان الواجهات الخارجية','الأسقف والأسطح','الأسوار والحدائق','المستودعات والمصانع'],
+    priceDay:95, priceWeek:560, priceMonth:1900,
+    discountMed:0.06, discountLong:0.12,
+    addons:{operator:80, transport:120, fuel:0},
+    city:'مكة المكرمة', company:'أدوات التشطيب المتخصصة', avail:true, bookedUntil:null,
+    badge:null, rating:4.4, reviews:8,
+    hasOperator:false, hasTransport:true,
+    includes:['خرطوم الرش 15م','فوهات أساسية 3 قطع','دليل الاستخدام'],
+    excludes:['الدهان والطلاء','الكهرباء في الموقع','الفوهات الإضافية'],
+    bookedDates:[],
+    providerInfo:{name:'أدوات التشطيب المتخصصة', initial:'ت', rating:4.4, totalRentals:38, since:'2021', verified:false},
+  },
+  {
+    id:7, name:'جرار زراعي متعدد الاستخدامات', cat:'زراعة', emoji:'🌿', keySpec:'80 حصان',
+    brand:'John Deere', model:'5075E', year:2021, type:'جرار زراعي', condition:'جيد جداً',
+    capacity:'80 حصان / 4 عجلات دفع', dimensions:'3.9م × 2.1م × 2.5م', weight:'3,100 كغ', fuel:'ديزل',
+    usage:'الحرث، التسوية، نقل التربة، أعمال المناظر',
+    description:'جرار John Deere أمريكي بقوة 80 حصاناً مع نظام 4x4 للعمل في التربة الصعبة. مثالي لأعمال الزراعة والمناظر الطبيعية ومشاريع التشجير. مزود بنقطة توصيل الإضافات خلفية وأمامية لأكثر من 20 نوع من الملحقات.',
+    useCases:['الحرث والتسوية','مشاريع اللاند سكيب','نقل التربة والرمل','التشجير والزراعة','المزارع والمسطحات الخضراء'],
+    priceDay:280, priceWeek:1700, priceMonth:5800,
+    discountMed:0.09, discountLong:0.16,
+    addons:{operator:180, transport:320, fuel:150},
+    city:'جدة', company:'الخضراء للمعدات الزراعية', avail:true, bookedUntil:null,
+    badge:'longterm', rating:4.7, reviews:15,
+    hasOperator:true, hasTransport:true,
+    includes:['محراث قياسي','الصيانة الدورية','دعم تقني'],
+    excludes:['الوقود','الملحقات الخاصة (البذار، الرشاش)','المشغل'],
+    bookedDates:['2026-04-09','2026-04-10'],
+    providerInfo:{name:'الخضراء للمعدات الزراعية', initial:'خ', rating:4.7, totalRentals:54, since:'2019', verified:true},
+  },
+  {
+    id:8, name:'ونش رفع هيدروليكي 10 طن', cat:'رفع', emoji:'🔧', keySpec:'رفع 10 طن',
+    brand:'Manitowoc', model:'Grove GMK3060', year:2020, type:'ونش هيدروليكي', condition:'جيد جداً',
+    capacity:'10 طن عند 20م', dimensions:'10م × 2.5م × 3.5م', weight:'18,000 كغ', fuel:'ديزل',
+    usage:'رفع المعدات الثقيلة، تجميع الهياكل الفولاذية',
+    description:'ونش هيدروليكي متنقل بقدرة رفع 10 أطنان عند مسافة 20 متراً، من أفضل ونشات الرفع في السوق السعودي. مزود بنظام تحكم إلكتروني وأجهزة قياس الحمل التلقائية لضمان السلامة. مناسب لصناعة النفط والغاز ومشاريع البنية التحتية.',
+    useCases:['رفع المعدات الصناعية','تجميع الهياكل الفولاذية','مشاريع النفط والغاز','تركيب الأبراج','نقل الأثقال'],
+    priceDay:490, priceWeek:3000, priceMonth:10500,
+    discountMed:0.09, discountLong:0.15,
+    addons:{operator:350, transport:550, fuel:220},
+    city:'الدمام', company:'المتحدة للمعدات الثقيلة', avail:true, bookedUntil:null,
+    badge:null, rating:4.8, reviews:22,
+    hasOperator:true, hasTransport:true,
+    includes:['مشغل الونش','التأمين الشامل','الاستواء والتثبيت','شهادة السلامة'],
+    excludes:['الوقود','أدوات الربط الإضافية','رخصة المرور للطرق السريعة'],
+    bookedDates:['2026-04-17','2026-04-18','2026-04-19'],
+    providerInfo:{name:'المتحدة للمعدات الثقيلة', initial:'م', rating:4.8, totalRentals:112, since:'2016', verified:true},
+  },
+];
+
+// ── Quote Storage ───────────────────────────────────────────────
+function getQuotes() { try { return JSON.parse(localStorage.getItem('khedmah_equipment_quotes') || '[]'); } catch(e) { return []; } }
+function saveQuotes(arr) { localStorage.setItem('khedmah_equipment_quotes', JSON.stringify(arr)); }
+
+// ── Render Cards ─────────────────────────────────────────────────
+function renderCards(list) {
+    const BADGE = { deal:'🔥 أفضل سعر', longterm:'📅 خصم طويل الأمد', new:'✨ جديد' };
+    document.getElementById('equipGrid').innerHTML = list.map(e => {
+        const availHtml = e.avail
+            ? '<span class="avail-badge avail-yes">متاح الآن</span>'
+            : `<span class="avail-badge avail-no">محجوز حتى ${e.bookedUntil||'قريباً'}</span>`;
+        const badgeHtml = e.badge ? `<div class="card-badge badge-${e.badge}">${BADGE[e.badge]||''}</div>` : '';
+        const rentDisabled = !e.avail ? 'disabled title="المعدة محجوزة"' : '';
+        return `<div class="equip-card" data-cat="${e.cat}" data-avail="${e.avail?'yes':'no'}" data-price="${e.priceDay}" data-city="${e.city}" data-operator="${e.hasOperator?'yes':'no'}" data-transport="${e.hasTransport?'yes':'no'}" data-rating="${e.rating}">
+            <div class="equip-img">${e.emoji}${badgeHtml}</div>
+            <div class="equip-body">
+                <div class="equip-category">${e.cat}</div>
+                <div class="equip-name">${e.name}</div>
+                <div class="equip-keyspec">📐 ${e.keySpec}</div>
+                <div class="equip-company">🏢 ${e.company}</div>
+                <div class="equip-meta">
+                    <span>📍 ${e.city}</span>
+                    ${availHtml}
+                    <span>⭐ ${e.rating} (${e.reviews})</span>
+                </div>
+                <div class="equip-price-row">
+                    <span class="equip-price-from">من</span>
+                    <span class="equip-price">${e.priceDay.toLocaleString()} ر.س<small>/يوم</small></span>
+                </div>
+            </div>
+            <div class="equip-actions">
+                <button class="btn-rent-now" onclick="openRentModal(${e.id})" ${rentDisabled}>${e.avail?'استئجار الآن':'محجوز'}</button>
+                <button class="btn-quote" onclick="openQuoteModal(${e.id})">طلب عرض سعر</button>
+                <button class="btn-details" onclick="openDetailsModal(${e.id})">📋 التفاصيل</button>
+                <a href="chat.html?type=equip&id=${e.id}" class="btn-chat-eq">💬 تواصل</a>
+            </div>
+        </div>`;
+    }).join('');
+    updateVisibleCount();
+}
+
+// ── Details Modal ────────────────────────────────────────────────
+function openDetailsModal(id) {
+    const e = EQUIPMENT.find(x => x.id === id);
+    if (!e) return;
+    document.getElementById('dtlName').textContent = e.name;
+    const condCls  = e.condition === 'ممتاز' ? 'cond-excellent' : 'cond-good';
+    const prov     = e.providerInfo || {};
+    const useCaseHtml = (e.useCases||[]).map(u=>`<span class="use-chip">${u}</span>`).join('');
+    document.getElementById('dtlContent').innerHTML = `
+        <!-- Status strip -->
+        <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;margin-bottom:.9rem;">
+            <span class="${e.avail?'avail-badge avail-yes':'avail-badge avail-no'}">${e.avail?'متاح الآن':'محجوز حتى '+(e.bookedUntil||'')}</span>
+            <span class="condition-badge ${condCls}">الحالة: ${e.condition}</span>
+            <span style="font-size:.78rem;color:var(--gray);">🏭 ${e.brand} ${e.model} (${e.year})</span>
+            <span style="font-size:.78rem;color:var(--gray);">📍 ${e.city}</span>
+            <span style="font-size:.78rem;color:var(--gray);">⭐ ${e.rating} (${e.reviews} تقييم)</span>
+        </div>
+        <!-- Description -->
+        <div class="section-title">وصف المعدة</div>
+        <p class="equip-desc">${e.description||e.usage}</p>
+        <!-- Use cases -->
+        <div class="section-title">حالات الاستخدام</div>
+        <div class="use-case-chips">${useCaseHtml}</div>
+        <!-- Tech specs -->
+        <div class="section-title">المواصفات التقنية</div>
+        <div class="spec-grid">
+            <div class="spec-item"><div class="spec-label">النوع</div><div class="spec-value">${e.type}</div></div>
+            <div class="spec-item"><div class="spec-label">السعة / القدرة</div><div class="spec-value">${e.capacity}</div></div>
+            <div class="spec-item"><div class="spec-label">نوع الوقود</div><div class="spec-value">${e.fuel}</div></div>
+            <div class="spec-item"><div class="spec-label">الوزن</div><div class="spec-value">${e.weight}</div></div>
+            <div class="spec-item" style="grid-column:1/-1;"><div class="spec-label">الأبعاد</div><div class="spec-value">${e.dimensions}</div></div>
+        </div>
+        <!-- Pricing table -->
+        <div class="section-title">جدول الأسعار والخصومات</div>
+        <table class="pricing-table">
+            <thead><tr><th>الفترة</th><th>السعر / يوم</th><th>الخصم</th><th>التوفير</th></tr></thead>
+            <tbody>
+                <tr><td>1 – 3 أيام</td><td class="price-col">${e.priceDay.toLocaleString()} ر.س</td><td>—</td><td>—</td></tr>
+                <tr class="highlight"><td>4 – 10 أيام</td><td class="price-col">${Math.round(e.priceDay*(1-e.discountMed)).toLocaleString()} ر.س</td><td style="color:var(--success);">−${Math.round(e.discountMed*100)}%</td><td style="color:var(--success);">وفّر ${Math.round(e.priceDay*e.discountMed*7).toLocaleString()} ر.س/أسبوع</td></tr>
+                <tr><td>10+ يوم</td><td class="price-col">${Math.round(e.priceDay*(1-e.discountLong)).toLocaleString()} ر.س</td><td style="color:var(--success);">−${Math.round(e.discountLong*100)}%</td><td style="color:var(--success);">وفّر ${Math.round(e.priceDay*e.discountLong*30).toLocaleString()} ر.س/شهر</td></tr>
+                ${e.priceWeek?`<tr class="highlight"><td>📅 أسبوع كامل (مجمّع)</td><td class="price-col" colspan="2">${e.priceWeek.toLocaleString()} ر.س إجمالي</td><td style="color:var(--success);">وفّر ${(e.priceDay*7-e.priceWeek).toLocaleString()} ر.س</td></tr>`:''}
+                ${e.priceMonth?`<tr><td>📅 شهر كامل (مجمّع)</td><td class="price-col" colspan="2">${e.priceMonth.toLocaleString()} ر.س إجمالي</td><td style="color:var(--success);">وفّر ${(e.priceDay*30-e.priceMonth).toLocaleString()} ر.س</td></tr>`:''}
+            </tbody>
+        </table>
+        <!-- Add-ons -->
+        <div class="section-title">الإضافات المتاحة</div>
+        <div style="display:flex;flex-direction:column;gap:.35rem;">
+            ${e.addons.operator?`<div style="display:flex;justify-content:space-between;font-size:.85rem;padding:.45rem .75rem;background:var(--light);border-radius:9px;align-items:center;"><span>👷 مع مشغل متخصص</span><strong style="color:var(--primary);font-size:.9rem;">+${e.addons.operator.toLocaleString()} ر.س/يوم</strong></div>`:''}
+            ${e.addons.transport?`<div style="display:flex;justify-content:space-between;font-size:.85rem;padding:.45rem .75rem;background:var(--light);border-radius:9px;align-items:center;"><span>🚚 نقل وتوصيل للموقع</span><strong style="color:var(--primary);font-size:.9rem;">+${e.addons.transport.toLocaleString()} ر.س/يوم</strong></div>`:''}
+            ${e.addons.fuel?`<div style="display:flex;justify-content:space-between;font-size:.85rem;padding:.45rem .75rem;background:var(--light);border-radius:9px;align-items:center;"><span>⛽ توفير الوقود</span><strong style="color:var(--primary);font-size:.9rem;">+${e.addons.fuel.toLocaleString()} ر.س/يوم</strong></div>`:''}
+        </div>
+        <!-- Included / Excluded -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-top:.65rem;">
+            <div><div class="section-title">✅ يشمل الإيجار</div><ul class="include-list">${e.includes.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+            <div><div class="section-title">❌ لا يشمل الإيجار</div><ul class="exclude-list">${e.excludes.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+        </div>
+        <!-- Provider card -->
+        <div class="section-title">المزود</div>
+        <div class="provider-card">
+            <div class="provider-avatar">${prov.initial||'م'}</div>
+            <div class="provider-meta">
+                <div class="provider-name">${prov.name||e.company} ${prov.verified?'<span class="provider-verified">✓ موثّق</span>':''}</div>
+                <div class="provider-stats">
+                    <span>⭐ ${prov.rating||e.rating} تقييم</span>
+                    <span>📋 ${prov.totalRentals||'+'} عملية إيجار</span>
+                    <span>📅 منذ ${prov.since||'2018'}</span>
+                </div>
+            </div>
+        </div>
+        <!-- Availability calendar -->
+        ${renderMiniCalendar(e)}`;
+    document.getElementById('dtlBtnRent').onclick = () => { closeModal('detailsModal'); openRentModal(id); };
+    document.getElementById('dtlBtnQuote').onclick = () => { closeModal('detailsModal'); openQuoteModal(id); };
+    document.getElementById('dtlBtnRent').disabled = !e.avail;
+    document.getElementById('detailsModal').classList.add('show');
+}
+
+function renderMiniCalendar(e) {
+    const now = new Date(); const yr = now.getFullYear(); const mo = now.getMonth();
+    const days = ['أح','إث','ثل','أر','خم','جم','سب'];
+    const firstDay = new Date(yr, mo, 1).getDay();
+    const daysInMonth = new Date(yr, mo+1, 0).getDate();
+    const monthName = new Date(yr, mo).toLocaleDateString('ar-SA', {month:'long', year:'numeric'});
+    const booked = new Set(e.bookedDates||[]);
+    let cells = '';
+    for(let d=0;d<firstDay;d++) cells += '<div class="cal-day empty"></div>';
+    for(let d=1;d<=daysInMonth;d++) {
+        const dStr = `${yr}-${String(mo+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+        const isToday = d===now.getDate();
+        const isBooked = booked.has(dStr);
+        const cls = isBooked ? 'booked' : 'available';
+        cells += `<div class="cal-day ${cls}${isToday?' today':''}">${d}</div>`;
+    }
+    return `<div class="section-title">توفر المعدة</div>
+    <div class="mini-cal">
+        <div class="cal-header"><div class="cal-month">${monthName}</div></div>
+        <div class="cal-grid">${days.map(d=>`<div class="cal-day-name">${d}</div>`).join('')}${cells}</div>
+        <div class="cal-legend">
+            <span><span class="dot" style="background:#dcfce7;"></span>متاح</span>
+            <span><span class="dot" style="background:#fee2e2;"></span>محجوز</span>
+        </div>
+    </div>`;
+}
+
+// ── Interactive Booking Calendar ─────────────────────────────────
+let _calStart = null, _calEnd = null, _calDisplayYear = null, _calDisplayMonth = null;
+
+function initRentCalendar(equip) {
+    const now = new Date();
+    _calStart = null; _calEnd = null;
+    _calDisplayYear = now.getFullYear(); _calDisplayMonth = now.getMonth();
+    renderRentCalendar(equip);
+    updateCalStatus();
+}
+
+function calNav(dir) {
+    _calDisplayMonth += dir;
+    if (_calDisplayMonth < 0)  { _calDisplayMonth = 11; _calDisplayYear--; }
+    if (_calDisplayMonth > 11) { _calDisplayMonth = 0;  _calDisplayYear++; }
+    renderRentCalendar(_rentEquip);
+}
+
+function renderRentCalendar(equip) {
+    const yr = _calDisplayYear, mo = _calDisplayMonth;
+    document.getElementById('rentCalMonth').textContent =
+        new Date(yr, mo).toLocaleDateString('ar-SA', {month:'long', year:'numeric'});
+    const dayNames = ['أح','إث','ثل','أر','خم','جم','سب'];
+    const firstDay   = new Date(yr, mo, 1).getDay();
+    const daysInMonth = new Date(yr, mo+1, 0).getDate();
+    const booked = new Set(equip.bookedDates||[]);
+    const todayD = new Date(); todayD.setHours(0,0,0,0);
+    let html = dayNames.map(d=>`<div class="cal-day-name">${d}</div>`).join('');
+    for (let i=0; i<firstDay; i++) html += '<div class="cal-day empty"></div>';
+    for (let d=1; d<=daysInMonth; d++) {
+        const dStr = `${yr}-${String(mo+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+        const dDate = new Date(yr, mo, d);
+        const isPast   = dDate < todayD;
+        const isBooked = booked.has(dStr);
+        const isToday  = yr===todayD.getFullYear() && mo===todayD.getMonth() && d===todayD.getDate();
+        let cls = '';
+        if (isPast)  cls = 'past';
+        else if (isBooked) cls = 'booked';
+        else if (_calStart && _calEnd && dStr > _calStart && dStr < _calEnd) cls = 'available in-range';
+        else if (dStr === _calStart && _calEnd) cls = 'selected start-day';
+        else if (dStr === _calEnd)   cls = 'selected end-day';
+        else if (dStr === _calStart) cls = 'selected';
+        else cls = 'available';
+        if (isToday) cls += ' today';
+        const clickHandler = (!isPast && !isBooked) ? `onclick="calSelectDay('${dStr}')"` : '';
+        html += `<div class="cal-day ${cls.trim()}" ${clickHandler}>${d}</div>`;
+    }
+    document.getElementById('rentCalGrid').innerHTML = html;
+}
+
+function calSelectDay(dStr) {
+    const equip = _rentEquip;
+    const booked = new Set(equip.bookedDates||[]);
+    if (!_calStart || (_calStart && _calEnd)) {
+        _calStart = dStr; _calEnd = null;
+    } else {
+        if (dStr < _calStart) {
+            _calStart = dStr; _calEnd = null;
+        } else {
+            if (checkRangeConflict(_calStart, dStr, booked)) {
+                updateCalStatus('conflict'); return;
+            }
+            _calEnd = dStr;
+        }
+    }
+    document.getElementById('rentStart').value = _calStart || '';
+    document.getElementById('rentEnd').value   = _calEnd   || '';
+    renderRentCalendar(equip);
+    updateCalStatus();
+    rentDatesChanged();
+}
+
+function checkRangeConflict(start, end, bookedSet) {
+    for (let d = new Date(start); ; d.setDate(d.getDate()+1)) {
+        const s = d.toISOString().split('T')[0];
+        if (bookedSet.has(s)) return true;
+        if (s >= end) break;
+    }
+    return false;
+}
+
+function updateCalStatus(override) {
+    const el = document.getElementById('rentCalStatus');
+    if (!el) return;
+    if (override === 'conflict') {
+        el.style.background = '#fef2f2'; el.style.color = '#991b1b';
+        el.textContent = '⚠️ الفترة المختارة تحتوي على تواريخ محجوزة — اختر فترة أخرى';
+        setTimeout(() => {
+            _calStart = null; _calEnd = null;
+            document.getElementById('rentStart').value = '';
+            document.getElementById('rentEnd').value   = '';
+            renderRentCalendar(_rentEquip);
+            updateCalStatus();
+        }, 2200);
+        return;
+    }
+    if (!_calStart) {
+        el.style.background = '#f1f5f9'; el.style.color = 'var(--gray)';
+        el.textContent = '📅 انقر على يوم البداية في التقويم';
+    } else if (!_calEnd) {
+        el.style.background = '#fef9c3'; el.style.color = '#78350f';
+        el.textContent = `📅 بداية: ${_calStart} — انقر على يوم الانتهاء`;
+    } else {
+        const days = Math.round((new Date(_calEnd)-new Date(_calStart))/(1000*86400))+1;
+        el.style.background = '#d1fae5'; el.style.color = '#065f46';
+        el.textContent = `✅ ${_calStart} ← ${_calEnd}  (${days} يوم)`;
+    }
+}
+
+// ── Rent Now (4-Step) ────────────────────────────────────────────
+let _rentEquip = null; let _rentStep = 1;
+const _addons = { operator: false, transport: false, fuel: false };
+
+function openRentModal(id) {
+    _rentEquip = EQUIPMENT.find(x => x.id === id);
+    if (!_rentEquip || !_rentEquip.avail) return;
+    _rentStep = 1; _addons.operator = false; _addons.transport = false; _addons.fuel = false;
+    document.getElementById('rentModalTitle').textContent = _rentEquip.name;
+    document.getElementById('rentCity').value    = '';
+    document.getElementById('rentAddress').value = '';
+    document.getElementById('addonOperatorPrice').textContent  = '+' + (_rentEquip.addons.operator||0) + ' ر.س/يوم';
+    document.getElementById('addonTransportPrice').textContent = '+' + (_rentEquip.addons.transport||0) + ' ر.س/يوم';
+    document.getElementById('addonFuelPrice').textContent      = '+' + (_rentEquip.addons.fuel||0) + ' ر.س/يوم';
+    document.getElementById('chkOperator').checked = false;
+    document.getElementById('chkTransport').checked = false;
+    document.getElementById('chkFuel').checked = false;
+    document.querySelectorAll('.addon-row').forEach(r => r.classList.remove('selected'));
+    initRentCalendar(_rentEquip);
+    rentDatesChanged();
+    updateRentStep();
+    document.getElementById('rentModal').classList.add('show');
+}
+
+function toggleAddon(key) {
+    _addons[key] = !_addons[key];
+    document.getElementById('chk'+key.charAt(0).toUpperCase()+key.slice(1)).checked = _addons[key];
+    document.getElementById('addon'+key.charAt(0).toUpperCase()+key.slice(1)).classList.toggle('selected', _addons[key]);
+}
+
+function rentDatesChanged() {
+    const s = document.getElementById('rentStart').value;
+    const e = document.getElementById('rentEnd').value;
+    document.getElementById('rentEnd').min = s || new Date().toISOString().split('T')[0];
+    const prev = document.getElementById('rentDaysPreview');
+    if (s && e && e >= s) {
+        const days = Math.round((new Date(e)-new Date(s))/(1000*86400))+1;
+        prev.style.display = 'block';
+        const disc = days >= 10 ? _rentEquip.discountLong : days >= 4 ? _rentEquip.discountMed : 0;
+        const label = disc ? ` (خصم ${Math.round(disc*100)}%)` : '';
+        prev.textContent = `${days} يوم × ${_rentEquip.priceDay.toLocaleString()} ر.س${label}`;
+    } else { prev.style.display = 'none'; }
+}
+
+function calcRentBreakdown() {
+    const s = document.getElementById('rentStart').value;
+    const e = document.getElementById('rentEnd').value;
+    if (!s || !e || e < s) return null;
+    const days = Math.round((new Date(e)-new Date(s))/(1000*86400))+1;
+    const disc = days >= 10 ? _rentEquip.discountLong : days >= 4 ? _rentEquip.discountMed : 0;
+    const dayRate = _rentEquip.priceDay;
+    const base = dayRate * days;
+    const discAmt = Math.round(base * disc);
+    const addonsTotal = days * (
+        (_addons.operator ? _rentEquip.addons.operator : 0) +
+        (_addons.transport ? _rentEquip.addons.transport : 0) +
+        (_addons.fuel ? _rentEquip.addons.fuel : 0)
+    );
+    const subAfterDisc = base - discAmt;
+    const preTax = subAfterDisc + addonsTotal;
+    const comm = Math.round(preTax * getCommissionRate());
+    const vat = Math.round((preTax + comm) * 0.15);
+    const total = preTax + comm + vat;
+    return { days, dayRate, base, discAmt, disc, addonsTotal, preTax, comm, vat, total };
+}
+
+function updateRentStep() {
+    for (let i=1;i<=4;i++) document.getElementById('rentStep'+i).style.display = i===_rentStep?'block':'none';
+    // Step dots
+    for (let i=1;i<=4;i++) {
+        const dot = document.getElementById('sd'+i);
+        dot.className = 'step-dot' + (i<_rentStep?' done':i===_rentStep?' active':'');
+    }
+    for (let i=1;i<=3;i++) document.getElementById('sl'+i).className='step-line'+(i<_rentStep?' done':'');
+    const btnBack = document.getElementById('rentBtnBack');
+    const btnCancel = document.getElementById('rentBtnCancel');
+    const btnNext = document.getElementById('rentBtnNext');
+    btnBack.style.display = _rentStep > 1 ? 'flex' : 'none';
+    btnCancel.style.display = _rentStep === 1 ? 'flex' : 'none';
+    if (_rentStep === 3) {
+        // Fill breakdown
+        const b = calcRentBreakdown();
+        if (b) {
+            document.getElementById('brkName').textContent = _rentEquip.name;
+            document.getElementById('brkDays').textContent = b.days + ' يوم';
+            document.getElementById('brkDayRate').textContent = b.dayRate.toLocaleString() + ' ر.س';
+            if (b.discAmt > 0) {
+                document.getElementById('brkDiscountRow').style.display = 'flex';
+                document.getElementById('brkDiscountLabel').textContent = 'خصم ' + Math.round(b.disc*100) + '%';
+                document.getElementById('brkDiscountAmt').textContent = '− ' + b.discAmt.toLocaleString() + ' ر.س';
+            } else { document.getElementById('brkDiscountRow').style.display = 'none'; }
+            document.getElementById('brkBase').textContent = (b.base-b.discAmt).toLocaleString() + ' ر.س';
+            if (b.addonsTotal > 0) {
+                document.getElementById('brkAddonsRow').style.display = 'flex';
+                document.getElementById('brkAddons').textContent = '+' + b.addonsTotal.toLocaleString() + ' ر.س';
+            } else { document.getElementById('brkAddonsRow').style.display = 'none'; }
+            document.getElementById('brkPreTax').textContent = b.preTax.toLocaleString() + ' ر.س';
+            document.getElementById('brkCommission').textContent = b.comm.toLocaleString() + ' ر.س';
+            document.getElementById('brkVAT').textContent = b.vat.toLocaleString() + ' ر.س';
+            document.getElementById('brkTotal').textContent = b.total.toLocaleString() + ' ر.س';
+        }
+        btnNext.textContent = 'تأكيد الحجز';
+    } else if (_rentStep === 4) {
+        const b = calcRentBreakdown();
+        document.getElementById('confirmSummaryText').textContent = `${_rentEquip.name} — ${document.getElementById('rentStart').value} إلى ${document.getElementById('rentEnd').value}`;
+        document.getElementById('confirmFinalBox').innerHTML = `<div style="display:flex;justify-content:space-between;font-weight:800;font-size:1rem;"><span>الإجمالي المستحق</span><span style="color:var(--primary);">${b?b.total.toLocaleString():0} ر.س</span></div><div style="font-size:.78rem;color:var(--gray);margin-top:.3rem;">يشمل عمولة المنصة (${Math.round(getCommissionRate()*100)}%) وضريبة القيمة المضافة (15%)</div>`;
+        btnNext.textContent = 'إتمام الدفع والحجز';
+    } else { btnNext.textContent = 'التالي'; }
+}
+
+function rentStepNext() {
+    if (_rentStep === 1) {
+        const s = document.getElementById('rentStart').value;
+        const e = document.getElementById('rentEnd').value;
+        if (!s || !e || e < s) { alert('يرجى اختيار تواريخ البداية والانتهاء من التقويم'); return; }
+        if (!document.getElementById('rentCity').value) { alert('يرجى اختيار المدينة'); return; }
+        _rentStep = 2;
+    } else if (_rentStep === 2) {
+        _rentStep = 3;
+    } else if (_rentStep === 3) {
+        _rentStep = 4;
+    } else if (_rentStep === 4) {
+        confirmRent();
+        return;
+    }
+    updateRentStep();
+}
+
+function rentStepBack() { if (_rentStep > 1) { _rentStep--; updateRentStep(); } }
+
+async function confirmRent() {
+    const b = calcRentBreakdown();
+    const payload = {
+        equipmentId: _rentEquip.id,
+        startDate: document.getElementById('rentStart').value,
+        endDate: document.getElementById('rentEnd').value,
+        deliveryLocation: [document.getElementById('rentCity').value, document.getElementById('rentAddress').value].filter(Boolean).join(' — '),
+        withOperator: _addons.operator,
+        withTransport: _addons.transport,
+        withFuel: _addons.fuel,
+        days: b.days, total: b.total,
+    };
+    let rentalId = 'RNT-' + Date.now().toString().slice(-6);
+    try {
+        const res = await API.equipment.rent(_rentEquip.id, payload);
+        if (res?.id) rentalId = res.id;
+    } catch(e) {}
+    closeModal('rentModal');
+    showToast('✅ تم تأكيد الحجز رقم ' + rentalId + ' — إجمالي ' + (b?b.total.toLocaleString():0) + ' ر.س');
+}
+
+// ── Quote Flow ────────────────────────────────────────────────────
+let _quoteEquip = null;
+
+function openQuoteModal(id) {
+    _quoteEquip = EQUIPMENT.find(x => x.id === id);
+    if (!_quoteEquip) return;
+    document.getElementById('qEquipName').textContent = _quoteEquip.name;
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('qStart').value = today;
+    document.getElementById('qStart').min = today;
+    document.getElementById('qEnd').value = '';
+    document.getElementById('qEnd').min = today;
+    document.getElementById('qCity').value    = '';
+    document.getElementById('qAddress').value = '';
+    document.getElementById('qUsage').value = '';
+    document.getElementById('qNotes').value = '';
+    document.getElementById('qOperator').checked = false;
+    document.getElementById('qTransport').checked = false;
+    document.getElementById('quoteModal').classList.add('show');
+}
+
+async function submitQuote() {
+    const start = document.getElementById('qStart').value;
+    const end   = document.getElementById('qEnd').value;
+    const city  = document.getElementById('qCity').value;
+    const addr  = document.getElementById('qAddress').value.trim();
+    const loc   = city ? (addr ? city + ' — ' + addr : city) : '';
+    const usage = document.getElementById('qUsage').value.trim();
+    if (!start || !end || end < start || !city || !usage) { alert('يرجى ملء الحقول المطلوبة (التواريخ، المدينة، الغرض)'); return; }
+    const days = Math.round((new Date(end)-new Date(start))/(1000*86400))+1;
+    const quote = {
+        id: 'QT-' + Date.now().toString().slice(-6),
+        equipmentId: _quoteEquip.id,
+        equipmentName: _quoteEquip.name,
+        equipmentEmoji: _quoteEquip.emoji,
+        startDate: start, endDate: end,
+        location: loc, usage, days,
+        hoursPerDay: document.getElementById('qHours').value,
+        needOperator: document.getElementById('qOperator').checked,
+        needTransport: document.getElementById('qTransport').checked,
+        notes: document.getElementById('qNotes').value.trim(),
+        status: 'PENDING',
+        quotePrice: null, quoteBreakdown: null, quoteNotes: null,
+        createdAt: new Date().toISOString(),
+    };
+    try {
+        const payload = { equipmentId: _quoteEquip.id, startDate: start, endDate: end, location: loc, usage, hoursPerDay: parseInt(quote.hoursPerDay), withOperator: quote.needOperator, withTransport: quote.needTransport, notes: quote.notes };
+        const res = await API.equipment.requestQuote(_quoteEquip.id, payload);
+        if (res?.id) quote.id = res.id;
+    } catch(e) {}
+    const arr = getQuotes(); arr.push(quote); saveQuotes(arr);
+    closeModal('quoteModal');
+    renderQuotesStrip();
+    showToast('✅ تم إرسال طلب عرض السعر — سيتواصل معك المزود قريباً');
+    // Demo: simulate provider quote after 5s
+    if (quote.id.startsWith('QT-')) setTimeout(() => simulateProviderQuote(quote.id), 5000);
+}
+
+function simulateProviderQuote(id) {
+    const arr = getQuotes();
+    const idx = arr.findIndex(q => q.id === id);
+    if (idx === -1 || arr[idx].status !== 'PENDING') return;
+    const eq = EQUIPMENT.find(e => e.id === arr[idx].equipmentId);
+    const days = arr[idx].days || 1;
+    const disc = days >= 10 ? eq.discountLong : days >= 4 ? eq.discountMed : 0;
+    const base = Math.round(eq.priceDay * (1-disc) * days);
+    const addons = days * ((arr[idx].needOperator ? eq.addons.operator : 0) + (arr[idx].needTransport ? eq.addons.transport : 0));
+    const comm = Math.round((base+addons) * getCommissionRate());
+    const vat = Math.round((base+addons+comm) * 0.15);
+    const total = base + addons + comm + vat;
+    arr[idx].status = 'QUOTED';
+    arr[idx].quotePrice = total;
+    arr[idx].quoteBreakdown = { base, addons, comm, vat, total, disc: Math.round(disc*100) };
+    arr[idx].quoteNotes = 'نؤكد توفر المعدة في التاريخ المطلوب. السعر شامل التأمين الأساسي.';
+    saveQuotes(arr);
+    renderQuotesStrip();
+    showToast('🔔 وصل عرض سعر جديد! افتح الشريط أعلاه لمراجعته.');
+}
+
+function renderQuotesStrip() {
+    const active = getQuotes().filter(q => q.status !== 'REJECTED' && q.status !== 'PAID');
+    const strip = document.getElementById('quotesStrip');
+    if (!active.length) { strip.style.display = 'none'; return; }
+    strip.style.display = 'block';
+    const statusLabel = { PENDING:'في الانتظار', QUOTED:'وصل عرض سعر!', ACCEPTED:'تم القبول' };
+    const statusCls   = { PENDING:'qs-pending', QUOTED:'qs-quoted', ACCEPTED:'qs-accepted' };
+    document.getElementById('quotesList').innerHTML = active.map(q => `
+        <div class="quote-chip" onclick="openQuoteResponse('${q.id}')">
+            <span style="font-size:1.3rem;">${q.equipmentEmoji||'🚜'}</span>
+            <div style="min-width:0;">
+                <div style="font-weight:700;font-size:.82rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:110px;">${q.equipmentName}</div>
+                <div style="font-size:.7rem;color:var(--gray);">${q.days} يوم</div>
+            </div>
+            <span class="${statusCls[q.status]||'qs-pending'}">${statusLabel[q.status]||q.status}</span>
+        </div>`).join('');
+}
+
+function openQuoteResponse(id) {
+    const q = getQuotes().find(x => x.id === id);
+    if (!q) return;
+    let content = '', footer = '';
+    if (q.status === 'PENDING') {
+        content = `<div style="text-align:center;padding:1.5rem;"><div style="font-size:2.5rem;">⏳</div><div style="font-size:1rem;font-weight:700;margin:.5rem 0;">في انتظار رد المزود</div><div style="font-size:.85rem;color:var(--gray);">تم إرسال طلبك بتاريخ ${new Date(q.createdAt).toLocaleDateString('ar-SA')}</div></div>`;
+        footer = `<button class="btn-full btn-cancel" onclick="closeModal('quoteRespModal')">إغلاق</button>`;
+    } else if (q.status === 'QUOTED') {
+        const b = q.quoteBreakdown || {};
+        content = `<div style="margin-bottom:.75rem;"><div style="font-weight:700;margin-bottom:.25rem;">${q.equipmentName}</div><div style="font-size:.82rem;color:var(--gray);">${q.startDate} — ${q.endDate} (${q.days} يوم)</div></div>
+        <div class="price-summary">
+            ${b.disc>0?`<div class="price-row discount"><span>خصم ${b.disc}% (${q.days} يوم)</span><span style="color:var(--success);">مطبّق</span></div>`:''}
+            <div class="price-row"><span>تكلفة الإيجار</span><span>${(b.base||0).toLocaleString()} ر.س</span></div>
+            ${b.addons>0?`<div class="price-row"><span>الإضافات</span><span>+${b.addons.toLocaleString()} ر.س</span></div>`:''}
+            <div class="price-row commission"><span>عمولة المنصة (${Math.round(getCommissionRate()*100)}%)</span><span>${(b.comm||0).toLocaleString()} ر.س</span></div>
+            <div class="price-row"><span>ضريبة القيمة المضافة (15%)</span><span>${(b.vat||0).toLocaleString()} ر.س</span></div>
+            <div class="price-row total-row"><span>إجمالي عرض السعر</span><span>${(b.total||q.quotePrice||0).toLocaleString()} ر.س</span></div>
+        </div>
+        ${q.quoteNotes?`<div style="background:#f0fdf4;border-radius:10px;padding:.7rem .9rem;margin-top:.75rem;font-size:.84rem;"><strong>ملاحظة المزود:</strong> ${q.quoteNotes}</div>`:''}`;
+        footer = `<button class="btn-full btn-danger" onclick="rejectQuote('${q.id}')">رفض العرض</button><button class="btn-full btn-success" onclick="acceptQuote('${q.id}')">قبول والدفع</button>`;
+    } else if (q.status === 'ACCEPTED') {
+        content = `<div style="text-align:center;padding:1rem;"><div style="font-size:2.5rem;">✅</div><div style="font-weight:700;margin:.5rem 0;">تم قبول العرض</div><div style="font-size:.85rem;color:var(--gray);">إجمالي ${(q.quotePrice||0).toLocaleString()} ر.س</div></div>`;
+        footer = `<button class="btn-full btn-cancel" onclick="closeModal('quoteRespModal')">إغلاق</button><button class="btn-full btn-submit" onclick="payQuote('${q.id}')">إتمام الدفع</button>`;
+    }
+    document.getElementById('quoteRespContent').innerHTML = content;
+    document.getElementById('quoteRespFooter').innerHTML = footer;
+    document.getElementById('quoteRespModal').classList.add('show');
+}
+
+function acceptQuote(id) {
+    const arr = getQuotes(); const idx = arr.findIndex(q => q.id === id);
+    if (idx===-1) return;
+    arr[idx].status = 'ACCEPTED'; saveQuotes(arr);
+    renderQuotesStrip(); closeModal('quoteRespModal');
+    showToast('✅ تم قبول عرض السعر — يمكنك الدفع الآن');
+    setTimeout(() => openQuoteResponse(id), 500);
+}
+
+function rejectQuote(id) {
+    if (!confirm('هل تريد رفض هذا العرض؟')) return;
+    const arr = getQuotes(); const idx = arr.findIndex(q => q.id === id);
+    if (idx===-1) return;
+    arr[idx].status = 'REJECTED'; saveQuotes(arr);
+    renderQuotesStrip(); closeModal('quoteRespModal');
+    showToast('❌ تم رفض العرض');
+}
+
+function payQuote(id) {
+    const q = getQuotes().find(x => x.id === id);
+    if (!q) return;
+    const arr = getQuotes(); const idx = arr.findIndex(x => x.id === id);
+    arr[idx].status = 'PAID'; saveQuotes(arr);
+    renderQuotesStrip(); closeModal('quoteRespModal');
+    showToast('✅ تم الدفع بنجاح — سيتواصل معك المزود لتنسيق التسليم');
+}
+
+// ── Add Equipment (Provider) ─────────────────────────────────────
+function openListModal() { document.getElementById('listModal').classList.add('show'); }
+
+async function submitList() {
+    const name = document.getElementById('leName').value.trim();
+    const cat  = document.getElementById('leCat').value;
+    const price = parseInt(document.getElementById('lePriceDay').value);
+    if (!name || !cat || !price) { alert('يرجى ملء الحقول المطلوبة'); return; }
+    try {
+        await API.equipment.create({ name, category: cat, pricePerDay: price,
+            brand: document.getElementById('leBrand').value,
+            model: document.getElementById('leModel').value,
+            year: parseInt(document.getElementById('leYear').value),
+            city: document.getElementById('leCity').value,
+            specs: document.getElementById('leSpec').value,
+            description: document.getElementById('leDesc').value,
+        });
+    } catch(e) {}
+    closeModal('listModal');
+    showToast('✅ تم إدراج المعدة — ستظهر بعد مراجعة الإدارة');
+}
+
+// ── Filters / Sort ────────────────────────────────────────────────
+function applyFilters() {
+    const q = document.getElementById('searchInput').value.trim().toLowerCase();
+    const pMin = parseFloat(document.getElementById('priceMin').value) || 0;
+    const pMax = parseFloat(document.getElementById('priceMax').value) || Infinity;
+    const city = document.getElementById('cityFilter').value;
+    const cats      = [...document.querySelectorAll('[data-filter="cat"]:checked')].map(el => el.value);
+    const avails    = [...document.querySelectorAll('[data-filter="avail"]:checked')].map(el => el.value);
+    const opFilter  = document.getElementById('fo1').checked;
+    const trFilter  = document.getElementById('fo2').checked;
+    document.querySelectorAll('.equip-card').forEach(card => {
+        const show = (!q || card.textContent.toLowerCase().includes(q))
+            && (cats.length===0   || cats.includes(card.dataset.cat))
+            && (avails.length===0 || avails.includes(card.dataset.avail))
+            && parseFloat(card.dataset.price) >= pMin
+            && parseFloat(card.dataset.price) <= pMax
+            && (!city || card.dataset.city === city)
+            && (!opFilter || card.dataset.operator === 'yes')
+            && (!trFilter || card.dataset.transport === 'yes');
+        card.classList.toggle('hidden', !show);
+    });
+    updateVisibleCount();
+}
+
+function sortEquip() {
+    const sort = document.getElementById('sortSelect').value;
+    const grid = document.getElementById('equipGrid');
+    [...grid.querySelectorAll('.equip-card')]
+        .sort((a,b) => sort==='price_low'  ? a.dataset.price - b.dataset.price
+                     : sort==='price_high' ? b.dataset.price - a.dataset.price
+                     : sort==='rating'     ? b.dataset.rating - a.dataset.rating
+                     : 0)
+        .forEach(c => grid.appendChild(c));
+}
+
+function clearFilters() {
+    document.querySelectorAll('[data-filter]').forEach(el => el.checked = false);
+    document.getElementById('fo1').checked = false;
+    document.getElementById('fo2').checked = false;
+    document.getElementById('searchInput').value = '';
+    document.getElementById('priceMin').value = '';
+    document.getElementById('priceMax').value = '';
+    document.getElementById('cityFilter').value = '';
+    applyFilters();
+}
+
+function updateVisibleCount() {
+    const v = document.querySelectorAll('.equip-card:not(.hidden)').length;
+    document.getElementById('visibleCount').textContent = v;
+    document.getElementById('emptyState').style.display = v===0?'block':'none';
+}
+
+// ── Utils ─────────────────────────────────────────────────────────
+function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+
+function showToast(msg) {
+    const t = document.createElement('div');
+    t.style.cssText = 'position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:#1e293b;color:white;padding:.75rem 1.5rem;border-radius:12px;font-size:.9rem;z-index:9999;font-family:Tajawal,sans-serif;box-shadow:0 4px 20px rgba(0,0,0,.3);';
+    t.textContent = msg; document.body.appendChild(t); setTimeout(()=>t.remove(), 3500);
+}
+
+function doLogout() {
+    localStorage.removeItem('khedmah_demo'); localStorage.removeItem('khedmah_user'); localStorage.removeItem('khedmah_admin');
+    window.location.href = 'login.html';
+}
+
+function toggleTheme() {
+    const isDark = document.documentElement.classList.toggle('dark');
+    localStorage.setItem('khedmah_theme', isDark?'dark':'light');
+    document.getElementById('themeToggle').textContent = isDark?'☀️':'🌙';
+}
+
+// ── Init ──────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function() {
+    renderCards(EQUIPMENT);
+    renderQuotesStrip();
+    document.querySelectorAll('.modal-overlay').forEach(o => o.addEventListener('click', e => { if(e.target===o) o.classList.remove('show'); }));
+    const user = JSON.parse(localStorage.getItem('khedmah_user') || '{}');
+    const dashLink = document.getElementById('dashLink');
+    if (dashLink && user.role === 'provider') dashLink.href = 'provider-dashboard.html';
+    if (user.role === 'provider') document.getElementById('btnListEquip').style.display = 'block';
+    if (localStorage.getItem('khedmah_theme') === 'dark') document.getElementById('themeToggle').textContent = '☀️';
+    // Language switcher
+    if (window.I18n) I18n.renderLangSwitcher('langSwitcherEq');
+});
 </script>
+
+<footer style="background:#1e293b;color:rgba(255,255,255,.55);padding:1.5rem 5%;text-align:center;font-family:'Tajawal',sans-serif;font-size:.85rem;margin-top:2rem;">
+    <div style="display:flex;gap:1.5rem;justify-content:center;flex-wrap:wrap;margin-bottom:.75rem;">
+        <a href="home.html" style="color:rgba(255,255,255,.55);text-decoration:none;">الرئيسية</a>
+        <a href="tenders.html" style="color:rgba(255,255,255,.55);text-decoration:none;">المناقصات</a>
+        <a href="equipment.html" style="color:rgba(255,255,255,.55);text-decoration:none;">المعدات</a>
+        <a href="consultations.html" style="color:rgba(255,255,255,.55);text-decoration:none;">الاستشارات</a>
+    </div>
+    <div>© 2026 Khedmah — جميع الحقوق محفوظة</div>
+</footer>
 </body>
 </html>

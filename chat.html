@@ -193,12 +193,51 @@
         @media (max-width: 768px) {
             .sidebar { display: none; }
         }
+
+        /* ── Auto-Translation UI ── */
+        .translated-label { display: inline-flex; align-items: center; gap: 3px; font-size: .68rem; color: var(--primary); opacity: .75; margin-top: 3px; cursor: pointer; user-select: none; transition: opacity .15s; }
+        .translated-label:hover { opacity: 1; }
+        .translated-label .tl-icon { font-size: .8rem; }
+        .m-original { display: none; background: rgba(100,116,139,.08); border-radius: 8px; padding: .3rem .55rem; font-size: .8rem; color: var(--gray); margin-top: 3px; font-style: italic; border-right: 2px solid var(--primary); }
+        .m-original.show { display: block; }
+        /* Language preference button in chat header */
+        .lang-pref-btn { background: rgba(2,128,144,.08); border: 1.5px solid rgba(2,128,144,.25); border-radius: 10px; padding: .25rem .55rem; font-size: .75rem; font-weight: 700; color: var(--primary); cursor: pointer; display: flex; align-items: center; gap: .3rem; transition: all .15s; }
+        .lang-pref-btn:hover { background: rgba(2,128,144,.15); }
+        /* Language picker modal */
+        .lang-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 2000; align-items: center; justify-content: center; padding: 1rem; }
+        .lang-modal.show { display: flex; }
+        .lang-modal-box { background: white; border-radius: 18px; padding: 1.5rem; width: 100%; max-width: 360px; }
+        .lang-modal-title { font-weight: 800; font-size: 1rem; margin-bottom: .25rem; }
+        .lang-modal-sub { font-size: .82rem; color: var(--gray); margin-bottom: 1rem; }
+        .lang-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; margin-bottom: 1rem; }
+        .lang-option { display: flex; align-items: center; gap: .5rem; padding: .55rem .75rem; border: 1.5px solid #e2e8f0; border-radius: 11px; cursor: pointer; font-size: .85rem; font-weight: 600; transition: all .15s; }
+        .lang-option:hover { border-color: var(--primary); color: var(--primary); }
+        .lang-option.active { border-color: var(--primary); background: rgba(2,128,144,.07); color: var(--primary); }
+        .lang-option .lf { font-size: 1.2rem; }
+        .lang-toggle-row { display: flex; align-items: center; justify-content: space-between; padding: .65rem .75rem; background: var(--light); border-radius: 11px; margin-bottom: 1rem; font-size: .85rem; }
+        .toggle-sw { width: 38px; height: 20px; background: #cbd5e1; border-radius: 20px; cursor: pointer; position: relative; transition: background .2s; border: none; flex-shrink: 0; }
+        .toggle-sw::after { content: ''; width: 14px; height: 14px; background: white; border-radius: 50%; position: absolute; top: 3px; right: 3px; transition: transform .2s; }
+        .toggle-sw.on { background: var(--primary); }
+        .toggle-sw.on::after { transform: translateX(-18px); }
+        .lang-modal-close { width: 100%; padding: .65rem; background: var(--light); border: none; border-radius: 11px; font-family: 'Tajawal', sans-serif; font-size: .9rem; font-weight: 700; cursor: pointer; }
+        html.dark .lang-modal-box { background: #1e293b; }
+        html.dark .lang-option { border-color: #334155; color: #e2e8f0; }
+        html.dark .lang-option.active { border-color: var(--primary); background: rgba(2,128,144,.12); }
+        html.dark .lang-toggle-row { background: #0f172a; color: #e2e8f0; }
+        html.dark .lang-modal-close { background: #334155; color: #e2e8f0; }
+        html.dark .translated-label { color: var(--accent); }
+        html.dark .m-original { background: rgba(255,255,255,.05); color: #94a3b8; }
+        /* Translating spinner on bubble */
+        .m-bubble.translating::after { content: ' ⟳'; opacity: .5; animation: spin .8s linear infinite; display: inline-block; }
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 <link rel="stylesheet" href="css/khedmah-ux.css">
 </head>
 <body>
 <script src="js/config.js"></script>
-    <script src="js/api.js"></script>
+<script src="js/api.js"></script>
+<script src="js/translator.js"></script>
+<script src="js/i18n.js"></script>
 <script>
     (function() {
         const demo = localStorage.getItem('khedmah_demo');
@@ -215,12 +254,13 @@
     <div class="nav-content">
         <a href="home.html" class="logo">خدمة</a>
         <div class="nav-links">
-            <a href="search-services.html">خدمات منزلية</a>
-            <a href="tenders.html">مناقصات</a>
-            <a href="equipment.html">معدات</a>
-            <a href="consultations.html">استشارات</a>
+            <a href="search-services.html" data-i18n="nav_home_services">خدمات منزلية</a>
+            <a href="tenders.html" data-i18n="nav_tenders">مناقصات</a>
+            <a href="equipment.html" data-i18n="nav_equipment">معدات</a>
+            <a href="consultations.html" data-i18n="nav_consultations">استشارات</a>
+            <div id="langSwitcherChat"></div>
             <a href="customer-dashboard.html" class="avatar-btn">م</a>
-            <button onclick="doLogout()" class="btn btn-sm btn-outline-danger ms-2" title="تسجيل الخروج" style="padding:0.35rem 0.8rem;border:1.5px solid #ef4444;border-radius:10px;background:transparent;color:#ef4444;font-family:Tajawal,sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;">خروج</button>
+            <button onclick="doLogout()" data-i18n="nav_logout" class="btn btn-sm btn-outline-danger ms-2" title="تسجيل الخروج" style="padding:0.35rem 0.8rem;border:1.5px solid #ef4444;border-radius:10px;background:transparent;color:#ef4444;font-family:Tajawal,sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;">خروج</button>
         </div>
     </div>
 </nav>
@@ -391,6 +431,9 @@
                     <div class="ch-status" id="chStatus">● متصل الآن</div>
                 </div>
                 <div class="ch-actions">
+                    <button class="lang-pref-btn" id="translateToggleBtn" onclick="openLangModal()" title="إعدادات الترجمة التلقائية">
+                        🌐 <span id="translateBtnLabel">ترجمة</span>
+                    </button>
                     <a href="#" class="icon-btn" id="chCtxLink" title="عرض السياق">📋</a>
                     <button class="icon-btn" title="بحث في المحادثة" onclick="showToast('البحث في الرسائل قريباً')">🔍</button>
                     <button class="icon-btn" title="خيارات أخرى" onclick="showToast('خيارات إضافية قريباً')">⋮</button>
@@ -447,6 +490,23 @@
             </div>
 
         </div>
+    </div>
+</div>
+
+<!-- ══ Language Preference Modal ══════════════════════════════════════════════ -->
+<div class="lang-modal" id="langModal" onclick="if(event.target===this)closeLangModal()">
+    <div class="lang-modal-box">
+        <div class="lang-modal-title">🌐 الترجمة التلقائية</div>
+        <div class="lang-modal-sub">اختر لغتك — ستُترجم رسائل الطرف الآخر تلقائياً إليها</div>
+
+        <div class="lang-toggle-row">
+            <span>تفعيل الترجمة التلقائية</span>
+            <button class="toggle-sw" id="translateToggleSw" onclick="toggleTranslation()"></button>
+        </div>
+
+        <div class="lang-grid" id="langGrid"></div>
+
+        <button class="lang-modal-close" onclick="closeLangModal()">حسناً</button>
     </div>
 </div>
 
@@ -1116,7 +1176,13 @@ function renderMessage(m, data) {
     inner += '<div class="m-body">';
 
     if (m.text) {
-        inner += `<div class="m-bubble">${escHtml(m.text)}</div>`;
+        const displayText = (m.from === 'in' && m.translatedText) ? m.translatedText : m.text;
+        inner += `<div class="m-bubble">${escHtml(displayText)}</div>`;
+        if (m.from === 'in' && m.translatedText) {
+            const origId = 'orig-' + Math.random().toString(36).slice(2, 9);
+            inner += `<div class="translated-label" onclick="toggleOriginal('${origId}')"><span class="tl-icon">🌐</span> مُترجم من ${escHtml(m.translatedFrom || '')}</div>`;
+            inner += `<div class="m-original" id="${origId}">${escHtml(m.text)}</div>`;
+        }
     }
     if (m.img) {
         inner += `<div class="m-img">${m.img}</div>`;
@@ -1193,8 +1259,16 @@ async function sendMessage() {
         const type = activeConv ? activeConv.split('-')[0] : 'service';
         const pool = replies[type] || replies.service;
         const reply = pool[Math.floor(Math.random() * pool.length)];
-        renderMessage({ from: 'in', text: reply, time: String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0') + (now.getHours() < 12 ? ' ص' : ' م') }, data);
-        document.getElementById('messagesArea').scrollTop = 999999;
+        const replyTime = String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0') + (now.getHours() < 12 ? ' ص' : ' م');
+        (async () => {
+            const msgObj = { from: 'in', text: reply, time: replyTime };
+            if (window.Translator) {
+                const tr = await Translator.translateIncoming(reply);
+                if (tr) { msgObj.translatedText = tr.translated; msgObj.translatedFrom = tr.fromName; }
+            }
+            renderMessage(msgObj, data);
+            document.getElementById('messagesArea').scrollTop = 999999;
+        })();
     }, 1800);
 }
 
@@ -1268,7 +1342,56 @@ function showToast(msg) {
     clearTimeout(t._t); t._t = setTimeout(() => t.style.opacity = '0', 2800);
 }
 
+// ─── Translation / Language preference ───────────────────────────────────────
+function openLangModal() {
+    renderLangGrid();
+    updateTranslateBtn();
+    document.getElementById('langModal').style.display = 'flex';
+}
+function closeLangModal() {
+    document.getElementById('langModal').style.display = 'none';
+}
+function toggleTranslation() {
+    if (!window.Translator) return;
+    Translator.setEnabled(!Translator.isEnabled());
+    updateTranslateBtn();
+}
+function updateTranslateBtn() {
+    if (!window.Translator) return;
+    const enabled = Translator.isEnabled();
+    const sw  = document.getElementById('translateToggleSw');
+    const lbl = document.getElementById('translateBtnLabel');
+    if (sw)  sw.classList.toggle('on', enabled);
+    if (lbl) lbl.textContent = enabled ? 'ترجمة ✓' : 'ترجمة';
+}
+function renderLangGrid() {
+    if (!window.Translator) return;
+    const grid = document.getElementById('langGrid');
+    if (!grid) return;
+    const current = Translator.getMyLang();
+    grid.innerHTML = Translator.LANGUAGES.map(l =>
+        `<div class="lang-option${l.code === current ? ' active' : ''}" onclick="selectChatLang('${l.code}',this)">
+            <span class="lf">${l.flag}</span>
+            <span>${l.name}</span>
+        </div>`
+    ).join('');
+}
+function selectChatLang(code, el) {
+    if (!window.Translator) return;
+    Translator.setMyLang(code);
+    document.querySelectorAll('#langGrid .lang-option').forEach(o => o.classList.remove('active'));
+    el.classList.add('active');
+    updateTranslateBtn();
+    showToast('✓ لغتك المفضلة: ' + (Translator.LANGUAGES.find(l => l.code === code)?.name || code));
+}
+function toggleOriginal(id) {
+    const el = document.getElementById(id);
+    if (el) el.classList.toggle('show');
+}
+
 // ─── Boot ─────────────────────────────────────────────────────────────────────
+updateTranslateBtn(); // init toggle state from localStorage
+if (window.I18n) I18n.renderLangSwitcher('langSwitcherChat');
 initFromURL();
 
 // ─── Real-time: try to connect Socket.io if token available ──────────────────
@@ -1311,8 +1434,15 @@ initFromURL();
         const data = CONVS[activeConv] || {};
         const now = new Date(msg.createdAt || Date.now());
         const time = String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
-        renderMessage({ from: 'in', text: msg.content, time }, data);
-        document.getElementById('messagesArea').scrollTop = 999999;
+        (async () => {
+            const msgObj = { from: 'in', text: msg.content, time };
+            if (window.Translator) {
+                const tr = await Translator.translateIncoming(msg.content);
+                if (tr) { msgObj.translatedText = tr.translated; msgObj.translatedFrom = tr.fromName; }
+            }
+            renderMessage(msgObj, data);
+            document.getElementById('messagesArea').scrollTop = 999999;
+        })();
     });
 })();
 

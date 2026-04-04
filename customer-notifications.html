@@ -561,7 +561,7 @@
         }
 
         const readBtnHtml = isUnread
-            ? `<button class="read-btn" onclick="markRead('${id}')">تحديد كمقروء</button>`
+            ? `<button class="read-btn" onclick="markRead(${id})">تحديد كمقروء</button>`
             : `<button class="read-btn" style="opacity:0.4;cursor:default;">مقروء</button>`;
 
         return `<div class="notif-card${isUnread ? ' unread' : ''}" data-status="${isUnread ? 'unread' : 'read'}" data-id="${id}">

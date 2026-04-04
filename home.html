@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html dir="rtl" lang="ar">
+<html dir="rtl" lang="ar" data-page-title="home_page_title">
 <head>
     <meta charset="UTF-8">
     <script>(function(){if(localStorage.getItem("khedmah_theme")==="dark")document.documentElement.classList.add("dark")})()</script>
@@ -592,22 +592,23 @@
         <a href="home.html" class="logo">خدمة</a>
 
         <div class="nav-links-desktop">
-            <a href="search-services.html">خدمات منزلية</a>
-            <a href="tenders.html">مناقصات</a>
-            <a href="equipment.html">معدات</a>
-            <a href="consultations.html">استشارات</a>
+            <a href="search-services.html" data-i18n="nav_home_services">خدمات منزلية</a>
+            <a href="tenders.html" data-i18n="nav_tenders">مناقصات</a>
+            <a href="equipment.html" data-i18n="nav_equipment">معدات</a>
+            <a href="consultations.html" data-i18n="nav_consultations">استشارات</a>
         </div>
 
         <div class="nav-actions">
+            <div id="langSwitcher"></div>
             <button class="theme-toggle" onclick="toggleTheme()" title="تغيير المظهر" aria-label="تبديل الوضع الليلي">
                 <span id="themeIcon">🌙</span>
             </button>
             <div id="authButtons">
-                <a href="login.html" class="btn-auth btn-auth-outline" style="margin-left:0.4rem">دخول</a>
-                <a href="register-customer.html" class="btn-auth btn-auth-fill">سجّل</a>
+                <a href="login.html" class="btn-auth btn-auth-outline" style="margin-left:0.4rem" data-i18n="nav_login">دخول</a>
+                <a href="register-customer.html" class="btn-auth btn-auth-fill" data-i18n="nav_register">سجّل</a>
             </div>
             <div id="dashboardButton" style="display:none">
-                <a href="customer-dashboard.html" class="btn-dashboard">لوحتي</a>
+                <a href="customer-dashboard.html" class="btn-dashboard" data-i18n="nav_my_dashboard">لوحتي</a>
             </div>
             <button class="hamburger" onclick="toggleMobileMenu()" aria-label="القائمة">&#9776;</button>
         </div>
@@ -621,11 +622,11 @@
         <a href="consultations.html">🎓 استشارات</a>
         <hr>
         <div id="mobileAuthLinks">
-            <a href="login.html">دخول</a>
-            <a href="register-customer.html">تسجيل حساب</a>
+            <a href="login.html" data-i18n="nav_login">دخول</a>
+            <a href="register-customer.html" data-i18n="nav_register">تسجيل حساب</a>
         </div>
         <div id="mobileDashboardLink" style="display:none">
-            <a href="customer-dashboard.html">لوحتي</a>
+            <a href="customer-dashboard.html" data-i18n="nav_my_dashboard">لوحتي</a>
         </div>
     </div>
 </nav>
@@ -634,21 +635,21 @@
 <section class="hero">
     <div class="hero-inner">
         <div class="hero-badge">🇸🇦 منصة سعودية معتمدة</div>
-        <h1 class="hero-title">اطلب خدمتك في دقائق</h1>
-        <p class="hero-sub">خدمات منزلية · مناقصات · معدات · استشارات — بدفع آمن وضمان الجودة</p>
+        <h1 class="hero-title" data-i18n="home_hero_title">اطلب خدمتك في دقائق</h1>
+        <p class="hero-sub" data-i18n="home_hero_subtitle">خدمات منزلية · مناقصات · معدات · استشارات — بدفع آمن وضمان الجودة</p>
 
         <div class="hero-search">
             <div class="search-box">
-                <input type="text" id="searchInput" placeholder="ما الخدمة التي تحتاجها؟" autocomplete="off">
+                <input type="text" id="searchInput" placeholder="ما الخدمة التي تحتاجها؟" data-i18n-placeholder="home_search_placeholder" autocomplete="off">
                 <select class="city-select" id="citySelect">
-                    <option value="">المدينة</option>
+                    <option value="" data-i18n="home_search_city_all">المدينة</option>
                     <option value="الرياض">الرياض</option>
                     <option value="جدة">جدة</option>
                     <option value="الدمام">الدمام</option>
                     <option value="مكة">مكة</option>
                     <option value="المدينة">المدينة</option>
                 </select>
-                <button onclick="doSearch()">ابحث الآن 🔍</button>
+                <button onclick="doSearch()" data-i18n="home_search_btn">ابحث الآن 🔍</button>
             </div>
         </div>
 
@@ -668,19 +669,19 @@
     <div class="stats-inner">
         <div class="stat-block">
             <span class="stat-num" id="statProviders">٥٬٠٠٠+</span>
-            <span class="stat-label">مزود معتمد</span>
+            <span class="stat-label" data-i18n="home_stats_providers">مزود معتمد</span>
         </div>
         <div class="stat-block">
             <span class="stat-num" id="statOrders">٣٠٬٠٠٠+</span>
-            <span class="stat-label">طلب مكتمل</span>
+            <span class="stat-label" data-i18n="home_stats_orders">طلب مكتمل</span>
         </div>
         <div class="stat-block">
             <span class="stat-num" id="statRating">٤٫٩ ⭐</span>
-            <span class="stat-label">متوسط التقييم</span>
+            <span class="stat-label" data-i18n="home_stats_rating">متوسط التقييم</span>
         </div>
         <div class="stat-block">
             <span class="stat-num">٢٤/٧</span>
-            <span class="stat-label">دعم مستمر</span>
+            <span class="stat-label" data-i18n="home_trust_support">دعم مستمر</span>
         </div>
     </div>
 </div>
@@ -688,38 +689,38 @@
 <!-- ══ SERVICE CARDS ══════════════════════════════════════════════════ -->
 <section class="services-section">
     <div class="section-inner">
-        <h2 class="section-title">ماذا تحتاج اليوم؟</h2>
-        <p class="section-subtitle">اختر من بين أبرز خدمات المنصة</p>
+        <h2 class="section-title" data-i18n="home_services_title">ماذا تحتاج اليوم؟</h2>
+        <p class="section-subtitle" data-i18n="home_services_subtitle">اختر من بين أبرز خدمات المنصة</p>
         <div class="cards-grid">
             <a href="search-services.html" class="service-card">
                 <div class="card-icon">🏠</div>
                 <div class="card-body">
-                    <div class="card-title">خدمات منزلية</div>
-                    <div class="card-desc">سباكة، كهرباء، تكييف وأكثر من ٥٠ خدمة</div>
+                    <div class="card-title" data-i18n="nav_home_services">خدمات منزلية</div>
+                    <div class="card-desc" data-i18n="home_modules_equipment_desc">سباكة، كهرباء، تكييف وأكثر من ٥٠ خدمة</div>
                 </div>
                 <div class="card-arrow"><i class="fa fa-chevron-left"></i></div>
             </a>
             <a href="tenders.html" class="service-card">
                 <div class="card-icon">📋</div>
                 <div class="card-body">
-                    <div class="card-title">مناقصات</div>
-                    <div class="card-desc">انشر مشروعك واستقبل عروض من متخصصين</div>
+                    <div class="card-title" data-i18n="nav_tenders">مناقصات</div>
+                    <div class="card-desc" data-i18n="home_modules_tenders_desc">انشر مشروعك واستقبل عروض من متخصصين</div>
                 </div>
                 <div class="card-arrow"><i class="fa fa-chevron-left"></i></div>
             </a>
             <a href="equipment.html" class="service-card">
                 <div class="card-icon">🚜</div>
                 <div class="card-body">
-                    <div class="card-title">معدات ثقيلة</div>
-                    <div class="card-desc">استأجر معدات البناء والمشاريع</div>
+                    <div class="card-title" data-i18n="home_modules_equipment">معدات ثقيلة</div>
+                    <div class="card-desc" data-i18n="home_modules_equipment_desc">استأجر معدات البناء والمشاريع</div>
                 </div>
                 <div class="card-arrow"><i class="fa fa-chevron-left"></i></div>
             </a>
             <a href="consultations.html" class="service-card">
                 <div class="card-icon">🎓</div>
                 <div class="card-body">
-                    <div class="card-title">استشارات هندسية</div>
-                    <div class="card-desc">احجز جلسة مع خبير معتمد</div>
+                    <div class="card-title" data-i18n="home_modules_consultations">استشارات هندسية</div>
+                    <div class="card-desc" data-i18n="home_modules_consultations_desc">احجز جلسة مع خبير معتمد</div>
                 </div>
                 <div class="card-arrow"><i class="fa fa-chevron-left"></i></div>
             </a>
@@ -730,25 +731,25 @@
 <!-- ══ HOW IT WORKS ═══════════════════════════════════════════════════ -->
 <section class="how-section">
     <div class="section-inner">
-        <h2 class="section-title">كيف يعمل؟</h2>
-        <p class="section-subtitle">ثلاث خطوات بسيطة للحصول على خدمتك</p>
+        <h2 class="section-title" data-i18n="home_how_title">كيف يعمل؟</h2>
+        <p class="section-subtitle" data-i18n="home_services_subtitle">ثلاث خطوات بسيطة للحصول على خدمتك</p>
         <div class="steps-row">
             <div class="step">
                 <div class="step-icon">🔍</div>
-                <div class="step-title">اختر خدمتك</div>
-                <div class="step-desc">ابحث من بين مئات الخدمات المتاحة</div>
+                <div class="step-title" data-i18n="home_how_step1_title">اختر خدمتك</div>
+                <div class="step-desc" data-i18n="home_how_step1_desc">ابحث من بين مئات الخدمات المتاحة</div>
             </div>
             <div class="step-divider">›</div>
             <div class="step">
                 <div class="step-icon">💳</div>
-                <div class="step-title">ادفع بأمان</div>
-                <div class="step-desc">الدفع محجوز في ضمان حتى إتمام الخدمة</div>
+                <div class="step-title" data-i18n="home_how_step3_title">ادفع بأمان</div>
+                <div class="step-desc" data-i18n="home_how_step3_desc">الدفع محجوز في ضمان حتى إتمام الخدمة</div>
             </div>
             <div class="step-divider">›</div>
             <div class="step">
                 <div class="step-icon">✅</div>
-                <div class="step-title">تابع وقيّم</div>
-                <div class="step-desc">تتبع مباشر مع إمكانية التواصل مع المزود</div>
+                <div class="step-title" data-i18n="home_how_step4_title">تابع وقيّم</div>
+                <div class="step-desc" data-i18n="home_how_step4_desc">تتبع مباشر مع إمكانية التواصل مع المزود</div>
             </div>
         </div>
     </div>
@@ -757,10 +758,10 @@
 <!-- ══ TRUST STRIP ════════════════════════════════════════════════════ -->
 <div class="trust-strip">
     <div class="trust-inner">
-        <div class="trust-item"><span class="ti">🔒</span> دفع آمن بالضمان</div>
-        <div class="trust-item"><span class="ti">✓</span> مزودون معتمدون</div>
+        <div class="trust-item" data-i18n="home_trust_secure"><span class="ti">🔒</span> دفع آمن بالضمان</div>
+        <div class="trust-item" data-i18n="home_trust_verified"><span class="ti">✓</span> مزودون معتمدون</div>
         <div class="trust-item"><span class="ti">⭐</span> تقييمات حقيقية</div>
-        <div class="trust-item"><span class="ti">📞</span> دعم ٢٤/٧</div>
+        <div class="trust-item" data-i18n="home_trust_support"><span class="ti">📞</span> دعم ٢٤/٧</div>
     </div>
 </div>
 
@@ -786,7 +787,7 @@
             <a href="support.html">الدعم</a>
             <a href="register-provider.html">تسجيل كمزود</a>
         </div>
-        <p class="footer-copy">© 2025 خدمة — جميع الحقوق محفوظة</p>
+        <p class="footer-copy" data-i18n="footer_rights">© 2026 خدمة — جميع الحقوق محفوظة</p>
     </div>
 </footer>
 
@@ -797,9 +798,10 @@
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<!-- Khedmah API helper -->
+<!-- Khedmah API helper & i18n -->
 <script src="js/config.js"></script>
-    <script src="js/api.js"></script>
+<script src="js/api.js"></script>
+<script src="js/i18n.js"></script>
 
 <script>
     /* ── Theme ──────────────────────────────────────────────────── */
@@ -819,7 +821,10 @@
     (function () {
         const demo = localStorage.getItem('khedmah_demo');
         if (demo) {
-            // Hide login/register, show dashboard
+            const user = JSON.parse(localStorage.getItem('khedmah_user') || '{}');
+            const dashUrl = user.role === 'provider' ? 'provider-dashboard.html' : 'customer-dashboard.html';
+            // Point dashboard links to correct page
+            document.querySelectorAll('#dashboardButton a, #mobileDashboardLink a').forEach(a => a.href = dashUrl);
             document.getElementById('authButtons').style.display = 'none';
             document.getElementById('dashboardButton').style.display = 'block';
             document.getElementById('mobileAuthLinks').style.display = 'none';
@@ -856,6 +861,29 @@
     // Allow Enter key in search input
     document.getElementById('searchInput').addEventListener('keydown', function (e) {
         if (e.key === 'Enter') doSearch();
+    });
+
+    /* ── Language switcher init ─────────────────────────────────── */
+    document.addEventListener('DOMContentLoaded', function () {
+        if (window.I18n) {
+            I18n.renderLangSwitcher('langSwitcher');
+        }
+    });
+
+    /* ── Re-render on language switch (update nav direction) ────── */
+    window.addEventListener('khedmah:lang-changed', function (e) {
+        const lang = e.detail.lang;
+        // Bootstrap RTL/LTR: swap stylesheet if needed
+        const bsLink = document.querySelector('link[href*="bootstrap"]');
+        if (bsLink) {
+            if (lang === 'en' && bsLink.href.includes('rtl')) {
+                bsLink.href = bsLink.href.replace('rtl', '').replace('.css', '') + '.css';
+            } else if (lang === 'ar' && !bsLink.href.includes('rtl')) {
+                bsLink.href = bsLink.href.replace('.min.css', '.rtl.min.css');
+            }
+        }
+        // Re-style lang switcher active button
+        if (window.I18n) I18n.renderLangSwitcher('langSwitcher');
     });
 
     /* ── Mobile menu ────────────────────────────────────────────── */

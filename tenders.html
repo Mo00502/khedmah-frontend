@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" data-page-title="tenders_page_title">
 <head>
     <meta charset="UTF-8">
     <script>(function(){if(localStorage.getItem("khedmah_theme")==="dark")document.documentElement.classList.add("dark")})()</script>
@@ -159,6 +159,7 @@
 <body>
 <script src="js/config.js"></script>
     <script src="js/api.js"></script>
+    <script src="js/i18n.js"></script>
 <script>
   (function() {
     if (localStorage.getItem('khedmah_theme') === 'dark') {
@@ -173,12 +174,13 @@
         <div class="nav-content">
             <a href="home.html" class="logo">خدمة</a>
             <div class="nav-links">
-                <a href="search-services.html">خدمات منزلية</a>
-                <a href="tenders.html">مناقصات</a>
-                <a href="equipment.html">معدات</a>
-                <a href="consultations.html">استشارات</a>
+                <a href="search-services.html" data-i18n="nav_home_services">خدمات منزلية</a>
+                <a href="tenders.html" class="active" data-i18n="nav_tenders">مناقصات</a>
+                <a href="equipment.html" data-i18n="nav_equipment">معدات</a>
+                <a href="consultations.html" data-i18n="nav_consultations">استشارات</a>
+                <div id="langSwitcherTenders"></div>
                 <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙</button>
-                <button onclick="doLogout()" class="btn btn-outline-danger btn-sm">خروج</button>
+                <button onclick="doLogout()" data-i18n="nav_logout" class="btn btn-outline-danger btn-sm">خروج</button>
                 <a href="customer-dashboard.html" class="avatar-btn">م</a>
             </div>
         </div>
@@ -186,7 +188,7 @@
 
     <div style="background:linear-gradient(135deg,#028090,#02C39A);padding:1.5rem 5%;text-align:center">
       <p style="color:rgba(255,255,255,.85);font-size:.9rem;margin-bottom:.75rem;font-family:'Tajawal',sans-serif">هل لديك مشروع؟ انشر مناقصتك واستقبل عروض من متخصصين</p>
-      <a href="tender-create.html" style="background:white;color:#028090;padding:.75rem 2rem;border-radius:12px;text-decoration:none;font-weight:800;font-size:1rem;display:inline-flex;align-items:center;min-height:48px">+ انشر مناقصة</a>
+      <a href="tender-create.html" data-i18n="tenders_btn_create" style="background:white;color:#028090;padding:.75rem 2rem;border-radius:12px;text-decoration:none;font-weight:800;font-size:1rem;display:inline-flex;align-items:center;min-height:48px">+ انشر مناقصة</a>
     </div>
 
     <div class="page-header">
@@ -196,8 +198,8 @@
                 <div class="page-subtitle">ابحث عن مناقصات مفتوحة وقدّم عروضك مباشرة</div>
             </div>
             <div class="header-search">
-                <input type="text" id="searchInput" placeholder="🔍 ابحث في المناقصات..." oninput="applyFilters()">
-                <button onclick="applyFilters()">بحث</button>
+                <input type="text" id="searchInput" placeholder="🔍 ابحث في المناقصات..." data-i18n-placeholder="tenders_search_placeholder" oninput="applyFilters()">
+                <button onclick="applyFilters()" data-i18n="home_search_btn">بحث</button>
             </div>
         </div>
     </div>
@@ -216,7 +218,7 @@
             </div>
 
             <div class="filter-panel">
-                <div class="filter-title">الحالة</div>
+                <div class="filter-title" data-i18n="tenders_filter_status">الحالة</div>
                 <div class="filter-option"><input type="checkbox" id="st1" data-filter="status" value="open" onchange="applyFilters()"><label for="st1">🟢 مفتوح</label></div>
                 <div class="filter-option"><input type="checkbox" id="st2" data-filter="status" value="soon" onchange="applyFilters()"><label for="st2">🟡 يغلق قريبًا</label></div>
                 <div class="filter-option"><input type="checkbox" id="st3" data-filter="status" value="closed" onchange="applyFilters()"><label for="st3">🔴 مغلق</label></div>
@@ -683,6 +685,7 @@
 
         // Role-aware dashboard link
         document.addEventListener('DOMContentLoaded', async function() {
+            if (window.I18n) I18n.renderLangSwitcher('langSwitcherTenders');
             const role = API.auth.getRole();
             const btn = document.querySelector('.avatar-btn');
             if (btn && role === 'provider') btn.href = 'provider-dashboard.html';

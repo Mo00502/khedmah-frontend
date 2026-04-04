@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" data-page-title="consultations_page_title">
 <head>
     <meta charset="UTF-8">
     <script>(function(){if(localStorage.getItem("khedmah_theme")==="dark")document.documentElement.classList.add("dark")})()</script>
@@ -22,7 +22,16 @@
         .nav-links a { text-decoration: none; color: var(--gray); font-weight: 500; font-size: 0.9rem; }
         .nav-links a:hover, .nav-links a.active { color: var(--primary); }
         .avatar-btn { width: 36px; height: 36px; background: linear-gradient(135deg, var(--primary), var(--accent)); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; text-decoration: none; font-size: 0.85rem; }
+        .theme-toggle { width: 34px; height: 34px; border: 1.5px solid #e2e8f0; border-radius: 10px; background: transparent; cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; }
 
+        /* Step Banner */
+        .step-banner { background: linear-gradient(135deg,#f0fdf4,#ecfdf5); border-bottom: 1px solid #d1fae5; padding: .85rem 5%; }
+        .step-banner-inner { max-width: 900px; margin: 0 auto; display: flex; align-items: center; justify-content: center; gap: 0.6rem; flex-wrap: wrap; }
+        .step-item { display: flex; align-items: center; gap: .4rem; font-size: .8rem; color: #065f46; font-weight: 700; }
+        .step-num { background: #10b981; color: white; width: 22px; height: 22px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: .7rem; flex-shrink: 0; }
+        .step-sep { color: #6ee7b7; font-size: 1rem; }
+
+        /* Page Header */
         .page-header { background: white; border-bottom: 1px solid #e2e8f0; padding: 1.25rem 5%; }
         .page-header-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
         .page-title { font-size: 1.3rem; font-weight: 800; }
@@ -32,6 +41,21 @@
         .header-search input { flex: 1; border: none; background: transparent; padding: 0.5rem 1rem; font-family: 'Tajawal', sans-serif; font-size: 16px; outline: none; }
         .header-search button { background: var(--primary); border: none; color: white; padding: 0.5rem 1rem; cursor: pointer; font-size: 0.9rem; font-family: 'Tajawal', sans-serif; white-space: nowrap; }
 
+        /* Active consultations strip */
+        .active-strip { background: white; border-bottom: 2px solid var(--accent); padding: .75rem 5%; display: none; }
+        .active-strip-inner { max-width: 1200px; margin: 0 auto; }
+        .active-strip-title { font-size: .82rem; font-weight: 700; color: var(--primary); margin-bottom: .5rem; }
+        .active-strip-list { display: flex; gap: .75rem; overflow-x: auto; padding-bottom: .25rem; }
+        .active-cons-card { display: flex; align-items: center; gap: .6rem; background: var(--light); border: 1.5px solid #e2e8f0; border-radius: 12px; padding: .5rem .85rem; cursor: pointer; min-width: 200px; transition: border-color .15s; flex-shrink: 0; }
+        .active-cons-card:hover { border-color: var(--primary); }
+        .active-cons-avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: .9rem; flex-shrink: 0; }
+        .active-status { font-size: .7rem; font-weight: 600; padding: .15rem .5rem; border-radius: 8px; margin-right: auto; white-space: nowrap; }
+        .status-pending { background: rgba(245,158,11,.12); color: #92400e; }
+        .status-accepted { background: rgba(16,185,129,.12); color: #065f46; }
+        .status-active { background: rgba(2,128,144,.12); color: #064e3b; }
+        .status-done { background: rgba(100,116,139,.12); color: #475569; }
+
+        /* Layout */
         .page-layout { max-width: 1200px; margin: 0 auto; padding: 1.5rem 5%; display: flex; gap: 1.5rem; }
 
         /* Filters */
@@ -43,95 +67,154 @@
         .filter-option input[type=checkbox] { accent-color: var(--primary); width: 15px; height: 15px; flex-shrink: 0; }
         .filter-option label { font-size: 0.85rem; cursor: pointer; flex: 1; }
         .filter-option .count { font-size: 0.72rem; color: var(--gray); }
-        .filter-option input[type=radio] { accent-color: var(--primary); width: 15px; height: 15px; flex-shrink: 0; }
 
         /* Results */
         .results-area { flex: 1; min-width: 0; }
         .results-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem; }
         .results-count { font-size: 0.9rem; color: var(--gray); }
         .results-count strong { color: var(--dark); }
-        .sort-select { border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 0.45rem 0.85rem; font-family: 'Tajawal', sans-serif; font-size: 16px; outline: none; background: white; cursor: pointer; }
+        .sort-select { border: 1.5px solid #e2e8f0; border-radius: 10px; padding: .45rem .85rem; font-family: 'Tajawal', sans-serif; font-size: 16px; outline: none; background: white; cursor: pointer; }
 
-        /* Consultant Cards — same layout as provider cards in search-services.html */
+        /* Recommended Section */
+        .rec-section { margin-bottom: 1.5rem; }
+        .rec-title { font-size: .9rem; font-weight: 700; margin-bottom: .75rem; display: flex; align-items: center; gap: .4rem; }
+        .rec-title span { color: var(--primary); }
+        .rec-list { display: flex; gap: .75rem; overflow-x: auto; padding-bottom: .25rem; }
+        .rec-card { background: white; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: .9rem; cursor: pointer; min-width: 150px; text-align: center; transition: border-color .15s, transform .15s; flex-shrink: 0; }
+        .rec-card:hover { border-color: var(--primary); transform: translateY(-2px); }
+        .rec-avatar { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 1.1rem; margin: 0 auto .5rem; }
+        .rec-name { font-weight: 700; font-size: .82rem; margin-bottom: .15rem; }
+        .rec-spec { font-size: .72rem; color: var(--gray); margin-bottom: .25rem; }
+        .rec-rating { font-size: .78rem; color: #f59e0b; font-weight: 600; }
+        .rec-price { font-size: .75rem; color: var(--primary); font-weight: 700; margin-top: .15rem; }
+
+        /* Consultant Cards */
         .consultants-list { display: flex; flex-direction: column; gap: 1rem; }
-        .consultant-card { background: white; border-radius: 16px; padding: 1.25rem 1.5rem; box-shadow: 0 2px 10px rgba(0,0,0,0.06); display: flex; align-items: center; gap: 1.25rem; transition: box-shadow 0.2s, transform 0.2s; }
+        .consultant-card { background: white; border-radius: 16px; padding: 1.25rem 1.5rem; box-shadow: 0 2px 10px rgba(0,0,0,0.06); display: flex; align-items: center; gap: 1.25rem; transition: box-shadow .2s, transform .2s; }
         .consultant-card:hover { box-shadow: 0 6px 24px rgba(0,0,0,0.1); transform: translateY(-1px); }
         .consultant-card.hidden { display: none; }
         .cons-avatar { width: 64px; height: 64px; background: linear-gradient(135deg, var(--primary), var(--accent)); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 1.4rem; flex-shrink: 0; position: relative; }
-        .verified-tick { position: absolute; bottom: 0; left: 0; width: 20px; height: 20px; background: var(--success); border-radius: 50%; border: 2px solid white; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; color: white; }
+        .verified-tick { position: absolute; bottom: 0; left: 0; width: 20px; height: 20px; background: var(--success); border-radius: 50%; border: 2px solid white; display: flex; align-items: center; justify-content: center; font-size: .65rem; color: white; }
         .cons-info { flex: 1; min-width: 0; }
-        .cons-name { font-weight: 700; font-size: 1rem; margin-bottom: 0.15rem; }
-        .cons-specialty { color: var(--gray); font-size: 0.85rem; margin-bottom: 0.35rem; }
-        .cons-meta { display: flex; flex-wrap: wrap; gap: 0.75rem; font-size: 0.8rem; color: var(--gray); }
-        .cons-meta span { display: flex; align-items: center; gap: 0.25rem; }
+        .cons-name { font-weight: 700; font-size: 1rem; margin-bottom: .15rem; }
+        .badge-top-rated { background: linear-gradient(135deg,#f59e0b,#fbbf24); color: white; font-size: .68rem; font-weight: 700; padding: .1rem .45rem; border-radius: 8px; white-space: nowrap; }
+        .cons-specialty { color: var(--gray); font-size: .85rem; margin-bottom: .35rem; }
+        .cons-meta { display: flex; flex-wrap: wrap; gap: .75rem; font-size: .8rem; color: var(--gray); }
+        .cons-meta span { display: flex; align-items: center; gap: .25rem; }
         .rating { color: #f59e0b; font-weight: 600; }
-        .cons-tags { display: flex; gap: 0.4rem; margin-top: 0.5rem; flex-wrap: wrap; }
-        .tag { background: var(--light); border-radius: 6px; padding: 0.15rem 0.5rem; font-size: 0.72rem; color: var(--gray); }
-        .cons-right { text-align: center; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
+        .cons-tags { display: flex; gap: .4rem; margin-top: .5rem; flex-wrap: wrap; }
+        .tag { background: var(--light); border-radius: 6px; padding: .15rem .5rem; font-size: .72rem; color: var(--gray); }
+        .cons-right { text-align: center; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: .5rem; }
         .cons-price { font-size: 1.1rem; font-weight: 800; color: var(--primary); }
-        .cons-price small { font-size: 0.72rem; font-weight: 400; color: var(--gray); display: block; }
-        .btn-book { background: var(--primary); color: white; border: none; border-radius: 10px; padding: 0.5rem 1.1rem; font-family: 'Tajawal', sans-serif; font-size: 0.85rem; font-weight: 600; cursor: pointer; white-space: nowrap; }
-        .btn-book:hover { background: #026f7e; }
-        .btn-chat-cons { background: transparent; color: var(--primary); border: 1.5px solid var(--primary); border-radius: 10px; padding: 0.4rem 0.9rem; font-family: 'Tajawal', sans-serif; font-size: 0.82rem; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-block; white-space: nowrap; }
-        .btn-chat-cons:hover { background: rgba(2,128,144,0.08); color: var(--primary); }
-        .avail-badge { font-size: 0.72rem; font-weight: 600; padding: 0.15rem 0.55rem; border-radius: 8px; }
-        .avail-yes { background: rgba(16,185,129,0.12); color: #065f46; }
-        .avail-no { background: rgba(239,68,68,0.1); color: #991b1b; }
+        .cons-price small { font-size: .72rem; font-weight: 400; color: var(--gray); display: block; }
+        .avail-badge { font-size: .72rem; font-weight: 600; padding: .15rem .55rem; border-radius: 8px; }
+        .avail-yes { background: rgba(16,185,129,.12); color: #065f46; }
+        .avail-no { background: rgba(239,68,68,.1); color: #991b1b; }
+        .btn-request { background: var(--primary); color: white; border: none; border-radius: 10px; padding: .5rem 1.1rem; font-family: 'Tajawal', sans-serif; font-size: .85rem; font-weight: 600; cursor: pointer; white-space: nowrap; }
+        .btn-request:hover { background: #026f7e; }
 
-        /* Modal */
-        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 1000; align-items: center; justify-content: center; padding: 1rem; }
+        /* Modals */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 1000; align-items: center; justify-content: center; padding: 1rem; }
         .modal-overlay.show { display: flex; }
         .modal { background: white; border-radius: 20px; width: 100%; max-width: 480px; max-height: 90vh; overflow-y: auto; padding: 1.75rem; }
         .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
         .modal-title { font-size: 1.15rem; font-weight: 800; }
         .modal-close { width: 32px; height: 32px; background: var(--light); border: none; border-radius: 50%; cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; }
         .form-group { margin-bottom: 1rem; }
-        .form-label { font-size: 0.85rem; font-weight: 600; display: block; margin-bottom: 0.4rem; }
-        .form-control { width: 100%; border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 0.6rem 0.9rem; font-family: 'Tajawal', sans-serif; font-size: 16px; outline: none; }
+        .form-label { font-size: .85rem; font-weight: 600; display: block; margin-bottom: .4rem; }
+        .form-control { width: 100%; border: 1.5px solid #e2e8f0; border-radius: 10px; padding: .6rem .9rem; font-family: 'Tajawal', sans-serif; font-size: 16px; outline: none; }
         .form-control:focus { border-color: var(--primary); }
         textarea.form-control { resize: vertical; min-height: 80px; }
-        .slot-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin-top: 0.4rem; }
-        .slot-btn { border: 1.5px solid #e2e8f0; background: white; border-radius: 8px; padding: 0.45rem; font-family: 'Tajawal', sans-serif; font-size: 0.82rem; cursor: pointer; text-align: center; transition: all 0.15s; }
-        .slot-btn:hover { border-color: var(--primary); color: var(--primary); }
-        .slot-btn.selected { background: var(--primary); border-color: var(--primary); color: white; font-weight: 600; }
-        .modal-footer { display: flex; gap: 0.75rem; margin-top: 1.5rem; }
-        .btn-full { flex: 1; padding: 0.7rem; border-radius: 12px; font-family: 'Tajawal', sans-serif; font-size: 0.95rem; font-weight: 700; cursor: pointer; border: none; }
+        .modal-footer { display: flex; gap: .75rem; margin-top: 1.5rem; }
+        .btn-full { flex: 1; padding: .7rem; border-radius: 12px; font-family: 'Tajawal', sans-serif; font-size: .95rem; font-weight: 700; cursor: pointer; border: none; }
         .btn-submit { background: var(--primary); color: white; }
         .btn-submit:hover { background: #026f7e; }
         .btn-cancel { background: var(--light); color: var(--dark); }
-        .mode-btn { flex: 1; padding: 0.5rem 0.75rem; border: 1.5px solid #e2e8f0; border-radius: 10px; background: white; font-family: 'Tajawal', sans-serif; font-size: 0.85rem; cursor: pointer; transition: all 0.15s; font-weight: 500; }
+        .btn-danger { background: #fef2f2; color: var(--error); border: 1.5px solid #fecaca; }
+        .mode-btn { flex: 1; padding: .5rem .75rem; border: 1.5px solid #e2e8f0; border-radius: 10px; background: white; font-family: 'Tajawal', sans-serif; font-size: .85rem; cursor: pointer; transition: all .15s; font-weight: 500; }
         .mode-btn:hover { border-color: var(--primary); color: var(--primary); }
         .mode-btn.mode-active { background: var(--primary); border-color: var(--primary); color: white; font-weight: 700; }
-        html.dark .mode-btn { background: #0f172a; border-color: #334155; color: #e2e8f0; }
-        html.dark .mode-btn.mode-active { background: var(--primary); border-color: var(--primary); color: white; }
+        .slot-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: .5rem; margin-top: .4rem; }
+        .slot-btn { border: 1.5px solid #e2e8f0; background: white; border-radius: 8px; padding: .45rem; font-family: 'Tajawal', sans-serif; font-size: .82rem; cursor: pointer; text-align: center; transition: all .15s; }
+        .slot-btn:hover { border-color: var(--primary); color: var(--primary); }
+        .slot-btn.selected { background: var(--primary); border-color: var(--primary); color: white; font-weight: 600; }
+        .alert-warning { background: #fef3c7; color: #92400e; border-radius: 10px; padding: .6rem .9rem; font-size: .82rem; margin-top: .5rem; display: none; }
+        .alert-danger { background: #fef2f2; color: #991b1b; border-radius: 10px; padding: .6rem .9rem; font-size: .82rem; margin-top: .5rem; display: none; }
 
-        .empty-state { text-align: center; padding: 3rem 1rem; color: var(--gray); }
-        .empty-state .icon { font-size: 3rem; margin-bottom: 1rem; }
+        /* Chat Modal */
+        .chat-modal { max-width: 560px; padding: 0; display: flex; flex-direction: column; height: 90vh; }
+        .chat-modal-header { padding: 1.25rem 1.5rem; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; gap: .75rem; }
+        .chat-cons-avatar { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 1rem; flex-shrink: 0; }
+        .chat-cons-info { flex: 1; }
+        .chat-cons-info strong { display: block; font-size: .95rem; }
+        .chat-cons-info small { font-size: .78rem; color: var(--gray); }
+        .chat-status-bar { padding: .6rem 1.5rem; font-size: .82rem; font-weight: 600; text-align: center; }
+        .chat-status-pending { background: #fef3c7; color: #92400e; }
+        .chat-status-accepted { background: #d1fae5; color: #065f46; }
+        .chat-status-active { background: #cffafe; color: #0e7490; }
+        .chat-status-done { background: #e0e7ff; color: #3730a3; }
+        .chat-status-rejected { background: #fee2e2; color: #991b1b; }
+        .chat-messages { flex: 1; overflow-y: auto; padding: 1rem 1.5rem; display: flex; flex-direction: column; gap: .65rem; }
+        .chat-msg { display: flex; flex-direction: column; }
+        .msg-out { align-items: flex-start; }
+        .msg-in { align-items: flex-end; }
+        .msg-bubble { max-width: 80%; padding: .55rem .9rem; border-radius: 14px; font-size: .88rem; line-height: 1.5; }
+        .msg-out .msg-bubble { background: var(--primary); color: white; border-radius: 14px 14px 14px 4px; }
+        .msg-in .msg-bubble { background: var(--light); color: var(--dark); border-radius: 14px 14px 4px 14px; }
+        .chat-msg.msg-system { align-items: center; }
+        .chat-msg.msg-system .msg-bubble { background: #f1f5f9; color: var(--gray); font-size: .78rem; border-radius: 8px; text-align: center; max-width: 100%; }
+        .msg-time { font-size: .68rem; color: var(--gray); margin-top: .2rem; }
+        .chat-security-warning { background: #fef3c7; border: 1px solid #fde68a; color: #92400e; padding: .6rem 1rem; font-size: .8rem; display: none; margin: 0 1.5rem; border-radius: 10px; }
+        .chat-provider-actions { padding: .75rem 1.5rem; background: #f0fdf4; border-top: 1px solid #d1fae5; display: none; gap: .5rem; }
+        .chat-completed-actions { padding: .75rem 1.5rem; background: #ede9fe; border-top: 1px solid #ddd6fe; display: none; justify-content: center; }
+        .chat-input-area { padding: .75rem 1.5rem; border-top: 1px solid #e2e8f0; display: none; gap: .5rem; align-items: flex-end; }
+        .chat-input-area textarea { flex: 1; border: 1.5px solid #e2e8f0; border-radius: 12px; padding: .6rem .9rem; font-family: 'Tajawal', sans-serif; font-size: 15px; outline: none; resize: none; height: 44px; }
+        .chat-input-area textarea:focus { border-color: var(--primary); }
+        .btn-send { background: var(--primary); color: white; border: none; border-radius: 12px; width: 44px; height: 44px; cursor: pointer; font-size: 1.1rem; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+        .btn-schedule { background: var(--accent); color: white; border: none; border-radius: 10px; padding: .45rem 1rem; font-family: 'Tajawal', sans-serif; font-size: .85rem; font-weight: 700; cursor: pointer; display: none; align-items: center; gap: .3rem; }
 
-        /* Theme Toggle */
-        .theme-toggle { width: 34px; height: 34px; border: 1.5px solid #e2e8f0; border-radius: 10px; background: transparent; cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; }
+        /* Rating Modal */
+        .star-btn { font-size: 1.4rem; cursor: pointer; transition: transform .1s; display: inline-block; }
+        .star-btn:hover { transform: scale(1.2); }
+        .star-filled { color: #f59e0b; }
+        .star-empty { color: #d1d5db; }
+        .sub-rating-row { display: flex; align-items: center; justify-content: space-between; padding: .5rem 0; border-bottom: 1px solid #f1f5f9; }
+        .sub-rating-label { font-size: .85rem; font-weight: 600; }
+        .rating-tags-wrap { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .75rem; }
+        .rating-tag { border: 1.5px solid #e2e8f0; background: white; border-radius: 20px; padding: .3rem .9rem; font-family: 'Tajawal', sans-serif; font-size: .82rem; cursor: pointer; transition: all .15s; }
+        .rating-tag.tag-selected { background: var(--primary); border-color: var(--primary); color: white; font-weight: 600; }
+
+        /* Empty state */
+        .empty-state-ux { text-align: center; padding: 3rem 1rem; color: var(--gray); }
 
         /* Dark Mode */
         html.dark body { background: #0f172a; color: #e2e8f0; }
-        html.dark nav { background: #1e293b; box-shadow: 0 2px 10px rgba(0,0,0,0.4); }
-        html.dark .nav-links a { color: #94a3b8; }
-        html.dark .nav-links a.active { color: var(--primary); }
+        html.dark nav, html.dark .filter-panel, html.dark .modal, html.dark .chat-modal { background: #1e293b; }
         html.dark .page-header { background: #1e293b; border-color: #334155; }
         html.dark .header-search { background: #0f172a; border-color: #334155; }
         html.dark .header-search input { color: #e2e8f0; }
-        html.dark .filter-panel { background: #1e293b; }
-        html.dark .filter-option label { color: #cbd5e1; }
-        html.dark .sort-select { background: #1e293b; color: #e2e8f0; border-color: #334155; }
-        html.dark .consultant-card { background: #1e293b; }
+        html.dark .consultant-card, html.dark .rec-card, html.dark .active-cons-card { background: #1e293b; }
+        html.dark .active-strip { background: #1e293b; border-color: var(--accent); }
+        html.dark .step-banner { background: #064e3b; }
         html.dark .tag { background: #0f172a; color: #94a3b8; }
-        html.dark .modal { background: #1e293b; }
+        html.dark .sort-select { background: #1e293b; color: #e2e8f0; border-color: #334155; }
         html.dark .form-control { background: #0f172a; color: #e2e8f0; border-color: #334155; }
         html.dark .form-control:focus { border-color: var(--primary); }
         html.dark .slot-btn { background: #0f172a; border-color: #334155; color: #e2e8f0; }
-        html.dark .slot-btn:hover { border-color: var(--primary); color: var(--primary); }
         html.dark .slot-btn.selected { background: var(--primary); color: white; }
         html.dark .btn-cancel { background: #334155; color: #e2e8f0; }
+        html.dark .mode-btn { background: #0f172a; border-color: #334155; color: #e2e8f0; }
+        html.dark .mode-btn.mode-active { background: var(--primary); color: white; }
+        html.dark .chat-messages { background: #0f172a; }
+        html.dark .msg-in .msg-bubble { background: #334155; color: #e2e8f0; }
+        html.dark .chat-msg.msg-system .msg-bubble { background: #1e293b; }
+        html.dark .chat-input-area { background: #1e293b; border-color: #334155; }
+        html.dark .chat-input-area textarea { background: #0f172a; color: #e2e8f0; border-color: #334155; }
+        html.dark .chat-modal-header, html.dark .chat-status-bar { background: #1e293b; }
+        html.dark .rating-tag { background: #0f172a; border-color: #334155; color: #e2e8f0; }
+        html.dark .rec-section, html.dark .results-area { color: #e2e8f0; }
         html.dark .theme-toggle { border-color: #334155; color: #e2e8f0; }
+        html.dark .filter-option label { color: #cbd5e1; }
 
         @media (max-width: 768px) {
             .filters-sidebar { display: none; }
@@ -139,473 +222,768 @@
             .consultant-card { flex-wrap: wrap; }
         }
     </style>
-<link rel="stylesheet" href="css/khedmah-ux.css">
+    <link rel="stylesheet" href="css/khedmah-ux.css">
 </head>
 <script>
-  (function() {
-    if (localStorage.getItem('khedmah_theme') === 'dark') {
-      document.documentElement.classList.add('dark');
-    }
-    if (!localStorage.getItem('khedmah_demo')) {
-      window.location.href = 'login.html';
-    }
-  })();
+(function() {
+    if (localStorage.getItem('khedmah_theme') === 'dark') document.documentElement.classList.add('dark');
+    if (!localStorage.getItem('khedmah_demo')) window.location.href = 'login.html';
+})();
 </script>
-
 <body>
 <script src="js/config.js"></script>
-    <script src="js/api.js"></script>
-    <nav>
-        <div class="nav-content">
-            <a href="home.html" class="logo">خدمة</a>
-            <div class="nav-links">
-                <a href="search-services.html">خدمات منزلية</a>
-                <a href="tenders.html">مناقصات</a>
-                <a href="equipment.html">معدات</a>
-                <a href="consultations.html">استشارات</a>
-                <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙</button>
-                <button onclick="doLogout()" style="background:none;border:1.5px solid #e2e8f0;border-radius:10px;padding:0.35rem 0.75rem;font-family:'Tajawal',sans-serif;font-size:0.82rem;color:var(--gray);cursor:pointer;">خروج</button>
-                <a href="customer-dashboard.html" class="avatar-btn">م</a>
-            </div>
-        </div>
-    </nav>
+<script src="js/api.js"></script>
+<script src="js/i18n.js"></script>
 
-    <div style="background:#f0fdf4;border-bottom:1px solid #d1fae5;padding:.85rem 5%">
-      <div style="max-width:900px;margin:0 auto;display:flex;align-items:center;justify-content:center;gap:2rem;flex-wrap:wrap">
-        <div style="display:flex;align-items:center;gap:.5rem;font-family:'Tajawal',sans-serif;font-size:.875rem;color:#065f46;font-weight:700">
-          <span style="background:#10b981;color:white;width:24px;height:24px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:.75rem;flex-shrink:0">١</span>
-          اختر الخبير
-        </div>
-        <span style="color:#d1fae5;font-size:1.2rem">←</span>
-        <div style="display:flex;align-items:center;gap:.5rem;font-family:'Tajawal',sans-serif;font-size:.875rem;color:#065f46;font-weight:700">
-          <span style="background:#10b981;color:white;width:24px;height:24px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:.75rem;flex-shrink:0">٢</span>
-          احجز الموعد
-        </div>
-        <span style="color:#d1fae5;font-size:1.2rem">←</span>
-        <div style="display:flex;align-items:center;gap:.5rem;font-family:'Tajawal',sans-serif;font-size:.875rem;color:#065f46;font-weight:700">
-          <span style="background:#10b981;color:white;width:24px;height:24px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:.75rem;flex-shrink:0">٣</span>
-          ابدأ الجلسة
-        </div>
-      </div>
-    </div>
-
-    <div class="page-header">
-        <div class="page-header-inner">
-            <div>
-                <div class="page-title">الاستشارات <span>المتخصصة</span></div>
-                <div class="page-subtitle">احجز جلسة مع خبراء معتمدين في مجالك</div>
-            </div>
-            <div class="header-search">
-                <input type="text" id="searchInput" placeholder="🔍 ابحث عن استشاري..." oninput="applyFilters()">
-                <button onclick="applyFilters()">بحث</button>
-            </div>
+<nav>
+    <div class="nav-content">
+        <a href="home.html" class="logo">خدمة</a>
+        <div class="nav-links">
+            <a href="search-services.html" data-i18n="nav_home_services">خدمات منزلية</a>
+            <a href="tenders.html" data-i18n="nav_tenders">مناقصات</a>
+            <a href="equipment.html" data-i18n="nav_equipment">معدات</a>
+            <a href="consultations.html" class="active" data-i18n="nav_consultations">استشارات</a>
+            <div id="langSwitcherConsult"></div>
+            <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙</button>
+            <button onclick="doLogout()" data-i18n="nav_logout" style="background:none;border:1.5px solid #e2e8f0;border-radius:10px;padding:.35rem .75rem;font-family:'Tajawal',sans-serif;font-size:.82rem;color:var(--gray);cursor:pointer;">خروج</button>
+            <a href="customer-dashboard.html" class="avatar-btn" id="dashLink">م</a>
         </div>
     </div>
+</nav>
 
-    <div class="page-layout">
-        <aside class="filters-sidebar">
-            <div class="filter-panel">
-                <div class="filter-title">التخصص <span class="filter-clear" onclick="clearFilters()">مسح الكل</span></div>
-                <div class="filter-option"><input type="checkbox" id="sp1" data-filter="spec" value="هندسة" onchange="applyFilters()"><label for="sp1">🏗️ هندسة ومقاولات</label><span class="count">18</span></div>
-                <div class="filter-option"><input type="checkbox" id="sp2" data-filter="spec" value="قانون" onchange="applyFilters()"><label for="sp2">⚖️ قانوني وعقود</label><span class="count">12</span></div>
-                <div class="filter-option"><input type="checkbox" id="sp3" data-filter="spec" value="مالية" onchange="applyFilters()"><label for="sp3">📊 مالية وأعمال</label><span class="count">15</span></div>
-                <div class="filter-option"><input type="checkbox" id="sp4" data-filter="spec" value="تقنية" onchange="applyFilters()"><label for="sp4">💻 تقنية المعلومات</label><span class="count">21</span></div>
-                <div class="filter-option"><input type="checkbox" id="sp5" data-filter="spec" value="صحة" onchange="applyFilters()"><label for="sp5">🏥 صحة وطب</label><span class="count">9</span></div>
-            </div>
-            <div class="filter-panel">
-                <div class="filter-title">التقييم</div>
-                <div class="filter-option"><input type="checkbox" id="r5" data-filter="rating" value="5" onchange="applyFilters()"><label for="r5">⭐ 4.5 فأعلى</label></div>
-                <div class="filter-option"><input type="checkbox" id="r4" data-filter="rating" value="4" onchange="applyFilters()"><label for="r4">⭐ 4.0 فأعلى</label></div>
-            </div>
-            <div class="filter-panel">
-                <div class="filter-title">نوع الجلسة</div>
-                <div class="filter-option"><input type="checkbox" id="m1" data-filter="mode" value="video" onchange="applyFilters()"><label for="m1">📹 فيديو</label></div>
-                <div class="filter-option"><input type="checkbox" id="m2" data-filter="mode" value="chat" onchange="applyFilters()"><label for="m2">💬 دردشة</label></div>
-                <div class="filter-option"><input type="checkbox" id="m3" data-filter="mode" value="inperson" onchange="applyFilters()"><label for="m3">🤝 حضوري</label></div>
-            </div>
-        </aside>
+<!-- 6-Step Flow Banner -->
+<div class="step-banner">
+    <div class="step-banner-inner">
+        <div class="step-item"><span class="step-num">١</span> طلب الاستشارة</div>
+        <span class="step-sep">←</span>
+        <div class="step-item"><span class="step-num">٢</span> محادثة مع الخبير</div>
+        <span class="step-sep">←</span>
+        <div class="step-item"><span class="step-num">٣</span> موافقة الخبير</div>
+        <span class="step-sep">←</span>
+        <div class="step-item"><span class="step-num">٤</span> الدفع وتحديد الموعد</div>
+        <span class="step-sep">←</span>
+        <div class="step-item"><span class="step-num">٥</span> الجلسة</div>
+        <span class="step-sep">←</span>
+        <div class="step-item"><span class="step-num">٦</span> التقييم</div>
+    </div>
+</div>
 
-        <div class="results-area">
-            <div class="results-header">
-                <div class="results-count">عرض <strong id="visibleCount">6</strong> من <strong>6</strong> استشاري</div>
-                <select class="sort-select" id="sortSelect" onchange="sortConsultants()">
-                    <option value="rating">الأعلى تقييمًا</option>
-                    <option value="price_low">السعر: الأقل</option>
-                    <option value="price_high">السعر: الأعلى</option>
-                    <option value="experience">الأكثر خبرة</option>
-                </select>
-            </div>
-
-            <div class="consultants-list" id="consultantsList">
-
-                <div class="consultant-card" data-spec="هندسة" data-rating="4.9" data-price="350" data-exp="15" data-mode="video">
-                    <div class="cons-avatar">خ<div class="verified-tick">✓</div></div>
-                    <div class="cons-info">
-                        <div class="cons-name">م. خالد العمري</div>
-                        <div class="cons-specialty">مستشار هندسي — مشاريع البنية التحتية</div>
-                        <div class="cons-meta">
-                            <span class="rating">⭐ 4.9</span>
-                            <span>📋 320 جلسة</span>
-                            <span>💼 15 سنة خبرة</span>
-                            <span>📹 فيديو</span>
-                        </div>
-                        <div class="cons-tags">
-                            <span class="tag">المقاولات</span>
-                            <span class="tag">إدارة مشاريع</span>
-                            <span class="tag">عقود البناء</span>
-                        </div>
-                    </div>
-                    <div class="cons-right">
-                        <div class="cons-price">350 ر.س<small>/ساعة</small></div>
-                        <span class="avail-badge avail-yes">متاح اليوم</span>
-                        <button class="btn-book" onclick="openBookModal('م. خالد العمري', 350, 1)">حجز جلسة</button>
-                        <a href="chat.html?type=consult&id=1" class="btn-chat-cons">💬 تواصل</a>
-                    </div>
-                </div>
-
-                <div class="consultant-card" data-spec="قانون" data-rating="4.8" data-price="500" data-exp="12" data-mode="video">
-                    <div class="cons-avatar" style="background:linear-gradient(135deg,#7c3aed,#a78bfa)">س<div class="verified-tick">✓</div></div>
-                    <div class="cons-info">
-                        <div class="cons-name">أ. سارة الغامدي</div>
-                        <div class="cons-specialty">مستشارة قانونية — عقود وملكية فكرية</div>
-                        <div class="cons-meta">
-                            <span class="rating">⭐ 4.8</span>
-                            <span>📋 210 جلسة</span>
-                            <span>💼 12 سنة خبرة</span>
-                            <span>📹 فيديو</span>
-                        </div>
-                        <div class="cons-tags">
-                            <span class="tag">عقود تجارية</span>
-                            <span class="tag">نزاعات عمالية</span>
-                        </div>
-                    </div>
-                    <div class="cons-right">
-                        <div class="cons-price">500 ر.س<small>/ساعة</small></div>
-                        <span class="avail-badge avail-yes">متاح اليوم</span>
-                        <button class="btn-book" onclick="openBookModal('أ. سارة الغامدي', 500, 2)">حجز جلسة</button>
-                        <a href="chat.html?type=consult&id=2" class="btn-chat-cons">💬 تواصل</a>
-                    </div>
-                </div>
-
-                <div class="consultant-card" data-spec="مالية" data-rating="4.7" data-price="280" data-exp="10" data-mode="chat">
-                    <div class="cons-avatar" style="background:linear-gradient(135deg,#059669,#34d399)">ف<div class="verified-tick">✓</div></div>
-                    <div class="cons-info">
-                        <div class="cons-name">أ. فهد السلمي</div>
-                        <div class="cons-specialty">مستشار مالي — استثمار وتخطيط</div>
-                        <div class="cons-meta">
-                            <span class="rating">⭐ 4.7</span>
-                            <span>📋 185 جلسة</span>
-                            <span>💼 10 سنوات خبرة</span>
-                            <span>💬 دردشة</span>
-                        </div>
-                        <div class="cons-tags">
-                            <span class="tag">الاستثمار</span>
-                            <span class="tag">الميزانية</span>
-                            <span class="tag">الضرائب</span>
-                        </div>
-                    </div>
-                    <div class="cons-right">
-                        <div class="cons-price">280 ر.س<small>/ساعة</small></div>
-                        <span class="avail-badge avail-yes">متاح اليوم</span>
-                        <button class="btn-book" onclick="openBookModal('أ. فهد السلمي', 280, 3)">حجز جلسة</button>
-                        <a href="chat.html?type=consult&id=3" class="btn-chat-cons">💬 تواصل</a>
-                    </div>
-                </div>
-
-                <div class="consultant-card" data-spec="تقنية" data-rating="4.9" data-price="420" data-exp="8" data-mode="video">
-                    <div class="cons-avatar" style="background:linear-gradient(135deg,#0ea5e9,#38bdf8)">ر<div class="verified-tick">✓</div></div>
-                    <div class="cons-info">
-                        <div class="cons-name">م. ريم الشهري</div>
-                        <div class="cons-specialty">مستشارة تقنية — بنية تحتية وأمن سيبراني</div>
-                        <div class="cons-meta">
-                            <span class="rating">⭐ 4.9</span>
-                            <span>📋 290 جلسة</span>
-                            <span>💼 8 سنوات خبرة</span>
-                            <span>📹 فيديو</span>
-                        </div>
-                        <div class="cons-tags">
-                            <span class="tag">أمن سيبراني</span>
-                            <span class="tag">Cloud</span>
-                            <span class="tag">DevOps</span>
-                        </div>
-                    </div>
-                    <div class="cons-right">
-                        <div class="cons-price">420 ر.س<small>/ساعة</small></div>
-                        <span class="avail-badge avail-no">محجوز</span>
-                        <button class="btn-book" onclick="openBookModal('م. ريم الشهري', 420, 4)">حجز جلسة</button>
-                        <a href="chat.html?type=consult&id=4" class="btn-chat-cons">💬 تواصل</a>
-                    </div>
-                </div>
-
-                <div class="consultant-card" data-spec="هندسة" data-rating="4.6" data-price="300" data-exp="18" data-mode="inperson">
-                    <div class="cons-avatar" style="background:linear-gradient(135deg,#f59e0b,#fcd34d)">ع<div class="verified-tick">✓</div></div>
-                    <div class="cons-info">
-                        <div class="cons-name">م. عبدالله المطيري</div>
-                        <div class="cons-specialty">مستشار هندسي — كهرباء وطاقة شمسية</div>
-                        <div class="cons-meta">
-                            <span class="rating">⭐ 4.6</span>
-                            <span>📋 410 جلسة</span>
-                            <span>💼 18 سنة خبرة</span>
-                            <span>🤝 حضوري</span>
-                        </div>
-                        <div class="cons-tags">
-                            <span class="tag">كهرباء</span>
-                            <span class="tag">طاقة شمسية</span>
-                            <span class="tag">تصاميم</span>
-                        </div>
-                    </div>
-                    <div class="cons-right">
-                        <div class="cons-price">300 ر.س<small>/ساعة</small></div>
-                        <span class="avail-badge avail-yes">متاح اليوم</span>
-                        <button class="btn-book" onclick="openBookModal('م. عبدالله المطيري', 300, 5)">حجز جلسة</button>
-                        <a href="chat.html?type=consult&id=5" class="btn-chat-cons">💬 تواصل</a>
-                    </div>
-                </div>
-
-                <div class="consultant-card" data-spec="صحة" data-rating="4.8" data-price="600" data-exp="20" data-mode="video">
-                    <div class="cons-avatar" style="background:linear-gradient(135deg,#ef4444,#f87171)">ن<div class="verified-tick">✓</div></div>
-                    <div class="cons-info">
-                        <div class="cons-name">د. نورة الزهراني</div>
-                        <div class="cons-specialty">استشارية طبية — أمراض القلب</div>
-                        <div class="cons-meta">
-                            <span class="rating">⭐ 4.8</span>
-                            <span>📋 560 جلسة</span>
-                            <span>💼 20 سنة خبرة</span>
-                            <span>📹 فيديو</span>
-                        </div>
-                        <div class="cons-tags">
-                            <span class="tag">أمراض القلب</span>
-                            <span class="tag">ضغط الدم</span>
-                            <span class="tag">الوقاية</span>
-                        </div>
-                    </div>
-                    <div class="cons-right">
-                        <div class="cons-price">600 ر.س<small>/ساعة</small></div>
-                        <span class="avail-badge avail-yes">متاح اليوم</span>
-                        <button class="btn-book" onclick="openBookModal('د. نورة الزهراني', 600, 6)">حجز جلسة</button>
-                        <a href="chat.html?type=consult&id=6" class="btn-chat-cons">💬 تواصل</a>
-                    </div>
-                </div>
-
-            </div>
-
-            <div class="empty-state-ux" id="emptyState" style="display:none;">
-                <div class="empty-icon">👨‍💼</div>
-                <h3>لا يوجد مستشارون متاحون حالياً</h3>
-                <p>جرّب تغيير التخصص أو التاريخ</p>
-            </div>
+<!-- Page Header -->
+<div class="page-header">
+    <div class="page-header-inner">
+        <div>
+            <div class="page-title">الاستشارات <span>المتخصصة</span></div>
+            <div class="page-subtitle">تحدث مع الخبير أولاً — الدفع فقط بعد الموافقة</div>
+        </div>
+        <div class="header-search">
+            <input type="text" id="searchInput" placeholder="🔍 ابحث عن استشاري..." data-i18n-placeholder="consultations_search_placeholder" oninput="applyFilters()">
+            <button onclick="applyFilters()" data-i18n="consultations_btn_request">بحث</button>
         </div>
     </div>
+</div>
 
-    <!-- Book Modal -->
-    <div class="modal-overlay" id="bookModal">
-        <div class="modal">
-            <div class="modal-header">
-                <div class="modal-title">حجز جلسة استشارية</div>
-                <button class="modal-close" onclick="closeModal('bookModal')">✕</button>
-            </div>
-            <div class="form-group">
-                <label class="form-label">الاستشاري</label>
-                <div style="background:var(--light); border-radius:10px; padding:0.65rem 0.9rem; font-size:0.9rem;" id="bookConsName"></div>
-            </div>
-            <div class="form-group">
-                <label class="form-label" style="font-weight:700;">طريقة الاستشارة <span style="color:var(--error)">*</span></label>
-                <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:0.4rem;">
-                    <button type="button" id="modeVIDEO" class="mode-btn mode-active" onclick="setConsultMode('VIDEO')">📹 مرئي</button>
-                    <button type="button" id="modeAUDIO" class="mode-btn" onclick="setConsultMode('AUDIO')">📞 صوتي</button>
-                    <button type="button" id="modeIN_PERSON" class="mode-btn" onclick="setConsultMode('IN_PERSON')">🤝 حضوري</button>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="form-label">تاريخ الجلسة *</label>
-                <input type="date" class="form-control" id="bookDate">
-            </div>
-            <div class="form-group">
-                <label class="form-label">الوقت المفضل *</label>
-                <div class="slot-grid" id="slotGrid">
-                    <button class="slot-btn" onclick="selectSlot(this)">9:00 ص</button>
-                    <button class="slot-btn" onclick="selectSlot(this)">10:00 ص</button>
-                    <button class="slot-btn" onclick="selectSlot(this)">11:00 ص</button>
-                    <button class="slot-btn" onclick="selectSlot(this)">12:00 م</button>
-                    <button class="slot-btn" onclick="selectSlot(this)">2:00 م</button>
-                    <button class="slot-btn" onclick="selectSlot(this)">4:00 م</button>
-                    <button class="slot-btn" onclick="selectSlot(this)">6:00 م</button>
-                    <button class="slot-btn" onclick="selectSlot(this)">7:00 م</button>
-                    <button class="slot-btn" onclick="selectSlot(this)">8:00 م</button>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="form-label">موضوع الاستشارة</label>
-                <textarea class="form-control" id="bookTopic" placeholder="اشرح بإيجاز ما تحتاج مناقشته..."></textarea>
-            </div>
-            <div style="background:var(--light); border-radius:10px; padding:0.75rem 1rem; font-size:0.88rem; margin-top:0.5rem;">
-                <div style="display:flex; justify-content:space-between;">
-                    <span>سعر الجلسة (ساعة)</span>
-                    <strong id="bookPrice" style="color:var(--primary)">0 ر.س</strong>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn-full btn-cancel" onclick="closeModal('bookModal')">إلغاء</button>
-                <button class="btn-full btn-submit" onclick="confirmBook()">تأكيد الحجز</button>
-            </div>
+<!-- Active Consultations Strip -->
+<div class="active-strip" id="activeStrip">
+    <div class="active-strip-inner">
+        <div class="active-strip-title">📋 <span data-i18n="consultations_active">استشاراتك الجارية</span></div>
+        <div class="active-strip-list" id="activeConsList"></div>
+    </div>
+</div>
+
+<div class="page-layout">
+    <aside class="filters-sidebar">
+        <div class="filter-panel">
+            <div class="filter-title">التخصص <span class="filter-clear" onclick="clearFilters()">مسح الكل</span></div>
+            <div class="filter-option"><input type="checkbox" id="sp1" data-filter="spec" value="هندسة" onchange="applyFilters()"><label for="sp1">🏗️ هندسة ومقاولات</label><span class="count">18</span></div>
+            <div class="filter-option"><input type="checkbox" id="sp2" data-filter="spec" value="قانون" onchange="applyFilters()"><label for="sp2">⚖️ قانوني وعقود</label><span class="count">12</span></div>
+            <div class="filter-option"><input type="checkbox" id="sp3" data-filter="spec" value="مالية" onchange="applyFilters()"><label for="sp3">📊 مالية وأعمال</label><span class="count">15</span></div>
+            <div class="filter-option"><input type="checkbox" id="sp4" data-filter="spec" value="تقنية" onchange="applyFilters()"><label for="sp4">💻 تقنية المعلومات</label><span class="count">21</span></div>
+            <div class="filter-option"><input type="checkbox" id="sp5" data-filter="spec" value="صحة" onchange="applyFilters()"><label for="sp5">🏥 صحة وطب</label><span class="count">9</span></div>
+        </div>
+        <div class="filter-panel">
+            <div class="filter-title">التقييم</div>
+            <div class="filter-option"><input type="checkbox" id="r5" data-filter="rating" value="4.5" onchange="applyFilters()"><label for="r5">⭐ 4.5 فأعلى</label></div>
+            <div class="filter-option"><input type="checkbox" id="r4" data-filter="rating" value="4" onchange="applyFilters()"><label for="r4">⭐ 4.0 فأعلى</label></div>
+        </div>
+        <div class="filter-panel">
+            <div class="filter-title">نوع الجلسة</div>
+            <div class="filter-option"><input type="checkbox" id="m1" data-filter="mode" value="video" onchange="applyFilters()"><label for="m1">📹 فيديو</label></div>
+            <div class="filter-option"><input type="checkbox" id="m2" data-filter="mode" value="chat" onchange="applyFilters()"><label for="m2">💬 دردشة</label></div>
+            <div class="filter-option"><input type="checkbox" id="m3" data-filter="mode" value="inperson" onchange="applyFilters()"><label for="m3">🤝 حضوري</label></div>
+        </div>
+    </aside>
+
+    <div class="results-area">
+        <!-- Recommended Section -->
+        <div class="rec-section">
+            <div class="rec-title">✨ <span data-i18n="consultations_recommended">موصى به لك</span></div>
+            <div class="rec-list" id="recommendedList"></div>
+        </div>
+
+        <div class="results-header">
+            <div class="results-count">عرض <strong id="visibleCount">6</strong> من <strong>6</strong> استشاري</div>
+            <select class="sort-select" id="sortSelect" onchange="sortConsultants()">
+                <option value="rating">الأعلى تقييمًا</option>
+                <option value="price_low">السعر: الأقل</option>
+                <option value="price_high">السعر: الأعلى</option>
+                <option value="experience">الأكثر خبرة</option>
+            </select>
+        </div>
+
+        <div class="consultants-list" id="consultantsList"></div>
+
+        <div class="empty-state-ux" id="emptyState" style="display:none;">
+            <div style="font-size:3rem;margin-bottom:1rem;">👨‍💼</div>
+            <h3>لا يوجد مستشارون متاحون حالياً</h3>
+            <p>جرّب تغيير التخصص أو معايير البحث</p>
         </div>
     </div>
+</div>
 
-    <script>
-        function applyFilters() {
-            const q = document.getElementById('searchInput').value.trim().toLowerCase();
-            const specs = [...document.querySelectorAll('[data-filter="spec"]:checked')].map(el => el.value);
-            const modes = [...document.querySelectorAll('[data-filter="mode"]:checked')].map(el => el.value);
-            const ratings = [...document.querySelectorAll('[data-filter="rating"]:checked')].map(el => parseFloat(el.value));
-            const minRating = ratings.length ? Math.min(...ratings) : 0;
-            const cards = document.querySelectorAll('.consultant-card');
-            let visible = 0;
-            cards.forEach(card => {
-                const show = (!q || card.textContent.toLowerCase().includes(q))
-                    && (specs.length === 0 || specs.includes(card.dataset.spec))
-                    && (modes.length === 0 || modes.includes(card.dataset.mode))
-                    && parseFloat(card.dataset.rating) >= minRating;
-                card.classList.toggle('hidden', !show);
-                if (show) visible++;
-            });
-            document.getElementById('visibleCount').textContent = visible;
-            document.getElementById('emptyState').style.display = visible === 0 ? 'block' : 'none';
-        }
+<!-- ========== REQUEST MODAL ========== -->
+<div class="modal-overlay" id="reqModal">
+    <div class="modal">
+        <div class="modal-header">
+            <div class="modal-title">طلب استشارة</div>
+            <button class="modal-close" onclick="closeModal('reqModal')">✕</button>
+        </div>
+        <div class="form-group">
+            <label class="form-label">الاستشاري</label>
+            <div style="background:var(--light);border-radius:10px;padding:.65rem .9rem;font-size:.9rem;font-weight:700;" id="reqConsName"></div>
+        </div>
+        <div class="form-group">
+            <label class="form-label">موضوع الاستشارة <span style="color:var(--error)">*</span></label>
+            <input type="text" class="form-control" id="reqTopic" placeholder="مثال: مشكلة في عقد مقاولة">
+        </div>
+        <div class="form-group">
+            <label class="form-label">وصف المشكلة بالتفصيل <span style="color:var(--error)">*</span></label>
+            <textarea class="form-control" id="reqDesc" style="min-height:110px;" placeholder="اشرح مشكلتك بوضوح حتى يتمكن الخبير من تقييم طلبك..."></textarea>
+        </div>
+        <div class="form-group">
+            <label class="form-label">مرفقات (اختياري)</label>
+            <input type="file" class="form-control" id="reqAttach" multiple accept=".pdf,.jpg,.png,.doc,.docx">
+            <div style="font-size:.75rem;color:var(--gray);margin-top:.25rem;">PDF، صور، مستندات — الحد الأقصى 5 ملفات</div>
+        </div>
+        <div class="alert-danger" id="reqError">يرجى إدخال موضوع الاستشارة والوصف</div>
+        <div class="modal-footer">
+            <button class="btn-full btn-cancel" onclick="closeModal('reqModal')">إلغاء</button>
+            <button class="btn-full btn-submit" onclick="submitRequest()">إرسال الطلب</button>
+        </div>
+    </div>
+</div>
 
-        function sortConsultants() {
-            const sort = document.getElementById('sortSelect').value;
-            const list = document.getElementById('consultantsList');
-            [...list.querySelectorAll('.consultant-card')]
-                .sort((a, b) => sort === 'price_low' ? a.dataset.price - b.dataset.price
-                    : sort === 'price_high' ? b.dataset.price - a.dataset.price
-                    : sort === 'experience' ? b.dataset.exp - a.dataset.exp
-                    : b.dataset.rating - a.dataset.rating)
-                .forEach(c => list.appendChild(c));
-        }
+<!-- ========== CHAT MODAL ========== -->
+<div class="modal-overlay" id="chatModal">
+    <div class="modal chat-modal">
+        <div class="chat-modal-header">
+            <div class="chat-cons-avatar" id="chatConsAvatar" style="background:var(--primary)">خ</div>
+            <div class="chat-cons-info">
+                <strong id="chatConsName">الاستشاري</strong>
+                <small id="chatTopic">موضوع الاستشارة</small>
+            </div>
+            <button id="btnScheduleSession" class="btn-schedule" onclick="openPaymentModal()" style="display:none;">
+                📅 جدولة الجلسة
+            </button>
+            <button class="modal-close" onclick="closeModal('chatModal')" style="margin-right:.5rem;">✕</button>
+        </div>
+        <div class="chat-status-bar chat-status-pending" id="chatStatusBar">في انتظار رد الاستشاري</div>
+        <div class="chat-messages" id="chatMessages"></div>
+        <div class="chat-security-warning" id="chatSecurityWarning">
+            🔒 تم حذف الرسالة — يُمنع مشاركة أرقام الهاتف أو الإيميل أو وسائل التواصل الخارجية. تتم المحادثة داخل المنصة فقط.
+        </div>
+        <!-- Provider actions (approve/reject) -->
+        <div class="chat-provider-actions" id="chatProviderActions">
+            <button class="btn-full btn-submit" style="padding:.55rem;" onclick="providerApprove()">✅ قبول الطلب</button>
+            <button class="btn-full btn-danger" style="padding:.55rem;" onclick="providerReject()">❌ رفض</button>
+        </div>
+        <!-- Completed actions -->
+        <div class="chat-completed-actions" id="chatCompletedActions">
+            <button class="btn-full btn-submit" style="max-width:220px;" onclick="openRatingModal()">⭐ تقييم الجلسة</button>
+        </div>
+        <!-- Input -->
+        <div class="chat-input-area" id="chatInputArea">
+            <textarea id="chatMsgInput" placeholder="اكتب رسالتك..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMessage();}"></textarea>
+            <button class="btn-send" onclick="sendMessage()">➤</button>
+        </div>
+    </div>
+</div>
 
-        function clearFilters() {
-            document.querySelectorAll('[data-filter]').forEach(el => el.checked = false);
-            document.getElementById('searchInput').value = '';
-            applyFilters();
-        }
+<!-- ========== PAYMENT / SCHEDULE MODAL ========== -->
+<div class="modal-overlay" id="payModal">
+    <div class="modal">
+        <div class="modal-header">
+            <div class="modal-title">تحديد موعد الجلسة والدفع</div>
+            <button class="modal-close" onclick="closeModal('payModal')">✕</button>
+        </div>
+        <div class="form-group">
+            <label class="form-label">الاستشاري</label>
+            <div style="background:var(--light);border-radius:10px;padding:.65rem .9rem;font-size:.9rem;font-weight:700;" id="payConsName"></div>
+        </div>
+        <div class="form-group">
+            <label class="form-label">الموضوع</label>
+            <div style="background:var(--light);border-radius:10px;padding:.6rem .9rem;font-size:.85rem;color:var(--gray);" id="payTopicName"></div>
+        </div>
+        <div class="form-group">
+            <label class="form-label">طريقة الجلسة <span style="color:var(--error)">*</span></label>
+            <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.4rem;">
+                <button type="button" id="payModeVIDEO" class="mode-btn mode-active" onclick="setPayMode('VIDEO')">📹 مرئي</button>
+                <button type="button" id="payModeAUDIO" class="mode-btn" onclick="setPayMode('AUDIO')">📞 صوتي</button>
+                <button type="button" id="payModeIN_PERSON" class="mode-btn" onclick="setPayMode('IN_PERSON')">🤝 حضوري</button>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-label">تاريخ الجلسة <span style="color:var(--error)">*</span></label>
+            <input type="date" class="form-control" id="payDate">
+        </div>
+        <div class="form-group">
+            <label class="form-label">الوقت المفضل <span style="color:var(--error)">*</span></label>
+            <div class="slot-grid" id="paySlotGrid">
+                <button class="slot-btn" onclick="selectSlot(this)">9:00 ص</button>
+                <button class="slot-btn" onclick="selectSlot(this)">10:00 ص</button>
+                <button class="slot-btn" onclick="selectSlot(this)">11:00 ص</button>
+                <button class="slot-btn" onclick="selectSlot(this)">12:00 م</button>
+                <button class="slot-btn" onclick="selectSlot(this)">2:00 م</button>
+                <button class="slot-btn" onclick="selectSlot(this)">4:00 م</button>
+                <button class="slot-btn" onclick="selectSlot(this)">6:00 م</button>
+                <button class="slot-btn" onclick="selectSlot(this)">7:00 م</button>
+                <button class="slot-btn" onclick="selectSlot(this)">8:00 م</button>
+            </div>
+        </div>
+        <div style="background:var(--light);border-radius:10px;padding:.75rem 1rem;font-size:.88rem;margin-top:.5rem;">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+                <span>سعر الجلسة (ساعة)</span>
+                <strong id="payPrice" style="color:var(--primary)">0 ر.س</strong>
+            </div>
+            <div style="font-size:.75rem;color:var(--gray);margin-top:.4rem;">💡 الدفع محمي بنظام الضمان — يُحرر للاستشاري بعد اكتمال الجلسة</div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-full btn-cancel" onclick="closeModal('payModal')">إلغاء</button>
+            <button class="btn-full btn-submit" onclick="confirmPayment()">تأكيد ودفع</button>
+        </div>
+    </div>
+</div>
 
-        let _bookingConsultantName = '';
-        let _bookingConsultantId = null;
-        let _bookingConsultantPrice = 0;
-        let _consultMode = 'VIDEO';
+<!-- ========== RATING MODAL ========== -->
+<div class="modal-overlay" id="ratingModal">
+    <div class="modal">
+        <div class="modal-header">
+            <div class="modal-title">تقييم الجلسة الاستشارية</div>
+            <button class="modal-close" onclick="closeModal('ratingModal')">✕</button>
+        </div>
+        <div class="form-group" style="text-align:center;">
+            <div class="form-label" style="margin-bottom:.75rem;">التقييم العام</div>
+            <div id="overallStars" style="font-size:2rem;display:flex;justify-content:center;gap:.25rem;"></div>
+        </div>
+        <div style="margin-bottom:1rem;">
+            <div style="font-size:.85rem;font-weight:700;margin-bottom:.5rem;">تقييم تفصيلي</div>
+            <div class="sub-rating-row">
+                <span class="sub-rating-label">التواصل</span>
+                <div id="communicationStars"></div>
+            </div>
+            <div class="sub-rating-row">
+                <span class="sub-rating-label">فهم المشكلة</span>
+                <div id="understandingStars"></div>
+            </div>
+            <div class="sub-rating-row">
+                <span class="sub-rating-label">الاحترافية</span>
+                <div id="professionalismStars"></div>
+            </div>
+            <div class="sub-rating-row" style="border:none;">
+                <span class="sub-rating-label">مدى الإفادة</span>
+                <div id="helpfulnessStars"></div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-label">تعليقك (اختياري)</label>
+            <textarea class="form-control" id="ratingComment" placeholder="شارك تجربتك مع الاستشاري..." style="min-height:70px;"></textarea>
+        </div>
+        <div class="form-group">
+            <div class="form-label">وسوم سريعة</div>
+            <div class="rating-tags-wrap">
+                <button class="rating-tag" data-tag="سريع الرد" onclick="toggleRatingTag('سريع الرد',this)">⚡ سريع الرد</button>
+                <button class="rating-tag" data-tag="محترف" onclick="toggleRatingTag('محترف',this)">💼 محترف</button>
+                <button class="rating-tag" data-tag="موصى به" onclick="toggleRatingTag('موصى به',this)">👍 موصى به</button>
+                <button class="rating-tag" data-tag="شرح ممتاز" onclick="toggleRatingTag('شرح ممتاز',this)">📖 شرح ممتاز</button>
+                <button class="rating-tag" data-tag="حل المشكلة" onclick="toggleRatingTag('حل المشكلة',this)">✅ حل المشكلة</button>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-full btn-cancel" onclick="closeModal('ratingModal')">لاحقاً</button>
+            <button class="btn-full btn-submit" onclick="submitRating()">إرسال التقييم</button>
+        </div>
+    </div>
+</div>
 
-        function setConsultMode(mode) {
-            _consultMode = mode;
-            document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('mode-active'));
-            const btn = document.getElementById('mode' + mode);
-            if (btn) btn.classList.add('mode-active');
-        }
+<script>
+// ── Consultant data ────────────────────────────────────────────────
+const CONSULTANTS = [
+    { id:1, name:'م. خالد العمري',     avatar:'خ', color:'linear-gradient(135deg,#028090,#02C39A)', specialty:'مستشار هندسي — مشاريع البنية التحتية',    spec:'هندسة', rating:4.9, sessions:320, experience:15, price:350, mode:'video',    available:true,  tags:['المقاولات','إدارة مشاريع','عقود البناء'], topRated:true  },
+    { id:2, name:'أ. سارة الغامدي',    avatar:'س', color:'linear-gradient(135deg,#7c3aed,#a78bfa)', specialty:'مستشارة قانونية — عقود وملكية فكرية',       spec:'قانون', rating:4.8, sessions:210, experience:12, price:500, mode:'video',    available:true,  tags:['عقود تجارية','نزاعات عمالية'],              topRated:false },
+    { id:3, name:'أ. فهد السلمي',      avatar:'ف', color:'linear-gradient(135deg,#059669,#34d399)', specialty:'مستشار مالي — استثمار وتخطيط',              spec:'مالية', rating:4.7, sessions:185, experience:10, price:280, mode:'chat',    available:true,  tags:['الاستثمار','الميزانية','الضرائب'],            topRated:false },
+    { id:4, name:'م. ريم الشهري',      avatar:'ر', color:'linear-gradient(135deg,#0ea5e9,#38bdf8)', specialty:'مستشارة تقنية — بنية تحتية وأمن سيبراني',  spec:'تقنية', rating:4.9, sessions:290, experience:8,  price:420, mode:'video',    available:false, tags:['أمن سيبراني','Cloud','DevOps'],              topRated:true  },
+    { id:5, name:'م. عبدالله المطيري', avatar:'ع', color:'linear-gradient(135deg,#f59e0b,#fcd34d)', specialty:'مستشار هندسي — كهرباء وطاقة شمسية',        spec:'هندسة', rating:4.6, sessions:410, experience:18, price:300, mode:'inperson', available:true,  tags:['كهرباء','طاقة شمسية','تصاميم'],              topRated:false },
+    { id:6, name:'د. نورة الزهراني',   avatar:'ن', color:'linear-gradient(135deg,#ef4444,#f87171)', specialty:'استشارية طبية — أمراض القلب',               spec:'صحة',   rating:4.8, sessions:560, experience:20, price:600, mode:'video',    available:true,  tags:['أمراض القلب','ضغط الدم','الوقاية'],          topRated:false },
+];
 
-        function openBookModal(name, price, id) {
-            _bookingConsultantName  = name;
-            _bookingConsultantId = id || null;
-            _bookingConsultantPrice = price;
-            document.getElementById('bookConsName').textContent = name;
-            document.getElementById('bookPrice').textContent = price.toLocaleString() + ' ر.س';
-            document.getElementById('bookDate').value = '';
-            document.getElementById('bookDate').min = new Date().toISOString().split('T')[0];
-            document.getElementById('bookTopic').value = '';
-            document.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('selected'));
-            // Reset mode to VIDEO
-            setConsultMode('VIDEO');
-            document.getElementById('bookModal').classList.add('show');
-        }
+// ── LocalStorage helpers ─────────────────────────────────────────
+function getConsultations() {
+    try { return JSON.parse(localStorage.getItem('khedmah_consultations') || '[]'); } catch(e) { return []; }
+}
+function saveConsultations(arr) { localStorage.setItem('khedmah_consultations', JSON.stringify(arr)); }
+function getUserRole() { try { return JSON.parse(localStorage.getItem('khedmah_user') || '{}').role || 'customer'; } catch(e) { return 'customer'; } }
 
-        function selectSlot(btn) {
-            document.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('selected'));
-            btn.classList.add('selected');
-        }
+// ── Page Init ────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function() {
+    if (window.I18n) I18n.renderLangSwitcher('langSwitcherConsult');
+    renderConsultants(CONSULTANTS);
+    renderRecommended('');
+    renderActiveConsultations();
+    initStarFields();
+    const user = JSON.parse(localStorage.getItem('khedmah_user') || '{}');
+    const dashLink = document.getElementById('dashLink');
+    if (dashLink && user.role === 'provider') dashLink.href = 'provider-dashboard.html';
+    if (localStorage.getItem('khedmah_theme') === 'dark') document.getElementById('themeToggle').textContent = '☀️';
+    document.querySelectorAll('.modal-overlay').forEach(o => o.addEventListener('click', e => { if (e.target === o) o.classList.remove('show'); }));
+});
 
-        function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+// ── Render Consultant Cards ─────────────────────────────────────
+function renderConsultants(list) {
+    const container = document.getElementById('consultantsList');
+    container.innerHTML = list.map(consultantCardHTML).join('');
+    updateVisibleCount();
+}
 
-        async function confirmBook() {
-            const date  = document.getElementById('bookDate').value;
-            const slot  = document.querySelector('.slot-btn.selected');
-            const topic = document.getElementById('bookTopic').value.trim() || 'استشارة';
-            if (!date || !slot) { alert('يرجى اختيار التاريخ والوقت'); return; }
-            if (new Date(date) < new Date(new Date().toDateString())) { alert('لا يمكن اختيار تاريخ في الماضي'); return; }
-            closeModal('bookModal');
-            showToast('تم تأكيد الحجز ✅ — جارٍ الانتقال للدفع...');
-            let reqId = 'CONS-' + Date.now().toString().slice(-6);
-            try {
-                const res = await API.consultations.book({
-                    consultantId: _bookingConsultantId,
-                    consultantName: _bookingConsultantName,
-                    topic,
-                    scheduledDate: date,
-                    timeSlot: slot.textContent,
-                    pricePerHour: _bookingConsultantPrice,
-                    mode: _consultMode,
-                });
-                if (res?.id) reqId = res.id;
-            } catch(e) { /* proceed with demo ID */ }
-            setTimeout(() => {
-                const params = new URLSearchParams({
-                    requestId:    reqId,
-                    service:      'استشارة — ' + _bookingConsultantName,
-                    hasMaterials: 'false',
-                    materialsEst: '0',
-                    serviceAmount: _bookingConsultantPrice,
-                });
-                window.location.href = 'payment-escrow.html?' + params.toString();
-            }, 1000);
-        }
+function consultantCardHTML(c) {
+    const topBadge = c.topRated ? '<span class="badge-top-rated">🏆 الأعلى تقييمًا</span>' : '';
+    const availBadge = c.available ? '<span class="avail-badge avail-yes">متاح اليوم</span>' : '<span class="avail-badge avail-no">محجوز</span>';
+    const modeLabel = { video:'📹 فيديو', chat:'💬 دردشة', inperson:'🤝 حضوري' }[c.mode] || c.mode;
+    return `<div class="consultant-card" data-spec="${c.spec}" data-rating="${c.rating}" data-price="${c.price}" data-exp="${c.experience}" data-mode="${c.mode}">
+        <div class="cons-avatar" style="background:${c.color}">${c.avatar}<div class="verified-tick">✓</div></div>
+        <div class="cons-info">
+            <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin-bottom:.15rem;">
+                <span class="cons-name">${c.name}</span>${topBadge}
+            </div>
+            <div class="cons-specialty">${c.specialty}</div>
+            <div class="cons-meta">
+                <span class="rating">⭐ ${c.rating}</span>
+                <span>📋 ${c.sessions} جلسة</span>
+                <span>💼 ${c.experience} سنة خبرة</span>
+                <span>${modeLabel}</span>
+            </div>
+            <div class="cons-tags">${c.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+        </div>
+        <div class="cons-right">
+            <div class="cons-price">${c.price.toLocaleString()} ر.س<small>/ساعة</small></div>
+            ${availBadge}
+            <button class="btn-request" onclick="openRequestModal(${c.id})">طلب استشارة</button>
+        </div>
+    </div>`;
+}
 
-        function showToast(msg) {
-            const t = document.createElement('div');
-            t.style.cssText = 'position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:#1e293b;color:white;padding:0.75rem 1.5rem;border-radius:12px;font-size:0.9rem;z-index:9999;font-family:Tajawal,sans-serif;';
-            t.textContent = msg; document.body.appendChild(t); setTimeout(() => t.remove(), 3000);
-        }
+function updateVisibleCount() {
+    const visible = document.querySelectorAll('.consultant-card:not(.hidden)').length;
+    const el = document.getElementById('visibleCount');
+    if (el) el.textContent = visible;
+    document.getElementById('emptyState').style.display = visible === 0 ? 'block' : 'none';
+}
 
-        function doLogout() {
-            localStorage.removeItem('khedmah_demo');
-            localStorage.removeItem('khedmah_user');
-            localStorage.removeItem('khedmah_admin');
-            window.location.href = 'login.html';
-        }
+// ── Recommended Section ─────────────────────────────────────────
+function scoreConsultant(c, topic) {
+    const ratingScore = (c.rating - 4) * 0.4;
+    const expScore    = Math.min(c.experience / 25, 1) * 0.2;
+    const respScore   = Math.min(c.sessions / 600, 1) * 0.2;
+    const t = topic.toLowerCase();
+    const match = t && (c.tags.some(tag => t.includes(tag) || tag.includes(t)) || t.includes(c.spec)) ? 1 : 0.3;
+    return ratingScore + expScore + respScore + match * 0.2;
+}
 
-        function toggleTheme() {
-            const isDark = document.documentElement.classList.toggle('dark');
-            localStorage.setItem('khedmah_theme', isDark ? 'dark' : 'light');
-            document.getElementById('themeToggle').textContent = isDark ? '☀️' : '🌙';
-        }
-        (function() {
-            if (localStorage.getItem('khedmah_theme') === 'dark') {
-                document.documentElement.classList.add('dark');
-                const btn = document.getElementById('themeToggle');
-                if (btn) btn.textContent = '☀️';
-            }
-        })();
+function renderRecommended(topic) {
+    const top3 = [...CONSULTANTS].sort((a,b) => scoreConsultant(b,topic) - scoreConsultant(a,topic)).slice(0,3);
+    document.getElementById('recommendedList').innerHTML = top3.map(c => `
+        <div class="rec-card" onclick="openRequestModal(${c.id})">
+            <div class="rec-avatar" style="background:${c.color}">${c.avatar}</div>
+            <div class="rec-name">${c.name}</div>
+            <div class="rec-spec">${c.spec}</div>
+            <div class="rec-rating">⭐ ${c.rating}</div>
+            <div class="rec-price">${c.price} ر.س/س</div>
+        </div>`).join('');
+}
 
-        document.querySelectorAll('.modal-overlay').forEach(o => o.addEventListener('click', e => { if (e.target === o) o.classList.remove('show'); }));
+// ── Active Consultations Strip ──────────────────────────────────
+function renderActiveConsultations() {
+    const active = getConsultations().filter(c => c.status !== 'RATED' && c.status !== 'REJECTED');
+    const strip = document.getElementById('activeStrip');
+    if (!active.length) { strip.style.display = 'none'; return; }
+    strip.style.display = 'block';
+    const statusText  = { PENDING:'في انتظار الرد', ACCEPTED:'تم القبول ✅', IN_SESSION:'جلسة جارية 🔴', COMPLETED:'مكتملة — قيّم' };
+    const statusClass = { PENDING:'status-pending', ACCEPTED:'status-accepted', IN_SESSION:'status-active', COMPLETED:'status-done' };
+    document.getElementById('activeConsList').innerHTML = active.map(c => `
+        <div class="active-cons-card" onclick="openChatModal('${c.id}')">
+            <div class="active-cons-avatar" style="background:${c.color}">${c.avatar}</div>
+            <div style="min-width:0;">
+                <div style="font-weight:700;font-size:.83rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${c.consultantName}</div>
+                <div style="font-size:.72rem;color:var(--gray);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100px;">${c.topic}</div>
+            </div>
+            <span class="active-status ${statusClass[c.status]||''}">${statusText[c.status]||c.status}</span>
+        </div>`).join('');
+}
 
-        // Role-aware dashboard link
-        document.addEventListener('DOMContentLoaded', function() {
-            try {
-                const user = JSON.parse(localStorage.getItem('khedmah_user') || '{}');
-                const btn = document.querySelector('.avatar-btn');
-                if (btn && user.role === 'provider') btn.href = 'provider-dashboard.html';
-            } catch(e) {}
-        });
-    </script>
+// ── Request Modal ───────────────────────────────────────────────
+let _reqConsultant = null;
+
+function openRequestModal(consultantId) {
+    _reqConsultant = CONSULTANTS.find(c => c.id === consultantId);
+    if (!_reqConsultant) return;
+    document.getElementById('reqConsName').textContent = _reqConsultant.name;
+    document.getElementById('reqTopic').value = '';
+    document.getElementById('reqDesc').value = '';
+    document.getElementById('reqError').style.display = 'none';
+    document.getElementById('reqModal').classList.add('show');
+}
+
+async function submitRequest() {
+    const topic = document.getElementById('reqTopic').value.trim();
+    const desc  = document.getElementById('reqDesc').value.trim();
+    if (!topic || !desc) { document.getElementById('reqError').style.display = 'block'; return; }
+    document.getElementById('reqError').style.display = 'none';
+
+    const cons = {
+        id: 'CONS-' + Date.now().toString().slice(-6),
+        consultantId: _reqConsultant.id,
+        consultantName: _reqConsultant.name,
+        avatar: _reqConsultant.avatar,
+        color: _reqConsultant.color,
+        topic, description: desc,
+        status: 'PENDING',
+        messages: [{ sender:'customer', text:`طلب استشارة:\n${topic}\n\n${desc}`, time: nowTime() }],
+        sessionType: null, scheduledDate: null, timeSlot: null,
+        price: _reqConsultant.price, createdAt: new Date().toISOString(),
+    };
+
+    try {
+        const res = await API.consultations.create({ consultantId: _reqConsultant.id, topic, description: desc, pricePerHour: _reqConsultant.price });
+        if (res?.id) cons.id = res.id;
+    } catch(e) {}
+
+    const arr = getConsultations(); arr.push(cons); saveConsultations(arr);
+    closeModal('reqModal');
+    renderActiveConsultations();
+    openChatModal(cons.id);
+    renderRecommended(topic);
+
+    // Demo: simulate consultant reply + approval
+    if (cons.id.startsWith('CONS-')) {
+        setTimeout(() => simulateConsultantReply(cons.id), 2500);
+    }
+}
+
+// ── Chat Modal ───────────────────────────────────────────────────
+let _activeChatId = null;
+
+function openChatModal(consultationId) {
+    _activeChatId = consultationId;
+    const cons = getConsultations().find(c => c.id === consultationId);
+    if (!cons) return;
+    document.getElementById('chatConsName').textContent = cons.consultantName;
+    document.getElementById('chatTopic').textContent = cons.topic;
+    document.getElementById('chatConsAvatar').textContent = cons.avatar;
+    document.getElementById('chatConsAvatar').style.background = cons.color;
+    refreshChatModal(cons);
+    document.getElementById('chatModal').classList.add('show');
+    setTimeout(scrollChatToBottom, 100);
+}
+
+function refreshChatModal(cons) {
+    const statusConfig = {
+        PENDING:   { text:'في انتظار رد الاستشاري', cls:'chat-status-pending' },
+        ACCEPTED:  { text:'✅ تم قبول طلبك — اختر موعد الجلسة وادفع', cls:'chat-status-accepted' },
+        IN_SESSION:{ text:'📅 الجلسة مجدولة', cls:'chat-status-active' },
+        COMPLETED: { text:'✅ اكتملت الجلسة — قيّم تجربتك', cls:'chat-status-done' },
+        REJECTED:  { text:'❌ تم رفض الطلب', cls:'chat-status-rejected' },
+    };
+    const s = statusConfig[cons.status] || { text: cons.status, cls:'' };
+    const bar = document.getElementById('chatStatusBar');
+    bar.textContent = s.text; bar.className = 'chat-status-bar ' + s.cls;
+
+    document.getElementById('btnScheduleSession').style.display    = cons.status === 'ACCEPTED'  ? 'inline-flex' : 'none';
+    const isProvider = getUserRole() === 'provider';
+    document.getElementById('chatProviderActions').style.display   = (isProvider && cons.status === 'PENDING') ? 'flex' : 'none';
+    document.getElementById('chatCompletedActions').style.display  = cons.status === 'COMPLETED' ? 'flex' : 'none';
+    document.getElementById('chatInputArea').style.display         = (cons.status === 'PENDING' || cons.status === 'ACCEPTED') ? 'flex' : 'none';
+    document.getElementById('chatSecurityWarning').style.display   = 'none';
+
+    renderMessages(cons);
+}
+
+function renderMessages(cons) {
+    const container = document.getElementById('chatMessages');
+    container.innerHTML = cons.messages.map(m => {
+        const cls = m.sender === 'customer' ? 'msg-out' : m.sender === 'system' ? 'msg-system' : 'msg-in';
+        return `<div class="chat-msg ${cls}"><div class="msg-bubble">${escHtml(m.text).replace(/\n/g,'<br>')}</div><div class="msg-time">${m.time}</div></div>`;
+    }).join('');
+    scrollChatToBottom();
+}
+
+function scrollChatToBottom() { const el = document.getElementById('chatMessages'); if (el) el.scrollTop = el.scrollHeight; }
+
+// Contact info regex – blocks phone numbers, WhatsApp links, emails
+const CONTACT_REGEX = /(\+?\d[\d\s\-()]{7,}\d|\b0[5-9]\d{8}\b|wa\.me|whatsapp|واتساب|وتساب|[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,})/i;
+
+function sendMessage() {
+    const input = document.getElementById('chatMsgInput');
+    const text = input.value.trim();
+    if (!text) return;
+    if (CONTACT_REGEX.test(text)) {
+        const warn = document.getElementById('chatSecurityWarning');
+        warn.style.display = 'block';
+        setTimeout(() => warn.style.display = 'none', 5000);
+        return;
+    }
+    const arr = getConsultations();
+    const idx = arr.findIndex(c => c.id === _activeChatId);
+    if (idx === -1) return;
+    arr[idx].messages.push({ sender:'customer', text, time: nowTime() });
+    saveConsultations(arr);
+    input.value = '';
+    renderMessages(arr[idx]);
+}
+
+// ── Demo Simulation ─────────────────────────────────────────────
+function simulateConsultantReply(id) {
+    const arr = getConsultations();
+    const idx = arr.findIndex(c => c.id === id);
+    if (idx === -1 || arr[idx].status !== 'PENDING') return;
+    arr[idx].messages.push({ sender:'consultant', text:'مرحباً! اطلعت على طلبك. هل يمكنك إضافة تفاصيل أكثر عن المشكلة؟', time: nowTime() });
+    saveConsultations(arr);
+    if (_activeChatId === id) { renderMessages(arr[idx]); }
+    setTimeout(() => simulateApproval(id), 3500);
+}
+
+function simulateApproval(id) {
+    const arr = getConsultations();
+    const idx = arr.findIndex(c => c.id === id);
+    if (idx === -1 || arr[idx].status !== 'PENDING') return;
+    arr[idx].status = 'ACCEPTED';
+    arr[idx].messages.push({ sender:'consultant', text:'✅ قبلت طلب الاستشارة. يرجى اختيار موعد الجلسة والدفع لتأكيد الحجز.', time: nowTime() });
+    saveConsultations(arr);
+    renderActiveConsultations();
+    if (_activeChatId === id) refreshChatModal(arr[idx]);
+}
+
+// ── Provider Actions ─────────────────────────────────────────────
+function providerApprove() {
+    const arr = getConsultations();
+    const idx = arr.findIndex(c => c.id === _activeChatId);
+    if (idx === -1) return;
+    arr[idx].status = 'ACCEPTED';
+    arr[idx].messages.push({ sender:'consultant', text:'✅ قبلت طلب الاستشارة. يرجى تحديد الموعد والدفع.', time: nowTime() });
+    saveConsultations(arr); renderActiveConsultations(); refreshChatModal(arr[idx]);
+}
+
+function providerReject() {
+    const reason = prompt('سبب الرفض (اختياري):') || 'غير متاح حالياً';
+    const arr = getConsultations();
+    const idx = arr.findIndex(c => c.id === _activeChatId);
+    if (idx === -1) return;
+    arr[idx].status = 'REJECTED';
+    arr[idx].messages.push({ sender:'consultant', text:`❌ عذراً، لا يمكنني قبول هذا الطلب. السبب: ${reason}`, time: nowTime() });
+    saveConsultations(arr); renderActiveConsultations(); refreshChatModal(arr[idx]);
+}
+
+// ── Payment Modal ────────────────────────────────────────────────
+let _payConsultationId = null;
+let _payMode = 'VIDEO';
+
+function openPaymentModal() {
+    _payConsultationId = _activeChatId;
+    const cons = getConsultations().find(c => c.id === _activeChatId);
+    if (!cons) return;
+    document.getElementById('payConsName').textContent   = cons.consultantName;
+    document.getElementById('payTopicName').textContent  = cons.topic;
+    document.getElementById('payPrice').textContent      = cons.price.toLocaleString() + ' ر.س';
+    document.getElementById('payDate').value             = '';
+    document.getElementById('payDate').min               = new Date().toISOString().split('T')[0];
+    document.querySelectorAll('#paySlotGrid .slot-btn').forEach(b => b.classList.remove('selected'));
+    setPayMode('VIDEO');
+    document.getElementById('payModal').classList.add('show');
+}
+
+function setPayMode(mode) {
+    _payMode = mode;
+    document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('mode-active'));
+    const btn = document.getElementById('payMode' + mode);
+    if (btn) btn.classList.add('mode-active');
+}
+
+function selectSlot(btn) {
+    document.querySelectorAll('#paySlotGrid .slot-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+}
+
+async function confirmPayment() {
+    const date = document.getElementById('payDate').value;
+    const slot = document.querySelector('#paySlotGrid .slot-btn.selected');
+    if (!date || !slot) { alert('يرجى اختيار التاريخ والوقت'); return; }
+
+    const arr = getConsultations();
+    const idx = arr.findIndex(c => c.id === _payConsultationId);
+    if (idx === -1) return;
+    const modeLabel = { VIDEO:'مرئي', AUDIO:'صوتي', IN_PERSON:'حضوري' }[_payMode] || _payMode;
+    arr[idx].status        = 'IN_SESSION';
+    arr[idx].sessionType   = _payMode;
+    arr[idx].scheduledDate = date;
+    arr[idx].timeSlot      = slot.textContent;
+    arr[idx].messages.push({ sender:'system', text:`📅 تم جدولة الجلسة: ${date} — ${slot.textContent} (${modeLabel})`, time: nowTime() });
+    saveConsultations(arr);
+    closeModal('payModal');
+    renderActiveConsultations();
+    if (_activeChatId === _payConsultationId) refreshChatModal(arr[idx]);
+    showToast('✅ تم تأكيد الجلسة وإتمام الدفع');
+
+    // Demo: complete session after 6s
+    if (arr[idx].id.startsWith('CONS-')) {
+        setTimeout(() => simulateSessionComplete(_payConsultationId), 6000);
+    }
+}
+
+function simulateSessionComplete(id) {
+    const arr = getConsultations();
+    const idx = arr.findIndex(c => c.id === id);
+    if (idx === -1 || arr[idx].status !== 'IN_SESSION') return;
+    arr[idx].status = 'COMPLETED';
+    arr[idx].messages.push({ sender:'system', text:'✅ اكتملت الجلسة. شكراً لاستخدامكم خدمة — لا تنسَ التقييم!', time: nowTime() });
+    saveConsultations(arr); renderActiveConsultations();
+    if (_activeChatId === id) refreshChatModal(arr[idx]);
+    showToast('🎉 اكتملت جلستك الاستشارية!');
+}
+
+// ── Rating Modal ─────────────────────────────────────────────────
+let _ratingConsId = null;
+let _overallRating = 0;
+const _subRatings = { communication:0, understanding:0, professionalism:0, helpfulness:0 };
+const _selectedTags = new Set();
+
+function initStarFields() {
+    renderStars('overallStars', 0, (v) => setOverallRating(v));
+    Object.keys(_subRatings).forEach(k => renderStars(k+'Stars', 0, (v) => setSubRating(k, v)));
+}
+
+function renderStars(containerId, value, callback) {
+    const el = document.getElementById(containerId);
+    if (!el) return;
+    el.innerHTML = '';
+    for (let i = 1; i <= 5; i++) {
+        const s = document.createElement('span');
+        s.className = 'star-btn ' + (i <= value ? 'star-filled' : 'star-empty');
+        s.textContent = i <= value ? '★' : '☆';
+        s.onclick = () => callback(i);
+        el.appendChild(s);
+    }
+}
+
+function setOverallRating(val) { _overallRating = val; renderStars('overallStars', val, v => setOverallRating(v)); }
+function setSubRating(key, val) { _subRatings[key] = val; renderStars(key+'Stars', val, v => setSubRating(key, v)); }
+
+function toggleRatingTag(tag, btn) {
+    if (_selectedTags.has(tag)) _selectedTags.delete(tag); else _selectedTags.add(tag);
+    btn.classList.toggle('tag-selected', _selectedTags.has(tag));
+}
+
+function openRatingModal() {
+    _ratingConsId   = _activeChatId;
+    _overallRating  = 0;
+    Object.keys(_subRatings).forEach(k => _subRatings[k] = 0);
+    _selectedTags.clear();
+    initStarFields();
+    document.getElementById('ratingComment').value = '';
+    document.querySelectorAll('.rating-tag').forEach(t => t.classList.remove('tag-selected'));
+    document.getElementById('ratingModal').classList.add('show');
+}
+
+async function submitRating() {
+    if (!_overallRating) { alert('يرجى إضافة تقييم عام'); return; }
+    const arr = getConsultations();
+    const idx = arr.findIndex(c => c.id === _ratingConsId);
+    if (idx === -1) return;
+    const comment = document.getElementById('ratingComment').value.trim();
+    arr[idx].status = 'RATED';
+    arr[idx].ratingData = { overall: _overallRating, ..._subRatings, tags: [..._selectedTags], comment };
+    saveConsultations(arr);
+    try { await API.consultations.rate(_ratingConsId, { rating: _overallRating, comment }); } catch(e) {}
+    closeModal('ratingModal'); closeModal('chatModal');
+    renderActiveConsultations();
+    showToast('🙏 شكراً على تقييمك!');
+}
+
+// ── Filter / Sort ────────────────────────────────────────────────
+function applyFilters() {
+    const q       = document.getElementById('searchInput').value.trim().toLowerCase();
+    const specs   = [...document.querySelectorAll('[data-filter="spec"]:checked')].map(el => el.value);
+    const modes   = [...document.querySelectorAll('[data-filter="mode"]:checked')].map(el => el.value);
+    const ratings = [...document.querySelectorAll('[data-filter="rating"]:checked')].map(el => parseFloat(el.value));
+    const minRating = ratings.length ? Math.min(...ratings) : 0;
+    document.querySelectorAll('.consultant-card').forEach(card => {
+        const show = (!q || card.textContent.toLowerCase().includes(q))
+            && (specs.length === 0 || specs.includes(card.dataset.spec))
+            && (modes.length === 0 || modes.includes(card.dataset.mode))
+            && parseFloat(card.dataset.rating) >= minRating;
+        card.classList.toggle('hidden', !show);
+    });
+    updateVisibleCount();
+    if (q) renderRecommended(q);
+}
+
+function sortConsultants() {
+    const sort = document.getElementById('sortSelect').value;
+    const list = document.getElementById('consultantsList');
+    [...list.querySelectorAll('.consultant-card')]
+        .sort((a,b) => sort==='price_low'  ? a.dataset.price - b.dataset.price
+                     : sort==='price_high' ? b.dataset.price - a.dataset.price
+                     : sort==='experience' ? b.dataset.exp   - a.dataset.exp
+                     : b.dataset.rating    - a.dataset.rating)
+        .forEach(c => list.appendChild(c));
+}
+
+function clearFilters() {
+    document.querySelectorAll('[data-filter]').forEach(el => el.checked = false);
+    document.getElementById('searchInput').value = '';
+    applyFilters();
+    renderRecommended('');
+}
+
+// ── Utility ──────────────────────────────────────────────────────
+function nowTime() { return new Date().toLocaleTimeString('ar',{hour:'2-digit',minute:'2-digit'}); }
+function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+
+function showToast(msg) {
+    const t = document.createElement('div');
+    t.style.cssText = 'position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:#1e293b;color:white;padding:.75rem 1.5rem;border-radius:12px;font-size:.9rem;z-index:9999;font-family:Tajawal,sans-serif;box-shadow:0 4px 20px rgba(0,0,0,.3);';
+    t.textContent = msg; document.body.appendChild(t); setTimeout(() => t.remove(), 3200);
+}
+
+function doLogout() {
+    localStorage.removeItem('khedmah_demo');
+    localStorage.removeItem('khedmah_user');
+    localStorage.removeItem('khedmah_admin');
+    window.location.href = 'login.html';
+}
+
+function toggleTheme() {
+    const isDark = document.documentElement.classList.toggle('dark');
+    localStorage.setItem('khedmah_theme', isDark ? 'dark' : 'light');
+    document.getElementById('themeToggle').textContent = isDark ? '☀️' : '🌙';
+}
+</script>
 
 <footer style="background:#1e293b;color:rgba(255,255,255,0.55);padding:1.5rem 5%;text-align:center;font-family:'Tajawal',sans-serif;font-size:0.85rem;margin-top:2rem;">
     <div style="display:flex;gap:1.5rem;justify-content:center;flex-wrap:wrap;margin-bottom:0.75rem;">
         <a href="home.html" style="color:rgba(255,255,255,0.55);text-decoration:none;">الرئيسية</a>
-        <a href="terms.html" style="color:rgba(255,255,255,0.55);text-decoration:none;">شروط الاستخدام</a>
-        <a href="privacy-policy.html" style="color:rgba(255,255,255,0.55);text-decoration:none;">سياسة الخصوصية</a>
-        <a href="support.html" style="color:rgba(255,255,255,0.55);text-decoration:none;">الدعم والمساعدة</a>
+        <a href="tenders.html" style="color:rgba(255,255,255,0.55);text-decoration:none;">المناقصات</a>
+        <a href="equipment.html" style="color:rgba(255,255,255,0.55);text-decoration:none;">المعدات</a>
+        <a href="consultations.html" style="color:rgba(255,255,255,0.55);text-decoration:none;">الاستشارات</a>
     </div>
-    <p>© 2025 خدمة — جميع الحقوق محفوظة</p>
+    <div>© 2026 Khedmah — جميع الحقوق محفوظة</div>
 </footer>
-<button id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="للأعلى">↑</button>
-<script>
-window.addEventListener('scroll',function(){document.getElementById('scrollTopBtn')?.classList.toggle('visible',window.scrollY>400);});
-</script>
 </body>
 </html>

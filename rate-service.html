@@ -474,6 +474,7 @@
         })();
 
         let mainRating = 0;
+        const subRatings = { quality: 0, punctuality: 0, communication: 0, cleanliness: 0 };
         const captions = ['', 'تجربة سيئة 😞', 'أقل من المتوسط 😐', 'جيد 👍', 'جيد جداً 😊', 'ممتاز! 🌟'];
 
         function setRating(val) {
@@ -487,6 +488,7 @@
         }
 
         function setSubRating(cat, val) {
+            subRatings[cat] = val;
             const container = document.querySelector(`.sub-stars[data-cat="${cat}"]`);
             if (!container) return;
             container.querySelectorAll('.sub-star').forEach((btn, i) => {
@@ -539,9 +541,15 @@
             btn.disabled = true;
             btn.textContent = 'جاري الإرسال...';
             try {
+                const tags = [...document.querySelectorAll('.tag-chip.selected')].map(t => t.textContent.trim());
+                const criteria = [...document.querySelectorAll('.criteria-item input[name="criteria"]:checked')].map(c => c.id);
                 await API.reviews.create(reqId, {
                     score: mainRating,
                     comment: document.getElementById('reviewText')?.value?.trim() || '',
+                    recommendation: document.getElementById('recommendToggle')?.checked ?? true,
+                    subRatings: Object.fromEntries(Object.entries(subRatings).filter(([,v]) => v > 0)),
+                    tags,
+                    criteria,
                 });
                 document.getElementById('formBody').style.display = 'none';
                 document.getElementById('successOverlay').style.display = 'block';
