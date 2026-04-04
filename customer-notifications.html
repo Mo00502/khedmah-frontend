@@ -434,7 +434,7 @@
         }
     })();
 
-    let unreadIds = new Set([1, 2, 3]);
+    let unreadIds = new Set([1, 2, 3]); // replaced by API data when backend is available
 
     function showToast(msg) {
         const t = document.getElementById('toast');
@@ -531,6 +531,80 @@
             document.getElementById(`tab-${tab}`).style.display = 'block';
         }
     }
+
+    // Relative time helper
+    function relativeTime(iso) {
+        const diff = Date.now() - new Date(iso).getTime();
+        const m = Math.floor(diff / 60000);
+        if (m < 1) return 'الآن';
+        if (m < 60) return `منذ ${m} دقيقة`;
+        const h = Math.floor(m / 60);
+        if (h < 24) return `منذ ${h} ساعة`;
+        const d = Math.floor(h / 24);
+        return d === 1 ? 'أمس' : `منذ ${d} أيام`;
+    }
+
+    // Build notification card HTML from a backend notification object
+    function buildNotifCard(n) {
+        const isUnread = !n.isRead;
+        const id = n.id;
+        const iconClass = n.type?.toLowerCase().includes('payment') ? 'payment'
+            : n.type?.toLowerCase().includes('quote') || n.type?.toLowerCase().includes('bid') ? 'quote'
+            : n.type?.toLowerCase().includes('remind') ? 'remind'
+            : n.type?.toLowerCase().includes('rating') || n.type?.toLowerCase().includes('review') ? 'rating'
+            : 'quote';
+        const iconEmoji = iconClass === 'payment' ? '💸' : iconClass === 'remind' ? '⏰' : iconClass === 'rating' ? '⭐' : '🔔';
+
+        let linkHtml = '';
+        if (n.data?.requestId) {
+            linkHtml = `<a href="order-tracking.html?requestId=${encodeURIComponent(n.data.requestId)}" class="notif-link">عرض الطلب ←</a>`;
+        }
+
+        const readBtnHtml = isUnread
+            ? `<button class="read-btn" onclick="markRead('${id}')">تحديد كمقروء</button>`
+            : `<button class="read-btn" style="opacity:0.4;cursor:default;">مقروء</button>`;
+
+        return `<div class="notif-card${isUnread ? ' unread' : ''}" data-status="${isUnread ? 'unread' : 'read'}" data-id="${id}">
+            <div class="notif-icon ${iconClass}">${iconEmoji}</div>
+            <div class="notif-body">
+                <div class="notif-title"></div>
+                <div class="notif-desc"></div>
+                <div class="notif-meta">
+                    <span class="notif-time">${relativeTime(n.createdAt)}</span>
+                    ${linkHtml}
+                </div>
+            </div>
+            <div class="notif-actions">
+                <div class="unread-dot" id="dot-${id}"${isUnread ? '' : ' style="display:none;"'}></div>
+                ${readBtnHtml}
+            </div>
+        </div>`;
+    }
+
+    // Load notifications from API and replace static demo cards if data is available
+    (async function loadNotificationsFromAPI() {
+        if (!API.isLoggedIn()) return;
+        try {
+            const res = await API.notifications.list({ limit: 50 });
+            const list = Array.isArray(res) ? res : (res?.items ?? res?.notifications ?? []);
+            if (!list.length) return;
+            const container = document.getElementById('tab-all');
+            container.innerHTML = '';
+            unreadIds = new Set();
+            list.forEach(n => {
+                if (!n.isRead) unreadIds.add(n.id);
+                const wrapper = document.createElement('div');
+                wrapper.innerHTML = buildNotifCard(n);
+                const card = wrapper.firstElementChild;
+                // Set text safely (avoid XSS)
+                card.querySelector('.notif-title').textContent = n.title || '';
+                card.querySelector('.notif-desc').textContent = n.body || n.message || '';
+                container.appendChild(card);
+            });
+            updateBadge();
+            refreshUnreadTab();
+        } catch(e) { /* API unavailable — keep static demo cards */ }
+    })();
 
     function doLogout() {
         localStorage.removeItem('khedmah_demo');

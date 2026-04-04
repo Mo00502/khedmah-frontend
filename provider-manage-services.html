@@ -432,7 +432,7 @@
 
 <nav>
     <div class="nav-content">
-        <a href="INDEX.html" class="logo">KHEDMAH</a>
+        <a href="index.html" class="logo">KHEDMAH</a>
         <div class="nav-links">
             <a href="provider-dashboard.html">لوحة التحكم</a>
             <a href="provider-manage-services.html" class="active">خدماتي</a>
@@ -590,40 +590,17 @@
             <button class="modal-close" onclick="closeModal()">✕</button>
         </div>
 
-        <div class="form-group">
-            <label>تصنيف الخدمة</label>
-            <select id="categorySelect">
-                <option value="">-- اختر التصنيف --</option>
-                <option>السباكة والتمديدات</option>
-                <option>الكهرباء والإضاءة</option>
-                <option>تكييف وتبريد</option>
-                <option>نجارة وأثاث</option>
-                <option>دهانات وديكور</option>
-                <option>تنظيف المنازل</option>
-                <option>تنظيف السجاد والمفروشات</option>
-                <option>صيانة الأجهزة المنزلية</option>
-                <option>حراسة وأمن</option>
-                <option>مكافحة الحشرات</option>
-                <option>حدائق ومسابح</option>
-                <option>نقل الأثاث</option>
-                <option>صيانة المصاعد</option>
-                <option>تركيب الأبواب والنوافذ</option>
-                <option>خدمات الطبخ</option>
-                <option>رعاية الأطفال</option>
-                <option>رعاية المسنين</option>
-                <option>تعليم خصوصي</option>
-                <option>خياطة وتفصيل</option>
-                <option>تصوير فوتوغرافي</option>
-                <option>برمجة وتقنية</option>
-                <option>تصميم جرافيك</option>
-                <option>خدمات بيطرية</option>
-                <option>أخرى</option>
+        <!-- Catalog picker (populated from API) -->
+        <div class="form-group" id="catalogPickerGroup">
+            <label>اختر الخدمة</label>
+            <select id="serviceCatalogSelect">
+                <option value="">-- جاري التحميل... --</option>
             </select>
         </div>
-
-        <div class="form-group">
-            <label>اسم الخدمة</label>
-            <input type="text" id="serviceNameInput" placeholder="مثال: إصلاح تسريب مياه">
+        <!-- Shown in edit mode as read-only label -->
+        <div class="form-group" id="editServiceNameGroup" style="display:none;">
+            <label>الخدمة</label>
+            <div id="editServiceNameDisplay" style="padding:0.6rem 0.8rem;background:#f1f5f9;border-radius:10px;font-weight:600;"></div>
         </div>
 
         <div class="form-group">
@@ -683,6 +660,8 @@
     let selectedPriceType = 'hour';
     let deleteTargetId = null;
     let editingId = null;
+    let catalogLoaded = false;
+    let catalogMap = {}; // serviceId → { nameAr, icon, categoryName }
 
     function showToast(msg) {
         const t = document.getElementById('toast');
@@ -718,59 +697,82 @@
         document.getElementById('inactiveCount').textContent = inactive;
     }
 
+    async function loadCatalog() {
+        if (catalogLoaded) return;
+        const sel = document.getElementById('serviceCatalogSelect');
+        try {
+            const cats = await API.services.categories();
+            sel.innerHTML = '<option value="">-- اختر الخدمة --</option>';
+            if (Array.isArray(cats) && cats.length) {
+                cats.forEach(cat => {
+                    const grp = document.createElement('optgroup');
+                    grp.label = cat.nameAr || cat.name || '';
+                    (cat.services || []).forEach(svc => {
+                        if (svc.active === false) return;
+                        const opt = document.createElement('option');
+                        opt.value = svc.id;
+                        opt.textContent = (svc.icon ? svc.icon + ' ' : '') + (svc.nameAr || svc.name || svc.id);
+                        grp.appendChild(opt);
+                        catalogMap[svc.id] = { nameAr: svc.nameAr || svc.name || '', icon: svc.icon || '🔧', categoryName: cat.nameAr || '' };
+                    });
+                    if (grp.children.length) sel.appendChild(grp);
+                });
+                catalogLoaded = true;
+            } else {
+                sel.innerHTML = '<option value="">-- لا توجد خدمات في الكتالوج --</option>';
+            }
+        } catch (e) {
+            sel.innerHTML = '<option value="">-- تعذّر تحميل الكتالوج --</option>';
+        }
+    }
+
     function openModal() {
         editingId = null;
         document.getElementById('modalTitle').textContent = 'إضافة خدمة جديدة';
-        document.getElementById('categorySelect').value = '';
-        document.getElementById('serviceNameInput').value = '';
+        document.getElementById('catalogPickerGroup').style.display = '';
+        document.getElementById('editServiceNameGroup').style.display = 'none';
+        document.getElementById('serviceCatalogSelect').value = '';
         document.getElementById('priceInput').value = '';
         document.getElementById('serviceDesc').value = '';
         document.getElementById('durationSelect').selectedIndex = 0;
         selectPriceType('hour', document.querySelector('.price-type-btn'));
+        loadCatalog();
         document.getElementById('modalOverlay').classList.add('open');
     }
 
     function openEditModal(id) {
         editingId = id;
         document.getElementById('modalTitle').textContent = 'تعديل الخدمة';
+        document.getElementById('catalogPickerGroup').style.display = 'none';
+        document.getElementById('editServiceNameGroup').style.display = '';
 
         const card = document.querySelector(`[data-id="${id}"]`);
         if (card) {
             const name = card.querySelector('.service-name')?.textContent?.trim() || '';
-            const category = card.querySelector('.service-category')?.textContent?.trim() || '';
             const priceAmountEl = card.querySelector('.price-amount');
             const priceUnitEl = card.querySelector('.price-unit');
             const desc = card.querySelector('.service-desc-text')?.textContent?.trim() || '';
             const durationText = card.querySelector('.service-duration')?.textContent?.replace('⏱️ مدة الخدمة المتوقعة:', '').trim() || '';
 
-            document.getElementById('serviceNameInput').value = name;
-            document.getElementById('categorySelect').value = category;
+            document.getElementById('editServiceNameDisplay').textContent = name;
             document.getElementById('serviceDesc').value = desc;
 
-            // Set duration dropdown
             const durationSel = document.getElementById('durationSelect');
             for (let i = 0; i < durationSel.options.length; i++) {
-                if (durationText.includes(durationSel.options[i].value) ||
-                    durationSel.options[i].value.includes(durationText) ||
-                    durationText === durationSel.options[i].text) {
-                    durationSel.selectedIndex = i;
-                    break;
+                if (durationText.includes(durationSel.options[i].value) || durationSel.options[i].text.includes(durationText)) {
+                    durationSel.selectedIndex = i; break;
                 }
             }
 
-            // Determine price type from unit text
             const priceUnit = priceUnitEl?.textContent?.trim() || '';
             const priceAmount = priceAmountEl?.textContent?.trim() || '';
             if (priceAmount === 'حسب الاتفاق') {
-                const agreeBtn = document.querySelector('.price-type-btn:nth-child(3)');
-                selectPriceType('agree', agreeBtn);
+                selectPriceType('agree', document.querySelector('.price-type-btn:nth-child(3)'));
             } else if (priceUnit.includes('ساعة')) {
-                const hourBtn = document.querySelector('.price-type-btn:nth-child(1)');
-                selectPriceType('hour', hourBtn);
+                selectPriceType('hour', document.querySelector('.price-type-btn:nth-child(1)'));
                 document.getElementById('priceInput').value = priceAmount;
             } else {
-                const visitBtn = document.querySelector('.price-type-btn:nth-child(2)');
-                selectPriceType('visit', visitBtn);
+                selectPriceType('visit', document.querySelector('.price-type-btn:nth-child(2)'));
                 document.getElementById('priceInput').value = priceAmount;
             }
         }
@@ -790,48 +792,39 @@
     }
 
     async function saveService() {
-        const name = document.getElementById('serviceNameInput').value.trim();
-        const category = document.getElementById('categorySelect').value;
-        const desc = document.getElementById('serviceDesc').value.trim();
         const durationSel = document.getElementById('durationSelect');
         const durationText = durationSel.options[durationSel.selectedIndex].text;
+        const desc = document.getElementById('serviceDesc').value.trim();
+        const rawPrice = selectedPriceType !== 'agree' ? parseFloat(document.getElementById('priceInput')?.value || '0') : null;
 
-        if (!name || !category) {
-            showToast('⚠️ يرجى ملء الحقول الإلزامية');
-            return;
-        }
-
-        // Determine price display
-        let priceAmountText, priceUnitText;
-        if (selectedPriceType === 'agree') {
-            priceAmountText = 'حسب الاتفاق';
-            priceUnitText = '';
-        } else {
-            const rawPrice = document.getElementById('priceInput').value.trim();
-            priceAmountText = rawPrice || '0';
-            priceUnitText = selectedPriceType === 'hour' ? 'ريال / ساعة' : 'ريال / زيارة';
-        }
+        let priceAmountText = selectedPriceType === 'agree' ? 'حسب الاتفاق' : (rawPrice != null ? String(rawPrice) : '0');
+        let priceUnitText = selectedPriceType === 'hour' ? 'ريال / ساعة' : selectedPriceType === 'visit' ? 'ريال / زيارة' : '';
 
         if (editingId === null) {
-            // Create new card
-            const newId = Date.now();
+            // ADD mode — require a catalog selection
+            const serviceId = document.getElementById('serviceCatalogSelect').value;
+            if (!serviceId) { showToast('⚠️ يرجى اختيار الخدمة من الكتالوج'); return; }
+            const meta = catalogMap[serviceId] || { nameAr: serviceId, icon: '🔧', categoryName: '' };
+
+            const newId = 'new-' + Date.now();
             const newCard = document.createElement('div');
             newCard.className = 'service-card';
             newCard.setAttribute('data-id', newId);
+            newCard.setAttribute('data-service-id', serviceId);
             newCard.innerHTML = `
-                <div class="inactive-badge">موقوفة</div>
+                <div class="inactive-badge" style="display:none;">موقوفة</div>
                 <div class="card-top">
-                    <div class="service-icon-box">🔧</div>
+                    <div class="service-icon-box">${meta.icon}</div>
                     <div class="toggle-wrapper">
                         <span class="toggle-label" id="lbl-${newId}">نشط</span>
                         <label class="toggle">
-                            <input type="checkbox" checked onchange="toggleService(${newId}, this)">
+                            <input type="checkbox" checked onchange="toggleService('${newId}', this)">
                             <span class="toggle-slider"></span>
                         </label>
                     </div>
                 </div>
-                <div class="service-name">${name}</div>
-                <div class="service-category">${category}</div>
+                <div class="service-name">${meta.nameAr}</div>
+                <div class="service-category">${meta.categoryName}</div>
                 <div class="service-price">
                     <span class="price-amount">${priceAmountText}</span>
                     <span class="price-unit">${priceUnitText}</span>
@@ -839,37 +832,39 @@
                 <div class="service-duration">⏱️ مدة الخدمة المتوقعة: ${durationText}</div>
                 <div class="service-desc-text">${desc}</div>
                 <div class="card-actions">
-                    <button class="btn-edit" onclick="openEditModal(${newId})">✏️ تعديل</button>
-                    <button class="btn-delete" onclick="openDeleteConfirm(${newId})">🗑️ حذف</button>
+                    <button class="btn-edit" onclick="openEditModal('${newId}')">✏️ تعديل</button>
+                    <button class="btn-delete" onclick="openDeleteConfirm('${newId}')">🗑️ حذف</button>
                 </div>`;
             document.getElementById('servicesGrid').appendChild(newCard);
             updateStats();
+            closeModal();
+            showToast('✓ تمت إضافة الخدمة بنجاح');
+
+            // Persist to backend
+            API.providers.addService({ serviceId, hourlyRate: rawPrice })
+                .then(skill => {
+                    if (skill?.id) {
+                        newCard.setAttribute('data-id', skill.id);
+                        newCard.setAttribute('data-api-id', skill.id);
+                        newCard.querySelectorAll('[onclick]').forEach(el => {
+                            el.setAttribute('onclick', el.getAttribute('onclick').replace(newId, skill.id));
+                        });
+                        newCard.querySelector('input[type=checkbox]').setAttribute('onchange', `toggleService('${skill.id}', this)`);
+                        newCard.querySelector('.toggle-label').id = `lbl-${skill.id}`;
+                    }
+                })
+                .catch(e => showToast('❌ ' + API.errorMsg(e)));
         } else {
-            // Update existing card
+            // EDIT mode — update display, no backend endpoint for skill update
             const card = document.querySelector(`[data-id="${editingId}"]`);
             if (card) {
-                card.querySelector('.service-name').textContent = name;
-                card.querySelector('.service-category').textContent = category;
                 card.querySelector('.price-amount').textContent = priceAmountText;
                 card.querySelector('.price-unit').textContent = priceUnitText;
                 card.querySelector('.service-desc-text').textContent = desc;
                 card.querySelector('.service-duration').textContent = `⏱️ مدة الخدمة المتوقعة: ${durationText}`;
             }
-        }
-
-        const wasEditing = editingId;
-        closeModal();
-        showToast(wasEditing ? '✓ تم تحديث الخدمة بنجاح' : '✓ تمت إضافة الخدمة بنجاح');
-        const rawPrice = selectedPriceType !== 'agree' ? parseFloat(document.getElementById('priceInput')?.value || '0') : null;
-        if (!wasEditing) {
-            // Create new service
-            API.providers.addService({ name, category, description: desc, priceType: selectedPriceType, price: rawPrice }).catch(e => API.toast('❌ ' + API.errorMsg(e)));
-        } else {
-            // Update existing service — editingId is a DOM timestamp ID for static cards;
-            // for API-created cards a real UUID would be stored in data-api-id
-            const card = document.querySelector(`[data-id="${wasEditing}"]`);
-            const apiId = card?.dataset?.apiId || wasEditing;
-            API.providers.updateService(apiId, { name, category, description: desc, priceType: selectedPriceType, price: rawPrice }).catch(e => API.toast('❌ ' + API.errorMsg(e)));
+            closeModal();
+            showToast('✓ تم تحديث الخدمة');
         }
         editingId = null;
     }
@@ -902,35 +897,37 @@
     style.textContent = '@keyframes fadeOut { to { opacity:0; transform: scale(0.9); } }';
     document.head.appendChild(style);
 
-    // Load services from API and replace static cards if data is available
+    // Load skills from API (ProviderSkill[] — each has id, serviceId, service{nameAr,icon,category}, hourlyRate)
     (async function loadServicesFromAPI() {
         if (!API.isLoggedIn()) return;
         try {
-            const items = await API.providers.services();
-            const list = Array.isArray(items) ? items : (items?.items ?? []);
-            if (!list.length) return;
-            // Replace static grid with API data
+            const list = await API.providers.services();
+            if (!Array.isArray(list) || !list.length) return;
             const grid = document.getElementById('servicesGrid');
             grid.innerHTML = '';
-            list.forEach(svc => {
-                const id = svc.id || Date.now();
-                const isActive = svc.active !== false;
-                const priceType = svc.priceType || 'visit';
-                const priceUnit = priceType === 'hour' ? 'ريال / ساعة' : priceType === 'visit' ? 'ريال / زيارة' : '';
-                const priceDisplay = (priceType === 'agree' || !svc.price) ? 'حسب الاتفاق' : String(svc.price);
-                const card = document.createElement('div');
-                card.className = 'service-card' + (isActive ? '' : ' inactive');
-                card.setAttribute('data-id', id);
-                card.setAttribute('data-api-id', id);
+            list.forEach(skill => {
+                const id = skill.id;
+                const svc = skill.service || {};
+                const icon = svc.icon || '🔧';
+                const nameAr = svc.nameAr || svc.name || skill.serviceId || '';
+                const categoryName = svc.category?.nameAr || svc.category?.name || '';
+                const hourlyRate = skill.hourlyRate;
+                const priceDisplay = hourlyRate != null ? String(hourlyRate) : 'حسب الاتفاق';
+                const priceUnit = hourlyRate != null ? 'ريال / ساعة' : '';
                 const safeId = String(id).replace(/[^a-zA-Z0-9_-]/g, '');
+                const card = document.createElement('div');
+                card.className = 'service-card';
+                card.setAttribute('data-id', safeId);
+                card.setAttribute('data-api-id', safeId);
+                card.setAttribute('data-service-id', skill.serviceId || '');
                 card.innerHTML = `
-                    <div class="inactive-badge"${isActive ? ' style="display:none;"' : ''}>موقوفة</div>
+                    <div class="inactive-badge" style="display:none;">موقوفة</div>
                     <div class="card-top">
-                        <div class="service-icon-box">🔧</div>
+                        <div class="service-icon-box">${icon}</div>
                         <div class="toggle-wrapper">
-                            <span class="toggle-label" id="lbl-${safeId}">${isActive ? 'نشط' : 'موقوف'}</span>
+                            <span class="toggle-label" id="lbl-${safeId}">نشط</span>
                             <label class="toggle">
-                                <input type="checkbox" ${isActive ? 'checked' : ''} onchange="toggleService('${safeId}', this)">
+                                <input type="checkbox" checked onchange="toggleService('${safeId}', this)">
                                 <span class="toggle-slider"></span>
                             </label>
                         </div>
@@ -941,18 +938,16 @@
                         <span class="price-amount"></span>
                         <span class="price-unit"></span>
                     </div>
-                    <div class="service-duration"></div>
+                    <div class="service-duration">⏱️ مدة الخدمة المتوقعة: —</div>
                     <div class="service-desc-text"></div>
                     <div class="card-actions">
                         <button class="btn-edit" onclick="openEditModal('${safeId}')">✏️ تعديل</button>
                         <button class="btn-delete" onclick="openDeleteConfirm('${safeId}')">🗑️ حذف</button>
                     </div>`;
-                card.querySelector('.service-name').textContent = svc.name || '';
-                card.querySelector('.service-category').textContent = svc.category || '';
+                card.querySelector('.service-name').textContent = nameAr;
+                card.querySelector('.service-category').textContent = categoryName;
                 card.querySelector('.price-amount').textContent = priceDisplay;
                 card.querySelector('.price-unit').textContent = priceUnit;
-                card.querySelector('.service-duration').textContent = '⏱️ مدة الخدمة المتوقعة: ' + (svc.duration || '—');
-                card.querySelector('.service-desc-text').textContent = svc.description || '';
                 grid.appendChild(card);
             });
             updateStats();

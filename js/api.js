@@ -272,15 +272,17 @@
     // services() fetches the provider's linked skills via their profile
     services:      () => http.get('/providers/me/profile').then(p => p?.skills || []),
     addService:    (data) => http.post('/providers/me/skills', data),        // data.serviceId required
-    updateService: (id, data) => http.patch('/providers/me/profile', data),  // limited fields only
+    updateService: (id, data) => http.patch(`/providers/me/skills/${id}`, data),
     removeService: (id)       => http.delete(`/providers/me/skills/${id}`),
     getSchedule:  ()          => http.get('/providers/me/schedule'),
     saveSchedule: (data)      => http.patch('/providers/me/schedule', data),
   };
 
   const services = {
-    list: (params = {}) => http.get('/services?' + new URLSearchParams(params)),
-    get:  (id)          => http.get(`/services/${id}`),
+    list:       (params = {}) => http.get('/services?' + new URLSearchParams(params)),
+    get:        (id)          => http.get(`/services/${id}`),
+    categories: ()            => http.get('/services/categories'),
+    byService:  (id, p = {})  => http.get(`/services/${id}/providers?` + new URLSearchParams(p)),
   };
 
   const search = {
@@ -317,6 +319,7 @@
 
   const admin = {
     stats:               ()       => http.get('/admin/dashboard'),
+    users:               (p = {}) => http.get('/admin/users?' + new URLSearchParams(p)),
     suspendUser:         (id, data) => http.post(`/admin/users/${id}/suspend`, data),
     unsuspendUser:       (id)     => http.post(`/admin/users/${id}/reinstate`),
     deleteUser:          (id)     => http.post(`/admin/users/${id}/delete`),
