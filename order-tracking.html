@@ -293,7 +293,8 @@
 <link rel="stylesheet" href="css/khedmah-ux.css">
 </head>
 <body>
-<script src="js/api.js"></script>
+<script src="js/config.js"></script>
+    <script src="js/api.js"></script>
 <script>
     (function() {
         const demo = localStorage.getItem('khedmah_demo');
@@ -455,6 +456,7 @@
 
 <div class="toast" id="toast"></div>
 
+<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
     // Thread requestId from URL params — store globally so advanceStep() can use it
@@ -537,7 +539,7 @@
             pathLine.setLatLngs([providerCoords, CUSTOMER_COORDS]);
         }, 3000); // move every 3 seconds
     }
-    startProviderMovement();
+    // startProviderMovement() is called by connectTrackingSocket() at bottom of script
 
     function showToast(msg) {
         const t = document.getElementById('toast');
@@ -679,6 +681,65 @@
         localStorage.removeItem('khedmah_admin');
         window.location.href = 'login.html';
     }
+
+    // ── Real-time WebSocket connection (with demo fallback) ───────────────────
+    (function connectTrackingSocket() {
+        const wsBase = (window.KHEDMAH_WS_URL || '').replace(/\/$/, '');
+        const token  = localStorage.getItem('khedmah_access_token');
+        const reqId  = _currentRequestId;
+
+        // Skip real WS if: no backend URL configured, no token, or demo requestId
+        if (!wsBase || !token || reqId === 'REQ-demo-001' || typeof io === 'undefined') {
+            startProviderMovement();
+            return;
+        }
+
+        let wsLive = false;
+        try {
+            const socket = io(wsBase + '/tracking', {
+                auth: { token },
+                transports: ['websocket', 'polling'],
+                reconnectionAttempts: 3,
+                timeout: 5000,
+            });
+
+            socket.on('connect', () => {
+                wsLive = true;
+                clearInterval(moveInterval); // stop demo movement
+                socket.emit('join_request_room', { requestId: reqId });
+            });
+
+            socket.on('location_update', (data) => {
+                if (data.lat && data.lng) {
+                    providerCoords = [data.lat, data.lng];
+                    providerMarker.setLatLng(providerCoords);
+                    pathLine.setLatLngs([providerCoords, CUSTOMER_COORDS]);
+                    if (data.etaMinutes != null) {
+                        etaSeconds = Math.round(data.etaMinutes * 60);
+                    }
+                }
+            });
+
+            socket.on('job_status_update', (data) => {
+                const statusMap = { EN_ROUTE: 2, ARRIVED: 3, STARTED: 3, COMPLETED: 4 };
+                const newStep = statusMap[data.status];
+                if (newStep && newStep > currentStep) {
+                    advanceStep(newStep);
+                    if (newStep === 3) showToast('🛎️ وصل المزود! بدأ العمل.');
+                    if (newStep === 4) showToast('🎉 اكتملت الخدمة! يرجى تأكيد الاستلام وإطلاق الدفع.');
+                }
+            });
+
+            socket.on('connect_error', () => {
+                if (!wsLive) {
+                    // Backend unreachable — fall back to demo simulation
+                    startProviderMovement();
+                }
+            });
+        } catch (e) {
+            startProviderMovement();
+        }
+    })();
 </script>
 <button id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="للأعلى">↑</button>
 <script>
