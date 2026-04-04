@@ -307,6 +307,118 @@
 
         .theme-toggle { width: 36px; height: 36px; border: 1.5px solid #e2e8f0; border-radius: 10px; background: transparent; cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; }
         html.dark .theme-toggle { border-color: #334155; color: #e2e8f0; }
+
+        /* ── Redesigned card bottom ────────────────────────────────────────── */
+        .card-book-section { padding: 0.75rem 1rem 1rem; border-top: 1px solid #f1f5f9; }
+        .card-avail-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem; }
+        .slot-badge { font-size: 0.75rem; color: var(--gray); background: #f1f5f9; border-radius: 8px; padding: 0.2rem 0.55rem; font-weight: 600; }
+        .price-display { font-size: 1.05rem; font-weight: 800; color: var(--primary); margin-bottom: 0.7rem; }
+        .price-display small { font-size: 0.75rem; font-weight: 500; color: var(--gray); }
+        .btn-book-now {
+            display: block; width: 100%;
+            background: linear-gradient(135deg, #028090, #00A896);
+            color: white; border: none; border-radius: 12px;
+            padding: 0.85rem 1rem; font-family: 'Tajawal', sans-serif;
+            font-size: 1rem; font-weight: 800; cursor: pointer;
+            margin-bottom: 0.55rem; transition: all 0.2s;
+            letter-spacing: 0.3px;
+        }
+        .btn-book-now:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(2,128,144,0.35); }
+        .card-secondary-actions { display: flex; gap: 0.5rem; }
+        .btn-profile-sm { flex: 1; text-align: center; padding: 0.55rem 0.5rem; border: 1.5px solid #e2e8f0; border-radius: 10px; color: var(--gray); text-decoration: none; font-size: 0.82rem; font-weight: 600; transition: all 0.15s; display: block; }
+        .btn-profile-sm:hover { border-color: var(--primary); color: var(--primary); }
+        .btn-chat-sm { width: 38px; height: 38px; border: 1.5px solid #e2e8f0; border-radius: 10px; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 1rem; flex-shrink: 0; transition: all 0.15s; }
+        .btn-chat-sm:hover { border-color: var(--primary); }
+
+        /* ── Booking Bottom Sheet ────────────────────────────────────────────── */
+        .booking-backdrop {
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,0.55); z-index: 800;
+            align-items: flex-end; justify-content: center;
+        }
+        .booking-backdrop.open { display: flex; }
+        @media (min-width: 600px) { .booking-backdrop { align-items: center; } }
+        .booking-sheet {
+            background: white; width: 100%; max-width: 560px;
+            border-radius: 24px 24px 0 0; overflow: hidden;
+            max-height: 92vh; display: flex; flex-direction: column;
+            animation: sheetUp 0.28s ease;
+        }
+        @media (min-width: 600px) { .booking-sheet { border-radius: 24px; max-height: 88vh; } }
+        @keyframes sheetUp { from { transform: translateY(36px); opacity:0; } to { transform: translateY(0); opacity:1; } }
+        .sheet-handle { width: 40px; height: 5px; background: #e2e8f0; border-radius: 3px; margin: 0.85rem auto 0; flex-shrink: 0; }
+        @media (min-width: 600px) { .sheet-handle { display: none; } }
+        .sheet-header { padding: 0.875rem 1.25rem 0; flex-shrink: 0; }
+        .sheet-provider-row { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.65rem; }
+        .sheet-avatar { width: 42px; height: 42px; border-radius: 50%; background: linear-gradient(135deg,#028090,#02C39A); color: white; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1rem; flex-shrink: 0; }
+        .sheet-prov-name { font-weight: 800; font-size: 1rem; color: var(--dark); }
+        .sheet-prov-sub { font-size: 0.8rem; color: var(--gray); }
+        .sheet-close { margin-right: auto; background: #f1f5f9; border: none; border-radius: 50%; width: 32px; height: 32px; cursor: pointer; font-size: 1rem; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+        .step-dots { display: flex; gap: 0.45rem; justify-content: center; padding: 0.4rem 0 0.65rem; }
+        .step-dot { width: 8px; height: 8px; border-radius: 50%; background: #e2e8f0; transition: all 0.2s; }
+        .step-dot.active { width: 22px; border-radius: 4px; background: var(--primary); }
+        .step-dot.done { background: var(--secondary); }
+        .sheet-body { flex: 1; overflow-y: auto; padding: 0 1.25rem 0.75rem; }
+        .sheet-section { margin-bottom: 1.1rem; }
+        .sheet-section-label { font-size: 0.88rem; font-weight: 700; color: var(--dark); margin-bottom: 0.55rem; }
+        .option-chips { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+        .option-chip { border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 0.5rem 0.85rem; font-family:'Tajawal',sans-serif; font-size:0.875rem; font-weight:600; background:white; cursor:pointer; transition:all 0.15s; color:var(--dark); }
+        .option-chip:hover { border-color: var(--primary); color: var(--primary); }
+        .option-chip.sel { background: var(--primary); border-color: var(--primary); color: white; }
+        .pricing-banner { background: rgba(2,128,144,0.07); border: 1.5px solid rgba(2,128,144,0.18); border-radius: 14px; padding: 0.8rem 1rem; display: flex; justify-content: space-between; align-items: center; }
+        .pricing-banner-label { font-size: 0.85rem; color: var(--gray); }
+        .pricing-banner-value { font-size: 1.1rem; font-weight: 800; color: var(--primary); }
+        .material-option { border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 0.8rem 1rem; margin-bottom: 0.5rem; cursor: pointer; display: flex; align-items: flex-start; gap: 0.7rem; transition: all 0.15s; background: white; }
+        .material-option.sel { border-color: var(--primary); background: rgba(2,128,144,0.05); }
+        .material-radio { width: 20px; height: 20px; border-radius: 50%; border: 2px solid #cbd5e1; flex-shrink: 0; margin-top: 2px; transition: all 0.15s; display: flex; align-items: center; justify-content: center; }
+        .material-option.sel .material-radio { border-color: var(--primary); background: var(--primary); }
+        .material-option.sel .material-radio::after { content:''; width:8px; height:8px; border-radius:50%; background:white; display:block; }
+        .material-title { font-size: 0.9rem; font-weight: 700; color: var(--dark); }
+        .material-desc { font-size: 0.78rem; color: var(--gray); margin-top: 0.15rem; line-height: 1.4; }
+        .time-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.45rem; }
+        .time-chip { border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 0.65rem 0.5rem; font-family:'Tajawal',sans-serif; font-size:0.875rem; font-weight:600; background:white; cursor:pointer; text-align:center; transition:all 0.15s; color:var(--dark); }
+        .time-chip:hover { border-color: var(--primary); }
+        .time-chip.sel { background: var(--primary); border-color: var(--primary); color: white; }
+        .time-chip.urgent { border-color: #ef4444; color: #ef4444; background: rgba(239,68,68,0.05); }
+        .time-chip.urgent.sel { background: #ef4444; border-color: #ef4444; color: white; }
+        .sheet-textarea { width:100%; border:1.5px solid #e2e8f0; border-radius:12px; padding:0.875rem 1rem; font-family:'Tajawal',sans-serif; font-size:0.9rem; resize:none; min-height:90px; outline:none; background:white; color:var(--dark); transition:border-color 0.15s; }
+        .sheet-textarea:focus { border-color: var(--primary); }
+        .summary-card { background: #f8fafc; border-radius: 14px; padding: 0.875rem 1.1rem; }
+        .summary-row { display: flex; justify-content: space-between; padding: 0.6rem 0; border-bottom: 1px solid #f1f5f9; }
+        .summary-row:last-child { border-bottom: none; }
+        .summary-lbl { font-size: 0.83rem; color: var(--gray); }
+        .summary-val { font-size: 0.9rem; font-weight: 700; color: var(--dark); text-align: left; }
+        .info-tip { background: rgba(2,128,144,0.07); border-right: 3px solid var(--primary); border-radius: 10px; padding: 0.75rem 1rem; font-size: 0.84rem; color: var(--dark); line-height: 1.6; margin-top: 0.875rem; }
+        .sheet-footer { padding: 0.875rem 1.25rem; padding-bottom: max(0.875rem, env(safe-area-inset-bottom)); border-top: 1px solid #f1f5f9; display: flex; gap: 0.75rem; background: white; flex-shrink: 0; }
+        .sheet-btn-prev { background: #f1f5f9; color: var(--dark); border: none; border-radius: 12px; padding: 0.875rem 1.25rem; font-family:'Tajawal',sans-serif; font-size:0.95rem; font-weight:600; cursor:pointer; min-width:80px; }
+        .sheet-btn-next, .sheet-btn-confirm { flex: 1; border: none; border-radius: 12px; padding: 0.875rem; font-family:'Tajawal',sans-serif; font-size:1rem; font-weight:800; cursor:pointer; transition:all 0.2s; }
+        .sheet-btn-next { background: linear-gradient(135deg,#028090,#00A896); color: white; }
+        .sheet-btn-confirm { background: linear-gradient(135deg,#10b981,#059669); color: white; }
+        .sheet-btn-next:hover, .sheet-btn-confirm:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(2,128,144,0.3); }
+        .sheet-btn-next:disabled, .sheet-btn-confirm:disabled { opacity:0.55; cursor:default; transform:none; box-shadow:none; }
+
+        /* dark mode for new elements */
+        html.dark .card-book-section { border-color: #1e293b; }
+        html.dark .btn-profile-sm { border-color: #334155; color: #94a3b8; }
+        html.dark .btn-chat-sm { border-color: #334155; }
+        html.dark .slot-badge { background: #0f172a; color: #94a3b8; }
+        html.dark .booking-sheet { background: #1e293b; }
+        html.dark .sheet-prov-name { color: #e2e8f0; }
+        html.dark .sheet-close { background: #0f172a; color: #e2e8f0; }
+        html.dark .sheet-section-label { color: #e2e8f0; }
+        html.dark .option-chip { background: #0f172a; border-color: #334155; color: #cbd5e1; }
+        html.dark .material-option { background: #0f172a; border-color: #334155; }
+        html.dark .material-title { color: #e2e8f0; }
+        html.dark .time-chip { background: #0f172a; border-color: #334155; color: #cbd5e1; }
+        html.dark .sheet-textarea { background: #0f172a !important; color: #e2e8f0 !important; border-color: #334155 !important; }
+        html.dark .summary-card { background: #0f172a; }
+        html.dark .summary-row { border-color: #334155; }
+        html.dark .summary-val { color: #e2e8f0; }
+        html.dark .sheet-footer { background: #1e293b; border-color: #334155; }
+        html.dark .sheet-btn-prev { background: #0f172a; color: #e2e8f0; }
+        html.dark .pricing-banner { background: rgba(2,128,144,0.1); border-color: rgba(2,128,144,0.3); }
+        html.dark .info-tip { color: #e2e8f0; }
+        html.dark #customDateInput { background: #0f172a !important; color: #e2e8f0 !important; border-color: #334155 !important; }
     </style>
     <link rel="stylesheet" href="css/khedmah-ux.css">
 </head>
@@ -505,14 +617,16 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card-bottom">
-                        <div class="card-avail-price">
+                    <div class="card-book-section">
+                        <div class="card-avail-row">
                             <div class="available-badge yes">● متاح الآن</div>
-                            <div class="prov-price">80 ر.س <small>/ ساعة</small></div>
+                            <div class="slot-badge">📅 أقرب موعد: اليوم</div>
                         </div>
-                        <div class="card-actions">
-                            <a href="provider-profile.html?id=khalid" class="btn-profile">عرض الملف</a>
-                            <a href="chat.html?type=service&id=1" class="btn-chat">💬</a>
+                        <div class="price-display">80 ر.س <small>/ ساعة</small></div>
+                        <button class="btn-book-now" onclick="openBooking({id:'khalid',name:'خالد العمري',initial:'خ',cat:'كهرباء',price:80,priceType:'hour',available:true})">⚡ احجز الآن</button>
+                        <div class="card-secondary-actions">
+                            <a href="provider-profile.html?id=khalid" class="btn-profile-sm">👤 عرض الملف</a>
+                            <a href="chat.html?type=service&id=1" class="btn-chat-sm">💬</a>
                         </div>
                     </div>
                 </div>
@@ -539,14 +653,16 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card-bottom">
-                        <div class="card-avail-price">
+                    <div class="card-book-section">
+                        <div class="card-avail-row">
                             <div class="available-badge yes">● متاح الآن</div>
-                            <div class="prov-price">70 ر.س <small>/ ساعة</small></div>
+                            <div class="slot-badge">📅 أقرب موعد: اليوم</div>
                         </div>
-                        <div class="card-actions">
-                            <a href="provider-profile.html?id=salem" class="btn-profile">عرض الملف</a>
-                            <a href="chat.html?type=service&id=2" class="btn-chat">💬</a>
+                        <div class="price-display">70 ر.س <small>/ ساعة</small></div>
+                        <button class="btn-book-now" onclick="openBooking({id:'salem',name:'سالم القحطاني',initial:'س',cat:'كهرباء',price:70,priceType:'hour',available:true})">⚡ احجز الآن</button>
+                        <div class="card-secondary-actions">
+                            <a href="provider-profile.html?id=salem" class="btn-profile-sm">👤 عرض الملف</a>
+                            <a href="chat.html?type=service&id=2" class="btn-chat-sm">💬</a>
                         </div>
                     </div>
                 </div>
@@ -572,14 +688,16 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card-bottom">
-                        <div class="card-avail-price">
+                    <div class="card-book-section">
+                        <div class="card-avail-row">
                             <div class="available-badge no">○ غير متاح اليوم</div>
-                            <div class="prov-price">65 ر.س <small>/ ساعة</small></div>
+                            <div class="slot-badge">📅 أقرب موعد: غداً</div>
                         </div>
-                        <div class="card-actions">
-                            <a href="provider-profile.html?id=fahad" class="btn-profile">عرض الملف</a>
-                            <a href="chat.html?type=service&id=3" class="btn-chat">💬</a>
+                        <div class="price-display">65 ر.س <small>/ ساعة</small></div>
+                        <button class="btn-book-now" onclick="openBooking({id:'fahad',name:'فهد الدوسري',initial:'ف',cat:'كهرباء',price:65,priceType:'hour',available:false})">📅 احجز لاحقاً</button>
+                        <div class="card-secondary-actions">
+                            <a href="provider-profile.html?id=fahad" class="btn-profile-sm">👤 عرض الملف</a>
+                            <a href="chat.html?type=service&id=3" class="btn-chat-sm">💬</a>
                         </div>
                     </div>
                 </div>
@@ -605,14 +723,16 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card-bottom">
-                        <div class="card-avail-price">
+                    <div class="card-book-section">
+                        <div class="card-avail-row">
                             <div class="available-badge yes">● متاح الآن</div>
-                            <div class="prov-price">60 ر.س <small>/ ساعة</small></div>
+                            <div class="slot-badge">📅 أقرب موعد: اليوم</div>
                         </div>
-                        <div class="card-actions">
-                            <a href="provider-profile.html?id=abdulrahman" class="btn-profile">عرض الملف</a>
-                            <a href="chat.html?type=service&id=4" class="btn-chat">💬</a>
+                        <div class="price-display">60 ر.س <small>/ ساعة</small></div>
+                        <button class="btn-book-now" onclick="openBooking({id:'abdulrahman',name:'عبدالرحمن الشهري',initial:'ع',cat:'كهرباء وتكييف',price:60,priceType:'hour',available:true})">⚡ احجز الآن</button>
+                        <div class="card-secondary-actions">
+                            <a href="provider-profile.html?id=abdulrahman" class="btn-profile-sm">👤 عرض الملف</a>
+                            <a href="chat.html?type=service&id=4" class="btn-chat-sm">💬</a>
                         </div>
                     </div>
                 </div>
@@ -638,14 +758,16 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card-bottom">
-                        <div class="card-avail-price">
+                    <div class="card-book-section">
+                        <div class="card-avail-row">
                             <div class="available-badge yes">● متاح الآن</div>
-                            <div class="prov-price">55 ر.س <small>/ ساعة</small></div>
+                            <div class="slot-badge">📅 أقرب موعد: اليوم</div>
                         </div>
-                        <div class="card-actions">
-                            <a href="provider-profile.html?id=mohammad" class="btn-profile">عرض الملف</a>
-                            <a href="chat.html?type=service&id=5" class="btn-chat">💬</a>
+                        <div class="price-display">55 ر.س <small>/ ساعة</small></div>
+                        <button class="btn-book-now" onclick="openBooking({id:'mohammad',name:'محمد الغامدي',initial:'م',cat:'كهرباء وصيانة',price:55,priceType:'hour',available:true})">⚡ احجز الآن</button>
+                        <div class="card-secondary-actions">
+                            <a href="provider-profile.html?id=mohammad" class="btn-profile-sm">👤 عرض الملف</a>
+                            <a href="chat.html?type=service&id=5" class="btn-chat-sm">💬</a>
                         </div>
                     </div>
                 </div>
@@ -858,23 +980,35 @@
                     const name = p.user?.name || p.name || 'مزود خدمة';
                     const initial = name.charAt(0);
                     const rating = parseFloat(p.ratingAvg || p.rating || 0).toFixed(1);
+                    const pPrice = p.startingPrice || 0;
+                    const safeId = id.replace(/['"]/g,'');
+                    const safeName = (p.user?.name || p.name || 'مزود خدمة').replace(/'/g,"\\'");
+                    const safeCat = (p.category || '').replace(/'/g,"\\'");
                     card.innerHTML = `
                         <div class="card-top">
-                            <div class="prov-avatar">${initial}</div>
-                            <div style="flex:1">
-                                <div style="font-weight:700">${name}</div>
+                            <div class="prov-avatar">${initial}<div class="verified-tick">✓</div></div>
+                            <div class="prov-info">
+                                <div class="prov-name">${name}</div>
                                 <div class="prov-service">${p.category || ''}</div>
-                                <div style="font-size:0.82rem;color:var(--gray)">📍 ${p.city || ''}</div>
+                                <div class="prov-meta">
+                                    <span class="rating">⭐ ${rating}</span>
+                                    <span>📍 ${p.city || ''}</span>
+                                    <span>✅ ${p.jobsCompleted || 0} خدمة</span>
+                                </div>
                             </div>
                         </div>
-                        <div class="card-bottom">
-                            <div class="card-avail-price">
-                                <span style="color:var(--success);font-size:0.8rem">${p.available ? '🟢 متاح' : '🔴 غير متاح'}</span>
-                                <span style="font-weight:700;color:var(--primary)">${p.startingPrice ? p.startingPrice + ' ر.س' : 'حسب الاتفاق'}</span>
+                        <div class="card-book-section">
+                            <div class="card-avail-row">
+                                <div class="available-badge ${p.available ? 'yes' : 'no'}">${p.available ? '● متاح الآن' : '○ غير متاح اليوم'}</div>
+                                <div class="slot-badge">📅 ${p.available ? 'أقرب موعد: اليوم' : 'أقرب موعد: غداً'}</div>
                             </div>
-                            <div class="card-actions">
-                                <span style="font-size:0.85rem">⭐ ${rating}</span>
-                                <a href="provider-profile.html?id=${id}" style="background:var(--primary);color:white;padding:0.4rem 1rem;border-radius:8px;text-decoration:none;font-size:0.85rem">عرض الملف</a>
+                            <div class="price-display">${pPrice ? pPrice + ' ر.س <small>/ ساعة</small>' : '<span style="font-size:0.85rem">حسب الاتفاق</span>'}</div>
+                            <button class="btn-book-now" onclick="openBooking({id:'${safeId}',name:'${safeName}',initial:'${initial}',cat:'${safeCat}',price:${pPrice},priceType:'hour',available:${!!p.available}})">
+                                ${p.available ? '⚡ احجز الآن' : '📅 احجز لاحقاً'}
+                            </button>
+                            <div class="card-secondary-actions">
+                                <a href="provider-profile.html?id=${safeId}" class="btn-profile-sm">👤 عرض الملف</a>
+                                <a href="chat.html?type=service&id=${safeId}" class="btn-chat-sm">💬</a>
                             </div>
                         </div>`;
                     grid.appendChild(card);
@@ -941,6 +1075,304 @@
             }
         })();
     </script>
+<!-- ═══════════════════════════════ Booking Bottom Sheet ═══════════════════ -->
+<div id="bookingBackdrop" class="booking-backdrop" onclick="if(event.target===this)closeBooking()">
+    <div class="booking-sheet">
+        <div class="sheet-handle"></div>
+        <div class="sheet-header">
+            <div class="sheet-provider-row">
+                <div class="sheet-avatar" id="sheetAvatar">خ</div>
+                <div>
+                    <div class="sheet-prov-name" id="sheetProvName">اسم المزود</div>
+                    <div class="sheet-prov-sub" id="sheetProvSub">الخدمة</div>
+                </div>
+                <button class="sheet-close" onclick="closeBooking()">✕</button>
+            </div>
+            <div class="step-dots">
+                <div class="step-dot active" id="bdot0"></div>
+                <div class="step-dot" id="bdot1"></div>
+                <div class="step-dot" id="bdot2"></div>
+            </div>
+        </div>
+        <div class="sheet-body" id="sheetBody">
+
+            <!-- ── Step 1: Service type + pricing + materials ── -->
+            <div id="bStep1">
+                <div class="sheet-section">
+                    <div class="sheet-section-label">🔧 نوع الخدمة</div>
+                    <div class="option-chips">
+                        <button class="option-chip sel" data-stype="كشف وتشخيص" onclick="selectChip(this,'stype')">🔍 كشف وتشخيص</button>
+                        <button class="option-chip" data-stype="إصلاح" onclick="selectChip(this,'stype')">🔧 إصلاح</button>
+                        <button class="option-chip" data-stype="تركيب" onclick="selectChip(this,'stype')">🔩 تركيب</button>
+                        <button class="option-chip" data-stype="صيانة دورية" onclick="selectChip(this,'stype')">🛠️ صيانة دورية</button>
+                    </div>
+                </div>
+                <div class="sheet-section">
+                    <div class="sheet-section-label">💰 التسعير</div>
+                    <div class="pricing-banner">
+                        <div>
+                            <div class="pricing-banner-label" id="pricingLabel">سعر الساعة</div>
+                            <div style="font-size:0.75rem;color:var(--gray);margin-top:0.2rem;" id="pricingNote">يتم احتساب الوقت الفعلي للعمل</div>
+                        </div>
+                        <div class="pricing-banner-value" id="pricingValue">— ر.س</div>
+                    </div>
+                </div>
+                <div class="sheet-section">
+                    <div class="sheet-section-label">📦 المواد والقطع</div>
+                    <div class="material-option sel" id="bmat0" onclick="selectMaterial(0)">
+                        <div class="material-radio"></div>
+                        <div><div class="material-title">الخدمة فقط</div><div class="material-desc">العميل يوفر المواد والقطع مسبقاً</div></div>
+                    </div>
+                    <div class="material-option" id="bmat1" onclick="selectMaterial(1)">
+                        <div class="material-radio"></div>
+                        <div><div class="material-title">المواد مشمولة في الخدمة</div><div class="material-desc">المزود يحضر المواد — يتم الاتفاق على التكلفة عند الوصول</div></div>
+                    </div>
+                    <div class="material-option" id="bmat2" onclick="selectMaterial(2)">
+                        <div class="material-radio"></div>
+                        <div><div class="material-title">فحص أولاً ثم اتفاق على التكلفة</div><div class="material-desc">المزود يكشف أولاً ويقدم عرضاً شاملاً قبل بدء العمل</div></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── Step 2: Schedule + description ── -->
+            <div id="bStep2" style="display:none">
+                <div class="sheet-section">
+                    <div class="sheet-section-label">📅 الموعد المفضل</div>
+                    <div class="time-grid">
+                        <button class="time-chip urgent" data-when="urgent" onclick="selectWhen(this)">🚨 عاجل — الآن</button>
+                        <button class="time-chip sel" data-when="today" onclick="selectWhen(this)">☀️ اليوم</button>
+                        <button class="time-chip" data-when="tomorrow" onclick="selectWhen(this)">📆 غداً</button>
+                        <button class="time-chip" data-when="schedule" onclick="selectWhen(this)">🗓️ اختر تاريخاً</button>
+                    </div>
+                    <input type="date" id="customDateInput"
+                        style="display:none;margin-top:0.75rem;width:100%;border:1.5px solid #e2e8f0;border-radius:12px;padding:0.75rem 1rem;font-family:Tajawal,sans-serif;font-size:0.9rem;outline:none;color:var(--dark);">
+                </div>
+                <div class="sheet-section" id="slotSection">
+                    <div class="sheet-section-label">⏰ الفترة الزمنية</div>
+                    <div class="time-grid">
+                        <button class="time-chip sel" data-slot="8ص–12م" onclick="selectSlot(this)">🌅 8ص – 12م</button>
+                        <button class="time-chip" data-slot="12م–4م" onclick="selectSlot(this)">☀️ 12م – 4م</button>
+                        <button class="time-chip" data-slot="4م–8م" onclick="selectSlot(this)">🌆 4م – 8م</button>
+                        <button class="time-chip" data-slot="مرن" onclick="selectSlot(this)">🕐 مرن / أي وقت</button>
+                    </div>
+                </div>
+                <div class="sheet-section">
+                    <div class="sheet-section-label">📝 وصف المشكلة <span style="color:var(--gray);font-weight:400;font-size:0.78rem;">(اختياري)</span></div>
+                    <textarea id="issueDesc" class="sheet-textarea" placeholder="مثال: يوجد قاطع كهرباء يتعطل باستمرار في الطابق الأول، ويوجد تمديدات في غرفة النوم تحتاج مراجعة..."></textarea>
+                </div>
+            </div>
+
+            <!-- ── Step 3: Summary + confirm ── -->
+            <div id="bStep3" style="display:none">
+                <div class="sheet-section">
+                    <div class="sheet-section-label">📋 ملخص الحجز</div>
+                    <div class="summary-card">
+                        <div class="summary-row"><span class="summary-lbl">المزود</span><span class="summary-val" id="sumProvider">—</span></div>
+                        <div class="summary-row"><span class="summary-lbl">نوع الخدمة</span><span class="summary-val" id="sumType">—</span></div>
+                        <div class="summary-row"><span class="summary-lbl">المواد</span><span class="summary-val" id="sumMaterials">—</span></div>
+                        <div class="summary-row"><span class="summary-lbl">الموعد</span><span class="summary-val" id="sumWhen">—</span></div>
+                        <div class="summary-row"><span class="summary-lbl">الفترة</span><span class="summary-val" id="sumSlot">—</span></div>
+                        <div class="summary-row"><span class="summary-lbl">التسعير</span><span class="summary-val" id="sumPrice">—</span></div>
+                    </div>
+                    <div class="info-tip">💡 سيتواصل معك المزود لتأكيد الموعد ومعاينة المشكلة. يمكنك متابعة الطلب من لوحة التحكم فور التأكيد.</div>
+                </div>
+            </div>
+
+        </div>
+        <div class="sheet-footer">
+            <button class="sheet-btn-prev" id="sheetPrevBtn" style="display:none" onclick="bookingPrev()">← السابق</button>
+            <button class="sheet-btn-next" id="sheetNextBtn" onclick="bookingNext()">التالي ←</button>
+            <button class="sheet-btn-confirm" id="sheetConfirmBtn" style="display:none" onclick="confirmBooking()">✅ تأكيد الحجز</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// ─────────────────────────── Booking Modal Logic ──────────────────────────────
+let _booking = {};
+let _bStep = 1;
+const MAT_LABELS = ['الخدمة فقط (بدون مواد)', 'المواد مشمولة في السعر', 'فحص أولاً ثم اتفاق'];
+
+function openBooking(prov) {
+    _booking = {
+        providerId: prov.id,
+        providerName: prov.name,
+        initial: (prov.initial || prov.name.charAt(0)),
+        category: prov.cat,
+        price: prov.price,
+        priceType: prov.priceType || 'hour',
+        available: prov.available !== false,
+        serviceType: 'كشف وتشخيص',
+        materialsOption: 0,
+        when: prov.available !== false ? 'today' : 'tomorrow',
+        timeSlot: '8ص–12م',
+        customDate: '',
+        description: '',
+    };
+    _bStep = 1;
+
+    // Fill header
+    document.getElementById('sheetAvatar').textContent = _booking.initial;
+    document.getElementById('sheetProvName').textContent = _booking.providerName;
+    document.getElementById('sheetProvSub').textContent = _booking.category;
+
+    // Reset Step 1
+    document.querySelectorAll('.option-chip[data-stype]').forEach(c => {
+        c.classList.toggle('sel', c.dataset.stype === 'كشف وتشخيص');
+    });
+    selectMaterial(0);
+    updatePricingBanner();
+
+    // Reset Step 2
+    document.querySelectorAll('.time-chip[data-when]').forEach(c => {
+        c.classList.toggle('sel', c.dataset.when === _booking.when);
+    });
+    document.querySelectorAll('.time-chip[data-slot]').forEach(c => {
+        c.classList.toggle('sel', c.dataset.slot === '8ص–12م');
+    });
+    document.getElementById('customDateInput').style.display = 'none';
+    document.getElementById('issueDesc').value = '';
+
+    renderBStep();
+    document.getElementById('bookingBackdrop').classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeBooking() {
+    document.getElementById('bookingBackdrop').classList.remove('open');
+    document.body.style.overflow = '';
+}
+
+function renderBStep() {
+    document.getElementById('bStep1').style.display = _bStep === 1 ? '' : 'none';
+    document.getElementById('bStep2').style.display = _bStep === 2 ? '' : 'none';
+    document.getElementById('bStep3').style.display = _bStep === 3 ? '' : 'none';
+
+    [0,1,2].forEach(i => {
+        const d = document.getElementById('bdot' + i);
+        d.className = 'step-dot' + (i + 1 < _bStep ? ' done' : '') + (i + 1 === _bStep ? ' active' : '');
+    });
+
+    document.getElementById('sheetPrevBtn').style.display = _bStep > 1 ? '' : 'none';
+    document.getElementById('sheetNextBtn').style.display = _bStep < 3 ? '' : 'none';
+    document.getElementById('sheetConfirmBtn').style.display = _bStep === 3 ? '' : 'none';
+    document.getElementById('sheetConfirmBtn').disabled = false;
+    document.getElementById('sheetConfirmBtn').textContent = '✅ تأكيد الحجز';
+
+    if (_bStep === 3) buildSummary();
+    document.getElementById('sheetBody').scrollTop = 0;
+}
+
+function selectChip(el, group) {
+    el.closest('.option-chips').querySelectorAll('.option-chip').forEach(c => c.classList.remove('sel'));
+    el.classList.add('sel');
+    if (group === 'stype') _booking.serviceType = el.dataset.stype;
+}
+
+function selectMaterial(idx) {
+    [0,1,2].forEach(i => document.getElementById('bmat' + i)?.classList.toggle('sel', i === idx));
+    _booking.materialsOption = idx;
+}
+
+function selectWhen(el) {
+    document.querySelectorAll('.time-chip[data-when]').forEach(c => c.classList.remove('sel'));
+    el.classList.add('sel');
+    _booking.when = el.dataset.when;
+    const di = document.getElementById('customDateInput');
+    di.style.display = _booking.when === 'schedule' ? 'block' : 'none';
+    if (_booking.when === 'schedule') {
+        const d = new Date(); d.setDate(d.getDate() + 1);
+        di.min = d.toISOString().split('T')[0];
+    }
+    // Hide time slot for urgent
+    document.getElementById('slotSection').style.display = _booking.when === 'urgent' ? 'none' : '';
+}
+
+function selectSlot(el) {
+    document.querySelectorAll('.time-chip[data-slot]').forEach(c => c.classList.remove('sel'));
+    el.classList.add('sel');
+    _booking.timeSlot = el.dataset.slot;
+}
+
+function updatePricingBanner() {
+    const labels = { hour: 'سعر الساعة', visit: 'رسوم الزيارة', quote: 'سعر تقديري' };
+    const notes  = { hour: 'يتم احتساب الوقت الفعلي للعمل', visit: 'شامل الكشف والتشخيص', quote: 'بعد الفحص يتم الاتفاق على السعر النهائي' };
+    document.getElementById('pricingLabel').textContent = labels[_booking.priceType] || 'السعر';
+    document.getElementById('pricingNote').textContent  = notes[_booking.priceType]  || '';
+    document.getElementById('pricingValue').textContent = _booking.price ? _booking.price + ' ر.س' : 'حسب الاتفاق';
+}
+
+function buildSummary() {
+    const whenMap = {
+        urgent:   '🚨 عاجل — الآن',
+        today:    '☀️ اليوم',
+        tomorrow: '📆 غداً',
+        schedule: '📅 ' + (document.getElementById('customDateInput').value || 'تاريخ محدد'),
+    };
+    const priceMap = {
+        hour:  (_booking.price || '—') + ' ر.س / ساعة',
+        visit: (_booking.price || '—') + ' ر.س / زيارة',
+        quote: 'حسب الفحص والاتفاق',
+    };
+    document.getElementById('sumProvider').textContent  = _booking.providerName;
+    document.getElementById('sumType').textContent      = _booking.serviceType;
+    document.getElementById('sumMaterials').textContent = MAT_LABELS[_booking.materialsOption];
+    document.getElementById('sumWhen').textContent      = whenMap[_booking.when] || _booking.when;
+    document.getElementById('sumSlot').textContent      = _booking.when === 'urgent' ? 'في أقرب وقت ممكن' : '⏰ ' + _booking.timeSlot;
+    document.getElementById('sumPrice').textContent     = priceMap[_booking.priceType] || '';
+}
+
+function bookingNext() {
+    if (_bStep < 3) { _bStep++; renderBStep(); }
+}
+
+function bookingPrev() {
+    if (_bStep > 1) { _bStep--; renderBStep(); }
+}
+
+async function confirmBooking() {
+    const btn = document.getElementById('sheetConfirmBtn');
+    btn.disabled = true;
+    btn.textContent = '⏳ جاري الإرسال...';
+
+    const payload = {
+        providerId:      _booking.providerId,
+        serviceType:     _booking.serviceType,
+        materialsOption: ['none', 'included', 'inspection_first'][_booking.materialsOption],
+        scheduleTiming:  _booking.when,
+        scheduleSlot:    _booking.timeSlot,
+        scheduledDate:   document.getElementById('customDateInput').value || null,
+        isUrgent:        _booking.when === 'urgent',
+        description:     document.getElementById('issueDesc').value.trim(),
+        category:        _booking.category,
+    };
+
+    try {
+        let requestId;
+        if (typeof API !== 'undefined' && API.isLoggedIn && API.isLoggedIn()) {
+            const res = await API.requests.create(payload);
+            requestId = res?.id || res?.requestId || ('REQ-' + Date.now());
+        } else {
+            // demo mode
+            await new Promise(r => setTimeout(r, 900));
+            requestId = 'DEMO-' + Date.now();
+        }
+        closeBooking();
+        const p = new URLSearchParams({ requestId, service: _booking.category, provider: _booking.providerName });
+        window.location.href = 'order-tracking.html?' + p.toString();
+    } catch(err) {
+        btn.disabled = false;
+        btn.textContent = '✅ تأكيد الحجز';
+        const msg = (typeof API !== 'undefined' && API.errorMsg) ? API.errorMsg(err) : 'حدث خطأ، حاول مجدداً';
+        const errEl = document.createElement('div');
+        errEl.style.cssText = 'color:#ef4444;font-size:0.82rem;text-align:center;padding:0.5rem 1.25rem 0;';
+        errEl.textContent = '⚠️ ' + msg;
+        document.querySelector('.sheet-footer').prepend(errEl);
+        setTimeout(() => errEl.remove(), 4000);
+    }
+}
+</script>
+
 <button id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="للأعلى">↑</button>
 <script>
 window.addEventListener('scroll',function(){document.getElementById('scrollTopBtn')?.classList.toggle('visible',window.scrollY>400);});
