@@ -268,10 +268,12 @@
       return { ...(profile || {}), accountName: Store.get('khedmah_bank_account_name') || '' };
     },
     submitDocs:   (data)      => http.post('/providers/me/documents', data),
-    services:     ()          => http.get('/providers/me/services'),
-    addService:   (data)      => http.post('/providers/me/services', data),
-    updateService: (id, data) => http.patch(`/providers/me/services/${id}`, data),
-    removeService: (id)       => http.delete(`/providers/me/services/${id}`),
+    // Skills/services: backend uses catalog model (providers link to existing Service records)
+    // services() fetches the provider's linked skills via their profile
+    services:      () => http.get('/providers/me/profile').then(p => p?.skills || []),
+    addService:    (data) => http.post('/providers/me/skills', data),        // data.serviceId required
+    updateService: (id, data) => http.patch('/providers/me/profile', data),  // limited fields only
+    removeService: (id)       => http.delete(`/providers/me/skills/${id}`),
     getSchedule:  ()          => http.get('/providers/me/schedule'),
     saveSchedule: (data)      => http.patch('/providers/me/schedule', data),
   };
