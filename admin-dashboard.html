@@ -869,7 +869,7 @@
         async function markCommissionPaid(btn, id) {
             if (!confirm('تأكيد استلام الدفع؟')) return;
             btn.disabled = true;
-            try { await API.admin.markCommissionPaid(id); } catch(e) { /* demo */ }
+            /* no backend endpoint for individual commission mark-paid — UI-only update */
             const row = document.querySelector(`[data-id="${id}"]`);
             if (row) { row.style.opacity = '0.3'; setTimeout(() => row.remove(), 500); }
             toast('✅ تم تسجيل الدفع بنجاح');

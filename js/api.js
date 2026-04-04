@@ -289,8 +289,8 @@
   };
 
   const reviews = {
-    create: (requestId, data) => http.post(`/reviews/${requestId}`, data),
-    list:   (userId, p = {})  => http.get(`/reviews/user/${userId}?` + new URLSearchParams(p)),
+    create: (requestId, data) => http.post(`/reviews/requests/${requestId}`, data),
+    list:   (providerId, p = {}) => http.get(`/reviews/providers/${providerId}?` + new URLSearchParams(p)),
   };
 
   const notifications = {
@@ -309,21 +309,21 @@
   };
 
   const admin = {
-    stats:               ()       => http.get('/admin/stats'),
-    users:               (p = {}) => http.get('/admin/users?' + new URLSearchParams(p)),
-    suspendUser:         (id, data) => http.patch(`/admin/users/${id}/suspend`, data),
-    unsuspendUser:       (id)     => http.patch(`/admin/users/${id}/unsuspend`),
-    pendingProviders:    ()       => http.get('/admin/providers/pending'),
-    approveProvider:     (id)     => http.patch(`/admin/providers/${id}/approve`),
-    rejectProvider:      (id, data) => http.patch(`/admin/providers/${id}/reject`, data),
+    stats:               ()       => http.get('/admin/dashboard'),
+    suspendUser:         (id, data) => http.post(`/admin/users/${id}/suspend`, data),
+    unsuspendUser:       (id)     => http.post(`/admin/users/${id}/reinstate`),
+    deleteUser:          (id)     => http.post(`/admin/users/${id}/delete`),
+    pendingProviders:    ()       => http.get('/admin/verifications/pending'),
+    approveProvider:     (id)     => http.patch(`/admin/verifications/${id}/approve`),
+    rejectProvider:      (id, data) => http.patch(`/admin/verifications/${id}/reject`, data),
     disputes:            (p = {}) => http.get('/admin/disputes?' + new URLSearchParams(p)),
-    resolveDispute:      (id, data) => http.patch(`/admin/disputes/${id}/resolve`, data),
+    resolveDispute:      (id, data) => http.post(`/admin/disputes/${id}/resolve`, data),
     withdrawals:         (p = {}) => http.get('/wallet/admin/withdrawals?' + new URLSearchParams(p)),
     approveWithdrawal:   (id, data) => http.patch(`/wallet/admin/withdrawals/${id}/approve`, data),
     rejectWithdrawal:    (id, data) => http.patch(`/wallet/admin/withdrawals/${id}/reject`, data),
-    health:              ()       => http.get('/health'),
-    auditLogs:           (p = {}) => http.get('/admin/audit?' + new URLSearchParams(p)),
-    markCommissionPaid:  (id)     => http.patch(`/admin/commissions/${id}/mark-paid`),
+    health:              ()       => http.get('/admin/health'),
+    overdueCommissions:  ()       => http.get('/admin/commissions/overdue'),
+    weeklyReport:        ()       => http.get('/admin/reports/weekly'),
   };
 
   const tenders = {
