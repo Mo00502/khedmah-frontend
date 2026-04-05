@@ -183,8 +183,8 @@
         }
         try {
             const user = JSON.parse(localStorage.getItem('khedmah_user') || '{}');
-            if (user.role && user.role !== 'customer') {
-                window.location.href = 'provider-dashboard.html';
+            if (user.role !== 'customer') {
+                window.location.href = user.role === 'provider' ? 'provider-dashboard.html' : 'login.html';
             }
         } catch(e) {}
     })();

@@ -437,7 +437,7 @@
     (function() {
         if (!localStorage.getItem('khedmah_demo')) { window.location.href = 'login.html'; return; }
         const u = (() => { try { return JSON.parse(localStorage.getItem('khedmah_user') || '{}'); } catch(e) { return {}; } })();
-        if (u.role && u.role !== 'customer') window.location.href = 'customer-dashboard.html';
+        if (u.role !== 'customer') window.location.href = u.role === 'provider' ? 'provider-dashboard.html' : 'login.html';
     })();
 </script>
     <!-- Navigation -->

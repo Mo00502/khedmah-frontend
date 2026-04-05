@@ -367,6 +367,9 @@
                     throw new Error('ليس لديك صلاحية الوصول للوحة الإدارة');
                 }
                 loginBtn.innerHTML = '<span>✅</span><span>جاري تسجيل الدخول...</span>';
+                // Clear any customer/provider session to prevent contamination
+                localStorage.removeItem('khedmah_demo');
+                localStorage.removeItem('khedmah_user');
                 localStorage.setItem('khedmah_admin', JSON.stringify({ loggedIn: true, username }));
                 setTimeout(() => { window.location.href = 'admin-dashboard.html'; }, 800);
             } catch(err) {
