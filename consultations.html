@@ -516,13 +516,50 @@
 
 <script>
 // ── Consultant data ────────────────────────────────────────────────
+// ── Bilingual helper ──────────────────────────────────────────────
+function _fCons(field, lang) {
+    if (!field) return '';
+    if (typeof field === 'object' && !Array.isArray(field)) return field[lang] || field.ar || '';
+    return String(field);
+}
+
 const CONSULTANTS = [
-    { id:1, name:'م. خالد العمري',     avatar:'خ', color:'linear-gradient(135deg,#028090,#02C39A)', specialty:'مستشار هندسي — مشاريع البنية التحتية',    spec:'هندسة', rating:4.9, sessions:320, experience:15, price:350, mode:'video',    available:true,  tags:['المقاولات','إدارة مشاريع','عقود البناء'], topRated:true  },
-    { id:2, name:'أ. سارة الغامدي',    avatar:'س', color:'linear-gradient(135deg,#7c3aed,#a78bfa)', specialty:'مستشارة قانونية — عقود وملكية فكرية',       spec:'قانون', rating:4.8, sessions:210, experience:12, price:500, mode:'video',    available:true,  tags:['عقود تجارية','نزاعات عمالية'],              topRated:false },
-    { id:3, name:'أ. فهد السلمي',      avatar:'ف', color:'linear-gradient(135deg,#059669,#34d399)', specialty:'مستشار مالي — استثمار وتخطيط',              spec:'مالية', rating:4.7, sessions:185, experience:10, price:280, mode:'chat',    available:true,  tags:['الاستثمار','الميزانية','الضرائب'],            topRated:false },
-    { id:4, name:'م. ريم الشهري',      avatar:'ر', color:'linear-gradient(135deg,#0ea5e9,#38bdf8)', specialty:'مستشارة تقنية — بنية تحتية وأمن سيبراني',  spec:'تقنية', rating:4.9, sessions:290, experience:8,  price:420, mode:'video',    available:false, tags:['أمن سيبراني','Cloud','DevOps'],              topRated:true  },
-    { id:5, name:'م. عبدالله المطيري', avatar:'ع', color:'linear-gradient(135deg,#f59e0b,#fcd34d)', specialty:'مستشار هندسي — كهرباء وطاقة شمسية',        spec:'هندسة', rating:4.6, sessions:410, experience:18, price:300, mode:'inperson', available:true,  tags:['كهرباء','طاقة شمسية','تصاميم'],              topRated:false },
-    { id:6, name:'د. نورة الزهراني',   avatar:'ن', color:'linear-gradient(135deg,#ef4444,#f87171)', specialty:'استشارية طبية — أمراض القلب',               spec:'صحة',   rating:4.8, sessions:560, experience:20, price:600, mode:'video',    available:true,  tags:['أمراض القلب','ضغط الدم','الوقاية'],          topRated:false },
+    { id:1, name:'م. خالد العمري', avatar:'خ', color:'linear-gradient(135deg,#028090,#02C39A)',
+      specialty:{ar:'مستشار هندسي — مشاريع البنية التحتية', en:'Engineering Consultant — Infrastructure Projects'},
+      spec:{ar:'هندسة', en:'Engineering'},
+      rating:4.9, sessions:320, experience:15, price:350, mode:'video', available:true,
+      tags:{ar:['المقاولات','إدارة مشاريع','عقود البناء'], en:['Contracting','Project Management','Construction Contracts']},
+      topRated:true },
+    { id:2, name:'أ. سارة الغامدي', avatar:'س', color:'linear-gradient(135deg,#7c3aed,#a78bfa)',
+      specialty:{ar:'مستشارة قانونية — عقود وملكية فكرية', en:'Legal Consultant — Contracts & Intellectual Property'},
+      spec:{ar:'قانون', en:'Legal'},
+      rating:4.8, sessions:210, experience:12, price:500, mode:'video', available:true,
+      tags:{ar:['عقود تجارية','نزاعات عمالية'], en:['Commercial Contracts','Labor Disputes']},
+      topRated:false },
+    { id:3, name:'أ. فهد السلمي', avatar:'ف', color:'linear-gradient(135deg,#059669,#34d399)',
+      specialty:{ar:'مستشار مالي — استثمار وتخطيط', en:'Financial Consultant — Investment & Planning'},
+      spec:{ar:'مالية', en:'Finance'},
+      rating:4.7, sessions:185, experience:10, price:280, mode:'chat', available:true,
+      tags:{ar:['الاستثمار','الميزانية','الضرائب'], en:['Investment','Budgeting','Taxes']},
+      topRated:false },
+    { id:4, name:'م. ريم الشهري', avatar:'ر', color:'linear-gradient(135deg,#0ea5e9,#38bdf8)',
+      specialty:{ar:'مستشارة تقنية — بنية تحتية وأمن سيبراني', en:'Tech Consultant — Infrastructure & Cybersecurity'},
+      spec:{ar:'تقنية', en:'Technology'},
+      rating:4.9, sessions:290, experience:8, price:420, mode:'video', available:false,
+      tags:{ar:['أمن سيبراني','Cloud','DevOps'], en:['Cybersecurity','Cloud','DevOps']},
+      topRated:true },
+    { id:5, name:'م. عبدالله المطيري', avatar:'ع', color:'linear-gradient(135deg,#f59e0b,#fcd34d)',
+      specialty:{ar:'مستشار هندسي — كهرباء وطاقة شمسية', en:'Engineering Consultant — Electrical & Solar Energy'},
+      spec:{ar:'هندسة', en:'Engineering'},
+      rating:4.6, sessions:410, experience:18, price:300, mode:'inperson', available:true,
+      tags:{ar:['كهرباء','طاقة شمسية','تصاميم'], en:['Electrical','Solar Energy','Designs']},
+      topRated:false },
+    { id:6, name:'د. نورة الزهراني', avatar:'ن', color:'linear-gradient(135deg,#ef4444,#f87171)',
+      specialty:{ar:'استشارية طبية — أمراض القلب', en:'Medical Consultant — Cardiology'},
+      spec:{ar:'صحة', en:'Health'},
+      rating:4.8, sessions:560, experience:20, price:600, mode:'video', available:true,
+      tags:{ar:['أمراض القلب','ضغط الدم','الوقاية'], en:['Cardiology','Blood Pressure','Prevention']},
+      topRated:false },
 ];
 
 // ── LocalStorage helpers ─────────────────────────────────────────
@@ -535,9 +572,13 @@ function getUserRole() { try { return JSON.parse(localStorage.getItem('khedmah_u
 // ── Page Init ────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', function() {
     if (window.I18n) I18n.renderLangSwitcher('langSwitcherConsult');
-    renderConsultants(CONSULTANTS);
+    const initLang = window.I18n ? I18n.getCurrentLang() : 'ar';
+    renderConsultants(CONSULTANTS, initLang);
     renderRecommended('');
     renderActiveConsultations();
+    window.addEventListener('khedmah:lang-changed', function(e) {
+        renderConsultants(CONSULTANTS, e.detail.lang);
+    });
     initStarFields();
     const user = JSON.parse(localStorage.getItem('khedmah_user') || '{}');
     const dashLink = document.getElementById('dashLink');
@@ -547,35 +588,54 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ── Render Consultant Cards ─────────────────────────────────────
-function renderConsultants(list) {
+function renderConsultants(list, lang) {
+    lang = lang || (window.I18n ? I18n.getCurrentLang() : 'ar');
     const container = document.getElementById('consultantsList');
-    container.innerHTML = list.map(consultantCardHTML).join('');
+    container.innerHTML = list.map(c => consultantCardHTML(c, lang)).join('');
     updateVisibleCount();
 }
 
-function consultantCardHTML(c) {
-    const topBadge = c.topRated ? '<span class="badge-top-rated">🏆 الأعلى تقييمًا</span>' : '';
-    const availBadge = c.available ? '<span class="avail-badge avail-yes">متاح اليوم</span>' : '<span class="avail-badge avail-no">محجوز</span>';
-    const modeLabel = { video:'📹 فيديو', chat:'💬 دردشة', inperson:'🤝 حضوري' }[c.mode] || c.mode;
-    return `<div class="consultant-card" data-spec="${c.spec}" data-rating="${c.rating}" data-price="${c.price}" data-exp="${c.experience}" data-mode="${c.mode}">
+function consultantCardHTML(c, lang) {
+    lang = lang || (window.I18n ? I18n.getCurrentLang() : 'ar');
+    const isAr = lang === 'ar';
+    const locale = isAr ? 'ar-SA' : 'en-US';
+    const sarLabel = isAr ? 'ر.س' : 'SAR';
+    const specialty = _fCons(c.specialty, lang);
+    const specAr = typeof c.spec === 'object' ? c.spec.ar : c.spec; // Arabic key for filter
+    const tagsArr = c.tags && typeof c.tags === 'object' && !Array.isArray(c.tags)
+        ? (c.tags[lang] || c.tags.ar || [])
+        : (Array.isArray(c.tags) ? c.tags : []);
+    const topBadge = c.topRated ? `<span class="badge-top-rated">🏆 ${isAr?'الأعلى تقييمًا':'Top Rated'}</span>` : '';
+    const availBadge = c.available
+        ? `<span class="avail-badge avail-yes">${isAr?'متاح اليوم':'Available Today'}</span>`
+        : `<span class="avail-badge avail-no">${isAr?'محجوز':'Booked'}</span>`;
+    const modeLabels = isAr
+        ? { video:'📹 فيديو', chat:'💬 دردشة', inperson:'🤝 حضوري' }
+        : { video:'📹 Video', chat:'💬 Chat', inperson:'🤝 In-Person' };
+    const modeLabel = modeLabels[c.mode] || c.mode;
+    const sessionsLabel = isAr ? 'جلسة' : 'sessions';
+    const expLabel = isAr ? 'سنة خبرة' : 'yrs exp';
+    const requestLabel = isAr ? 'طلب استشارة' : 'Request Consultation';
+    const perHourLabel = isAr ? '/ساعة' : '/hr';
+    return `<div class="consultant-card" data-spec="${specAr}" data-rating="${c.rating}" data-price="${c.price}" data-exp="${c.experience}" data-mode="${c.mode}">
         <div class="cons-avatar" style="background:${c.color}">${c.avatar}<div class="verified-tick">✓</div></div>
         <div class="cons-info">
             <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin-bottom:.15rem;">
                 <span class="cons-name">${c.name}</span>${topBadge}
             </div>
-            <div class="cons-specialty">${c.specialty}</div>
+            <div class="cons-specialty">${specialty}</div>
             <div class="cons-meta">
                 <span class="rating">⭐ ${c.rating}</span>
-                <span>📋 ${c.sessions} جلسة</span>
-                <span>💼 ${c.experience} سنة خبرة</span>
+                <span>📋 ${c.sessions} ${sessionsLabel}</span>
+                <span>💼 ${c.experience} ${expLabel}</span>
                 <span>${modeLabel}</span>
             </div>
-            <div class="cons-tags">${c.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+            <div class="cons-tags">${tagsArr.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
         </div>
         <div class="cons-right">
-            <div class="cons-price">${c.price.toLocaleString()} ر.س<small>/ساعة</small></div>
+            <div class="cons-price">${c.price.toLocaleString(locale)} ${sarLabel}<small>${perHourLabel}</small></div>
             ${availBadge}
-            <button class="btn-request" onclick="openRequestModal(${c.id})">طلب استشارة</button>
+            <button class="btn-request" onclick="openRequestModal(${c.id})">${requestLabel}</button>
         </div>
     </div>`;
 }
@@ -593,7 +653,10 @@ function scoreConsultant(c, topic) {
     const expScore    = Math.min(c.experience / 25, 1) * 0.2;
     const respScore   = Math.min(c.sessions / 600, 1) * 0.2;
     const t = topic.toLowerCase();
-    const match = t && (c.tags.some(tag => t.includes(tag) || tag.includes(t)) || t.includes(c.spec)) ? 1 : 0.3;
+    // c.tags and c.spec are now bilingual objects — use Arabic values for matching
+    const tagsAr = c.tags && typeof c.tags === 'object' && !Array.isArray(c.tags) ? (c.tags.ar || []) : (c.tags || []);
+    const specAr = c.spec && typeof c.spec === 'object' ? (c.spec.ar || '') : (c.spec || '');
+    const match = t && (tagsAr.some(tag => t.includes(tag) || tag.includes(t)) || t.includes(specAr)) ? 1 : 0.3;
     return ratingScore + expScore + respScore + match * 0.2;
 }
 

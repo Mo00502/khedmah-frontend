@@ -353,6 +353,11 @@
     updateCommission:   (module, rate)     => http.patch('/tenders/settings/commission', { module, rate }),
   };
 
+  /* ─── Translation (AR → EN) ─────────────────────────────────────────────── */
+  const translation = {
+    translate: (title, description) => http.post('/ai/translate', { title, description }),
+  };
+
   const invoices = {
     list:      (p = {}) => http.get('/invoices?' + new URLSearchParams(p)),
     get:       (id)     => http.get(`/invoices/${id}`),
@@ -484,7 +489,7 @@
     // Domain namespaces
     auth, requests, payments, wallet, providers, services,
     search, reviews, notifications, chat, admin, tenders,
-    invoices, equipment, consultations, maps, addresses,
+    invoices, equipment, consultations, maps, addresses, translation,
 
     // Auth helpers (frequently needed in guards)
     isLoggedIn:  auth.isLoggedIn,

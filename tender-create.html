@@ -127,12 +127,15 @@
     submitted: false,
     tenderId: '',
     title: '',
+    titleEn: '',
     description: '',
+    descriptionEn: '',
     city: 'الرياض',
     category: '',
     budgetMin: '',
     budgetMax: '',
     deadline: '',
+    translating: false,
     errors: {},
 
     validate() {
@@ -147,12 +150,28 @@
         return Object.keys(this.errors).length === 0;
     },
 
+    async autoTranslate() {
+        if (!this.title.trim() && !this.description.trim()) return;
+        this.translating = true;
+        try {
+            const data = await API.translation.translate(this.title.trim(), this.description.trim());
+            if (data.titleEn)       this.titleEn       = data.titleEn;
+            if (data.descriptionEn) this.descriptionEn = data.descriptionEn;
+            showToast('✅ تمت الترجمة التلقائية إلى الإنجليزية');
+        } catch(e) {
+            showToast('⚠️ لم تتوفر الترجمة التلقائية — يمكنك كتابتها يدوياً');
+        }
+        this.translating = false;
+    },
+
     async publish() {
         if (!this.validate()) { window.scrollTo({top:0,behavior:'smooth'}); return; }
         try {
             const payload = {
                 title: this.title.trim(),
+                titleEn: this.titleEn.trim() || undefined,
                 description: this.description.trim(),
+                descriptionEn: this.descriptionEn.trim() || undefined,
                 region: this.city,
             };
             if (this.category) payload.category = this.category;
@@ -171,8 +190,8 @@
 
     saveDraft() {
         localStorage.setItem('khedmah_tender_draft', JSON.stringify({
-            title: this.title, description: this.description, city: this.city,
-            category: this.category, budgetMin: this.budgetMin, budgetMax: this.budgetMax,
+            title: this.title, titleEn: this.titleEn, description: this.description, descriptionEn: this.descriptionEn,
+            city: this.city, category: this.category, budgetMin: this.budgetMin, budgetMax: this.budgetMax,
             deadline: this.deadline, savedAt: new Date().toISOString()
         }));
         showToast('💾 تم حفظ المسودة');
@@ -183,7 +202,7 @@ x-init="
     if (draft) {
         try {
             const d = JSON.parse(draft);
-            ['title','description','city','category','budgetMin','budgetMax','deadline'].forEach(k => {
+            ['title','titleEn','description','descriptionEn','city','category','budgetMin','budgetMax','deadline'].forEach(k => {
                 if (d[k] !== undefined && d[k] !== null) $data[k] = d[k];
             });
         } catch(e) {}
@@ -246,9 +265,9 @@ x-init="
             <div class="form-card">
                 <div class="card-title"><span class="icon">📋</span> معلومات المشروع</div>
 
-                <!-- Title -->
+                <!-- Title (Arabic) -->
                 <div class="field-group">
-                    <label class="field-label">عنوان المشروع <span class="req">*</span></label>
+                    <label class="field-label">عنوان المشروع <span class="req">*</span> <small style="color:var(--gray);font-weight:400;">(عربي)</small></label>
                     <input type="text" class="form-input" x-model="title"
                         placeholder="مثال: تجديد فيلا سكنية — تصميم مقهى — تشطيب مكتب"
                         maxlength="100">
@@ -256,14 +275,40 @@ x-init="
                     <p class="field-hint">اجعل العنوان واضحاً — يظهر لجميع الشركات</p>
                 </div>
 
-                <!-- Description -->
+                <!-- Title (English) -->
                 <div class="field-group">
-                    <label class="field-label">وصف المشروع <span class="req">*</span></label>
+                    <label class="field-label" style="display:flex;align-items:center;gap:.5rem;">
+                        Project Title <small style="color:var(--gray);font-weight:400;">(English — optional)</small>
+                        <button type="button" @click="autoTranslate()" :disabled="translating"
+                            style="margin-right:auto;background:var(--primary);color:white;border:none;border-radius:8px;padding:.25rem .65rem;font-size:.75rem;font-family:Tajawal,sans-serif;cursor:pointer;white-space:nowrap;"
+                            x-text="translating ? '⏳ جاري الترجمة...' : '🤖 ترجمة تلقائية'">
+                        </button>
+                    </label>
+                    <input type="text" class="form-input" x-model="titleEn"
+                        placeholder="e.g. Full Villa Renovation — Café Build-Out — Office Fit-Out"
+                        style="direction:ltr;text-align:left;"
+                        maxlength="100">
+                    <p class="field-hint" style="direction:ltr;text-align:left;">Enables your tender to appear for English-speaking contractors</p>
+                </div>
+
+                <!-- Description (Arabic) -->
+                <div class="field-group">
+                    <label class="field-label">وصف المشروع <span class="req">*</span> <small style="color:var(--gray);font-weight:400;">(عربي)</small></label>
                     <textarea class="form-textarea" x-model="description"
                         placeholder="صف ما تريد بالتفصيل: نوع العمل، المساحة، المواد المطلوبة، أي ملاحظات مهمة..."
                         maxlength="1000" rows="5"></textarea>
                     <div class="char-count" x-text="description.length + ' / 1000'"></div>
                     <p class="field-error" x-show="errors.description" x-text="errors.description"></p>
+                </div>
+
+                <!-- Description (English) -->
+                <div class="field-group">
+                    <label class="field-label">Project Description <small style="color:var(--gray);font-weight:400;">(English — optional)</small></label>
+                    <textarea class="form-textarea" x-model="descriptionEn"
+                        placeholder="Describe your project in English for international and bilingual contractors..."
+                        style="direction:ltr;text-align:left;"
+                        maxlength="1000" rows="4"></textarea>
+                    <div class="char-count" style="direction:ltr;text-align:left;" x-text="descriptionEn.length + ' / 1000'"></div>
                 </div>
 
                 <!-- City -->

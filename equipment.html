@@ -614,150 +614,205 @@ function getCommissionRate() {
 }
 
 // ── Equipment Data ──────────────────────────────────────────────
+// ── Bilingual field helper ─────────────────────────────────────────────────────
+function _fEq(field, lang) {
+    if (!field) return '';
+    if (typeof field === 'object') return field[lang] || field.ar || '';
+    return String(field);
+}
+
 const EQUIPMENT = [
   {
-    id:1, name:'حفار هيدروليكي 20 طن', cat:'حفر', emoji:'🚜', keySpec:'سعة 20 طن',
-    brand:'Komatsu', model:'PC200-8', year:2022, type:'حفار هيدروليكي', condition:'ممتاز',
+    id:1,
+    name:{ar:'حفار هيدروليكي 20 طن', en:'20-Ton Hydraulic Excavator'},
+    cat:{ar:'حفر', en:'Excavation'},
+    emoji:'🚜',
+    keySpec:{ar:'سعة 20 طن', en:'20-Ton capacity'},
+    brand:'Komatsu', model:'PC200-8', year:2022,
+    type:{ar:'حفار هيدروليكي', en:'Hydraulic Excavator'},
+    condition:{ar:'ممتاز', en:'Excellent'},
     capacity:'20 طن', dimensions:'9.5م × 3.2م × 3م', weight:'20,000 كغ', fuel:'ديزل',
-    usage:'حفر الأساسات، التجريف، إزالة الأنقاض',
-    description:'حفار هيدروليكي ياباني الصنع بقوة 20 طن مناسب لمشاريع البناء والتطوير العقاري. يتميز بذراع حفر بطول 5.5 متر وعمق حفر يصل إلى 6 أمتار، مع نظام هيدروليكي متطور يضمن دقة عالية في التشغيل. الوحدة بحالة ممتازة وتمر بصيانة دورية كل 200 ساعة.',
-    useCases:['حفر الأساسات','تجريف التربة','إزالة الأنقاض','شق الطرق','حفر الخنادق'],
+    usage:{ar:'حفر الأساسات، التجريف، إزالة الأنقاض', en:'Foundation digging, grading, debris removal'},
+    description:{ar:'حفار هيدروليكي ياباني الصنع بقوة 20 طن مناسب لمشاريع البناء والتطوير العقاري. يتميز بذراع حفر بطول 5.5 متر وعمق حفر يصل إلى 6 أمتار، مع نظام هيدروليكي متطور يضمن دقة عالية في التشغيل.', en:'Japanese-made 20-ton hydraulic excavator ideal for construction and real-estate development. Features a 5.5 m boom arm with 6 m digging depth and an advanced hydraulic system for high-precision operation.'},
+    useCases:{ar:['حفر الأساسات','تجريف التربة','إزالة الأنقاض','شق الطرق','حفر الخنادق'], en:['Foundation excavation','Soil grading','Debris removal','Road cutting','Trench digging']},
     priceDay:850, priceWeek:5200, priceMonth:18000,
     discountMed:0.08, discountLong:0.15,
     addons:{operator:300, transport:450, fuel:200},
-    city:'الرياض', company:'مؤسسة النخبة للمعدات', avail:true, bookedUntil:null,
+    city:{ar:'الرياض', en:'Riyadh'}, company:{ar:'مؤسسة النخبة للمعدات', en:'Al-Nokhba Equipment Co.'}, avail:true, bookedUntil:null,
     badge:'deal', rating:4.8, reviews:24,
     hasOperator:true, hasTransport:true,
-    includes:['التشغيل الأولي','الصيانة الطارئة','التأمين الأساسي','الفلاتر والزيوت'],
-    excludes:['الوقود','المشغل','النقل','الإطارات الإضافية'],
+    includes:{ar:['التشغيل الأولي','الصيانة الطارئة','التأمين الأساسي','الفلاتر والزيوت'], en:['Initial commissioning','Emergency maintenance','Basic insurance','Filters & oils']},
+    excludes:{ar:['الوقود','المشغل','النقل','الإطارات الإضافية'], en:['Fuel','Operator','Transport','Extra tires']},
     bookedDates:['2026-04-08','2026-04-09','2026-04-10','2026-04-15','2026-04-16'],
-    providerInfo:{name:'مؤسسة النخبة للمعدات', initial:'ن', rating:4.9, totalRentals:180, since:'2018', verified:true},
+    providerInfo:{name:{ar:'مؤسسة النخبة للمعدات', en:'Al-Nokhba Equipment Co.'}, initial:'ن', rating:4.9, totalRentals:180, since:'2018', verified:true},
   },
   {
-    id:2, name:'رافعة برجية 50 متر', cat:'رفع', emoji:'🏗️', keySpec:'ارتفاع 50م',
-    brand:'Liebherr', model:'EC-H 40', year:2021, type:'رافعة برجية', condition:'ممتاز',
+    id:2,
+    name:{ar:'رافعة برجية 50 متر', en:'50-Meter Tower Crane'},
+    cat:{ar:'رفع', en:'Lifting'},
+    emoji:'🏗️',
+    keySpec:{ar:'ارتفاع 50م', en:'50 m height'},
+    brand:'Liebherr', model:'EC-H 40', year:2021,
+    type:{ar:'رافعة برجية', en:'Tower Crane'},
+    condition:{ar:'ممتاز', en:'Excellent'},
     capacity:'3 طن عند 50م', dimensions:'مسافة الذراع 45م', weight:'28,000 كغ', fuel:'كهرباء',
-    usage:'رفع مواد البناء، الأبراج والمباني الشاهقة',
-    description:'رافعة برجية ألمانية الصنع من أفضل الشركات العالمية، مثالية للمشاريع العالية والمجمعات السكنية. ترفع حتى 3 أطنان على مسافة 50 متراً مع نظام تحكم رقمي متطور لضمان السلامة القصوى. تشمل تركيب الرافعة وتفكيكها بواسطة فريق متخصص.',
-    useCases:['رفع مواد البناء','المباني الشاهقة','المجمعات السكنية','الأبراج التجارية','تركيب الهياكل الفولاذية'],
+    usage:{ar:'رفع مواد البناء، الأبراج والمباني الشاهقة', en:'Lifting construction materials, high-rise buildings & towers'},
+    description:{ar:'رافعة برجية ألمانية الصنع من أفضل الشركات العالمية، مثالية للمشاريع العالية والمجمعات السكنية. ترفع حتى 3 أطنان على مسافة 50 متراً مع نظام تحكم رقمي متطور لضمان السلامة القصوى.', en:'German-made tower crane from a world-leading manufacturer. Ideal for high-rise projects and residential complexes, lifting up to 3 tons at 50 m radius with advanced digital control for maximum safety.'},
+    useCases:{ar:['رفع مواد البناء','المباني الشاهقة','المجمعات السكنية','الأبراج التجارية','تركيب الهياكل الفولاذية'], en:['Lifting construction materials','High-rise buildings','Residential complexes','Commercial towers','Steel structure installation']},
     priceDay:1200, priceWeek:7500, priceMonth:26000,
     discountMed:0.10, discountLong:0.18,
     addons:{operator:400, transport:800, fuel:0},
-    city:'جدة', company:'شركة الجبل للمعدات الثقيلة', avail:true, bookedUntil:null,
+    city:{ar:'جدة', en:'Jeddah'}, company:{ar:'شركة الجبل للمعدات الثقيلة', en:'Al-Jabal Heavy Equipment Co.'}, avail:true, bookedUntil:null,
     badge:'longterm', rating:4.9, reviews:31,
     hasOperator:true, hasTransport:true,
-    includes:['مشغل الرافعة','التركيب والتفكيك','التأمين الشامل','الصيانة الدورية'],
-    excludes:['الكهرباء في الموقع','رسوم الترخيص البلدي','الحماية الإضافية'],
+    includes:{ar:['مشغل الرافعة','التركيب والتفكيك','التأمين الشامل','الصيانة الدورية'], en:['Crane operator','Assembly & disassembly','Full insurance','Periodic maintenance']},
+    excludes:{ar:['الكهرباء في الموقع','رسوم الترخيص البلدي','الحماية الإضافية'], en:['On-site electricity','Municipal permit fees','Additional guarding']},
     bookedDates:['2026-04-12','2026-04-13','2026-04-14'],
-    providerInfo:{name:'شركة الجبل للمعدات الثقيلة', initial:'ج', rating:4.9, totalRentals:95, since:'2015', verified:true},
+    providerInfo:{name:{ar:'شركة الجبل للمعدات الثقيلة', en:'Al-Jabal Heavy Equipment Co.'}, initial:'ج', rating:4.9, totalRentals:95, since:'2015', verified:true},
   },
   {
-    id:3, name:'مولد كهربائي 100 كيلوفولت', cat:'كهرباء', emoji:'⚡', keySpec:'100 كيلوفولت',
-    brand:'Caterpillar', model:'C4.4', year:2023, type:'مولد كهربائي', condition:'ممتاز',
+    id:3,
+    name:{ar:'مولد كهربائي 100 كيلوفولت', en:'100 kVA Diesel Generator'},
+    cat:{ar:'كهرباء', en:'Electrical'},
+    emoji:'⚡',
+    keySpec:{ar:'100 كيلوفولت', en:'100 kVA'},
+    brand:'Caterpillar', model:'C4.4', year:2023,
+    type:{ar:'مولد كهربائي', en:'Electric Generator'},
+    condition:{ar:'ممتاز', en:'Excellent'},
     capacity:'100 كيلوفولت أمبير', dimensions:'3م × 1.2م × 1.5م', weight:'1,800 كغ', fuel:'ديزل',
-    usage:'إمداد الطاقة للمواقع، الفعاليات، الطوارئ',
-    description:'مولد كهربائي صناعي من Caterpillar بقدرة 100 كيلوفولت أمبير، مناسب لإمداد مواقع البناء والأحداث الكبيرة والطوارئ. يعمل بمحرك ديزل موثوق مع نظام بدء تلقائي عند انقطاع الكهرباء. موديل 2023 ويتميز بكفاءة استهلاك وقود عالية.',
-    useCases:['مواقع البناء','الفعاليات والمعارض','الطوارئ والنسخ الاحتياطي','المزارع والمخيمات','المولدات الصناعية'],
+    usage:{ar:'إمداد الطاقة للمواقع، الفعاليات، الطوارئ', en:'Power supply for sites, events & emergencies'},
+    description:{ar:'مولد كهربائي صناعي من Caterpillar بقدرة 100 كيلوفولت أمبير، مناسب لإمداد مواقع البناء والأحداث الكبيرة والطوارئ. يعمل بمحرك ديزل موثوق مع نظام بدء تلقائي عند انقطاع الكهرباء.', en:'Industrial 100 kVA Caterpillar generator ideal for powering construction sites, large events, and emergencies. Reliable diesel engine with automatic start-on-outage feature.'},
+    useCases:{ar:['مواقع البناء','الفعاليات والمعارض','الطوارئ والنسخ الاحتياطي','المزارع والمخيمات','المولدات الصناعية'], en:['Construction sites','Events & exhibitions','Emergency backup','Farms & camps','Industrial generation']},
     priceDay:350, priceWeek:2100, priceMonth:7500,
     discountMed:0.07, discountLong:0.12,
     addons:{operator:150, transport:250, fuel:180},
-    city:'الرياض', company:'مؤسسة الطاقة للمعدات', avail:true, bookedUntil:null,
+    city:{ar:'الرياض', en:'Riyadh'}, company:{ar:'مؤسسة الطاقة للمعدات', en:'Al-Taqa Equipment Co.'}, avail:true, bookedUntil:null,
     badge:'new', rating:4.7, reviews:18,
     hasOperator:true, hasTransport:true,
-    includes:['كابلات الربط','لوحة التوزيع الأساسية','الوقود ليوم واحد','الصيانة الطارئة'],
-    excludes:['الوقود بعد اليوم الأول','التمديدات الكهربائية الإضافية','اللوحات الكهربائية الفرعية'],
+    includes:{ar:['كابلات الربط','لوحة التوزيع الأساسية','الوقود ليوم واحد','الصيانة الطارئة'], en:['Connection cables','Main distribution panel','One day fuel','Emergency maintenance']},
+    excludes:{ar:['الوقود بعد اليوم الأول','التمديدات الكهربائية الإضافية','اللوحات الكهربائية الفرعية'], en:['Fuel after day 1','Additional wiring','Sub-distribution panels']},
     bookedDates:[],
-    providerInfo:{name:'مؤسسة الطاقة للمعدات', initial:'ط', rating:4.7, totalRentals:142, since:'2019', verified:true},
+    providerInfo:{name:{ar:'مؤسسة الطاقة للمعدات', en:'Al-Taqa Equipment Co.'}, initial:'ط', rating:4.7, totalRentals:142, since:'2019', verified:true},
   },
   {
-    id:4, name:'آلة خلط الخرسانة 400 لتر', cat:'تشطيب', emoji:'🔨', keySpec:'سعة 400 لتر',
-    brand:'IMER', model:'SYNTESI 350', year:2020, type:'خلاط خرسانة', condition:'جيد جداً',
+    id:4,
+    name:{ar:'آلة خلط الخرسانة 400 لتر', en:'400-Litre Concrete Mixer'},
+    cat:{ar:'تشطيب', en:'Finishing'},
+    emoji:'🔨',
+    keySpec:{ar:'سعة 400 لتر', en:'400 L capacity'},
+    brand:'IMER', model:'SYNTESI 350', year:2020,
+    type:{ar:'خلاط خرسانة', en:'Concrete Mixer'},
+    condition:{ar:'جيد جداً', en:'Very Good'},
     capacity:'400 لتر', dimensions:'1.8م × 0.9م × 1.6م', weight:'380 كغ', fuel:'كهرباء',
-    usage:'خلط الخرسانة والملاط للبناء والتشطيب',
-    description:'خلاط خرسانة إيطالي الصنع بسعة 400 لتر، مثالي لأعمال البناء والتشطيب والأرضيات. يعمل بمحرك كهربائي قوي بسرعة خلط 28 دورة/دقيقة مع حوض من الفولاذ المقاوم للصدأ. سهل النقل بفضل إطاراته المطاطية.',
-    useCases:['خلط الخرسانة','أعمال البياض','الأرضيات الإسمنتية','الملاط والسيراميك','الإضافات والترميم'],
+    usage:{ar:'خلط الخرسانة والملاط للبناء والتشطيب', en:'Concrete and mortar mixing for construction & finishing'},
+    description:{ar:'خلاط خرسانة إيطالي الصنع بسعة 400 لتر، مثالي لأعمال البناء والتشطيب والأرضيات. يعمل بمحرك كهربائي قوي بسرعة خلط 28 دورة/دقيقة مع حوض من الفولاذ المقاوم للصدأ.', en:'Italian-made 400-litre concrete mixer, ideal for construction, finishing, and flooring work. Powerful electric motor at 28 rpm with a stainless-steel drum.'},
+    useCases:{ar:['خلط الخرسانة','أعمال البياض','الأرضيات الإسمنتية','الملاط والسيراميك','الإضافات والترميم'], en:['Concrete mixing','Plastering','Cement floors','Mortar & tiles','Additive mixing & repair']},
     priceDay:180, priceWeek:1050, priceMonth:3600,
     discountMed:0.05, discountLong:0.10,
     addons:{operator:100, transport:200, fuel:0},
-    city:'الدمام', company:'أدوات البناء الحديث', avail:false, bookedUntil:'2026-04-20',
+    city:{ar:'الدمام', en:'Dammam'}, company:{ar:'أدوات البناء الحديث', en:'Modern Construction Tools'}, avail:false, bookedUntil:'2026-04-20',
     badge:null, rating:4.5, reviews:11,
     hasOperator:false, hasTransport:true,
-    includes:['الصيانة الأساسية','التنظيف قبل التسليم'],
-    excludes:['مواد الخرسانة','الكهرباء في الموقع','المشغل'],
+    includes:{ar:['الصيانة الأساسية','التنظيف قبل التسليم'], en:['Basic maintenance','Pre-delivery cleaning']},
+    excludes:{ar:['مواد الخرسانة','الكهرباء في الموقع','المشغل'], en:['Concrete materials','On-site electricity','Operator']},
     bookedDates:['2026-04-06','2026-04-07','2026-04-08','2026-04-09','2026-04-10','2026-04-11','2026-04-12','2026-04-13','2026-04-14','2026-04-15','2026-04-16','2026-04-17','2026-04-18','2026-04-19','2026-04-20'],
-    providerInfo:{name:'أدوات البناء الحديث', initial:'ب', rating:4.5, totalRentals:67, since:'2020', verified:true},
+    providerInfo:{name:{ar:'أدوات البناء الحديث', en:'Modern Construction Tools'}, initial:'ب', rating:4.5, totalRentals:67, since:'2020', verified:true},
   },
   {
-    id:5, name:'جرافة بوبكات مدمجة', cat:'حفر', emoji:'🚧', keySpec:'سعة 2.5 طن',
-    brand:'Bobcat', model:'S650', year:2022, type:'جرافة مدمجة', condition:'ممتاز',
+    id:5,
+    name:{ar:'جرافة بوبكات مدمجة', en:'Compact Bobcat Skid Steer'},
+    cat:{ar:'حفر', en:'Excavation'},
+    emoji:'🚧',
+    keySpec:{ar:'سعة 2.5 طن', en:'2.5-Ton capacity'},
+    brand:'Bobcat', model:'S650', year:2022,
+    type:{ar:'جرافة مدمجة', en:'Compact Loader'},
+    condition:{ar:'ممتاز', en:'Excellent'},
     capacity:'2.5 طن رفع', dimensions:'3.7م × 1.8م × 2.1م', weight:'3,800 كغ', fuel:'ديزل',
-    usage:'الحفر، التجريف، نقل المواد في المساحات الضيقة',
-    description:'جرافة بوبكات أمريكية الصنع بقدرة رفع 2.5 طن، متميزة بمقاساتها المدمجة التي تسمح بالعمل في الأماكن الضيقة كالأحياء السكنية والمستودعات. مزودة بنظام هيدروليكي متطور ومقصورة مكيفة للمشغل.',
-    useCases:['الحفر في المساحات الضيقة','تسوية الأراضي','نقل مواد البناء','تنظيف الأنقاض','أعمال اللاند سكيب'],
+    usage:{ar:'الحفر، التجريف، نقل المواد في المساحات الضيقة', en:'Excavation, grading, and material handling in tight spaces'},
+    description:{ar:'جرافة بوبكات أمريكية الصنع بقدرة رفع 2.5 طن، متميزة بمقاساتها المدمجة التي تسمح بالعمل في الأماكن الضيقة كالأحياء السكنية والمستودعات. مزودة بنظام هيدروليكي متطور ومقصورة مكيفة للمشغل.', en:'American-made Bobcat with 2.5-ton lift capacity. Compact dimensions allow operation in tight spaces such as residential areas and warehouses, with an advanced hydraulic system and an air-conditioned cab.'},
+    useCases:{ar:['الحفر في المساحات الضيقة','تسوية الأراضي','نقل مواد البناء','تنظيف الأنقاض','أعمال اللاند سكيب'], en:['Tight-space excavation','Land levelling','Construction material handling','Debris clearing','Landscaping']},
     priceDay:620, priceWeek:3800, priceMonth:13000,
     discountMed:0.08, discountLong:0.14,
     addons:{operator:250, transport:380, fuel:160},
-    city:'الرياض', company:'مؤسسة النخبة للمعدات', avail:true, bookedUntil:null,
+    city:{ar:'الرياض', en:'Riyadh'}, company:{ar:'مؤسسة النخبة للمعدات', en:'Al-Nokhba Equipment Co.'}, avail:true, bookedUntil:null,
     badge:'deal', rating:4.6, reviews:19,
     hasOperator:true, hasTransport:true,
-    includes:['بكيت الحفر الأساسي','التأمين الأساسي','فلاتر الهواء'],
-    excludes:['المشغل','الوقود','الملحقات الإضافية (البالك، المثقاب)'],
+    includes:{ar:['بكيت الحفر الأساسي','التأمين الأساسي','فلاتر الهواء'], en:['Standard digging bucket','Basic insurance','Air filters']},
+    excludes:{ar:['المشغل','الوقود','الملحقات الإضافية (البالك، المثقاب)'], en:['Operator','Fuel','Extra attachments (pallet fork, auger)']},
     bookedDates:['2026-04-11','2026-04-12'],
-    providerInfo:{name:'مؤسسة النخبة للمعدات', initial:'ن', rating:4.9, totalRentals:180, since:'2018', verified:true},
+    providerInfo:{name:{ar:'مؤسسة النخبة للمعدات', en:'Al-Nokhba Equipment Co.'}, initial:'ن', rating:4.9, totalRentals:180, since:'2018', verified:true},
   },
   {
-    id:6, name:'ماكينة رش الدهان الكهربائية', cat:'تشطيب', emoji:'🎨', keySpec:'ضغط 250 بار',
-    brand:'Graco', model:'Mark X', year:2023, type:'ماكينة رش', condition:'ممتاز',
+    id:6,
+    name:{ar:'ماكينة رش الدهان الكهربائية', en:'Electric Airless Paint Sprayer'},
+    cat:{ar:'تشطيب', en:'Finishing'},
+    emoji:'🎨',
+    keySpec:{ar:'ضغط 250 بار', en:'250 bar pressure'},
+    brand:'Graco', model:'Mark X', year:2023,
+    type:{ar:'ماكينة رش', en:'Paint Sprayer'},
+    condition:{ar:'ممتاز', en:'Excellent'},
     capacity:'ضغط 250 بار / معدل 4.5 لتر/دقيقة', dimensions:'0.7م × 0.5م × 0.9م', weight:'45 كغ', fuel:'كهرباء',
-    usage:'رش الدهان والطلاء على الجدران والأسطح',
-    description:'ماكينة رش دهان احترافية من Graco الأمريكية موديل 2023 بضغط 250 بار. توفر طلاءً متجانساً بسرعة عالية مقارنة بالدهان اليدوي بـ 5 أضعاف. مناسبة للجدران الداخلية والخارجية وأعمال الجدارين والواجهات.',
-    useCases:['دهان الجدران الداخلية','دهان الواجهات الخارجية','الأسقف والأسطح','الأسوار والحدائق','المستودعات والمصانع'],
+    usage:{ar:'رش الدهان والطلاء على الجدران والأسطح', en:'Spray painting walls and surfaces'},
+    description:{ar:'ماكينة رش دهان احترافية من Graco الأمريكية موديل 2023 بضغط 250 بار. توفر طلاءً متجانساً بسرعة عالية مقارنة بالدهان اليدوي بـ 5 أضعاف. مناسبة للجدران الداخلية والخارجية وأعمال الجدارين والواجهات.', en:'Professional Graco (USA) airless sprayer, 2023 model, 250 bar. Delivers uniform finish 5× faster than hand-rolling. Suitable for interior/exterior walls and facades.'},
+    useCases:{ar:['دهان الجدران الداخلية','دهان الواجهات الخارجية','الأسقف والأسطح','الأسوار والحدائق','المستودعات والمصانع'], en:['Interior wall painting','Exterior facade painting','Ceilings & roofs','Fences & gardens','Warehouses & factories']},
     priceDay:95, priceWeek:560, priceMonth:1900,
     discountMed:0.06, discountLong:0.12,
     addons:{operator:80, transport:120, fuel:0},
-    city:'مكة المكرمة', company:'أدوات التشطيب المتخصصة', avail:true, bookedUntil:null,
+    city:{ar:'مكة المكرمة', en:'Makkah'}, company:{ar:'أدوات التشطيب المتخصصة', en:'Finishing Tools Specialists'}, avail:true, bookedUntil:null,
     badge:null, rating:4.4, reviews:8,
     hasOperator:false, hasTransport:true,
-    includes:['خرطوم الرش 15م','فوهات أساسية 3 قطع','دليل الاستخدام'],
-    excludes:['الدهان والطلاء','الكهرباء في الموقع','الفوهات الإضافية'],
+    includes:{ar:['خرطوم الرش 15م','فوهات أساسية 3 قطع','دليل الاستخدام'], en:['15 m spray hose','3 standard tips','User manual']},
+    excludes:{ar:['الدهان والطلاء','الكهرباء في الموقع','الفوهات الإضافية'], en:['Paint & coating','On-site electricity','Extra tips']},
     bookedDates:[],
-    providerInfo:{name:'أدوات التشطيب المتخصصة', initial:'ت', rating:4.4, totalRentals:38, since:'2021', verified:false},
+    providerInfo:{name:{ar:'أدوات التشطيب المتخصصة', en:'Finishing Tools Specialists'}, initial:'ت', rating:4.4, totalRentals:38, since:'2021', verified:false},
   },
   {
-    id:7, name:'جرار زراعي متعدد الاستخدامات', cat:'زراعة', emoji:'🌿', keySpec:'80 حصان',
-    brand:'John Deere', model:'5075E', year:2021, type:'جرار زراعي', condition:'جيد جداً',
+    id:7,
+    name:{ar:'جرار زراعي متعدد الاستخدامات', en:'Multi-Purpose Agricultural Tractor'},
+    cat:{ar:'زراعة', en:'Agriculture'},
+    emoji:'🌿',
+    keySpec:{ar:'80 حصان', en:'80 HP'},
+    brand:'John Deere', model:'5075E', year:2021,
+    type:{ar:'جرار زراعي', en:'Agricultural Tractor'},
+    condition:{ar:'جيد جداً', en:'Very Good'},
     capacity:'80 حصان / 4 عجلات دفع', dimensions:'3.9م × 2.1م × 2.5م', weight:'3,100 كغ', fuel:'ديزل',
-    usage:'الحرث، التسوية، نقل التربة، أعمال المناظر',
-    description:'جرار John Deere أمريكي بقوة 80 حصاناً مع نظام 4x4 للعمل في التربة الصعبة. مثالي لأعمال الزراعة والمناظر الطبيعية ومشاريع التشجير. مزود بنقطة توصيل الإضافات خلفية وأمامية لأكثر من 20 نوع من الملحقات.',
-    useCases:['الحرث والتسوية','مشاريع اللاند سكيب','نقل التربة والرمل','التشجير والزراعة','المزارع والمسطحات الخضراء'],
+    usage:{ar:'الحرث، التسوية، نقل التربة، أعمال المناظر', en:'Ploughing, levelling, soil transport, landscaping'},
+    description:{ar:'جرار John Deere أمريكي بقوة 80 حصاناً مع نظام 4x4 للعمل في التربة الصعبة. مثالي لأعمال الزراعة والمناظر الطبيعية ومشاريع التشجير. مزود بنقطة توصيل الإضافات خلفية وأمامية لأكثر من 20 نوع من الملحقات.', en:'American John Deere 80 HP tractor with 4x4 for tough terrain. Ideal for agriculture, landscaping, and afforestation. Front and rear PTO supports 20+ attachment types.'},
+    useCases:{ar:['الحرث والتسوية','مشاريع اللاند سكيب','نقل التربة والرمل','التشجير والزراعة','المزارع والمسطحات الخضراء'], en:['Ploughing & levelling','Landscaping projects','Soil & sand transport','Afforestation & farming','Farms & green areas']},
     priceDay:280, priceWeek:1700, priceMonth:5800,
     discountMed:0.09, discountLong:0.16,
     addons:{operator:180, transport:320, fuel:150},
-    city:'جدة', company:'الخضراء للمعدات الزراعية', avail:true, bookedUntil:null,
+    city:{ar:'جدة', en:'Jeddah'}, company:{ar:'الخضراء للمعدات الزراعية', en:'Al-Khadra Agricultural Equipment'}, avail:true, bookedUntil:null,
     badge:'longterm', rating:4.7, reviews:15,
     hasOperator:true, hasTransport:true,
-    includes:['محراث قياسي','الصيانة الدورية','دعم تقني'],
-    excludes:['الوقود','الملحقات الخاصة (البذار، الرشاش)','المشغل'],
+    includes:{ar:['محراث قياسي','الصيانة الدورية','دعم تقني'], en:['Standard plough','Periodic maintenance','Technical support']},
+    excludes:{ar:['الوقود','الملحقات الخاصة (البذار، الرشاش)','المشغل'], en:['Fuel','Special attachments (seeder, sprayer)','Operator']},
     bookedDates:['2026-04-09','2026-04-10'],
-    providerInfo:{name:'الخضراء للمعدات الزراعية', initial:'خ', rating:4.7, totalRentals:54, since:'2019', verified:true},
+    providerInfo:{name:{ar:'الخضراء للمعدات الزراعية', en:'Al-Khadra Agricultural Equipment'}, initial:'خ', rating:4.7, totalRentals:54, since:'2019', verified:true},
   },
   {
-    id:8, name:'ونش رفع هيدروليكي 10 طن', cat:'رفع', emoji:'🔧', keySpec:'رفع 10 طن',
-    brand:'Manitowoc', model:'Grove GMK3060', year:2020, type:'ونش هيدروليكي', condition:'جيد جداً',
+    id:8,
+    name:{ar:'ونش رفع هيدروليكي 10 طن', en:'10-Ton Hydraulic Mobile Crane'},
+    cat:{ar:'رفع', en:'Lifting'},
+    emoji:'🔧',
+    keySpec:{ar:'رفع 10 طن', en:'10-Ton lift'},
+    brand:'Manitowoc', model:'Grove GMK3060', year:2020,
+    type:{ar:'ونش هيدروليكي', en:'Hydraulic Crane'},
+    condition:{ar:'جيد جداً', en:'Very Good'},
     capacity:'10 طن عند 20م', dimensions:'10م × 2.5م × 3.5م', weight:'18,000 كغ', fuel:'ديزل',
-    usage:'رفع المعدات الثقيلة، تجميع الهياكل الفولاذية',
-    description:'ونش هيدروليكي متنقل بقدرة رفع 10 أطنان عند مسافة 20 متراً، من أفضل ونشات الرفع في السوق السعودي. مزود بنظام تحكم إلكتروني وأجهزة قياس الحمل التلقائية لضمان السلامة. مناسب لصناعة النفط والغاز ومشاريع البنية التحتية.',
-    useCases:['رفع المعدات الصناعية','تجميع الهياكل الفولاذية','مشاريع النفط والغاز','تركيب الأبراج','نقل الأثقال'],
+    usage:{ar:'رفع المعدات الثقيلة، تجميع الهياكل الفولاذية', en:'Heavy equipment lifting, steel structure assembly'},
+    description:{ar:'ونش هيدروليكي متنقل بقدرة رفع 10 أطنان عند مسافة 20 متراً. مزود بنظام تحكم إلكتروني وأجهزة قياس الحمل التلقائية لضمان السلامة. مناسب لصناعة النفط والغاز ومشاريع البنية التحتية.', en:'Mobile hydraulic crane with 10-ton capacity at 20 m radius. Electronic control system and automatic load-measurement for maximum safety. Suited for oil & gas and infrastructure projects.'},
+    useCases:{ar:['رفع المعدات الصناعية','تجميع الهياكل الفولاذية','مشاريع النفط والغاز','تركيب الأبراج','نقل الأثقال'], en:['Industrial equipment lifting','Steel structure assembly','Oil & gas projects','Tower installation','Heavy load transport']},
     priceDay:490, priceWeek:3000, priceMonth:10500,
     discountMed:0.09, discountLong:0.15,
     addons:{operator:350, transport:550, fuel:220},
-    city:'الدمام', company:'المتحدة للمعدات الثقيلة', avail:true, bookedUntil:null,
+    city:{ar:'الدمام', en:'Dammam'}, company:{ar:'المتحدة للمعدات الثقيلة', en:'United Heavy Equipment Co.'}, avail:true, bookedUntil:null,
     badge:null, rating:4.8, reviews:22,
     hasOperator:true, hasTransport:true,
-    includes:['مشغل الونش','التأمين الشامل','الاستواء والتثبيت','شهادة السلامة'],
-    excludes:['الوقود','أدوات الربط الإضافية','رخصة المرور للطرق السريعة'],
+    includes:{ar:['مشغل الونش','التأمين الشامل','الاستواء والتثبيت','شهادة السلامة'], en:['Crane operator','Full insurance','Levelling & securing','Safety certificate']},
+    excludes:{ar:['الوقود','أدوات الربط الإضافية','رخصة المرور للطرق السريعة'], en:['Fuel','Extra rigging','Highway transport permit']},
     bookedDates:['2026-04-17','2026-04-18','2026-04-19'],
-    providerInfo:{name:'المتحدة للمعدات الثقيلة', initial:'م', rating:4.8, totalRentals:112, since:'2016', verified:true},
+    providerInfo:{name:{ar:'المتحدة للمعدات الثقيلة', en:'United Heavy Equipment Co.'}, initial:'م', rating:4.8, totalRentals:112, since:'2016', verified:true},
   },
 ];
 
@@ -766,36 +821,59 @@ function getQuotes() { try { return JSON.parse(localStorage.getItem('khedmah_equ
 function saveQuotes(arr) { localStorage.setItem('khedmah_equipment_quotes', JSON.stringify(arr)); }
 
 // ── Render Cards ─────────────────────────────────────────────────
-function renderCards(list) {
-    const BADGE = { deal:'🔥 أفضل سعر', longterm:'📅 خصم طويل الأمد', new:'✨ جديد' };
+function renderCards(list, lang) {
+    lang = lang || (window.I18n ? I18n.getCurrentLang() : 'ar');
+    const locale = lang === 'ar' ? 'ar-SA' : 'en-US';
+    const sarLabel = lang === 'ar' ? 'ر.س' : 'SAR';
+    const BADGE = lang === 'ar'
+        ? { deal:'🔥 أفضل سعر', longterm:'📅 خصم طويل الأمد', new:'✨ جديد' }
+        : { deal:'🔥 Best Price', longterm:'📅 Long-Term Discount', new:'✨ New' };
+    const fromLabel   = lang === 'ar' ? 'من' : 'From';
+    const perDayLabel = lang === 'ar' ? '/يوم' : '/day';
+    const rentLabel   = lang === 'ar' ? 'استئجار الآن' : 'Rent Now';
+    const bookedLabel = lang === 'ar' ? 'محجوز' : 'Booked';
+    const quoteLabel  = lang === 'ar' ? 'طلب عرض سعر' : 'Request Quote';
+    const detailLabel = lang === 'ar' ? '📋 التفاصيل' : '📋 Details';
+    const chatLabel   = lang === 'ar' ? '💬 تواصل' : '💬 Contact';
+
     document.getElementById('equipGrid').innerHTML = list.map(e => {
+        const name    = _fEq(e.name, lang);
+        const cat     = _fEq(e.cat, lang);
+        const keySpec = _fEq(e.keySpec, lang);
+        const company = _fEq(e.company, lang);
+        const city    = _fEq(e.city, lang);
+        const bookedUntilLabel = lang === 'ar' ? `محجوز حتى ${e.bookedUntil||'قريباً'}` : `Booked until ${e.bookedUntil||'soon'}`;
         const availHtml = e.avail
-            ? '<span class="avail-badge avail-yes">متاح الآن</span>'
-            : `<span class="avail-badge avail-no">محجوز حتى ${e.bookedUntil||'قريباً'}</span>`;
+            ? `<span class="avail-badge avail-yes">${lang==='ar'?'متاح الآن':'Available Now'}</span>`
+            : `<span class="avail-badge avail-no">${bookedUntilLabel}</span>`;
         const badgeHtml = e.badge ? `<div class="card-badge badge-${e.badge}">${BADGE[e.badge]||''}</div>` : '';
-        const rentDisabled = !e.avail ? 'disabled title="المعدة محجوزة"' : '';
-        return `<div class="equip-card" data-cat="${e.cat}" data-avail="${e.avail?'yes':'no'}" data-price="${e.priceDay}" data-city="${e.city}" data-operator="${e.hasOperator?'yes':'no'}" data-transport="${e.hasTransport?'yes':'no'}" data-rating="${e.rating}">
+        const rentDisabled = !e.avail ? `disabled title="${lang==='ar'?'المعدة محجوزة':'Equipment booked'}"` : '';
+        // data-cat and data-city keep the Arabic value as the internal filter key
+        const catAr  = typeof e.cat   === 'object' ? e.cat.ar   : e.cat;
+        const cityAr = typeof e.city  === 'object' ? e.city.ar  : e.city;
+        const nameSearch = (typeof e.name === 'object' ? e.name.ar + ' ' + (e.name.en||'') : e.name).toLowerCase();
+        return `<div class="equip-card" data-cat="${catAr}" data-avail="${e.avail?'yes':'no'}" data-price="${e.priceDay}" data-city="${cityAr}" data-operator="${e.hasOperator?'yes':'no'}" data-transport="${e.hasTransport?'yes':'no'}" data-rating="${e.rating}" data-search="${nameSearch}">
             <div class="equip-img">${e.emoji}${badgeHtml}</div>
             <div class="equip-body">
-                <div class="equip-category">${e.cat}</div>
-                <div class="equip-name">${e.name}</div>
-                <div class="equip-keyspec">📐 ${e.keySpec}</div>
-                <div class="equip-company">🏢 ${e.company}</div>
+                <div class="equip-category">${cat}</div>
+                <div class="equip-name">${name}</div>
+                <div class="equip-keyspec">📐 ${keySpec}</div>
+                <div class="equip-company">🏢 ${company}</div>
                 <div class="equip-meta">
-                    <span>📍 ${e.city}</span>
+                    <span>📍 ${city}</span>
                     ${availHtml}
                     <span>⭐ ${e.rating} (${e.reviews})</span>
                 </div>
                 <div class="equip-price-row">
-                    <span class="equip-price-from">من</span>
-                    <span class="equip-price">${e.priceDay.toLocaleString()} ر.س<small>/يوم</small></span>
+                    <span class="equip-price-from">${fromLabel}</span>
+                    <span class="equip-price">${e.priceDay.toLocaleString(locale)} ${sarLabel}<small>${perDayLabel}</small></span>
                 </div>
             </div>
             <div class="equip-actions">
-                <button class="btn-rent-now" onclick="openRentModal(${e.id})" ${rentDisabled}>${e.avail?'استئجار الآن':'محجوز'}</button>
-                <button class="btn-quote" onclick="openQuoteModal(${e.id})">طلب عرض سعر</button>
-                <button class="btn-details" onclick="openDetailsModal(${e.id})">📋 التفاصيل</button>
-                <a href="chat.html?type=equip&id=${e.id}" class="btn-chat-eq">💬 تواصل</a>
+                <button class="btn-rent-now" onclick="openRentModal(${e.id})" ${rentDisabled}>${e.avail?rentLabel:bookedLabel}</button>
+                <button class="btn-quote" onclick="openQuoteModal(${e.id})">${quoteLabel}</button>
+                <button class="btn-details" onclick="openDetailsModal(${e.id})">${detailLabel}</button>
+                <a href="chat.html?type=equip&id=${e.id}" class="btn-chat-eq">${chatLabel}</a>
             </div>
         </div>`;
     }).join('');
@@ -806,68 +884,95 @@ function renderCards(list) {
 function openDetailsModal(id) {
     const e = EQUIPMENT.find(x => x.id === id);
     if (!e) return;
-    document.getElementById('dtlName').textContent = e.name;
-    const condCls  = e.condition === 'ممتاز' ? 'cond-excellent' : 'cond-good';
-    const prov     = e.providerInfo || {};
-    const useCaseHtml = (e.useCases||[]).map(u=>`<span class="use-chip">${u}</span>`).join('');
+    const lang   = window.I18n ? I18n.getCurrentLang() : 'ar';
+    const locale = lang === 'ar' ? 'ar-SA' : 'en-US';
+    const sarLabel = lang === 'ar' ? 'ر.س' : 'SAR';
+    const isAr = lang === 'ar';
+
+    const name    = _fEq(e.name, lang);
+    const condition = _fEq(e.condition, lang);
+    const type    = _fEq(e.type, lang);
+    const city    = _fEq(e.city, lang);
+    const desc    = _fEq(e.description, lang) || _fEq(e.usage, lang);
+    const rawUseCases = e.useCases;
+    const useCaseArr = rawUseCases && typeof rawUseCases === 'object' && !Array.isArray(rawUseCases)
+        ? (rawUseCases[lang] || rawUseCases.ar || [])
+        : (Array.isArray(rawUseCases) ? rawUseCases : []);
+    const rawIncludes = e.includes;
+    const incArr = rawIncludes && typeof rawIncludes === 'object' && !Array.isArray(rawIncludes)
+        ? (rawIncludes[lang] || rawIncludes.ar || [])
+        : (Array.isArray(rawIncludes) ? rawIncludes : []);
+    const rawExcludes = e.excludes;
+    const excArr = rawExcludes && typeof rawExcludes === 'object' && !Array.isArray(rawExcludes)
+        ? (rawExcludes[lang] || rawExcludes.ar || [])
+        : (Array.isArray(rawExcludes) ? rawExcludes : []);
+    const prov    = e.providerInfo || {};
+    const provName = _fEq(prov.name, lang) || _fEq(e.company, lang);
+
+    document.getElementById('dtlName').textContent = name;
+    const condCls  = (e.condition.ar||e.condition) === 'ممتاز' ? 'cond-excellent' : 'cond-good';
+    const useCaseHtml = useCaseArr.map(u=>`<span class="use-chip">${u}</span>`).join('');
+    const availStr = e.avail
+        ? (isAr ? 'متاح الآن' : 'Available Now')
+        : (isAr ? `محجوز حتى ${e.bookedUntil||''}` : `Booked until ${e.bookedUntil||''}`);
     document.getElementById('dtlContent').innerHTML = `
         <!-- Status strip -->
         <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;margin-bottom:.9rem;">
-            <span class="${e.avail?'avail-badge avail-yes':'avail-badge avail-no'}">${e.avail?'متاح الآن':'محجوز حتى '+(e.bookedUntil||'')}</span>
-            <span class="condition-badge ${condCls}">الحالة: ${e.condition}</span>
+            <span class="${e.avail?'avail-badge avail-yes':'avail-badge avail-no'}">${availStr}</span>
+            <span class="condition-badge ${condCls}">${isAr?'الحالة: ':'Condition: '}${condition}</span>
             <span style="font-size:.78rem;color:var(--gray);">🏭 ${e.brand} ${e.model} (${e.year})</span>
-            <span style="font-size:.78rem;color:var(--gray);">📍 ${e.city}</span>
-            <span style="font-size:.78rem;color:var(--gray);">⭐ ${e.rating} (${e.reviews} تقييم)</span>
+            <span style="font-size:.78rem;color:var(--gray);">📍 ${city}</span>
+            <span style="font-size:.78rem;color:var(--gray);">⭐ ${e.rating} (${e.reviews} ${isAr?'تقييم':'reviews'})</span>
         </div>
         <!-- Description -->
-        <div class="section-title">وصف المعدة</div>
-        <p class="equip-desc">${e.description||e.usage}</p>
+        <div class="section-title">${isAr?'وصف المعدة':'Equipment Description'}</div>
+        <p class="equip-desc">${desc}</p>
         <!-- Use cases -->
-        <div class="section-title">حالات الاستخدام</div>
+        <div class="section-title">${isAr?'حالات الاستخدام':'Use Cases'}</div>
         <div class="use-case-chips">${useCaseHtml}</div>
         <!-- Tech specs -->
-        <div class="section-title">المواصفات التقنية</div>
+        <div class="section-title">${isAr?'المواصفات التقنية':'Technical Specifications'}</div>
         <div class="spec-grid">
-            <div class="spec-item"><div class="spec-label">النوع</div><div class="spec-value">${e.type}</div></div>
-            <div class="spec-item"><div class="spec-label">السعة / القدرة</div><div class="spec-value">${e.capacity}</div></div>
-            <div class="spec-item"><div class="spec-label">نوع الوقود</div><div class="spec-value">${e.fuel}</div></div>
-            <div class="spec-item"><div class="spec-label">الوزن</div><div class="spec-value">${e.weight}</div></div>
-            <div class="spec-item" style="grid-column:1/-1;"><div class="spec-label">الأبعاد</div><div class="spec-value">${e.dimensions}</div></div>
+            <div class="spec-item"><div class="spec-label">${isAr?'النوع':'Type'}</div><div class="spec-value">${type}</div></div>
+            <div class="spec-item"><div class="spec-label">${isAr?'السعة / القدرة':'Capacity'}</div><div class="spec-value">${e.capacity}</div></div>
+            <div class="spec-item"><div class="spec-label">${isAr?'نوع الوقود':'Fuel'}</div><div class="spec-value">${e.fuel}</div></div>
+            <div class="spec-item"><div class="spec-label">${isAr?'الوزن':'Weight'}</div><div class="spec-value">${e.weight}</div></div>
+            <div class="spec-item" style="grid-column:1/-1;"><div class="spec-label">${isAr?'الأبعاد':'Dimensions'}</div><div class="spec-value">${e.dimensions}</div></div>
         </div>
         <!-- Pricing table -->
-        <div class="section-title">جدول الأسعار والخصومات</div>
+        <div class="section-title">${isAr?'جدول الأسعار والخصومات':'Pricing & Discounts'}</div>
         <table class="pricing-table">
-            <thead><tr><th>الفترة</th><th>السعر / يوم</th><th>الخصم</th><th>التوفير</th></tr></thead>
+            <thead><tr><th>${isAr?'الفترة':'Period'}</th><th>${isAr?'السعر / يوم':'Price / day'}</th><th>${isAr?'الخصم':'Discount'}</th><th>${isAr?'التوفير':'Savings'}</th></tr></thead>
             <tbody>
-                <tr><td>1 – 3 أيام</td><td class="price-col">${e.priceDay.toLocaleString()} ر.س</td><td>—</td><td>—</td></tr>
-                <tr class="highlight"><td>4 – 10 أيام</td><td class="price-col">${Math.round(e.priceDay*(1-e.discountMed)).toLocaleString()} ر.س</td><td style="color:var(--success);">−${Math.round(e.discountMed*100)}%</td><td style="color:var(--success);">وفّر ${Math.round(e.priceDay*e.discountMed*7).toLocaleString()} ر.س/أسبوع</td></tr>
-                <tr><td>10+ يوم</td><td class="price-col">${Math.round(e.priceDay*(1-e.discountLong)).toLocaleString()} ر.س</td><td style="color:var(--success);">−${Math.round(e.discountLong*100)}%</td><td style="color:var(--success);">وفّر ${Math.round(e.priceDay*e.discountLong*30).toLocaleString()} ر.س/شهر</td></tr>
-                ${e.priceWeek?`<tr class="highlight"><td>📅 أسبوع كامل (مجمّع)</td><td class="price-col" colspan="2">${e.priceWeek.toLocaleString()} ر.س إجمالي</td><td style="color:var(--success);">وفّر ${(e.priceDay*7-e.priceWeek).toLocaleString()} ر.س</td></tr>`:''}
-                ${e.priceMonth?`<tr><td>📅 شهر كامل (مجمّع)</td><td class="price-col" colspan="2">${e.priceMonth.toLocaleString()} ر.س إجمالي</td><td style="color:var(--success);">وفّر ${(e.priceDay*30-e.priceMonth).toLocaleString()} ر.س</td></tr>`:''}
+                <tr><td>${isAr?'1 – 3 أيام':'1 – 3 days'}</td><td class="price-col">${e.priceDay.toLocaleString(locale)} ${sarLabel}</td><td>—</td><td>—</td></tr>
+                <tr class="highlight"><td>${isAr?'4 – 10 أيام':'4 – 10 days'}</td><td class="price-col">${Math.round(e.priceDay*(1-e.discountMed)).toLocaleString(locale)} ${sarLabel}</td><td style="color:var(--success);">−${Math.round(e.discountMed*100)}%</td><td style="color:var(--success);">${isAr?'وفّر ':'Save '}${Math.round(e.priceDay*e.discountMed*7).toLocaleString(locale)} ${sarLabel}/${isAr?'أسبوع':'week'}</td></tr>
+                <tr><td>${isAr?'10+ يوم':'10+ days'}</td><td class="price-col">${Math.round(e.priceDay*(1-e.discountLong)).toLocaleString(locale)} ${sarLabel}</td><td style="color:var(--success);">−${Math.round(e.discountLong*100)}%</td><td style="color:var(--success);">${isAr?'وفّر ':'Save '}${Math.round(e.priceDay*e.discountLong*30).toLocaleString(locale)} ${sarLabel}/${isAr?'شهر':'month'}</td></tr>
+                ${e.priceWeek?`<tr class="highlight"><td>📅 ${isAr?'أسبوع كامل (مجمّع)':'Full week (bundle)'}</td><td class="price-col" colspan="2">${e.priceWeek.toLocaleString(locale)} ${sarLabel} ${isAr?'إجمالي':'total'}</td><td style="color:var(--success);">${isAr?'وفّر ':'Save '}${(e.priceDay*7-e.priceWeek).toLocaleString(locale)} ${sarLabel}</td></tr>`:''}
+                ${e.priceMonth?`<tr><td>📅 ${isAr?'شهر كامل (مجمّع)':'Full month (bundle)'}</td><td class="price-col" colspan="2">${e.priceMonth.toLocaleString(locale)} ${sarLabel} ${isAr?'إجمالي':'total'}</td><td style="color:var(--success);">${isAr?'وفّر ':'Save '}${(e.priceDay*30-e.priceMonth).toLocaleString(locale)} ${sarLabel}</td></tr>`:''}
             </tbody>
         </table>
         <!-- Add-ons -->
-        <div class="section-title">الإضافات المتاحة</div>
+        <div class="section-title">${isAr?'الإضافات المتاحة':'Available Add-ons'}</div>
         <div style="display:flex;flex-direction:column;gap:.35rem;">
-            ${e.addons.operator?`<div style="display:flex;justify-content:space-between;font-size:.85rem;padding:.45rem .75rem;background:var(--light);border-radius:9px;align-items:center;"><span>👷 مع مشغل متخصص</span><strong style="color:var(--primary);font-size:.9rem;">+${e.addons.operator.toLocaleString()} ر.س/يوم</strong></div>`:''}
-            ${e.addons.transport?`<div style="display:flex;justify-content:space-between;font-size:.85rem;padding:.45rem .75rem;background:var(--light);border-radius:9px;align-items:center;"><span>🚚 نقل وتوصيل للموقع</span><strong style="color:var(--primary);font-size:.9rem;">+${e.addons.transport.toLocaleString()} ر.س/يوم</strong></div>`:''}
-            ${e.addons.fuel?`<div style="display:flex;justify-content:space-between;font-size:.85rem;padding:.45rem .75rem;background:var(--light);border-radius:9px;align-items:center;"><span>⛽ توفير الوقود</span><strong style="color:var(--primary);font-size:.9rem;">+${e.addons.fuel.toLocaleString()} ر.س/يوم</strong></div>`:''}
+            ${e.addons.operator?`<div style="display:flex;justify-content:space-between;font-size:.85rem;padding:.45rem .75rem;background:var(--light);border-radius:9px;align-items:center;"><span>👷 ${isAr?'مع مشغل متخصص':'With Specialist Operator'}</span><strong style="color:var(--primary);font-size:.9rem;">+${e.addons.operator.toLocaleString(locale)} ${sarLabel}/${isAr?'يوم':'day'}</strong></div>`:''}
+            ${e.addons.transport?`<div style="display:flex;justify-content:space-between;font-size:.85rem;padding:.45rem .75rem;background:var(--light);border-radius:9px;align-items:center;"><span>🚚 ${isAr?'نقل وتوصيل للموقع':'Transport & Delivery'}</span><strong style="color:var(--primary);font-size:.9rem;">+${e.addons.transport.toLocaleString(locale)} ${sarLabel}/${isAr?'يوم':'day'}</strong></div>`:''}
+            ${e.addons.fuel?`<div style="display:flex;justify-content:space-between;font-size:.85rem;padding:.45rem .75rem;background:var(--light);border-radius:9px;align-items:center;"><span>⛽ ${isAr?'توفير الوقود':'Fuel Included'}</span><strong style="color:var(--primary);font-size:.9rem;">+${e.addons.fuel.toLocaleString(locale)} ${sarLabel}/${isAr?'يوم':'day'}</strong></div>`:''}
         </div>
         <!-- Included / Excluded -->
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-top:.65rem;">
-            <div><div class="section-title">✅ يشمل الإيجار</div><ul class="include-list">${e.includes.map(x=>`<li>${x}</li>`).join('')}</ul></div>
-            <div><div class="section-title">❌ لا يشمل الإيجار</div><ul class="exclude-list">${e.excludes.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+            <div><div class="section-title">✅ ${isAr?'يشمل الإيجار':'Included'}</div><ul class="include-list">${incArr.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+            <div><div class="section-title">❌ ${isAr?'لا يشمل الإيجار':'Not Included'}</div><ul class="exclude-list">${excArr.map(x=>`<li>${x}</li>`).join('')}</ul></div>
         </div>
         <!-- Provider card -->
-        <div class="section-title">المزود</div>
+        <div class="section-title">${isAr?'المزود':'Provider'}</div>
         <div class="provider-card">
             <div class="provider-avatar">${prov.initial||'م'}</div>
             <div class="provider-meta">
-                <div class="provider-name">${prov.name||e.company} ${prov.verified?'<span class="provider-verified">✓ موثّق</span>':''}</div>
+                <div class="provider-name">${provName} ${prov.verified?`<span class="provider-verified">✓ ${isAr?'موثّق':'Verified'}</span>`:''}</div>
                 <div class="provider-stats">
-                    <span>⭐ ${prov.rating||e.rating} تقييم</span>
-                    <span>📋 ${prov.totalRentals||'+'} عملية إيجار</span>
-                    <span>📅 منذ ${prov.since||'2018'}</span>
+                    <span>⭐ ${prov.rating||e.rating} ${isAr?'تقييم':'rating'}</span>
+                    <span>📋 ${prov.totalRentals||'+'} ${isAr?'عملية إيجار':'rentals'}</span>
+                    <span>📅 ${isAr?'منذ':'since'} ${prov.since||'2018'}</span>
                 </div>
             </div>
         </div>
@@ -1357,7 +1462,9 @@ function applyFilters() {
     const opFilter  = document.getElementById('fo1').checked;
     const trFilter  = document.getElementById('fo2').checked;
     document.querySelectorAll('.equip-card').forEach(card => {
-        const show = (!q || card.textContent.toLowerCase().includes(q))
+        // Search in bilingual name (data-search has both ar+en) OR card text
+        const searchMatch = !q || card.textContent.toLowerCase().includes(q) || (card.dataset.search||'').includes(q);
+        const show = searchMatch
             && (cats.length===0   || cats.includes(card.dataset.cat))
             && (avails.length===0 || avails.includes(card.dataset.avail))
             && parseFloat(card.dataset.price) >= pMin
@@ -1420,7 +1527,8 @@ function toggleTheme() {
 
 // ── Init ──────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', function() {
-    renderCards(EQUIPMENT);
+    const initLang = window.I18n ? I18n.getCurrentLang() : 'ar';
+    renderCards(EQUIPMENT, initLang);
     renderQuotesStrip();
     document.querySelectorAll('.modal-overlay').forEach(o => o.addEventListener('click', e => { if(e.target===o) o.classList.remove('show'); }));
     const user = JSON.parse(localStorage.getItem('khedmah_user') || '{}');
@@ -1431,13 +1539,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // Language switcher
     if (window.I18n) I18n.renderLangSwitcher('langSwitcherEq');
 
-    // Re-render calendar + re-translate on language switch
-    window.addEventListener('khedmah:lang-changed', function() {
-        if (_rentEquip) renderRentCalendar(_rentEquip); // re-render calendar if modal open
-        if (window.I18n) {
-            // Re-translate dynamic status bar text
-            updateCalStatus();
-        }
+    // Re-render cards + calendar on language switch
+    window.addEventListener('khedmah:lang-changed', function(e) {
+        renderCards(EQUIPMENT, e.detail.lang);
+        if (_rentEquip) renderRentCalendar(_rentEquip);
+        updateCalStatus();
     });
 });
 </script>
