@@ -195,15 +195,17 @@
         </div>
     </nav>
 
-    <div style="background:linear-gradient(135deg,#028090,#02C39A);padding:1.5rem 5%;text-align:center">
-      <p style="color:rgba(255,255,255,.85);font-size:.9rem;margin-bottom:.75rem;font-family:'Tajawal',sans-serif">هل لديك مشروع؟ انشر مناقصتك واستقبل عروض من متخصصين</p>
-      <a href="tender-create.html" data-i18n="tenders_btn_create" style="background:white;color:#028090;padding:.75rem 2rem;border-radius:12px;text-decoration:none;font-weight:800;font-size:1rem;display:inline-flex;align-items:center;min-height:48px">+ انشر مناقصة</a>
+    <div style="background:linear-gradient(135deg,#028090,#02C39A);padding:1.75rem 5%;text-align:center">
+      <p style="color:rgba(255,255,255,.6);font-size:.78rem;letter-spacing:.5px;text-transform:uppercase;margin-bottom:.4rem;font-family:'Tajawal',sans-serif">منصة المناقصات والمشاريع</p>
+      <h2 style="color:white;font-size:1.35rem;font-weight:900;margin-bottom:.45rem;font-family:'Tajawal',sans-serif">لديك مشروع؟ انشره وستأتيك العروض</h2>
+      <p style="color:rgba(255,255,255,.85);font-size:.88rem;margin-bottom:1rem;font-family:'Tajawal',sans-serif">من تجديد منزل إلى بناء مقهى — صف مشروعك واستقبل عروض من شركات ومقاولين موثوقين</p>
+      <a href="tender-create.html" data-i18n="tenders_btn_create" style="background:white;color:#028090;padding:.8rem 2.25rem;border-radius:12px;text-decoration:none;font-weight:900;font-size:1rem;display:inline-flex;align-items:center;gap:.4rem;min-height:48px;box-shadow:0 4px 15px rgba(0,0,0,.15)">➕ أضف مناقصتك</a>
     </div>
 
     <div class="market-stats">
         <div class="market-stats-inner">
-            <div class="stat-pill">📋 <strong id="statOpen">5</strong> مناقصة مفتوحة</div>
-            <div class="stat-pill">💰 إجمالي الميزانيات: <strong>5.2 مليون ر.س</strong></div>
+            <div class="stat-pill">📋 <strong id="statOpen">5</strong> مشروع مفتوح</div>
+            <div class="stat-pill">🏗️ منازل • مقاهي • محلات • تقنية</div>
             <div class="stat-pill">🏙️ <strong>5</strong> مدن</div>
             <div class="stat-pill">⚡ آخر تحديث: اليوم</div>
         </div>
@@ -227,11 +229,11 @@
         <aside class="filters-sidebar">
             <div class="filter-panel">
                 <div class="filter-title">القطاع <span class="filter-clear" onclick="clearFilters()">مسح الكل</span></div>
-                <div class="filter-option"><input type="checkbox" id="s1" data-filter="sector" value="بناء" onchange="applyFilters()"><label for="s1">🏗️ بناء وإنشاء</label><span class="count">14</span></div>
-                <div class="filter-option"><input type="checkbox" id="s2" data-filter="sector" value="تقنية" onchange="applyFilters()"><label for="s2">💻 تقنية المعلومات</label><span class="count">9</span></div>
-                <div class="filter-option"><input type="checkbox" id="s3" data-filter="sector" value="صحة" onchange="applyFilters()"><label for="s3">🏥 رعاية صحية</label><span class="count">6</span></div>
-                <div class="filter-option extra-filter" id="extraFilters" style="display:none"><input type="checkbox" id="s4" data-filter="sector" value="تعليم" onchange="applyFilters()"><label for="s4">📚 تعليم</label><span class="count">5</span></div>
-                <div class="filter-option extra-filter" style="display:none"><input type="checkbox" id="s5" data-filter="sector" value="طاقة" onchange="applyFilters()"><label for="s5">⚡ طاقة وبيئة</label><span class="count">7</span></div>
+                <div class="filter-option"><input type="checkbox" id="s1" data-filter="sector" value="تشطيبات" onchange="applyFilters()"><label for="s1">🎨 تشطيبات وديكور</label><span class="count">3</span></div>
+                <div class="filter-option"><input type="checkbox" id="s2" data-filter="sector" value="تقنية" onchange="applyFilters()"><label for="s2">💻 تقنية ومواقع</label><span class="count">2</span></div>
+                <div class="filter-option"><input type="checkbox" id="s3" data-filter="sector" value="إنشاء" onchange="applyFilters()"><label for="s3">🏗️ بناء وإنشاء</label><span class="count">1</span></div>
+                <div class="filter-option extra-filter" id="extraFilters" style="display:none"><input type="checkbox" id="s4" data-filter="sector" value="تصميم" onchange="applyFilters()"><label for="s4">✏️ تصميم</label><span class="count">1</span></div>
+                <div class="filter-option extra-filter" style="display:none"><input type="checkbox" id="s5" data-filter="sector" value="طاقة" onchange="applyFilters()"><label for="s5">☀️ طاقة شمسية</label><span class="count">1</span></div>
                 <button onclick="(function(btn){var els=document.querySelectorAll('.extra-filter');var show=els[0].style.display==='none';els.forEach(function(e){e.style.display=show?'flex':'none';});btn.textContent=show?'▲ أقل':'المزيد من الفلاتر ▼';})(this)" style="background:none;border:none;color:var(--primary);font-family:'Tajawal',sans-serif;font-size:0.8rem;font-weight:600;cursor:pointer;padding:0.25rem 0;text-align:right;width:100%">المزيد من الفلاتر ▼</button>
             </div>
 
@@ -278,148 +280,155 @@
 
             <div class="tenders-list" id="tendersList">
 
+                <!-- Card 1: House renovation -->
                 <div class="tender-card"
-                     data-sector="بناء" data-status="open" data-budget="850000"
-                     data-city="الرياض" data-date="2024-03-10" data-deadline="2025-04-30">
+                     data-sector="تشطيبات" data-status="open" data-budget="175000"
+                     data-city="الرياض" data-date="2026-04-03" data-deadline="2026-04-28">
                     <div class="tc-header">
                         <div class="tc-info">
-                            <div class="tc-title"><a href="tender-detail.html?id=1">إنشاء مبنى إداري متعدد الطوابق</a> <span class="badge-new">جديد</span></div>
-                            <div class="tc-org">🏢 شركة الأفق للتطوير العقاري</div>
-                            <div class="tc-desc">مطلوب مقاول متخصص لبناء مبنى إداري من 6 طوابق بمساحة 4,200 م² في حي العليا بالرياض، يشمل الأعمال المدنية والكهربائية والميكانيكية.</div>
+                            <div class="tc-title"><a href="tender-detail.html?id=1">تجديد وترميم فيلا سكنية كاملة</a> <span class="badge-new">جديد</span></div>
+                            <div class="tc-org">🏠 صاحب مشروع — مالك الفيلا</div>
+                            <div class="tc-desc">تجديد فيلا سكنية من طابقين في حي الملقا بالرياض — تشمل دهانات، أرضيات، جبس، أعمال كهربائية وسباكة، ومطبخ جديد.</div>
                         </div>
                         <div class="tc-side">
-                            <div class="tc-budget">850,000 ر.س<small>الميزانية التقديرية</small></div>
+                            <div class="tc-budget">150,000 – 200,000<small>ر.س تقديرياً</small></div>
                             <span class="status-badge status-open">مفتوح</span>
                         </div>
                     </div>
                     <div class="tc-meta">
                         <span>📍 الرياض</span>
-                        <span>⏰ ينتهي: 15 أبريل 2024</span>
-                        <span>👥 12 عرض</span>
-                        <span class="sector-tag">بناء</span>
+                        <span>⏰ ينتهي: 28 أبريل 2026</span>
+                        <span>👥 4 عروض</span>
+                        <span class="sector-tag">تشطيبات</span>
                         <span class="spacer"></span>
                         <a href="tender-detail.html?id=1" class="btn-details">عرض التفاصيل</a>
                         <a href="tender-detail.html?id=1" class="btn-bid">✍️ تقديم عرض</a>
                     </div>
                 </div>
 
+                <!-- Card 2: Coffee shop build-out -->
                 <div class="tender-card"
-                     data-sector="تقنية" data-status="open" data-budget="120000"
-                     data-city="جدة" data-date="2024-03-09" data-deadline="2025-03-25">
+                     data-sector="تشطيبات" data-status="open" data-budget="320000"
+                     data-city="جدة" data-date="2026-04-02" data-deadline="2026-04-22">
                     <div class="tc-header">
                         <div class="tc-info">
-                            <div class="tc-title"><a href="tender-detail.html?id=2">تطوير نظام إدارة موارد بشرية</a> <span class="badge-closing">⏰ ينتهي قريباً</span></div>
-                            <div class="tc-org">🏥 مستشفى النور الطبي</div>
-                            <div class="tc-desc">تطوير وتطبيق نظام متكامل لإدارة الموارد البشرية يشمل الرواتب، الإجازات، التقييم السنوي، وبوابة الموظف الذاتية.</div>
+                            <div class="tc-title"><a href="tender-detail.html?id=2">تصميم وتنفيذ مقهى تخصصي</a> <span class="badge-closing">⏰ ينتهي قريباً</span></div>
+                            <div class="tc-org">☕ مشروع عائلي — صاحب المشروع</div>
+                            <div class="tc-desc">تجهيز وتصميم مقهى تخصصي بمساحة 120 م² في شارع التحلية بجدة — تشمل الديكور الداخلي، الأثاث، الإضاءة، والتمديدات.</div>
                         </div>
                         <div class="tc-side">
-                            <div class="tc-budget">120,000 ر.س<small>الميزانية التقديرية</small></div>
+                            <div class="tc-budget">280,000 – 360,000<small>ر.س تقديرياً</small></div>
                             <span class="status-badge status-open">مفتوح</span>
                         </div>
                     </div>
                     <div class="tc-meta">
                         <span>📍 جدة</span>
-                        <span>⏰ ينتهي: 20 أبريل 2024</span>
-                        <span>👥 7 عروض</span>
-                        <span class="sector-tag">تقنية</span>
+                        <span>⏰ ينتهي: 22 أبريل 2026</span>
+                        <span>👥 9 عروض</span>
+                        <span class="sector-tag">تشطيبات</span>
                         <span class="spacer"></span>
                         <a href="tender-detail.html?id=2" class="btn-details">عرض التفاصيل</a>
                         <a href="tender-detail.html?id=2" class="btn-bid">✍️ تقديم عرض</a>
                     </div>
                 </div>
 
+                <!-- Card 3: Office fit-out (soon) -->
                 <div class="tender-card"
-                     data-sector="بناء" data-status="soon" data-budget="2300000"
-                     data-city="الدمام" data-date="2024-03-08" data-deadline="2025-05-15">
+                     data-sector="تشطيبات" data-status="soon" data-budget="95000"
+                     data-city="الدمام" data-date="2026-04-01" data-deadline="2026-04-12">
                     <div class="tc-header">
                         <div class="tc-info">
-                            <div class="tc-title"><a href="tender-detail.html?id=3">توريد وتركيب شبكة مياه لمجمع سكني</a></div>
-                            <div class="tc-org">🏗️ المجموعة السعودية للمقاولات</div>
-                            <div class="tc-desc">مشروع توريد وتركيب شبكة مياه رئيسية وفرعية لمجمع سكني يضم 240 وحدة سكنية في الدمام.</div>
+                            <div class="tc-title"><a href="tender-detail.html?id=3">تشطيب مكتب شركة ناشئة</a></div>
+                            <div class="tc-org">💼 شركة تقنية ناشئة — الدمام</div>
+                            <div class="tc-desc">تجهيز وتشطيب مكتب 200 م² في برج تجاري بالدمام — أعمال التقسيم، الدهانات، الأسقف المعلقة، والإضاءة المكتبية.</div>
                         </div>
                         <div class="tc-side">
-                            <div class="tc-budget">2,300,000 ر.س<small>الميزانية التقديرية</small></div>
+                            <div class="tc-budget">80,000 – 110,000<small>ر.س تقديرياً</small></div>
                             <span class="status-badge status-soon">يغلق قريبًا</span>
                         </div>
                     </div>
                     <div class="tc-meta">
                         <span>📍 الدمام</span>
-                        <span>⏰ ينتهي: 5 أبريل 2024</span>
-                        <span>👥 18 عرض</span>
-                        <span class="sector-tag">بناء</span>
+                        <span>⏰ ينتهي: 12 أبريل 2026</span>
+                        <span>👥 6 عروض</span>
+                        <span class="sector-tag">تشطيبات</span>
                         <span class="spacer"></span>
                         <a href="tender-detail.html?id=3" class="btn-details">عرض التفاصيل</a>
                         <a href="tender-detail.html?id=3" class="btn-bid">✍️ تقديم عرض</a>
                     </div>
                 </div>
 
+                <!-- Card 4: Website dev (closed) -->
                 <div class="tender-card"
-                     data-sector="صحة" data-status="closed" data-budget="450000"
-                     data-city="الرياض" data-date="2024-03-07" data-deadline="2024-03-28">
+                     data-sector="تقنية" data-status="closed" data-budget="38000"
+                     data-city="الرياض" data-date="2026-03-20" data-deadline="2026-03-31">
                     <div class="tc-header">
                         <div class="tc-info">
-                            <div class="tc-title"><a href="tender-detail.html?id=4">توريد أجهزة طبية لعيادات التشخيص</a> <span class="badge-closed">مغلقة</span></div>
-                            <div class="tc-org">🏥 مجموعة الحياة الطبية</div>
-                            <div class="tc-desc">توريد وتركيب وصيانة أجهزة أشعة وتشخيص متطورة لثلاث عيادات في الرياض وفق المواصفات المرفقة.</div>
+                            <div class="tc-title"><a href="tender-detail.html?id=4">تطوير موقع إلكتروني لمتجر</a> <span class="badge-closed">مغلق</span></div>
+                            <div class="tc-org">🛍️ متجر الأناقة — صاحب المشروع</div>
+                            <div class="tc-desc">تصميم وتطوير متجر إلكتروني احترافي مع لوحة تحكم وربط بوابة دفع سعودية وعرض المنتجات بشكل جذاب.</div>
                         </div>
                         <div class="tc-side">
-                            <div class="tc-budget">450,000 ر.س<small>الميزانية التقديرية</small></div>
-                            <span class="status-badge status-closed">مغلقة</span>
+                            <div class="tc-budget">35,000 – 45,000<small>ر.س تقديرياً</small></div>
+                            <span class="status-badge status-closed">مغلق</span>
                         </div>
                     </div>
                     <div class="tc-meta">
                         <span>📍 الرياض</span>
-                        <span>⏰ انتهى: 28 مارس 2024</span>
-                        <span>👥 5 عروض</span>
-                        <span class="sector-tag">صحة</span>
+                        <span>⏰ انتهى: 31 مارس 2026</span>
+                        <span>👥 11 عرض</span>
+                        <span class="sector-tag">تقنية</span>
                         <span class="spacer"></span>
-                        <a href="tender-detail.html?id=4" class="btn-bid" disabled style="background:#94a3b8;pointer-events:none;">مغلق</a>
+                        <a href="tender-detail.html?id=4" class="btn-details">عرض التفاصيل</a>
+                        <span class="btn-bid" style="background:#94a3b8;cursor:not-allowed">مغلق</span>
                     </div>
                 </div>
 
+                <!-- Card 5: Store interior design -->
                 <div class="tender-card"
-                     data-sector="تعليم" data-status="open" data-budget="180000"
-                     data-city="مكة المكرمة" data-date="2024-03-06">
+                     data-sector="تصميم" data-status="open" data-budget="90000"
+                     data-city="مكة المكرمة" data-date="2026-03-28">
                     <div class="tc-header">
                         <div class="tc-info">
-                            <div class="tc-title"><a href="tender-detail.html?id=5">تجهيز مختبرات حاسوب لمدارس ابتدائية</a></div>
-                            <div class="tc-org">📚 إدارة التعليم بمكة المكرمة</div>
-                            <div class="tc-desc">توريد وتركيب 8 مختبرات حاسوب مع الأجهزة والشبكات والبرمجيات التعليمية في 8 مدارس ابتدائية حكومية.</div>
+                            <div class="tc-title"><a href="tender-detail.html?id=5">تصميم داخلي لمتجر ملابس</a></div>
+                            <div class="tc-org">👗 محلات الأناقة — مالك المتجر</div>
+                            <div class="tc-desc">تصميم وتنفيذ ديكور داخلي عصري لمتجر ملابس بمساحة 90 م² في أحد المولات بمكة المكرمة — واجهة، إضاءة، غرف القياس.</div>
                         </div>
                         <div class="tc-side">
-                            <div class="tc-budget">180,000 ر.س<small>الميزانية التقديرية</small></div>
+                            <div class="tc-budget">75,000 – 105,000<small>ر.س تقديرياً</small></div>
                             <span class="status-badge status-open">مفتوح</span>
                         </div>
                     </div>
                     <div class="tc-meta">
                         <span>📍 مكة المكرمة</span>
-                        <span>⏰ ينتهي: 10 مايو 2024</span>
+                        <span>⏰ ينتهي: 5 مايو 2026</span>
                         <span>👥 3 عروض</span>
-                        <span class="sector-tag">تعليم</span>
+                        <span class="sector-tag">تصميم</span>
                         <span class="spacer"></span>
                         <a href="tender-detail.html?id=5" class="btn-details">عرض التفاصيل</a>
                         <a href="tender-detail.html?id=5" class="btn-bid">✍️ تقديم عرض</a>
                     </div>
                 </div>
 
+                <!-- Card 6: Home solar (soon) -->
                 <div class="tender-card"
-                     data-sector="طاقة" data-status="soon" data-budget="920000"
-                     data-city="الرياض" data-date="2024-03-05">
+                     data-sector="طاقة" data-status="soon" data-budget="62000"
+                     data-city="الرياض" data-date="2026-03-25">
                     <div class="tc-header">
                         <div class="tc-info">
-                            <div class="tc-title"><a href="tender-detail.html?id=6">تركيب منظومة طاقة شمسية لمصنع صناعي</a></div>
-                            <div class="tc-org">⚡ الشركة الوطنية للطاقة المتجددة</div>
-                            <div class="tc-desc">تصميم وتوريد وتركيب واختبار منظومة طاقة شمسية بقدرة 500 كيلوواط لمصنع في المنطقة الصناعية بالرياض.</div>
+                            <div class="tc-title"><a href="tender-detail.html?id=6">تركيب نظام طاقة شمسية لفيلا</a></div>
+                            <div class="tc-org">🏡 عائلة السبيعي — صاحب الفيلا</div>
+                            <div class="tc-desc">توريد وتركيب نظام طاقة شمسية منزلي بقدرة 12 كيلوواط لفيلا سكنية في حي الياسمين بالرياض مع بطارية تخزين.</div>
                         </div>
                         <div class="tc-side">
-                            <div class="tc-budget">920,000 ر.س<small>الميزانية التقديرية</small></div>
+                            <div class="tc-budget">55,000 – 70,000<small>ر.س تقديرياً</small></div>
                             <span class="status-badge status-soon">يغلق قريبًا</span>
                         </div>
                     </div>
                     <div class="tc-meta">
                         <span>📍 الرياض</span>
-                        <span>⏰ ينتهي: 8 أبريل 2024</span>
-                        <span>👥 9 عروض</span>
+                        <span>⏰ ينتهي: 10 أبريل 2026</span>
+                        <span>👥 7 عروض</span>
                         <span class="sector-tag">طاقة</span>
                         <span class="spacer"></span>
                         <a href="tender-detail.html?id=6" class="btn-details">عرض التفاصيل</a>
@@ -427,49 +436,52 @@
                     </div>
                 </div>
 
+                <!-- Card 7: Restaurant app (closed) -->
                 <div class="tender-card"
-                     data-sector="تقنية" data-status="closed" data-budget="75000"
-                     data-city="جدة" data-date="2024-03-04">
+                     data-sector="تقنية" data-status="closed" data-budget="52000"
+                     data-city="جدة" data-date="2026-03-15">
                     <div class="tc-header">
                         <div class="tc-info">
-                            <div class="tc-title"><a href="tender-detail.html?id=7">تطوير تطبيق جوال لخدمات التوصيل</a></div>
-                            <div class="tc-org">🛒 شركة سريع للخدمات اللوجستية</div>
-                            <div class="tc-desc">تصميم وتطوير تطبيق iOS و Android مع لوحة تحكم للإدارة، يشمل تتبع الطلبات وبوابة دفع إلكتروني.</div>
+                            <div class="tc-title"><a href="tender-detail.html?id=7">تطبيق جوال لطلبات المطعم</a></div>
+                            <div class="tc-org">🍽️ مطعم البيت — صاحب المطعم</div>
+                            <div class="tc-desc">تطوير تطبيق iOS وAndroid لاستقبال طلبات العملاء، تتبع التوصيل، وربط نظام الكاشير، مع لوحة إدارة بسيطة.</div>
                         </div>
                         <div class="tc-side">
-                            <div class="tc-budget">75,000 ر.س<small>الميزانية التقديرية</small></div>
+                            <div class="tc-budget">45,000 – 60,000<small>ر.س تقديرياً</small></div>
                             <span class="status-badge status-closed">مغلق</span>
                         </div>
                     </div>
                     <div class="tc-meta">
                         <span>📍 جدة</span>
-                        <span>⏰ انتهى: 1 مارس 2024</span>
-                        <span>👥 15 عرض</span>
+                        <span>⏰ انتهى: 31 مارس 2026</span>
+                        <span>👥 8 عروض</span>
                         <span class="sector-tag">تقنية</span>
                         <span class="spacer"></span>
-                        <a href="tender-detail.html?id=7" class="btn-bid" style="background:#94a3b8;pointer-events:none;">مغلق</a>
+                        <a href="tender-detail.html?id=7" class="btn-details">عرض التفاصيل</a>
+                        <span class="btn-bid" style="background:#94a3b8;cursor:not-allowed">مغلق</span>
                     </div>
                 </div>
 
+                <!-- Card 8: Rest house renovation -->
                 <div class="tender-card"
-                     data-sector="بناء" data-status="open" data-budget="340000"
-                     data-city="المدينة المنورة" data-date="2024-03-03">
+                     data-sector="إنشاء" data-status="open" data-budget="135000"
+                     data-city="المدينة المنورة" data-date="2026-03-22">
                     <div class="tc-header">
                         <div class="tc-info">
-                            <div class="tc-title"><a href="tender-detail.html?id=8">أعمال التشطيبات الداخلية لفيلا سكنية</a></div>
-                            <div class="tc-org">🏠 مؤسسة الديار للمقاولات</div>
-                            <div class="tc-desc">تنفيذ أعمال التشطيبات الداخلية لفيلا سكنية من طابقين بمساحة 650 م² في المدينة المنورة، تشمل الدهانات والسيراميك والجبس.</div>
+                            <div class="tc-title"><a href="tender-detail.html?id=8">ترميم وتحديث استراحة</a></div>
+                            <div class="tc-org">🌴 استراحة النخيل — مالك الاستراحة</div>
+                            <div class="tc-desc">ترميم وتحديث استراحة عائلية بمساحة 500 م² في المدينة المنورة — تشمل إعادة البناء الجزئي، تجديد حمامات السباحة، والمطبخ.</div>
                         </div>
                         <div class="tc-side">
-                            <div class="tc-budget">340,000 ر.س<small>الميزانية التقديرية</small></div>
+                            <div class="tc-budget">110,000 – 160,000<small>ر.س تقديرياً</small></div>
                             <span class="status-badge status-open">مفتوح</span>
                         </div>
                     </div>
                     <div class="tc-meta">
                         <span>📍 المدينة المنورة</span>
-                        <span>⏰ ينتهي: 2 مايو 2024</span>
-                        <span>👥 4 عروض</span>
-                        <span class="sector-tag">بناء</span>
+                        <span>⏰ ينتهي: 3 مايو 2026</span>
+                        <span>👥 5 عروض</span>
+                        <span class="sector-tag">إنشاء</span>
                         <span class="spacer"></span>
                         <a href="tender-detail.html?id=8" class="btn-details">عرض التفاصيل</a>
                         <a href="tender-detail.html?id=8" class="btn-bid">✍️ تقديم عرض</a>
