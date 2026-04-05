@@ -174,9 +174,7 @@
     if (localStorage.getItem('khedmah_theme') === 'dark') {
       document.documentElement.classList.add('dark');
     }
-    if (!API.isLoggedIn()) {
-      window.location.href = 'login.html';
-    }
+    // Tenders marketplace is PUBLIC — no login required to browse
   })();
 </script>
     <nav>
@@ -189,8 +187,7 @@
                 <a href="consultations.html" data-i18n="nav_consultations">استشارات</a>
                 <div id="langSwitcherTenders"></div>
                 <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙</button>
-                <button onclick="doLogout()" data-i18n="nav_logout" class="btn btn-outline-danger btn-sm">خروج</button>
-                <a href="customer-dashboard.html" class="avatar-btn">م</a>
+                <span id="navAuthArea"></span>
             </div>
         </div>
     </nav>
@@ -199,7 +196,7 @@
       <p data-i18n="tenders_hero_eyebrow" style="color:rgba(255,255,255,.6);font-size:.78rem;letter-spacing:.5px;text-transform:uppercase;margin-bottom:.4rem;font-family:'Tajawal',sans-serif">منصة المناقصات والمشاريع</p>
       <h2 data-i18n="tenders_hero_title" style="color:white;font-size:1.35rem;font-weight:900;margin-bottom:.45rem;font-family:'Tajawal',sans-serif">لديك مشروع؟ انشره وستأتيك العروض</h2>
       <p data-i18n="tenders_hero_desc" style="color:rgba(255,255,255,.85);font-size:.88rem;margin-bottom:1rem;font-family:'Tajawal',sans-serif">من تجديد منزل إلى بناء مقهى — صف مشروعك واستقبل عروض من شركات ومقاولين موثوقين</p>
-      <a href="tender-create.html" data-i18n="tenders_btn_create" style="background:white;color:#028090;padding:.8rem 2.25rem;border-radius:12px;text-decoration:none;font-weight:900;font-size:1rem;display:inline-flex;align-items:center;gap:.4rem;min-height:48px;box-shadow:0 4px 15px rgba(0,0,0,.15)">➕ أضف مناقصتك</a>
+      <a href="tender-create.html" onclick="return guardPost(event)" data-i18n="tenders_btn_create" style="background:white;color:#028090;padding:.8rem 2.25rem;border-radius:12px;text-decoration:none;font-weight:900;font-size:1rem;display:inline-flex;align-items:center;gap:.4rem;min-height:48px;box-shadow:0 4px 15px rgba(0,0,0,.15)">➕ أضف مناقصتك</a>
     </div>
 
     <div class="market-stats">
@@ -728,12 +725,43 @@
             return card;
         }
 
-        // Role-aware dashboard link
+        // ── Auth helper: redirect to login if not logged in ──────────────────
+        function guardPost(e) {
+            if (!localStorage.getItem('khedmah_demo')) {
+                e.preventDefault();
+                window.location.href = 'login.html?redirect=tender-create.html';
+                return false;
+            }
+            return true;
+        }
+
+        // ── Auth-aware nav (guest vs logged-in) ───────────────────────────────
+        function buildNavAuth() {
+            const el = document.getElementById('navAuthArea');
+            if (!el) return;
+            const isLoggedIn = !!localStorage.getItem('khedmah_demo');
+            if (isLoggedIn) {
+                const u = JSON.parse(localStorage.getItem('khedmah_user') || '{}');
+                const dashHref = u.role === 'provider' ? 'provider-dashboard.html' : 'customer-dashboard.html';
+                const initial = (u.name || u.email || 'م')[0].toUpperCase();
+                el.innerHTML =
+                    '<button onclick="doLogout()" data-i18n="nav_logout" style="border:1.5px solid #ef4444;color:#ef4444;background:transparent;border-radius:8px;padding:.35rem .85rem;font-family:Tajawal,sans-serif;font-size:.85rem;font-weight:600;cursor:pointer;">' +
+                    (typeof window.t === 'function' ? window.t('nav_logout') : 'خروج') + '</button>' +
+                    '<a href="' + dashHref + '" class="avatar-btn">' + initial + '</a>';
+            } else {
+                el.innerHTML =
+                    '<a href="login.html" data-i18n="nav_login" style="color:var(--primary);font-weight:600;text-decoration:none;font-size:.88rem;">' +
+                    (typeof window.t === 'function' ? window.t('nav_login') : 'دخول') + '</a>' +
+                    '<a href="register-customer.html" data-i18n="nav_register" style="background:var(--primary);color:white;padding:.38rem .95rem;border-radius:10px;text-decoration:none;font-weight:700;font-size:.85rem;">' +
+                    (typeof window.t === 'function' ? window.t('nav_register') : 'سجّل') + '</a>';
+            }
+        }
+        // Re-build nav when language switches so labels update
+        window.addEventListener('khedmah:lang-changed', buildNavAuth);
+
         document.addEventListener('DOMContentLoaded', async function() {
             if (window.I18n) I18n.renderLangSwitcher('langSwitcherTenders');
-            const role = API.auth.getRole();
-            const btn = document.querySelector('.avatar-btn');
-            if (btn && role === 'provider') btn.href = 'provider-dashboard.html';
+            buildNavAuth();
 
             // Load real tenders from API — replace demo cards
             try {

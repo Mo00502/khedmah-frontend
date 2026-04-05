@@ -161,19 +161,13 @@
 <body>
 <script src="js/config.js"></script>
     <script src="js/api.js"></script>
+    <script src="js/i18n.js"></script>
 
 <script>
+  // Tender detail is PUBLIC — everyone can read
+  // Admin users: hide bid CTA
   (function() {
-    if (localStorage.getItem('khedmah_theme') === 'dark') {
-      document.documentElement.classList.add('dark');
-    }
-    if (!API.isLoggedIn()) {
-      window.location.href = 'login.html';
-      return;
-    }
-    // Providers are allowed to view tender details and submit bids as bidders.
-    // Admins should not submit bids — hide the bid button for admins.
-    const role = API.auth.getRole ? API.auth.getRole() : null;
+    const role = JSON.parse(localStorage.getItem('khedmah_user') || '{}').role;
     if (role === 'admin') {
       document.addEventListener('DOMContentLoaded', function() {
         const cta = document.getElementById('ctaArea');
@@ -187,12 +181,13 @@
     <div class="nav-content">
         <a href="home.html" class="logo">خدمة</a>
         <div class="nav-links">
-            <a href="search-services.html">خدمات منزلية</a>
-            <a href="tenders.html">مناقصات</a>
-            <a href="equipment.html">معدات</a>
-            <a href="consultations.html">استشارات</a>
-            <button id="themeToggle" onclick="toggleTheme()" style="background:none;border:1.5px solid #e2e8f0;border-radius:50%;width:36px;height:36px;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;">🌙</button>
-            <button onclick="doLogout()" class="btn btn-outline-danger btn-sm">خروج</button>
+            <a href="search-services.html" data-i18n="nav_home_services">خدمات منزلية</a>
+            <a href="tenders.html" class="active" data-i18n="nav_tenders">مناقصات</a>
+            <a href="equipment.html" data-i18n="nav_equipment">معدات</a>
+            <a href="consultations.html" data-i18n="nav_consultations">استشارات</a>
+            <div id="langSwitcherDetail"></div>
+            <button id="themeToggle" onclick="toggleTheme()" style="width:34px;height:34px;border:1.5px solid #e2e8f0;border-radius:10px;background:transparent;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;">🌙</button>
+            <span id="navAuthDetail"></span>
         </div>
     </div>
 </nav>
@@ -871,6 +866,11 @@ function renderTender(t) {
 
 // ─── Bid Modal ───────────────────────────────────────────────────────────────
 function openBidModal() {
+    if (!localStorage.getItem('khedmah_demo')) {
+        const id = new URLSearchParams(location.search).get('id') || '';
+        window.location.href = 'login.html?redirect=' + encodeURIComponent('tender-detail.html?id=' + id);
+        return;
+    }
     document.getElementById('bidModal').classList.add('show');
 }
 
@@ -957,9 +957,33 @@ function toggleTheme() {
 }
 
 // Set correct theme toggle icon on load
+function buildNavAuthDetail() {
+    const el = document.getElementById('navAuthDetail');
+    if (!el) return;
+    const isLoggedIn = !!localStorage.getItem('khedmah_demo');
+    if (isLoggedIn) {
+        const u = JSON.parse(localStorage.getItem('khedmah_user') || '{}');
+        const dashHref = u.role === 'provider' ? 'provider-dashboard.html' : 'customer-dashboard.html';
+        const initial = (u.name || u.email || 'م')[0].toUpperCase();
+        el.innerHTML =
+            '<button onclick="doLogout()" data-i18n="nav_logout" style="border:1.5px solid #ef4444;color:#ef4444;background:transparent;border-radius:8px;padding:.35rem .85rem;font-family:Tajawal,sans-serif;font-size:.85rem;font-weight:600;cursor:pointer;">' +
+            (typeof window.t === 'function' ? window.t('nav_logout') : 'خروج') + '</button>' +
+            '<a href="' + dashHref + '" class="avatar-btn">' + initial + '</a>';
+    } else {
+        el.innerHTML =
+            '<a href="login.html" data-i18n="nav_login" style="color:var(--primary);font-weight:600;text-decoration:none;font-size:.88rem;">' +
+            (typeof window.t === 'function' ? window.t('nav_login') : 'دخول') + '</a>' +
+            '<a href="register-customer.html" data-i18n="nav_register" style="background:var(--primary);color:white;padding:.38rem .95rem;border-radius:10px;text-decoration:none;font-weight:700;font-size:.85rem;">' +
+            (typeof window.t === 'function' ? window.t('nav_register') : 'سجّل') + '</a>';
+    }
+}
+window.addEventListener('khedmah:lang-changed', buildNavAuthDetail);
+
 document.addEventListener('DOMContentLoaded', () => {
   const btn = document.getElementById('themeToggle');
   if (btn) btn.textContent = document.documentElement.classList.contains('dark') ? '☀️' : '🌙';
+  if (window.I18n) I18n.renderLangSwitcher('langSwitcherDetail');
+  buildNavAuthDetail();
 });
 </script>
 <button id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="للأعلى">↑</button>
