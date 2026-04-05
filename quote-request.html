@@ -86,6 +86,21 @@
         .service-icon { font-size: 2rem; }
         .service-name { font-size: 0.85rem; font-weight: 700; color: var(--dark); }
 
+        /* Service Type Selector */
+        .service-type-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; margin-top: 1.1rem; }
+        .service-type-opt {
+            border: 2.5px solid #e2e8f0; border-radius: 16px; padding: 1.1rem 0.85rem;
+            text-align: center; cursor: pointer; transition: all 0.15s; background: white;
+        }
+        .service-type-opt:hover { border-color: var(--primary); }
+        .service-type-opt.selected { border-color: var(--primary); background: rgba(2,128,144,0.07); box-shadow: 0 0 0 3px rgba(2,128,144,0.1); }
+        .st-icon { font-size: 1.8rem; margin-bottom: 0.35rem; }
+        .st-name { font-weight: 800; font-size: .95rem; color: var(--dark); margin-bottom: 0.2rem; }
+        .st-desc { font-size: .75rem; color: var(--gray); line-height: 1.4; }
+        .service-type-divider { text-align: center; font-size: .78rem; color: var(--gray); margin: 1.1rem 0 0; font-weight: 700; letter-spacing: .03em; }
+        html.dark .service-type-opt { background: #1e293b; border-color: #334155; }
+        html.dark .service-type-opt.selected { background: rgba(2,128,144,0.15); border-color: var(--primary); }
+
         /* Step 2 — Toggle + Photos */
         .step-subtitle { font-size: 0.82rem; color: var(--primary); font-weight: 700; background: rgba(2,128,144,0.08); padding: 0.4rem 0.75rem; border-radius: 8px; display: inline-block; margin-bottom: 1.25rem; }
         .toggle-row { display: flex; align-items: center; justify-content: space-between; background: var(--light); border-radius: 12px; padding: 0.875rem 1rem; margin-bottom: 1rem; }
@@ -218,6 +233,7 @@
             step: 1,
             totalSteps: 4,
             selectedService: new URLSearchParams(location.search).get('category') || '',
+            serviceType: '',
             description: '',
             city: 'الرياض',
             district: '',
@@ -290,7 +306,8 @@
             get progressPct() { return ((this.step - 1) / (this.totalSteps - 1)) * 100; },
             goNext() {
                 this.errors = {};
-                if (this.step === 1 && !this.selectedService) { this.errors.service = 'يرجى اختيار نوع الخدمة'; return; }
+                if (this.step === 1 && !this.selectedService) { this.errors.service = 'يرجى اختيار تصنيف الخدمة'; return; }
+                if (this.step === 1 && !this.serviceType) { this.errors.serviceType = 'يرجى اختيار نوع الزيارة (كشف وتشخيص أو صيانة وإصلاح)'; return; }
                 if (this.step === 2 && this.description.trim().length < 10) { this.errors.description = 'يرجى كتابة وصف أوضح (10 أحرف على الأقل)'; return; }
                 if (this.step === 3) {
                     if (!this.district.trim()) { this.errors.district = 'يرجى إدخال الحي'; return; }
@@ -333,8 +350,9 @@
                         } catch(e) { /* non-fatal */ }
                     }
                     const req = await API.requests.create({
-                        serviceTitle:    this.selectedService,
+                        serviceTitle:    this.selectedService + ' — ' + this.serviceType,
                         serviceCategory: this.selectedService,
+                        serviceType:     this.serviceType,
                         city:            this.city,
                         district:        this.district,
                         description:     this.description || '',
@@ -455,6 +473,28 @@
                     </div>
                 </div>
                 <p class="step-error" x-show="errors.service" x-text="errors.service"></p>
+
+                <!-- Service Type — shown once a category is chosen -->
+                <div x-show="selectedService" x-transition>
+                    <div class="service-type-divider">🔍 ما نوع الزيارة المطلوبة؟</div>
+                    <div class="service-type-row">
+                        <div class="service-type-opt"
+                             :class="{selected: serviceType==='كشف وتشخيص'}"
+                             @click="serviceType='كشف وتشخيص'">
+                            <div class="st-icon">🔍</div>
+                            <div class="st-name">كشف وتشخيص</div>
+                            <div class="st-desc">فني يفحص ويحدد المشكلة ويقدم تقريراً بالحل</div>
+                        </div>
+                        <div class="service-type-opt"
+                             :class="{selected: serviceType==='صيانة وإصلاح'}"
+                             @click="serviceType='صيانة وإصلاح'">
+                            <div class="st-icon">🔧</div>
+                            <div class="st-name">صيانة وإصلاح</div>
+                            <div class="st-desc">فني يُنفذ الإصلاح أو الصيانة المحددة مباشرةً</div>
+                        </div>
+                    </div>
+                    <p class="step-error" x-show="errors.serviceType" x-text="errors.serviceType"></p>
+                </div>
             </div>
 
             <!-- STEP 2 — Problem Description + Photos + Materials -->
@@ -607,8 +647,12 @@
 
                 <div class="confirm-card">
                     <div class="confirm-row">
-                        <span class="confirm-lbl">نوع الخدمة</span>
+                        <span class="confirm-lbl">تصنيف الخدمة</span>
                         <span class="confirm-val" x-text="selectedService || '—'"></span>
+                    </div>
+                    <div class="confirm-row">
+                        <span class="confirm-lbl">نوع الزيارة</span>
+                        <span class="confirm-val" x-text="serviceType || '—'"></span>
                     </div>
                     <div class="confirm-row">
                         <span class="confirm-lbl">الموقع</span>
