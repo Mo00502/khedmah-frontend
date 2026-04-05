@@ -359,19 +359,27 @@
   };
 
   const equipment = {
-    list:   (p = {})   => http.get('/equipment?' + new URLSearchParams(p)),
-    get:    (id)       => http.get(`/equipment/${id}`),
-    rent:   (id, data) => http.post(`/equipment/${id}/rentals`, data),
-    myRentals:  ()     => http.get('/equipment/rentals/mine'),
-    myListings: ()     => http.get('/equipment/mine'),
+    list:         (p = {})      => http.get('/equipment?' + new URLSearchParams(p)),
+    get:          (id)          => http.get(`/equipment/${id}`),
+    rent:         (id, data)    => http.post(`/equipment/${id}/rentals`, data),
+    myRentals:    ()            => http.get('/equipment/rentals/mine'),
+    myListings:   ()            => http.get('/equipment/mine'),
+    create:       (data)        => http.post('/equipment', data),
+    update:       (id, data)    => http.patch(`/equipment/${id}`, data),
+    remove:       (id)          => http.delete(`/equipment/${id}`),
+    requestQuote: (id, data)    => http.post(`/equipment/${id}/quote`, data),
+    updateRental: (id, data)    => http.patch(`/equipment/rentals/${id}`, data),
   };
 
   const consultations = {
-    list:    (p = {})   => http.get('/consultations?' + new URLSearchParams(p)),
-    book:    (data)     => http.post('/consultations', data),
-    get:     (id)       => http.get(`/consultations/${id}`),
-    accept:  (id)       => http.patch(`/consultations/${id}/accept`),
-    complete: (id)      => http.patch(`/consultations/${id}/complete`),
+    list:     (p = {})      => http.get('/consultations?' + new URLSearchParams(p)),
+    book:     (data)        => http.post('/consultations', data),
+    create:   (data)        => http.post('/consultations', data),   // alias for .book()
+    get:      (id)          => http.get(`/consultations/${id}`),
+    accept:   (id)          => http.patch(`/consultations/${id}/accept`),
+    complete: (id)          => http.patch(`/consultations/${id}/complete`),
+    cancel:   (id)          => http.patch(`/consultations/${id}/cancel`),
+    rate:     (id, data)    => http.post(`/consultations/${id}/rate`, data),
   };
 
   const maps = {
