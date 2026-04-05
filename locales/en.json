@@ -197,5 +197,21 @@
   "common_platform_fee": "Platform Fee",
   "common_total": "Total",
   "common_subtotal": "Subtotal before tax",
-  "common_vat": "Value Added Tax (15%)"
+  "common_vat": "Value Added Tax (15%)",
+
+  "equipment_legend_available": "Available",
+  "equipment_legend_booked": "Booked",
+  "equipment_legend_selected": "Selected",
+  "equipment_legend_range": "Range",
+  "equipment_rent_title": "Instant Rental",
+  "equipment_confirm_title": "Confirm Booking",
+  "equipment_escrow_note": "💡 Payment protected — released to provider after you receive and confirm the equipment",
+  "equipment_commission": "Platform Fee (5%)",
+  "equipment_days_count": "Number of Days",
+  "equipment_base_rate": "Base Price / Day",
+  "equipment_discount": "Discount",
+  "equipment_rental_cost": "Rental Cost",
+  "equipment_addons_cost": "Add-ons",
+  "rent_cal_select_end": "📅 Start: {{start}} — now click the end date",
+  "rent_cal_ready": "✅ {{start}} → {{end}}  ({{days}} days)"
 }

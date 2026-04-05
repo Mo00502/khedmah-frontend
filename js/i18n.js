@@ -129,7 +129,10 @@
         _applyToDOM();
         // Update any language-toggle buttons on the page
         document.querySelectorAll('[data-lang-btn]').forEach(btn => {
-            btn.classList.toggle('active', btn.getAttribute('data-lang-btn') === lang);
+            const isActive = btn.getAttribute('data-lang-btn') === lang;
+            btn.classList.toggle('active', isActive);
+            btn.style.background = isActive ? 'var(--primary, #028090)' : 'transparent';
+            btn.style.color      = isActive ? 'white' : '';
         });
         // Dispatch event so pages can react (e.g. re-render dynamic lists)
         window.dispatchEvent(new CustomEvent('khedmah:lang-changed', { detail: { lang } }));

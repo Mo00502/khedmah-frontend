@@ -197,5 +197,21 @@
   "common_platform_fee": "عمولة المنصة",
   "common_total": "الإجمالي",
   "common_subtotal": "المجموع قبل الضريبة",
-  "common_vat": "ضريبة القيمة المضافة (١٥٪)"
+  "common_vat": "ضريبة القيمة المضافة (١٥٪)",
+
+  "equipment_legend_available": "متاح",
+  "equipment_legend_booked": "محجوز",
+  "equipment_legend_selected": "مختار",
+  "equipment_legend_range": "النطاق",
+  "equipment_rent_title": "استئجار فوري",
+  "equipment_confirm_title": "تأكيد الحجز",
+  "equipment_escrow_note": "💡 الدفع محمي — يُحرر للمزود بعد استلام المعدة وتأكيدك",
+  "equipment_commission": "عمولة المنصة (5%)",
+  "equipment_days_count": "عدد الأيام",
+  "equipment_base_rate": "السعر الأساسي/يوم",
+  "equipment_discount": "خصم",
+  "equipment_rental_cost": "تكلفة الإيجار",
+  "equipment_addons_cost": "الإضافات",
+  "rent_cal_select_end": "📅 بداية: {{start}} — انقر على يوم الانتهاء",
+  "rent_cal_ready": "✅ {{start}} ← {{end}}  ({{days}} يوم)"
 }

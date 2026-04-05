@@ -359,14 +359,14 @@
 <div class="modal-overlay" id="detailsModal">
 <div class="modal modal-lg">
     <div class="modal-header">
-        <div class="modal-title" id="dtlName">تفاصيل المعدة</div>
+        <div class="modal-title" id="dtlName" data-i18n="equipment_btn_details">تفاصيل المعدة</div>
         <button class="modal-close" onclick="closeModal('detailsModal')">✕</button>
     </div>
     <div id="dtlContent"></div>
     <div class="modal-footer" style="margin-top:1.25rem;">
-        <button class="btn-full btn-cancel" onclick="closeModal('detailsModal')">إغلاق</button>
-        <button class="btn-full btn-submit" id="dtlBtnRent" onclick="">استئجار الآن</button>
-        <button class="btn-full btn-quote" style="background:transparent;color:var(--primary);border:1.5px solid var(--primary);" id="dtlBtnQuote" onclick="">طلب عرض سعر</button>
+        <button class="btn-full btn-cancel" onclick="closeModal('detailsModal')" data-i18n="common_close">إغلاق</button>
+        <button class="btn-full btn-submit" id="dtlBtnRent" onclick="" data-i18n="equipment_btn_rent_now">استئجار الآن</button>
+        <button class="btn-full btn-quote" style="background:transparent;color:var(--primary);border:1.5px solid var(--primary);" id="dtlBtnQuote" onclick="" data-i18n="equipment_btn_quote">طلب عرض سعر</button>
     </div>
 </div>
 </div>
@@ -391,7 +391,7 @@
     <!-- Step 1: Calendar date picker + location -->
     <div id="rentStep1">
         <!-- Status bar -->
-        <div class="rent-cal-status" id="rentCalStatus" style="background:#f1f5f9;color:var(--gray);">📅 انقر على يوم البداية في التقويم</div>
+        <div class="rent-cal-status" id="rentCalStatus" data-i18n="rent_cal_select_start" style="background:#f1f5f9;color:var(--gray);">📅 انقر على يوم البداية في التقويم</div>
         <!-- Interactive calendar -->
         <div class="rent-cal-wrap">
             <div class="rent-cal-header">
@@ -401,10 +401,10 @@
             </div>
             <div class="cal-grid" id="rentCalGrid"></div>
             <div class="cal-legend" style="margin-top:.5rem;">
-                <span><span class="dot" style="background:#d1fae5;border:1px solid #a7f3d0;"></span>متاح</span>
-                <span><span class="dot" style="background:#fee2e2;border:1px solid #fca5a5;"></span>محجوز</span>
-                <span><span class="dot" style="background:var(--primary);"></span>مختار</span>
-                <span><span class="dot" style="background:rgba(2,128,144,.2);"></span>النطاق</span>
+                <span><span class="dot" style="background:#d1fae5;border:1px solid #a7f3d0;"></span><span data-i18n="equipment_legend_available">متاح</span></span>
+                <span><span class="dot" style="background:#fee2e2;border:1px solid #fca5a5;"></span><span data-i18n="equipment_legend_booked">محجوز</span></span>
+                <span><span class="dot" style="background:var(--primary);"></span><span data-i18n="equipment_legend_selected">مختار</span></span>
+                <span><span class="dot" style="background:rgba(2,128,144,.2);"></span><span data-i18n="equipment_legend_range">النطاق</span></span>
             </div>
         </div>
         <!-- Hidden date values used by JS -->
@@ -413,68 +413,68 @@
         <!-- Location: city + optional address -->
         <div class="location-row" style="margin-top:.85rem;">
             <div class="form-group" style="margin-bottom:0;">
-                <label class="form-label">المدينة <span style="color:var(--error)">*</span></label>
-                <select class="form-control" id="rentCity">
-                    <option value="">اختر المدينة</option>
-                    <option>الرياض</option>
-                    <option>جدة</option>
-                    <option>الدمام</option>
-                    <option>الخبر</option>
-                    <option>مكة المكرمة</option>
-                    <option>المدينة المنورة</option>
+                <label class="form-label" data-i18n="rent_city_required">المدينة *</label>
+                <select class="form-control" id="rentCity" data-i18n-placeholder="rent_city_placeholder">
+                    <option value="" data-i18n="rent_city_placeholder">اختر المدينة</option>
+                    <option data-i18n="common_city_riyadh">الرياض</option>
+                    <option data-i18n="common_city_jeddah">جدة</option>
+                    <option data-i18n="common_city_dammam">الدمام</option>
+                    <option data-i18n="common_city_khobar">الخبر</option>
+                    <option data-i18n="common_city_makkah">مكة المكرمة</option>
+                    <option data-i18n="common_city_madinah">المدينة المنورة</option>
                 </select>
             </div>
             <div class="form-group" style="margin-bottom:0;">
-                <label class="form-label">العنوان التفصيلي (اختياري)</label>
-                <input type="text" class="form-control" id="rentAddress" placeholder="الحي، الشارع، رقم المبنى...">
+                <label class="form-label" data-i18n="rent_address_label">العنوان التفصيلي (اختياري)</label>
+                <input type="text" class="form-control" id="rentAddress" data-i18n-placeholder="rent_address_placeholder" placeholder="الحي، الشارع، رقم المبنى...">
             </div>
         </div>
         <div id="rentDaysPreview" style="display:none;background:var(--light);border-radius:10px;padding:.6rem .9rem;font-size:.88rem;text-align:center;color:var(--primary);font-weight:700;margin-top:.5rem;"></div>
     </div>
     <!-- Step 2: Add-ons -->
     <div id="rentStep2" style="display:none;">
-        <p style="font-size:.85rem;color:var(--gray);margin-bottom:.85rem;">اختر الخدمات الإضافية (اختياري)</p>
+        <p style="font-size:.85rem;color:var(--gray);margin-bottom:.85rem;" data-i18n="rent_addons_hint">اختر الخدمات الإضافية (اختياري)</p>
         <div class="addon-row" id="addonOperator" onclick="toggleAddon('operator')">
-            <div><div class="addon-label">👷 مع مشغل متخصص</div><div style="font-size:.75rem;color:var(--gray)">مشغل معتمد طوال فترة الإيجار</div></div>
+            <div><div class="addon-label" data-i18n="rent_addon_operator">👷 مع مشغل متخصص</div><div style="font-size:.75rem;color:var(--gray)">مشغل معتمد طوال فترة الإيجار</div></div>
             <div style="display:flex;align-items:center;gap:.5rem;"><span class="addon-price" id="addonOperatorPrice">+0 ر.س/يوم</span><input type="checkbox" class="addon-check" id="chkOperator"></div>
         </div>
         <div class="addon-row" id="addonTransport" onclick="toggleAddon('transport')">
-            <div><div class="addon-label">🚚 مع نقل وتوصيل</div><div style="font-size:.75rem;color:var(--gray)">توصيل المعدة إلى موقع المشروع</div></div>
+            <div><div class="addon-label" data-i18n="rent_addon_transport">🚚 مع نقل وتوصيل</div><div style="font-size:.75rem;color:var(--gray)">توصيل المعدة إلى موقع المشروع</div></div>
             <div style="display:flex;align-items:center;gap:.5rem;"><span class="addon-price" id="addonTransportPrice">+0 ر.س/يوم</span><input type="checkbox" class="addon-check" id="chkTransport"></div>
         </div>
         <div class="addon-row" id="addonFuel" onclick="toggleAddon('fuel')">
-            <div><div class="addon-label">⛽ مع وقود</div><div style="font-size:.75rem;color:var(--gray)">توفير الوقود طوال مدة الإيجار</div></div>
+            <div><div class="addon-label" data-i18n="rent_addon_fuel">⛽ مع وقود</div><div style="font-size:.75rem;color:var(--gray)">توفير الوقود طوال مدة الإيجار</div></div>
             <div style="display:flex;align-items:center;gap:.5rem;"><span class="addon-price" id="addonFuelPrice">+0 ر.س/يوم</span><input type="checkbox" class="addon-check" id="chkFuel"></div>
         </div>
     </div>
     <!-- Step 3: Breakdown -->
     <div id="rentStep3" style="display:none;">
         <div class="price-summary">
-            <div class="price-row"><span>المعدة</span><span id="brkName" style="font-weight:700;"></span></div>
-            <div class="price-row"><span>عدد الأيام</span><span id="brkDays"></span></div>
-            <div class="price-row"><span>السعر الأساسي/يوم</span><span id="brkDayRate"></span></div>
-            <div class="price-row discount" id="brkDiscountRow" style="display:none;"><span id="brkDiscountLabel">خصم</span><span id="brkDiscountAmt"></span></div>
-            <div class="price-row"><span>تكلفة الإيجار</span><span id="brkBase"></span></div>
-            <div class="price-row" id="brkAddonsRow" style="display:none;"><span>الإضافات</span><span id="brkAddons"></span></div>
-            <div class="price-row"><span>المجموع قبل الضريبة</span><span id="brkPreTax"></span></div>
-            <div class="price-row commission"><span>عمولة المنصة (5%)</span><span id="brkCommission"></span></div>
-            <div class="price-row"><span>ضريبة القيمة المضافة (15%)</span><span id="brkVAT"></span></div>
-            <div class="price-row total-row"><span>الإجمالي</span><span id="brkTotal"></span></div>
+            <div class="price-row"><span data-i18n="quote_equipment_label">المعدة</span><span id="brkName" style="font-weight:700;"></span></div>
+            <div class="price-row"><span data-i18n="equipment_days_count">عدد الأيام</span><span id="brkDays"></span></div>
+            <div class="price-row"><span data-i18n="equipment_base_rate">السعر الأساسي/يوم</span><span id="brkDayRate"></span></div>
+            <div class="price-row discount" id="brkDiscountRow" style="display:none;"><span id="brkDiscountLabel" data-i18n="equipment_discount">خصم</span><span id="brkDiscountAmt"></span></div>
+            <div class="price-row"><span data-i18n="equipment_rental_cost">تكلفة الإيجار</span><span id="brkBase"></span></div>
+            <div class="price-row" id="brkAddonsRow" style="display:none;"><span data-i18n="equipment_addons_cost">الإضافات</span><span id="brkAddons"></span></div>
+            <div class="price-row"><span data-i18n="common_subtotal">المجموع قبل الضريبة</span><span id="brkPreTax"></span></div>
+            <div class="price-row commission"><span data-i18n="equipment_commission">عمولة المنصة (5%)</span><span id="brkCommission"></span></div>
+            <div class="price-row"><span data-i18n="common_vat">ضريبة القيمة المضافة (15%)</span><span id="brkVAT"></span></div>
+            <div class="price-row total-row"><span data-i18n="common_total">الإجمالي</span><span id="brkTotal"></span></div>
         </div>
-        <div style="font-size:.75rem;color:var(--gray);margin-top:.6rem;text-align:center;">💡 الدفع محمي — يُحرر للمزود بعد استلام المعدة وتأكيدك</div>
+        <div style="font-size:.75rem;color:var(--gray);margin-top:.6rem;text-align:center;" data-i18n="equipment_escrow_note">💡 الدفع محمي — يُحرر للمزود بعد استلام المعدة وتأكيدك</div>
     </div>
     <!-- Step 4: Confirm -->
     <div id="rentStep4" style="display:none;text-align:center;padding:.5rem 0;">
         <div style="font-size:3rem;margin-bottom:.75rem;">✅</div>
-        <div style="font-size:1.1rem;font-weight:800;margin-bottom:.4rem;">تأكيد الحجز</div>
+        <div style="font-size:1.1rem;font-weight:800;margin-bottom:.4rem;" data-i18n="equipment_confirm_title">تأكيد الحجز</div>
         <div style="font-size:.88rem;color:var(--gray);margin-bottom:1rem;" id="confirmSummaryText"></div>
         <div style="background:var(--light);border-radius:12px;padding:.85rem;font-size:.85rem;text-align:right;" id="confirmFinalBox"></div>
     </div>
     <!-- Footer buttons -->
     <div class="modal-footer" id="rentModalFooter">
-        <button class="btn-full btn-cancel" id="rentBtnBack" onclick="rentStepBack()" style="display:none;">رجوع</button>
-        <button class="btn-full btn-cancel" id="rentBtnCancel" onclick="closeModal('rentModal')">إلغاء</button>
-        <button class="btn-full btn-submit" id="rentBtnNext" onclick="rentStepNext()">التالي</button>
+        <button class="btn-full btn-cancel" id="rentBtnBack" data-i18n="rent_back" onclick="rentStepBack()" style="display:none;">رجوع</button>
+        <button class="btn-full btn-cancel" id="rentBtnCancel" data-i18n="rent_cancel" onclick="closeModal('rentModal')">إلغاء</button>
+        <button class="btn-full btn-submit" id="rentBtnNext" data-i18n="rent_next" onclick="rentStepNext()">التالي</button>
     </div>
 </div>
 </div>
@@ -483,49 +483,49 @@
 <div class="modal-overlay" id="quoteModal">
 <div class="modal">
     <div class="modal-header">
-        <div class="modal-title">طلب عرض سعر</div>
+        <div class="modal-title" data-i18n="quote_modal_title">طلب عرض سعر</div>
         <button class="modal-close" onclick="closeModal('quoteModal')">✕</button>
     </div>
-    <div class="alert-warn">📌 هذا الخيار مثالي للمشاريع الكبيرة والإيجار طويل الأمد. سيتواصل معك المزود خلال 24 ساعة.</div>
+    <div class="alert-warn" data-i18n="quote_alert">📌 هذا الخيار مثالي للمشاريع الكبيرة والإيجار طويل الأمد. سيتواصل معك المزود خلال 24 ساعة.</div>
     <div class="form-group">
-        <label class="form-label">المعدة</label>
+        <label class="form-label" data-i18n="quote_equipment_label">المعدة</label>
         <div style="background:var(--light);border-radius:10px;padding:.6rem .9rem;font-size:.9rem;font-weight:700;" id="qEquipName"></div>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;">
         <div class="form-group" style="margin-bottom:0;">
-            <label class="form-label">تاريخ البداية <span style="color:var(--error)">*</span></label>
+            <label class="form-label" data-i18n="quote_start_label">تاريخ البداية <span style="color:var(--error)">*</span></label>
             <input type="date" class="form-control" id="qStart">
         </div>
         <div class="form-group" style="margin-bottom:0;">
-            <label class="form-label">تاريخ الانتهاء <span style="color:var(--error)">*</span></label>
+            <label class="form-label" data-i18n="quote_end_label">تاريخ الانتهاء <span style="color:var(--error)">*</span></label>
             <input type="date" class="form-control" id="qEnd">
         </div>
     </div>
     <div class="location-row" style="margin-top:.75rem;">
         <div class="form-group" style="margin-bottom:0;">
-            <label class="form-label">مدينة المشروع <span style="color:var(--error)">*</span></label>
+            <label class="form-label" data-i18n="quote_city_label">مدينة المشروع *</label>
             <select class="form-control" id="qCity">
-                <option value="">اختر المدينة</option>
-                <option>الرياض</option>
-                <option>جدة</option>
-                <option>الدمام</option>
-                <option>الخبر</option>
-                <option>مكة المكرمة</option>
-                <option>المدينة المنورة</option>
+                <option value="" data-i18n="rent_city_placeholder">اختر المدينة</option>
+                <option data-i18n="common_city_riyadh">الرياض</option>
+                <option data-i18n="common_city_jeddah">جدة</option>
+                <option data-i18n="common_city_dammam">الدمام</option>
+                <option data-i18n="common_city_khobar">الخبر</option>
+                <option data-i18n="common_city_makkah">مكة المكرمة</option>
+                <option data-i18n="common_city_madinah">المدينة المنورة</option>
             </select>
         </div>
         <div class="form-group" style="margin-bottom:0;">
-            <label class="form-label">العنوان التفصيلي</label>
-            <input type="text" class="form-control" id="qAddress" placeholder="الحي، الشارع، المشروع...">
+            <label class="form-label" data-i18n="quote_address_label">العنوان التفصيلي</label>
+            <input type="text" class="form-control" id="qAddress" data-i18n-placeholder="quote_address_placeholder" placeholder="الحي، الشارع، المشروع...">
         </div>
     </div>
     <div class="form-group">
-        <label class="form-label">الغرض من الاستخدام <span style="color:var(--error)">*</span></label>
-        <textarea class="form-control" id="qUsage" placeholder="مثال: حفر أساسات مبنى تجاري 4 طوابق، تجريف منطقة 2000م²..."></textarea>
+        <label class="form-label" data-i18n="quote_usage_label">الغرض من الاستخدام *</label>
+        <textarea class="form-control" id="qUsage" data-i18n-placeholder="quote_usage_placeholder" placeholder="مثال: حفر أساسات مبنى تجاري 4 طوابق، تجريف منطقة 2000م²..."></textarea>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;">
         <div class="form-group" style="margin-bottom:0;">
-            <label class="form-label">ساعات العمل/يوم</label>
+            <label class="form-label" data-i18n="quote_hours_label">ساعات العمل/يوم</label>
             <select class="form-control" id="qHours">
                 <option value="8">8 ساعات</option>
                 <option value="10">10 ساعات</option>
@@ -542,17 +542,17 @@
         </div>
     </div>
     <div class="form-group">
-        <label class="form-label">ملاحظات إضافية</label>
+        <label class="form-label" data-i18n="quote_notes_label">ملاحظات إضافية</label>
         <textarea class="form-control" id="qNotes" placeholder="أي متطلبات خاصة، ظروف الموقع، الجدول الزمني..."></textarea>
     </div>
     <div class="form-group">
-        <label class="form-label">مرفقات (اختياري)</label>
+        <label class="form-label" data-i18n="quote_attach_label">مرفقات (اختياري)</label>
         <input type="file" class="form-control" id="qAttach" multiple accept=".pdf,.jpg,.png,.dwg">
         <div style="font-size:.73rem;color:var(--gray);margin-top:.2rem;">مخططات، صور الموقع، مستندات المشروع</div>
     </div>
     <div class="modal-footer">
-        <button class="btn-full btn-cancel" onclick="closeModal('quoteModal')">إلغاء</button>
-        <button class="btn-full btn-submit" onclick="submitQuote()">إرسال الطلب</button>
+        <button class="btn-full btn-cancel" data-i18n="quote_cancel" onclick="closeModal('quoteModal')">إلغاء</button>
+        <button class="btn-full btn-submit" data-i18n="quote_submit" onclick="submitQuote()">إرسال الطلب</button>
     </div>
 </div>
 </div>
@@ -926,9 +926,14 @@ function calNav(dir) {
 
 function renderRentCalendar(equip) {
     const yr = _calDisplayYear, mo = _calDisplayMonth;
+    const lang = window.I18n ? I18n.getCurrentLang() : 'ar';
+    // Arabic → Hijri display (ar-SA); English → Gregorian (en-US)
+    const calLocale = lang === 'ar' ? 'ar-SA' : 'en-US';
     document.getElementById('rentCalMonth').textContent =
-        new Date(yr, mo).toLocaleDateString('ar-SA', {month:'long', year:'numeric'});
-    const dayNames = ['أح','إث','ثل','أر','خم','جم','سب'];
+        new Date(yr, mo).toLocaleDateString(calLocale, {month:'long', year:'numeric'});
+    const dayNames = lang === 'ar'
+        ? ['أح','إث','ثل','أر','خم','جم','سب']
+        : ['Su','Mo','Tu','We','Th','Fr','Sa'];
     const firstDay   = new Date(yr, mo, 1).getDay();
     const daysInMonth = new Date(yr, mo+1, 0).getDate();
     const booked = new Set(equip.bookedDates||[]);
@@ -992,7 +997,7 @@ function updateCalStatus(override) {
     if (!el) return;
     if (override === 'conflict') {
         el.style.background = '#fef2f2'; el.style.color = '#991b1b';
-        el.textContent = '⚠️ الفترة المختارة تحتوي على تواريخ محجوزة — اختر فترة أخرى';
+        el.textContent = window.t ? t('rent_cal_booked_conflict') : '⚠️ الفترة المختارة تحتوي على تواريخ محجوزة — اختر فترة أخرى';
         setTimeout(() => {
             _calStart = null; _calEnd = null;
             document.getElementById('rentStart').value = '';
@@ -1004,14 +1009,14 @@ function updateCalStatus(override) {
     }
     if (!_calStart) {
         el.style.background = '#f1f5f9'; el.style.color = 'var(--gray)';
-        el.textContent = '📅 انقر على يوم البداية في التقويم';
+        el.textContent = window.t ? t('rent_cal_select_start') : '📅 انقر على يوم البداية في التقويم';
     } else if (!_calEnd) {
         el.style.background = '#fef9c3'; el.style.color = '#78350f';
-        el.textContent = `📅 بداية: ${_calStart} — انقر على يوم الانتهاء`;
+        el.textContent = window.t ? t('rent_cal_select_end', {start:_calStart}) : `📅 بداية: ${_calStart} — انقر على يوم الانتهاء`;
     } else {
         const days = Math.round((new Date(_calEnd)-new Date(_calStart))/(1000*86400))+1;
         el.style.background = '#d1fae5'; el.style.color = '#065f46';
-        el.textContent = `✅ ${_calStart} ← ${_calEnd}  (${days} يوم)`;
+        el.textContent = window.t ? t('rent_cal_ready', {start:_calStart, end:_calEnd, days}) : `✅ ${_calStart} ← ${_calEnd}  (${days} يوم)`;
     }
 }
 
@@ -1425,6 +1430,15 @@ document.addEventListener('DOMContentLoaded', function() {
     if (localStorage.getItem('khedmah_theme') === 'dark') document.getElementById('themeToggle').textContent = '☀️';
     // Language switcher
     if (window.I18n) I18n.renderLangSwitcher('langSwitcherEq');
+
+    // Re-render calendar + re-translate on language switch
+    window.addEventListener('khedmah:lang-changed', function() {
+        if (_rentEquip) renderRentCalendar(_rentEquip); // re-render calendar if modal open
+        if (window.I18n) {
+            // Re-translate dynamic status bar text
+            updateCalStatus();
+        }
+    });
 });
 </script>
 
