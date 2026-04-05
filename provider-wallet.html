@@ -454,9 +454,12 @@
     <script src="js/api.js"></script>
 <script>
   (function() {
-    if (!API.isLoggedIn() || API.auth.getRole() !== 'provider') {
-      window.location.href = 'login.html';
-    }
+    const _demo = localStorage.getItem('khedmah_demo');
+    if (!_demo) { window.location.href = 'login.html'; return; }
+    try {
+      const _u = JSON.parse(localStorage.getItem('khedmah_user') || '{}');
+      if (_u.role !== 'provider') window.location.href = 'login.html';
+    } catch(e) { window.location.href = 'login.html'; }
   })();
 </script>
 

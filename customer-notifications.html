@@ -262,12 +262,7 @@
     <script src="js/api.js"></script>
 <script>
     (function() {
-        const demo = localStorage.getItem('khedmah_demo');
-        if (!demo) { window.location.href = 'login.html'; return; }
-        try {
-            const u = JSON.parse(localStorage.getItem('khedmah_user') || '{}');
-            if (u.role !== 'customer') window.location.href = u.role === 'provider' ? 'provider-dashboard.html' : 'login.html';
-        } catch(e) {}
+        if (!localStorage.getItem('khedmah_demo')) { window.location.href = 'login.html'; return; }
     })();
 </script>
 

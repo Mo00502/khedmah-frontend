@@ -602,8 +602,7 @@
 <!-- Auth Guard -->
 <script>
   (function() {
-    if (!API.isLoggedIn()) { window.location.href = 'login.html'; return; }
-    if (API.auth.getRole() === 'provider') { window.location.href = 'provider-dashboard.html'; return; }
+    if (!localStorage.getItem('khedmah_demo')) { window.location.href = 'login.html'; return; }
   })();
 </script>
 
