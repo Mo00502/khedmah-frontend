@@ -1,8 +1,10 @@
 {
-  "_meta": { "dir": "rtl", "lang": "ar", "name": "العربية" },
-
+  "_meta": {
+    "dir": "rtl",
+    "lang": "ar",
+    "name": "العربية"
+  },
   "home_page_title": "خدمة | المنصة الأولى للخدمات المنزلية",
-
   "nav_home_services": "خدمات منزلية",
   "nav_tenders": "مناقصات",
   "nav_equipment": "معدات",
@@ -11,7 +13,6 @@
   "nav_login": "دخول",
   "nav_register": "سجّل",
   "nav_logout": "خروج",
-
   "home_hero_title": "احصل على أفضل <span class=\"highlight\">الخدمات المهنية</span> في مكانك",
   "home_hero_subtitle": "أكثر من ٥٠٠ مزود خدمة موثّق في منطقتك",
   "home_search_placeholder": "🔍 ابحث عن خدمة...",
@@ -21,12 +22,10 @@
   "home_stats_orders": "طلب منجز",
   "home_stats_rating": "تقييم متوسط",
   "home_stats_cities": "مدينة",
-
   "home_services_title": "الخدمات الأكثر طلباً",
   "home_services_subtitle": "تصفّح مئات التخصصات — من السباكة للبرمجة",
   "home_book_now": "احجز الآن",
   "home_see_more": "عرض المزيد ←",
-
   "home_how_title": "كيف يعمل خدمة؟",
   "home_how_step1_title": "ابحث عن مزود",
   "home_how_step1_desc": "تصفّح مئات المزودين في مدينتك",
@@ -36,7 +35,6 @@
   "home_how_step3_desc": "الدفع محمي بنظام الضمان",
   "home_how_step4_title": "قيّم الخدمة",
   "home_how_step4_desc": "شارك تجربتك لمساعدة الآخرين",
-
   "home_modules_equipment": "تأجير المعدات الثقيلة",
   "home_modules_equipment_desc": "حفارات، روافع، مولدات — احجز فوراً",
   "home_modules_tenders": "مناقصات المشاريع",
@@ -46,18 +44,15 @@
   "home_modules_ai": "مساعد الذكاء الاصطناعي",
   "home_modules_ai_desc": "احصل على توصيات فورية بالذكاء الاصطناعي",
   "home_explore": "استكشف →",
-
   "home_trust_verified": "✅ مزودون موثّقون",
   "home_trust_secure": "🔒 دفع آمن بالضمان",
   "home_trust_support": "📞 دعم ٢٤/٧",
   "home_trust_vat": "📋 فواتير ضريبية",
-
   "footer_rights": "© ٢٠٢٦ خدمة — جميع الحقوق محفوظة",
   "footer_privacy": "سياسة الخصوصية",
   "footer_terms": "الشروط والأحكام",
   "footer_support": "الدعم",
   "footer_home": "الرئيسية",
-
   "equipment_page_title": "تأجير المعدات الثقيلة - خدمة",
   "equipment_hero_title": "🚜 سوق تأجير المعدات الثقيلة",
   "equipment_hero_subtitle": "إيجار فوري أو عروض أسعار للمشاريع الكبيرة — مع ضمان التوفر والتسليم",
@@ -93,7 +88,6 @@
   "equipment_per_day": "/يوم",
   "equipment_available_now": "متاح الآن",
   "equipment_booked_until": "محجوز حتى",
-
   "rent_step_dates": "التواريخ",
   "rent_step_addons": "الإضافات",
   "rent_step_summary": "الملخص",
@@ -114,7 +108,6 @@
   "rent_next": "التالي",
   "rent_confirm_booking": "تأكيد الحجز",
   "rent_complete_payment": "إتمام الدفع والحجز",
-
   "quote_modal_title": "طلب عرض سعر",
   "quote_equipment_label": "المعدة",
   "quote_start_label": "تاريخ البداية",
@@ -133,7 +126,6 @@
   "quote_cancel": "إلغاء",
   "quote_submit": "إرسال الطلب",
   "quote_alert": "📌 هذا الخيار مثالي للمشاريع الكبيرة والإيجار طويل الأمد. سيتواصل معك المزود خلال 24 ساعة.",
-
   "consultations_page_title": "الاستشارات الهندسية - خدمة",
   "consultations_search_placeholder": "🔍 ابحث عن استشارة...",
   "consultations_filter_specialty": "التخصص",
@@ -151,7 +143,6 @@
   "consultations_per_hour": "/ساعة",
   "consultations_experience": "سنوات خبرة",
   "consultations_sessions": "جلسة",
-
   "tenders_page_title": "المناقصات - خدمة",
   "tenders_btn_create": "+ نشر مناقصة",
   "tenders_search_placeholder": "🔍 ابحث في المناقصات...",
@@ -166,7 +157,6 @@
   "tenders_deadline": "الموعد النهائي",
   "tenders_bids_count": "عرض",
   "tenders_region": "المنطقة",
-
   "common_save": "حفظ",
   "common_cancel": "إلغاء",
   "common_close": "إغلاق",
@@ -199,7 +189,6 @@
   "common_total": "الإجمالي",
   "common_subtotal": "المجموع قبل الضريبة",
   "common_vat": "ضريبة القيمة المضافة (١٥٪)",
-
   "equipment_legend_available": "متاح",
   "equipment_legend_booked": "محجوز",
   "equipment_legend_selected": "مختار",
@@ -215,7 +204,6 @@
   "equipment_addons_cost": "الإضافات",
   "rent_cal_select_end": "📅 بداية: {{start}} — انقر على يوم الانتهاء",
   "rent_cal_ready": "✅ {{start}} ← {{end}}  ({{days}} يوم)",
-
   "tenders_hero_eyebrow": "منصة المناقصات والمشاريع",
   "tenders_hero_title": "لديك مشروع؟ انشره وستأتيك العروض",
   "tenders_hero_desc": "من تجديد منزل إلى بناء مقهى — صف مشروعك واستقبل عروض من شركات ومقاولين موثوقين",
@@ -269,5 +257,10 @@
   "tenders_toast_posted": "تم نشر المناقصة بنجاح ✅",
   "tenders_alert_fill_all": "يرجى تعبئة جميع الحقول الإلزامية",
   "tenders_alert_deadline": "يجب أن يكون تاريخ انتهاء الاستقبال في المستقبل",
-  "tenders_estimated": "تقديرياً"
+  "tenders_estimated": "تقديرياً",
+  "tenders_badge_new": "جديد",
+  "tenders_badge_closing": "ينتهي قريباً",
+  "tenders_badge_closed": "مغلق",
+  "tenders_bids_label": "عروض",
+  "tenders_no_translation": "المحتوى غير متاح بالإنجليزية حتى الآن"
 }

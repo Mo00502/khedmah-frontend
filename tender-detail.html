@@ -415,353 +415,375 @@
 // ─── Demo tender data ────────────────────────────────────────────────────────
 // In production this would be fetched from the API by ID.
 // Bid amounts are NEVER included in this public data — only bid count.
+
+// ════════════════════════════════════════════════════════════════════════
+// BILINGUAL TENDERS DEMO DATA
+// title, org, orgMeta, city, deadlineRemaining, description, scope,
+// requirements, attachments, and notes all have {ar, en} versions.
+// renderTender(t, lang) picks the correct language automatically.
+// ════════════════════════════════════════════════════════════════════════
 const TENDERS = {
     '1': {
-        title: 'تجديد وترميم فيلا سكنية كاملة',
-        org: 'صاحب المشروع — مالك الفيلا',
+        title: {ar:'تجديد وترميم فيلا سكنية كاملة', en:'Full Residential Villa Renovation'},
+        org:   {ar:'صاحب المشروع — مالك الفيلا', en:'Private Owner — Villa Owner'},
         orgInitial: 'م',
-        orgMeta: 'مشروع شخصي — حي الملقا، الرياض',
-        sector: 'تشطيبات',
+        orgMeta: {ar:'مشروع شخصي — حي الملقا، الرياض', en:'Personal project — Al-Malqa district, Riyadh'},
+        sector: {ar:'تشطيبات', en:'Finishing & Décor'},
         status: 'open',
-        city: 'الرياض، حي الملقا',
+        city:   {ar:'الرياض، حي الملقا', en:'Riyadh, Al-Malqa district'},
         deadline: '28 أبريل 2026',
         deadlinePercent: 50,
-        deadlineRemaining: 'يتبقى 23 يوماً',
-        budget: '150,000 – 200,000 ر.س',
+        deadlineRemaining: {ar:'يتبقى 23 يوماً', en:'23 days remaining'},
+        budget: '150,000 – 200,000',
         bidCount: 4,
-        description: `
-            <p>مطلوب مقاول أو شركة تشطيبات لتجديد فيلا سكنية من طابقين في حي الملقا بالرياض.</p>
-            <p>الفيلا مساحتها حوالي 450 م² وتحتاج إلى تجديد كامل يشمل الدهانات، الأرضيات، الجبس، المطبخ، وأعمال الكهرباء والسباكة.</p>
-            <p>الأولوية لمن لديه معرض أعمال واضح وضمان على العمل. يمكن زيارة الموقع للاطلاع على التفاصيل.</p>
-        `,
-        scope: [
-            'دهانات داخلية كاملة لجميع الغرف والممرات',
-            'استبدال الأرضيات (باركيه في غرف النوم، بورسلان في المطبخ ودورات المياه)',
-            'تجديد أعمال الجبس والأسقف المعلقة',
-            'تركيب مطبخ جديد (خشبية + أجهزة)',
-            'تجديد دورات المياه الأربع (سيراميك + أدوات صحية)',
-            'تحديث لوحة الكهرباء وتبديل الأسلاك القديمة',
-            'صبغ واجهات خارجية'
-        ],
-        requirements: [
-            { label: 'الخبرة', value: 'سنوات خبرة موثقة في التشطيبات السكنية' },
-            { label: 'معرض الأعمال', value: 'مطلوب صور لمشاريع سابقة مشابهة' },
-            { label: 'الجدول الزمني', value: 'إنجاز خلال 3 أشهر' },
-            { label: 'الضمان', value: 'ضمان لا يقل عن سنة على الأعمال' }
-        ],
-        attachments: [
-            { icon: '🖼️', name: 'صور الوضع الراهن للفيلا', size: '8.4 MB', ext: 'PDF' },
-            { icon: '📐', name: 'مخططات الطابقين', size: '1.2 MB', ext: 'PDF' }
-        ],
-        notes: 'يُرجى تضمين عرضك تفصيل المواد المقترحة. يمكن الزيارة الميدانية بتحديد موعد مسبق.'
+        description: {
+            ar: `<p>مطلوب مقاول أو شركة تشطيبات لتجديد فيلا سكنية من طابقين في حي الملقا بالرياض.</p>
+                 <p>الفيلا مساحتها حوالي 450 م² وتحتاج إلى تجديد كامل يشمل الدهانات، الأرضيات، الجبس، المطبخ، وأعمال الكهرباء والسباكة.</p>
+                 <p>الأولوية لمن لديه معرض أعمال واضح وضمان على العمل. يمكن زيارة الموقع للاطلاع على التفاصيل.</p>`,
+            en: `<p>A contractor or finishing company is required to renovate a two-story residential villa in Al-Malqa district, Riyadh.</p>
+                 <p>The villa is approximately 450 m² and requires a full renovation including painting, flooring, plastering, kitchen, electrical, and plumbing works.</p>
+                 <p>Preference given to bidders with a clear portfolio and work warranty. Site visit available upon request.</p>`
+        },
+        scope: {
+            ar: ['دهانات داخلية كاملة لجميع الغرف والممرات','استبدال الأرضيات (باركيه في غرف النوم، بورسلان في المطبخ ودورات المياه)','تجديد أعمال الجبس والأسقف المعلقة','تركيب مطبخ جديد (خشبية + أجهزة)','تجديد دورات المياه الأربع (سيراميك + أدوات صحية)','تحديث لوحة الكهرباء وتبديل الأسلاك القديمة','صبغ واجهات خارجية'],
+            en: ['Full interior painting of all rooms and corridors','Floor replacement (parquet in bedrooms, porcelain in kitchen and bathrooms)','Renovation of plasterwork and suspended ceilings','New kitchen installation (cabinetry + appliances)','Renovation of all four bathrooms (ceramics + sanitary ware)','Electrical panel upgrade and rewiring','Exterior facade painting']
+        },
+        requirements: {
+            ar: [{label:'الخبرة',value:'سنوات خبرة موثقة في التشطيبات السكنية'},{label:'معرض الأعمال',value:'مطلوب صور لمشاريع سابقة مشابهة'},{label:'الجدول الزمني',value:'إنجاز خلال 3 أشهر'},{label:'الضمان',value:'ضمان لا يقل عن سنة على الأعمال'}],
+            en: [{label:'Experience',value:'Documented years in residential finishing'},{label:'Portfolio',value:'Photos of similar previous projects required'},{label:'Timeline',value:'Completion within 3 months'},{label:'Warranty',value:'Minimum 1-year warranty on all works'}]
+        },
+        attachments: {
+            ar: [{icon:'🖼️',name:'صور الوضع الراهن للفيلا',size:'8.4 MB',ext:'PDF'},{icon:'📐',name:'مخططات الطابقين',size:'1.2 MB',ext:'PDF'}],
+            en: [{icon:'🖼️',name:'Current villa photos',size:'8.4 MB',ext:'PDF'},{icon:'📐',name:'Floor plans (both floors)',size:'1.2 MB',ext:'PDF'}]
+        },
+        notes: {ar:'يُرجى تضمين عرضك تفصيل المواد المقترحة. يمكن الزيارة الميدانية بتحديد موعد مسبق.', en:'Please include proposed materials detail in your bid. On-site visits available by prior appointment.'}
     },
     '2': {
-        title: 'تصميم وتنفيذ مقهى تخصصي',
-        org: 'صاحب المشروع — مشروع عائلي',
+        title: {ar:'تصميم وتنفيذ مقهى تخصصي', en:'Specialty Coffee Shop Design & Build'},
+        org:   {ar:'صاحب المشروع — مشروع عائلي', en:'Project Owner — Family Venture'},
         orgInitial: 'ع',
-        orgMeta: 'مشروع ناشئ — شارع التحلية، جدة',
-        sector: 'تشطيبات',
+        orgMeta: {ar:'مشروع ناشئ — شارع التحلية، جدة', en:'Startup project — Tahlia St, Jeddah'},
+        sector: {ar:'تشطيبات', en:'Finishing & Décor'},
         status: 'open',
-        city: 'جدة، شارع التحلية',
+        city:   {ar:'جدة، شارع التحلية', en:'Jeddah, Tahlia Street'},
         deadline: '22 أبريل 2026',
         deadlinePercent: 60,
-        deadlineRemaining: '⚠️ يتبقى 17 يوماً',
-        budget: '280,000 – 360,000 ر.س',
+        deadlineRemaining: {ar:'⚠️ يتبقى 17 يوماً', en:'⚠️ 17 days remaining'},
+        budget: '280,000 – 360,000',
         bidCount: 9,
-        description: `
-            <p>نبحث عن شركة تصميم وتنفيذ ديكورات متخصصة لإنشاء مقهى تخصصي (specialty coffee) بمساحة 120 م² في شارع التحلية بجدة.</p>
-            <p>المقهى يستهدف شريحة الشباب ويحتاج إلى هوية بصرية مميزة، إضاءة احترافية، وأثاث عصري. التصميم يشمل منطقة الكاونتر، منطقة الجلوس، وغرفة التحضير.</p>
-        `,
-        scope: [
-            'تصميم داخلي متكامل مع نماذج 3D قبل التنفيذ',
-            'تنفيذ ديكور الكاونتر الرئيسي والرفوف',
-            'تركيب إضاءة LED احترافية (ambient + task lighting)',
-            'توريد وتركيب الأثاث (كراسي، طاولات، سوفا)',
-            'دهانات وتشطيبات جدران بنقوش مخصصة',
-            'تمديدات الكهرباء وتوصيل الأجهزة',
-            'تركيب خام أرضيات مميزة'
-        ],
-        requirements: [
-            { label: 'التخصص', value: 'خبرة في مشاريع F&B والمطاعم' },
-            { label: 'التصميم', value: 'تقديم تصميم 3D مبدئي مع العرض' },
-            { label: 'الجدول', value: 'تسليم خلال 6 أسابيع من البدء' },
-            { label: 'الأثاث', value: 'يفضل توريد الأثاث ضمن العرض' }
-        ],
-        attachments: [
-            { icon: '📐', name: 'المخطط الأساسي للمحل', size: '540 KB', ext: 'PDF' },
-            { icon: '🖼️', name: 'صور المرجعية والمزاج المطلوب', size: '5.1 MB', ext: 'PDF' }
-        ],
-        notes: 'يُفضل أن يتضمن العرض نموذج 3D أو لوحة مزاج (mood board). المشروع له موعد افتتاح محدد.'
+        description: {
+            ar: `<p>نبحث عن شركة تصميم وتنفيذ ديكورات متخصصة لإنشاء مقهى تخصصي (specialty coffee) بمساحة 120 م² في شارع التحلية بجدة.</p>
+                 <p>المقهى يستهدف شريحة الشباب ويحتاج إلى هوية بصرية مميزة، إضاءة احترافية، وأثاث عصري. التصميم يشمل منطقة الكاونتر، منطقة الجلوس، وغرفة التحضير.</p>`,
+            en: `<p>We are looking for a specialized design and fit-out company to build a 120 m² specialty coffee shop on Tahlia Street, Jeddah.</p>
+                 <p>The café targets young professionals and requires a distinctive visual identity, professional lighting, and modern furniture. The design covers the counter area, seating zone, and preparation room.</p>`
+        },
+        scope: {
+            ar: ['تصميم داخلي متكامل مع نماذج 3D قبل التنفيذ','تنفيذ ديكور الكاونتر الرئيسي والرفوف','تركيب إضاءة LED احترافية (ambient + task lighting)','توريد وتركيب الأثاث (كراسي، طاولات، سوفا)','دهانات وتشطيبات جدران بنقوش مخصصة','تمديدات الكهرباء وتوصيل الأجهزة','تركيب خام أرضيات مميزة'],
+            en: ['Full interior design with 3D models before execution','Main counter and shelving décor','Professional LED lighting (ambient + task)','Supply and install furniture (chairs, tables, sofas)','Custom wall paint and finishes','Electrical extensions and equipment connections','Premium flooring installation']
+        },
+        requirements: {
+            ar: [{label:'التخصص',value:'خبرة في مشاريع F&B والمطاعم'},{label:'التصميم',value:'تقديم تصميم 3D مبدئي مع العرض'},{label:'الجدول',value:'تسليم خلال 6 أسابيع من البدء'},{label:'الأثاث',value:'يفضل توريد الأثاث ضمن العرض'}],
+            en: [{label:'Specialty',value:'Experience in F&B and restaurant projects'},{label:'Design',value:'Submit preliminary 3D design with bid'},{label:'Timeline',value:'Delivery within 6 weeks from start'},{label:'Furniture',value:'Preferred to include furniture supply in bid'}]
+        },
+        attachments: {
+            ar: [{icon:'📐',name:'المخطط الأساسي للمحل',size:'540 KB',ext:'PDF'},{icon:'🖼️',name:'صور المرجعية والمزاج المطلوب',size:'5.1 MB',ext:'PDF'}],
+            en: [{icon:'📐',name:'Shop base plan',size:'540 KB',ext:'PDF'},{icon:'🖼️',name:'Reference images and mood board',size:'5.1 MB',ext:'PDF'}]
+        },
+        notes: {ar:'يُفضل أن يتضمن العرض نموذج 3D أو لوحة مزاج (mood board). المشروع له موعد افتتاح محدد.', en:'A 3D model or mood board with the bid is strongly preferred. The project has a fixed opening date.'}
     },
     '3': {
-        title: 'تشطيب مكتب شركة ناشئة',
-        org: 'شركة تقنية ناشئة — الدمام',
+        title: {ar:'تشطيب مكتب شركة ناشئة', en:'Startup Office Fit-Out'},
+        org:   {ar:'شركة تقنية ناشئة — الدمام', en:'Tech Startup — Dammam'},
         orgInitial: 'ش',
-        orgMeta: 'شركة تقنية — برج تجاري بالدمام',
-        sector: 'تشطيبات',
+        orgMeta: {ar:'شركة تقنية — برج تجاري بالدمام', en:'Tech company — commercial tower, Dammam'},
+        sector: {ar:'تشطيبات', en:'Finishing & Décor'},
         status: 'soon',
-        city: 'الدمام، حي الشاطئ',
+        city:   {ar:'الدمام، حي الشاطئ', en:'Dammam, Al-Shatee district'},
         deadline: '12 أبريل 2026',
         deadlinePercent: 80,
-        deadlineRemaining: '⚠️ يتبقى 7 أيام فقط',
-        budget: '80,000 – 110,000 ر.س',
+        deadlineRemaining: {ar:'⚠️ يتبقى 7 أيام فقط', en:'⚠️ Only 7 days remaining'},
+        budget: '80,000 – 110,000',
         bidCount: 6,
-        description: `
-            <p>شركة تقنية ناشئة تبحث عن مقاول تشطيب لتجهيز مكتبها الجديد في الطابق الثامن من أحد الأبراج التجارية بالدمام.</p>
-            <p>المساحة 200 م² وتحتاج إلى تقسيم ذكي يشمل منطقة عمل مفتوحة، غرفة اجتماعات، ومنطقة استقبال. نريد بيئة عمل عصرية ومريحة.</p>
-        `,
-        scope: [
-            'تقسيم المساحة (جدران جبسية وزجاجية)',
-            'سقف مستعار مع قنوات AC وإضاءة',
-            'أرضيات SPC فلوريك أو بورسلان',
-            'دهانات ألوان هوية الشركة',
-            'أبواب مكاتب وواجهة الاستقبال',
-            'تمديدات كهرباء وشبكة إنترنت',
-            'غرفة سيرفر صغيرة'
-        ],
-        requirements: [
-            { label: 'الخبرة', value: 'تشطيب مكاتب ومساحات تجارية' },
-            { label: 'الجودة', value: 'مواد من الفئة الأولى' },
-            { label: 'الجدول', value: 'إنجاز خلال 5 أسابيع' },
-            { label: 'الضمان', value: 'ضمان على التنفيذ' }
-        ],
-        attachments: [
-            { icon: '📐', name: 'مخطط المساحة', size: '380 KB', ext: 'PDF' }
-        ],
-        notes: 'العرض الجاهز للبدء فور الترسية يحظى بأفضلية.'
+        description: {
+            ar: `<p>شركة تقنية ناشئة تبحث عن مقاول تشطيب لتجهيز مكتبها الجديد في الطابق الثامن من أحد الأبراج التجارية بالدمام.</p>
+                 <p>المساحة 200 م² وتحتاج إلى تقسيم ذكي يشمل منطقة عمل مفتوحة، غرفة اجتماعات، ومنطقة استقبال. نريد بيئة عمل عصرية ومريحة.</p>`,
+            en: `<p>A tech startup is looking for a fit-out contractor to equip its new office on the 8th floor of a commercial tower in Dammam.</p>
+                 <p>The 200 m² space needs smart layout including an open workspace, a meeting room, and a reception area. We want a modern and comfortable work environment.</p>`
+        },
+        scope: {
+            ar: ['تقسيم المساحة (جدران جبسية وزجاجية)','سقف مستعار مع قنوات AC وإضاءة','أرضيات SPC فلوريك أو بورسلان','دهانات ألوان هوية الشركة','أبواب مكاتب وواجهة الاستقبال','تمديدات كهرباء وشبكة إنترنت','غرفة سيرفر صغيرة'],
+            en: ['Space partitioning (drywall and glass walls)','Suspended ceiling with AC ducts and lighting','SPC flooring or porcelain tiles','Paint in company brand colors','Office doors and reception front desk','Electrical and network cabling','Small server room']
+        },
+        requirements: {
+            ar: [{label:'الخبرة',value:'تشطيب مكاتب ومساحات تجارية'},{label:'الجودة',value:'مواد من الفئة الأولى'},{label:'الجدول',value:'إنجاز خلال 5 أسابيع'},{label:'الضمان',value:'ضمان على التنفيذ'}],
+            en: [{label:'Experience',value:'Office and commercial fit-out'},{label:'Quality',value:'First-class materials'},{label:'Timeline',value:'Completion within 5 weeks'},{label:'Warranty',value:'Warranty on all works'}]
+        },
+        attachments: {
+            ar: [{icon:'📐',name:'مخطط المساحة',size:'380 KB',ext:'PDF'}],
+            en: [{icon:'📐',name:'Space floor plan',size:'380 KB',ext:'PDF'}]
+        },
+        notes: {ar:'العرض الجاهز للبدء فور الترسية يحظى بأفضلية.', en:'Bidders ready to start immediately upon award are preferred.'}
     },
     '4': {
-        title: 'تطوير موقع إلكتروني لمتجر',
-        org: 'متجر الأناقة — صاحب المشروع',
+        title: {ar:'تطوير موقع إلكتروني لمتجر', en:'E-Commerce Website Development'},
+        org:   {ar:'متجر الأناقة — صاحب المشروع', en:'Al-Anaqah Store — Project Owner'},
         orgInitial: 'ا',
-        orgMeta: 'مشروع تجاري — متجر ملابس عبر الإنترنت',
-        sector: 'تقنية',
+        orgMeta: {ar:'مشروع تجاري — متجر ملابس عبر الإنترنت', en:'Commercial project — online clothing store'},
+        sector: {ar:'تقنية', en:'Tech & Websites'},
         status: 'closed',
-        city: 'الرياض',
+        city:   {ar:'الرياض', en:'Riyadh'},
         deadline: '31 مارس 2026',
         deadlinePercent: 100,
-        deadlineRemaining: 'انتهى استقبال العروض',
-        budget: '35,000 – 45,000 ر.س',
+        deadlineRemaining: {ar:'انتهى استقبال العروض', en:'Bidding has closed'},
+        budget: '35,000 – 45,000',
         bidCount: 11,
-        description: `
-            <p>طُلب تصميم وتطوير متجر إلكتروني احترافي لبيع الملابس، مع لوحة تحكم سهلة الاستخدام وربط بوابة دفع سعودية.</p>
-            <p>المناقصة مغلقة ولا تقبل عروضاً جديدة.</p>
-        `,
-        scope: [
-            'تصميم موقع عصري متوافق مع الجوال',
-            'لوحة تحكم لإدارة المنتجات والطلبات',
-            'ربط بوابة Moyasar أو HyperPay',
-            'صفحات: رئيسية، منتجات، عربة، تسجيل، تتبع',
-            'سرعة تحميل عالية وSEO أساسي',
-            'ربط واتساب للدعم'
-        ],
-        requirements: [
-            { label: 'الخبرة', value: 'متاجر إلكترونية سابقة' },
-            { label: 'التقنية', value: 'Shopify أو WordPress + WooCommerce' },
-            { label: 'التسليم', value: 'خلال 3 أسابيع' }
-        ],
-        attachments: [],
-        notes: null
+        description: {
+            ar: `<p>طُلب تصميم وتطوير متجر إلكتروني احترافي لبيع الملابس، مع لوحة تحكم سهلة الاستخدام وربط بوابة دفع سعودية.</p>
+                 <p>المناقصة مغلقة ولا تقبل عروضاً جديدة.</p>`,
+            en: `<p>A professional e-commerce store was required for selling clothing, with an easy-to-use control panel and Saudi payment gateway integration.</p>
+                 <p>This tender is closed and no longer accepting bids.</p>`
+        },
+        scope: {
+            ar: ['تصميم موقع عصري متوافق مع الجوال','لوحة تحكم لإدارة المنتجات والطلبات','ربط بوابة Moyasar أو HyperPay','صفحات: رئيسية، منتجات، عربة، تسجيل، تتبع','سرعة تحميل عالية وSEO أساسي','ربط واتساب للدعم'],
+            en: ['Responsive modern website design','Product and order management dashboard','Moyasar or HyperPay payment gateway integration','Pages: home, products, cart, register, tracking','Fast load times and basic SEO','WhatsApp support integration']
+        },
+        requirements: {
+            ar: [{label:'الخبرة',value:'متاجر إلكترونية سابقة'},{label:'التقنية',value:'Shopify أو WordPress + WooCommerce'},{label:'التسليم',value:'خلال 3 أسابيع'}],
+            en: [{label:'Experience',value:'Previous e-commerce stores'},{label:'Tech stack',value:'Shopify or WordPress + WooCommerce'},{label:'Delivery',value:'Within 3 weeks'}]
+        },
+        attachments: {ar:[], en:[]},
+        notes: {ar:null, en:null}
     },
     '5': {
-        title: 'تصميم داخلي لمتجر ملابس',
-        org: 'محلات الأناقة — مالك المتجر',
+        title: {ar:'تصميم داخلي لمتجر ملابس', en:'Interior Design for Clothing Store'},
+        org:   {ar:'محلات الأناقة — مالك المتجر', en:'Al-Anaqah Boutiques — Store Owner'},
         orgInitial: 'ا',
-        orgMeta: 'متجر ملابس — مول بمكة المكرمة',
-        sector: 'تصميم',
+        orgMeta: {ar:'متجر ملابس — مول بمكة المكرمة', en:'Clothing store — mall in Mecca'},
+        sector: {ar:'تصميم', en:'Design'},
         status: 'open',
-        city: 'مكة المكرمة',
+        city:   {ar:'مكة المكرمة', en:'Mecca'},
         deadline: '5 مايو 2026',
         deadlinePercent: 30,
-        deadlineRemaining: 'يتبقى 30 يوماً',
-        budget: '75,000 – 105,000 ر.س',
+        deadlineRemaining: {ar:'يتبقى 30 يوماً', en:'30 days remaining'},
+        budget: '75,000 – 105,000',
         bidCount: 3,
-        description: `
-            <p>نبحث عن مصمم داخلي أو شركة ديكور لتصميم وتنفيذ ديكور متجر ملابس نسائية بمساحة 90 م² في أحد المولات الكبرى بمكة المكرمة.</p>
-            <p>نريد تصميماً أنثوياً راقياً يعكس هوية البراند ويشجع على الشراء. يشمل المشروع تصميم واجهة المحل، الداخل، وغرف القياس.</p>
-        `,
-        scope: [
-            'تصميم الواجهة الخارجية وشاشة العرض',
-            'تصميم الداخل: ستندات، رفوف معلقة، تعليقات',
-            'إضاءة متخصصة (spotlight + ambient)',
-            'غرفتا قياس بديكور مميز',
-            'كاونتر الكاشير',
-            'أرضيات وجدران',
-            'لافتات وهوية بصرية'
-        ],
-        requirements: [
-            { label: 'التخصص', value: 'ديكور محلات تجارية أو فاشن' },
-            { label: 'المحفظة', value: 'أعمال مشابهة مطلوبة' },
-            { label: 'التصميم', value: 'عرض 3D مبدئي مع العرض المالي' }
-        ],
-        attachments: [
-            { icon: '📐', name: 'مخطط المحل', size: '290 KB', ext: 'PDF' }
-        ],
-        notes: null
+        description: {
+            ar: `<p>نبحث عن مصمم داخلي أو شركة ديكور لتصميم وتنفيذ ديكور متجر ملابس نسائية بمساحة 90 م² في أحد المولات الكبرى بمكة المكرمة.</p>
+                 <p>نريد تصميماً أنثوياً راقياً يعكس هوية البراند ويشجع على الشراء.</p>`,
+            en: `<p>We are looking for an interior designer or décor company to design and execute a 90 m² women's clothing store in a major mall in Mecca.</p>
+                 <p>We want a premium feminine design that reflects the brand identity and encourages purchasing.</p>`
+        },
+        scope: {
+            ar: ['تصميم الواجهة الخارجية وشاشة العرض','تصميم الداخل: ستندات، رفوف معلقة، تعليقات','إضاءة متخصصة (spotlight + ambient)','غرفتا قياس بديكور مميز','كاونتر الكاشير','أرضيات وجدران','لافتات وهوية بصرية'],
+            en: ['External storefront and display window design','Interior design: stands, wall shelves, hanging rails','Specialized lighting (spotlight + ambient)','Two fitting rooms with distinctive décor','Cashier counter','Flooring and wall finishes','Signage and visual identity']
+        },
+        requirements: {
+            ar: [{label:'التخصص',value:'ديكور محلات تجارية أو فاشن'},{label:'المحفظة',value:'أعمال مشابهة مطلوبة'},{label:'التصميم',value:'عرض 3D مبدئي مع العرض المالي'}],
+            en: [{label:'Specialty',value:'Retail or fashion store décor'},{label:'Portfolio',value:'Similar work samples required'},{label:'Design',value:'Preliminary 3D rendering with financial bid'}]
+        },
+        attachments: {
+            ar: [{icon:'📐',name:'مخطط المحل',size:'290 KB',ext:'PDF'}],
+            en: [{icon:'📐',name:'Store floor plan',size:'290 KB',ext:'PDF'}]
+        },
+        notes: {ar:null, en:null}
     },
     '6': {
-        title: 'تركيب نظام طاقة شمسية لفيلا',
-        org: 'عائلة السبيعي — صاحب الفيلا',
+        title: {ar:'تركيب نظام طاقة شمسية لفيلا', en:'Solar Energy System Installation'},
+        org:   {ar:'عائلة السبيعي — صاحب الفيلا', en:'Al-Subaiee Family — Villa Owner'},
         orgInitial: 'س',
-        orgMeta: 'مشروع منزلي — حي الياسمين، الرياض',
-        sector: 'طاقة',
+        orgMeta: {ar:'مشروع منزلي — حي الياسمين، الرياض', en:'Residential project — Al-Yasmin district, Riyadh'},
+        sector: {ar:'طاقة', en:'Solar Energy'},
         status: 'soon',
-        city: 'الرياض، حي الياسمين',
+        city:   {ar:'الرياض، حي الياسمين', en:'Riyadh, Al-Yasmin district'},
         deadline: '10 أبريل 2026',
         deadlinePercent: 78,
-        deadlineRemaining: '⚠️ يتبقى 5 أيام فقط',
-        budget: '55,000 – 70,000 ر.س',
+        deadlineRemaining: {ar:'⚠️ يتبقى 5 أيام فقط', en:'⚠️ Only 5 days remaining'},
+        budget: '55,000 – 70,000',
         bidCount: 7,
-        description: `
-            <p>نبحث عن شركة متخصصة في الطاقة الشمسية لتركيب نظام شمسي منزلي كامل لفيلا في حي الياسمين بالرياض.</p>
-            <p>الفيلا من طابقين وفاتورة الكهرباء الشهرية تتراوح بين 1,200 – 1,800 ريال. نريد تقليل الفاتورة بنسبة 60-70% على الأقل. يفضل أن يشمل العرض بطارية تخزين.</p>
-        `,
-        scope: [
-            'دراسة الحمل الكهربائي وتصميم النظام',
-            'توريد وتركيب ألواح شمسية (10-15 لوح)',
-            'توريد وتركيب عاكس كهربائي (inverter)',
-            'بطارية تخزين (اختياري ضمن نطاق الميزانية)',
-            'توصيل النظام بلوحة الكهرباء الرئيسية',
-            'تقديم طلب الربط مع شركة الكهرباء',
-            'ضمان وصيانة دورية'
-        ],
-        requirements: [
-            { label: 'الترخيص', value: 'مرخص من هيئة الطاقة المتجددة' },
-            { label: 'مشاريع سابقة', value: 'فيلات ومنازل سكنية' },
-            { label: 'الضمان', value: 'ضمان 10 سنوات على الألواح' },
-            { label: 'الدعم', value: 'متابعة الأداء بعد التركيب' }
-        ],
-        attachments: [
-            { icon: '📄', name: 'آخر فاتورة كهرباء', size: '180 KB', ext: 'PDF' }
-        ],
-        notes: 'يُرجى تضمين العرض تفاصيل المواصفات الفنية للألواح والعاكس والبطارية.'
+        description: {
+            ar: `<p>نبحث عن شركة متخصصة في الطاقة الشمسية لتركيب نظام شمسي منزلي كامل لفيلا في حي الياسمين بالرياض.</p>
+                 <p>الفيلا من طابقين وفاتورة الكهرباء الشهرية تتراوح بين 1,200 – 1,800 ريال. نريد تقليل الفاتورة بنسبة 60-70% على الأقل.</p>`,
+            en: `<p>We are looking for a solar energy specialist to install a complete residential solar system for a villa in Al-Yasmin district, Riyadh.</p>
+                 <p>The two-story villa has a monthly electricity bill of SAR 1,200–1,800. We aim to reduce the bill by at least 60–70%.</p>`
+        },
+        scope: {
+            ar: ['دراسة الحمل الكهربائي وتصميم النظام','توريد وتركيب ألواح شمسية (10-15 لوح)','توريد وتركيب عاكس كهربائي (inverter)','بطارية تخزين (اختياري ضمن نطاق الميزانية)','توصيل النظام بلوحة الكهرباء الرئيسية','تقديم طلب الربط مع شركة الكهرباء','ضمان وصيانة دورية'],
+            en: ['Electrical load study and system design','Supply and install solar panels (10–15 panels)','Supply and install inverter','Storage battery (optional within budget)','Connect system to main electrical panel','Submit grid connection application to utility','Warranty and periodic maintenance']
+        },
+        requirements: {
+            ar: [{label:'الترخيص',value:'مرخص من هيئة الطاقة المتجددة'},{label:'مشاريع سابقة',value:'فيلات ومنازل سكنية'},{label:'الضمان',value:'ضمان 10 سنوات على الألواح'},{label:'الدعم',value:'متابعة الأداء بعد التركيب'}],
+            en: [{label:'License',value:'Licensed by Renewable Energy Authority'},{label:'Previous projects',value:'Villas and residential homes'},{label:'Warranty',value:'10-year panel warranty'},{label:'Support',value:'Post-installation performance monitoring'}]
+        },
+        attachments: {
+            ar: [{icon:'📄',name:'آخر فاتورة كهرباء',size:'180 KB',ext:'PDF'}],
+            en: [{icon:'📄',name:'Latest electricity bill',size:'180 KB',ext:'PDF'}]
+        },
+        notes: {ar:'يُرجى تضمين العرض تفاصيل المواصفات الفنية للألواح والعاكس والبطارية.', en:'Please include technical specifications for panels, inverter, and battery in your bid.'}
     },
     '7': {
-        title: 'تطبيق جوال لطلبات المطعم',
-        org: 'مطعم البيت — صاحب المطعم',
+        title: {ar:'تطبيق جوال لطلبات المطعم', en:'Restaurant Order Mobile App'},
+        org:   {ar:'مطعم البيت — صاحب المطعم', en:'Al-Bayt Restaurant — Restaurant Owner'},
         orgInitial: 'ب',
-        orgMeta: 'مطعم عائلي — جدة',
-        sector: 'تقنية',
+        orgMeta: {ar:'مطعم عائلي — جدة', en:'Family restaurant — Jeddah'},
+        sector: {ar:'تقنية', en:'Tech & Websites'},
         status: 'closed',
-        city: 'جدة',
+        city:   {ar:'جدة', en:'Jeddah'},
         deadline: '31 مارس 2026',
         deadlinePercent: 100,
-        deadlineRemaining: 'انتهى استقبال العروض',
-        budget: '45,000 – 60,000 ر.س',
+        deadlineRemaining: {ar:'انتهى استقبال العروض', en:'Bidding has closed'},
+        budget: '45,000 – 60,000',
         bidCount: 8,
-        description: `
-            <p>طُلب تطوير تطبيق جوال لمطعم عائلي يشمل استقبال الطلبات، تتبع التوصيل، وربط نظام الكاشير.</p>
-            <p>المناقصة مغلقة ولا تقبل عروضاً جديدة.</p>
-        `,
-        scope: [
-            'تطبيق iOS وAndroid للعملاء',
-            'لوحة طلبات للمطعم (dashboard)',
-            'ربط بوابة دفع إلكترونية',
-            'تتبع التوصيل على الخريطة',
-            'ربط طابعة الكاشير',
-            'إشعارات Push'
-        ],
-        requirements: [
-            { label: 'الخبرة', value: 'تطبيقات مطاعم سابقة' },
-            { label: 'التقنية', value: 'React Native أو Flutter' }
-        ],
-        attachments: [],
-        notes: null
+        description: {
+            ar: `<p>طُلب تطوير تطبيق جوال لمطعم عائلي يشمل استقبال الطلبات، تتبع التوصيل، وربط نظام الكاشير.</p>
+                 <p>المناقصة مغلقة ولا تقبل عروضاً جديدة.</p>`,
+            en: `<p>A mobile app was required for a family restaurant — order intake, delivery tracking, and cashier system integration.</p>
+                 <p>This tender is closed and no longer accepting bids.</p>`
+        },
+        scope: {
+            ar: ['تطبيق iOS وAndroid للعملاء','لوحة طلبات للمطعم (dashboard)','ربط بوابة دفع إلكترونية','تتبع التوصيل على الخريطة','ربط طابعة الكاشير','إشعارات Push'],
+            en: ['iOS and Android customer app','Restaurant order dashboard','Payment gateway integration','Delivery tracking on map','Cashier printer integration','Push notifications']
+        },
+        requirements: {
+            ar: [{label:'الخبرة',value:'تطبيقات مطاعم سابقة'},{label:'التقنية',value:'React Native أو Flutter'}],
+            en: [{label:'Experience',value:'Previous restaurant apps'},{label:'Tech stack',value:'React Native or Flutter'}]
+        },
+        attachments: {ar:[], en:[]},
+        notes: {ar:null, en:null}
     },
     '8': {
-        title: 'ترميم وتحديث استراحة',
-        org: 'استراحة النخيل — مالك الاستراحة',
+        title: {ar:'ترميم وتحديث استراحة', en:'Rest House Renovation & Upgrade'},
+        org:   {ar:'استراحة النخيل — مالك الاستراحة', en:'Al-Nakheel Rest House — Property Owner'},
         orgInitial: 'ن',
-        orgMeta: 'مشروع شخصي — المدينة المنورة',
-        sector: 'إنشاء',
+        orgMeta: {ar:'مشروع شخصي — المدينة المنورة', en:'Personal project — Madinah'},
+        sector: {ar:'إنشاء', en:'Construction'},
         status: 'open',
-        city: 'المدينة المنورة',
+        city:   {ar:'المدينة المنورة', en:'Madinah'},
         deadline: '3 مايو 2026',
         deadlinePercent: 25,
-        deadlineRemaining: 'يتبقى 28 يوماً',
-        budget: '110,000 – 160,000 ر.س',
+        deadlineRemaining: {ar:'يتبقى 28 يوماً', en:'28 days remaining'},
+        budget: '110,000 – 160,000',
         bidCount: 5,
-        description: `
-            <p>مطلوب مقاول لترميم وتحديث استراحة عائلية بمساحة 500 م² في المدينة المنورة.</p>
-            <p>الاستراحة قديمة وتحتاج إلى ترميم شامل يشمل: إعادة بناء جزئية، تجديد حمام السباحة، المطبخ الخارجي، والمظلات. الهدف إعادتها لخدمة العائلة وتأجيرها أحياناً.</p>
-        `,
-        scope: [
-            'ترميم وإعادة بناء الملحقات المتهالكة',
-            'تجديد حمام السباحة (بلاط + مضخة + نظام ترشيح)',
-            'مطبخ خارجي جديد (مشوى، كاونتر، مجلى)',
-            'تركيب مظلات وبرجولة خشبية',
-            'تشطيب الأرضيات والجدران الخارجية',
-            'تحديث شبكة الإنارة الخارجية',
-            'ترميم الدورة الصحية الرئيسية'
-        ],
-        requirements: [
-            { label: 'الخبرة', value: 'استراحات ومشاريع سكنية مشابهة' },
-            { label: 'الجدول', value: 'إنجاز خلال شهرين' },
-            { label: 'الضمان', value: 'ضمان على الأعمال المنجزة' },
-            { label: 'الزيارة', value: 'زيارة الموقع قبل تقديم العرض' }
-        ],
-        attachments: [
-            { icon: '🖼️', name: 'صور الوضع الراهن للاستراحة', size: '11.2 MB', ext: 'PDF' }
-        ],
-        notes: 'يُرجى تضمين العرض تفصيلاً للمواد المستخدمة في حمام السباحة. الزيارة الميدانية إلزامية قبل تقديم العرض.'
+        description: {
+            ar: `<p>مطلوب مقاول لترميم وتحديث استراحة عائلية بمساحة 500 م² في المدينة المنورة.</p>
+                 <p>الاستراحة قديمة وتحتاج إلى ترميم شامل يشمل: إعادة بناء جزئية، تجديد حمام السباحة، المطبخ الخارجي، والمظلات.</p>`,
+            en: `<p>A contractor is required to renovate and upgrade a 500 m² family rest house in Madinah.</p>
+                 <p>The property is aging and needs comprehensive work including partial reconstruction, pool renovation, outdoor kitchen, and shade structures.</p>`
+        },
+        scope: {
+            ar: ['ترميم وإعادة بناء الملحقات المتهالكة','تجديد حمام السباحة (بلاط + مضخة + نظام ترشيح)','مطبخ خارجي جديد (مشوى، كاونتر، مجلى)','تركيب مظلات وبرجولة خشبية','تشطيب الأرضيات والجدران الخارجية','تحديث شبكة الإنارة الخارجية','ترميم الدورة الصحية الرئيسية'],
+            en: ['Renovation and reconstruction of deteriorated annexes','Pool renovation (tiles + pump + filtration system)','New outdoor kitchen (BBQ, counter, sink)','Shade structures and wooden pergola installation','Exterior flooring and wall finishes','Outdoor lighting network upgrade','Main bathroom renovation']
+        },
+        requirements: {
+            ar: [{label:'الخبرة',value:'استراحات ومشاريع سكنية مشابهة'},{label:'الجدول',value:'إنجاز خلال شهرين'},{label:'الضمان',value:'ضمان على الأعمال المنجزة'},{label:'الزيارة',value:'زيارة الموقع قبل تقديم العرض'}],
+            en: [{label:'Experience',value:'Rest houses and similar residential projects'},{label:'Timeline',value:'Completion within 2 months'},{label:'Warranty',value:'Warranty on all completed works'},{label:'Site visit',value:'Site visit required before submitting bid'}]
+        },
+        attachments: {
+            ar: [{icon:'🖼️',name:'صور الوضع الراهن للاستراحة',size:'11.2 MB',ext:'PDF'}],
+            en: [{icon:'🖼️',name:'Current condition photos',size:'11.2 MB',ext:'PDF'}]
+        },
+        notes: {ar:'يُرجى تضمين العرض تفصيلاً للمواد المستخدمة في حمام السباحة. الزيارة الميدانية إلزامية قبل تقديم العرض.', en:'Please include pool material details in your bid. Site visit is mandatory before submitting.'}
     }
 };
+
+// ─── Load tender data
 
 // ─── Load tender data ────────────────────────────────────────────────────────
 const params = new URLSearchParams(window.location.search);
 const tenderId = params.get('id') || '1';
 const isApiId = tenderId.includes('-') && tenderId.length > 10;
 
-function renderTender(t) {
-    const title = escHtml(t.title || '');
-    const org = t.org || (t.company && (t.company.nameAr || t.company.name)) || 'جهة غير محددة';
-    const orgInitial = (org || '-').charAt(0);
+// Helper: extract localized string from {ar,en} object or plain string
+function _fld(field, lang) {
+    if (!field) return '';
+    if (typeof field === 'object') {
+        return field[lang] || field.ar || '';
+    }
+    return String(field);
+}
+
+// Stored tender data for re-render on lang switch
+let _currentTenderData = null;
+
+function renderTender(t, lang) {
+    lang = lang || (window.I18n ? I18n.getCurrentLang() : 'ar');
+    _currentTenderData = t;
+
+    const FALLBACK = (window.t ? window.t('tenders_no_translation') : null) || 'Content not available in English yet';
+    const _f = (field) => {
+        if (!field) return '';
+        if (typeof field === 'object') return field[lang] || (lang !== 'ar' ? FALLBACK : field.ar || '');
+        return String(field);
+    };
+
+    const titleStr = _f(t.title) || _fld(t.title, 'ar');
+    const rawOrg = _f(t.org) || (t.company && (t.company.nameAr || t.company.name)) || (lang === 'en' ? 'Project Owner' : 'جهة غير محددة');
+    const orgInitial = (rawOrg || '-').charAt(0);
     const status = (t.status || '').toLowerCase();
     const isOpen = t.status === 'OPEN' || status === 'open';
     const isSoon = status === 'soon' || t.status === 'UNDER_REVIEW';
     const isClosed = !isOpen && !isSoon;
 
-    document.getElementById('bcTitle').textContent = t.title;
-    document.title = t.title + ' - خدمة';
+    document.getElementById('bcTitle').textContent = titleStr;
+    document.title = titleStr + ' — Khedmah';
 
-    document.getElementById('tTitle').textContent = t.title;
-    document.getElementById('tOrg').textContent = '🏢 ' + org;
+    document.getElementById('tTitle').textContent = titleStr;
+    document.getElementById('tOrg').textContent = '🏢 ' + rawOrg;
 
     const statusEl = document.getElementById('tStatus');
-    if (isOpen) { statusEl.className = 'status-badge status-open'; statusEl.textContent = '🟢 مفتوح'; }
-    else if (isSoon) { statusEl.className = 'status-badge status-soon'; statusEl.textContent = '🟡 يغلق قريباً'; }
-    else { statusEl.className = 'status-badge status-closed'; statusEl.textContent = '🔴 مغلق'; }
+    if (isOpen) {
+        statusEl.className = 'status-badge status-open';
+        statusEl.textContent = window.t ? window.t('tenders_status_open') : '🟢 مفتوح';
+    } else if (isSoon) {
+        statusEl.className = 'status-badge status-soon';
+        statusEl.textContent = window.t ? window.t('tenders_status_soon') : '🟡 يغلق قريباً';
+    } else {
+        statusEl.className = 'status-badge status-closed';
+        statusEl.textContent = window.t ? window.t('tenders_status_closed_lbl') : '🔴 مغلق';
+    }
 
     const budgetMin = Number(t.budgetMin || 0);
     const budgetMax = Number(t.budgetMax || 0);
+    const locale = lang === 'ar' ? 'ar-SA' : 'en-US';
     const budgetStr = budgetMin > 0 && budgetMax > 0
-        ? `${budgetMin.toLocaleString('ar-SA')} – ${budgetMax.toLocaleString('ar-SA')}`
-        : budgetMin > 0 ? budgetMin.toLocaleString('ar-SA') : (t.budget || '—');
+        ? `${budgetMin.toLocaleString(locale)} – ${budgetMax.toLocaleString(locale)}`
+        : budgetMin > 0 ? budgetMin.toLocaleString(locale) : (t.budget || '—');
 
-    document.getElementById('tCity').textContent = t.region || t.city || '—';
+    document.getElementById('tCity').textContent = _f(t.city) || t.region || '—';
     document.getElementById('tDeadline').textContent = t.deadline
-        ? new Date(t.deadline).toLocaleDateString('ar-SA', {year:'numeric',month:'long',day:'numeric'})
-        : (t.deadline || '—');
-    document.getElementById('tSector').textContent = t.category || t.sector || '—';
-    document.getElementById('tBudget').textContent = budgetStr + ' ر.س';
+        ? new Date(t.deadline).toLocaleDateString(locale, {year:'numeric',month:'long',day:'numeric'})
+        : '—';
+    document.getElementById('tSector').textContent = _f(t.sector) || t.category || '—';
+    const sarLabel = lang === 'en' ? 'SAR' : 'ر.س';
+    document.getElementById('tBudget').textContent = budgetStr + ' ' + sarLabel;
 
     // Description
     const descEl = document.getElementById('tDescription');
-    const descText = t.description || t.scope || '';
+    const descText = _f(t.description) || _f(t.scope) || '';
     descEl.innerHTML = descText.startsWith('<') ? descText : `<p>${escHtml(descText)}</p>`;
 
-    // Scope
+    // Scope — clear before re-render
     const scopeEl = document.getElementById('tScope');
-    const scopeItems = Array.isArray(t.scope) ? t.scope : (t.qualifications ? [t.qualifications] : []);
+    scopeEl.innerHTML = '';
+    const rawScope = t.scope;
+    const scopeItems = rawScope
+        ? (typeof rawScope === 'object' && !Array.isArray(rawScope)
+            ? (rawScope[lang] || rawScope.ar || [])
+            : (Array.isArray(rawScope) ? rawScope : []))
+        : (t.qualifications ? [t.qualifications] : []);
     scopeItems.forEach(item => {
         const li = document.createElement('li'); li.textContent = item; scopeEl.appendChild(li);
     });
-    if (!scopeItems.length) scopeEl.closest('div').style.display = 'none';
+    const scopeWrapper = scopeEl.closest('div');
+    if (scopeWrapper) scopeWrapper.style.display = scopeItems.length ? '' : 'none';
 
-    // Requirements
+    // Requirements — clear before re-render
     const reqGrid = document.getElementById('tReqGrid');
-    const reqItems = Array.isArray(t.requirements)
-        ? t.requirements.map(r => ({ label: r.label || r.nameAr || r.type, value: r.value || r.quantity || '' }))
+    reqGrid.innerHTML = '';
+    const rawReq = t.requirements;
+    const reqItems = rawReq
+        ? (typeof rawReq === 'object' && !Array.isArray(rawReq)
+            ? (rawReq[lang] || rawReq.ar || [])
+            : (Array.isArray(rawReq) ? rawReq.map(r => ({ label: r.label || r.nameAr || r.type, value: r.value || r.quantity || '' })) : []))
         : [];
     reqItems.forEach(r => {
         const div = document.createElement('div');
@@ -769,12 +791,21 @@ function renderTender(t) {
         div.innerHTML = `<div class="req-label">${escHtml(String(r.label || ''))}</div><div class="req-value">${escHtml(String(r.value || ''))}</div>`;
         reqGrid.appendChild(div);
     });
-    if (!reqItems.length) reqGrid.closest('div').style.display = 'none';
+    const reqWrapper = reqGrid.closest('div');
+    if (reqWrapper) reqWrapper.style.display = reqItems.length ? '' : 'none';
 
-    // Attachments — API has no file attachments yet, hide section if empty
+    // Attachments — clear before re-render
     const attEl = document.getElementById('tAttachments');
-    const atts = Array.isArray(t.attachments) ? t.attachments : [];
+    attEl.innerHTML = '';
+    const rawAtts = t.attachments;
+    const atts = rawAtts
+        ? (typeof rawAtts === 'object' && !Array.isArray(rawAtts)
+            ? (rawAtts[lang] || rawAtts.ar || [])
+            : (Array.isArray(rawAtts) ? rawAtts : []))
+        : [];
     if (atts.length) {
+        const attCard = attEl.closest('.card');
+        if (attCard) attCard.style.display = '';
         atts.forEach(a => {
             const div = document.createElement('div');
             div.className = 'attachment-item';
@@ -782,26 +813,32 @@ function renderTender(t) {
                 <span class="attachment-name">${escHtml(a.name || '')}</span>
                 <span class="attachment-size">${escHtml(a.size || '')}</span>
                 <span class="attachment-dl">⬇ ${escHtml(a.ext || '')}</span>`;
-            div.onclick = () => showToast(`جارٍ تحميل "${a.name}" ...`);
+            const dlMsg = lang === 'en' ? `Downloading "${a.name}"…` : `جارٍ تحميل "${a.name}" ...`;
+            div.onclick = () => showToast(dlMsg);
             attEl.appendChild(div);
         });
     } else {
-        attEl.closest('.card').style.display = 'none';
+        const attCard = attEl.closest('.card');
+        if (attCard) attCard.style.display = 'none';
     }
 
     // Notes
-    if (t.notes) {
-        document.getElementById('notesCard').style.display = 'block';
-        document.getElementById('tNotes').textContent = t.notes;
+    const notesText = _f(t.notes);
+    const notesCard = document.getElementById('notesCard');
+    if (notesText) {
+        if (notesCard) notesCard.style.display = 'block';
+        document.getElementById('tNotes').textContent = notesText;
+    } else {
+        if (notesCard) notesCard.style.display = 'none';
     }
 
     // Sidebar
     document.getElementById('sCompanyInitial').textContent = orgInitial;
-    document.getElementById('sCompanyName').textContent = org;
-    document.getElementById('sCompanyMeta').textContent = t.company?.classification || t.orgMeta || '';
+    document.getElementById('sCompanyName').textContent = rawOrg;
+    document.getElementById('sCompanyMeta').textContent = _f(t.orgMeta) || t.company?.classification || '';
     const deadlineDate = t.deadline ? new Date(t.deadline) : null;
     document.getElementById('sDeadline').textContent = deadlineDate
-        ? deadlineDate.toLocaleDateString('ar-SA', {year:'numeric',month:'long',day:'numeric'})
+        ? deadlineDate.toLocaleDateString(locale, {year:'numeric',month:'long',day:'numeric'})
         : '—';
 
     // Deadline progress bar
@@ -811,17 +848,24 @@ function renderTender(t) {
         const pct = Math.min(100, Math.max(0, Math.round(elapsed / total * 100)));
         document.getElementById('sDeadlineFill').style.width = pct + '%';
         const daysLeft = Math.ceil((deadlineDate - Date.now()) / 86400000);
-        document.getElementById('sDeadlineRemaining').textContent =
-            daysLeft > 0 ? `يتبقى ${daysLeft} يوماً` : 'انتهت مدة الاستقبال';
+        const remainingText = _f(t.deadlineRemaining) ||
+            (daysLeft > 0
+                ? (lang === 'en' ? `${daysLeft} days remaining` : `يتبقى ${daysLeft} يوماً`)
+                : (lang === 'en' ? 'Submission closed' : 'انتهت مدة الاستقبال'));
+        document.getElementById('sDeadlineRemaining').textContent = remainingText;
     }
 
-    // Bid count hidden per privacy rules (backend returns no bid count for list view)
+    // Bid count
     document.getElementById('sBidCount').textContent = t.bidCount !== undefined ? t.bidCount : '—';
 
     // CTA state
+    const btnSubmit = document.getElementById('btnSubmit');
     if (isClosed || (deadlineDate && Date.now() > deadlineDate)) {
-        document.getElementById('btnSubmit').disabled = true;
-        document.getElementById('btnSubmit').textContent = 'المناقصة مغلقة';
+        btnSubmit.disabled = true;
+        btnSubmit.textContent = lang === 'en' ? 'Tender Closed' : 'المناقصة مغلقة';
+    } else {
+        btnSubmit.disabled = false;
+        btnSubmit.textContent = lang === 'en' ? 'Submit Bid' : 'تقديم عرض';
     }
 
     // Show "already bid" state
@@ -832,8 +876,8 @@ function renderTender(t) {
     }
 
     // Modal info
-    document.getElementById('modalTenderName').textContent = t.title;
-    document.getElementById('modalOrgName').textContent = org;
+    document.getElementById('modalTenderName').textContent = titleStr;
+    document.getElementById('modalOrgName').textContent = rawOrg;
 
     // Wire chat button
     const chatBtn = document.getElementById('btnChatTender');
@@ -844,10 +888,12 @@ function renderTender(t) {
     if (bidsLink) bidsLink.href = `tender-bids.html?tenderId=${tenderId}`;
 
     // Owner view: replace "submit bid" with "view all bids"
-    const isOwner = t.isOwner || (t.company?.verified && !t.myBid && t._isOwner);
     if (t._isOwner) {
-        document.getElementById('btnSubmit').style.display = 'none';
-        if (bidsLink) { bidsLink.style.display = 'block'; bidsLink.textContent = '📊 عرض جميع العروض المقدمة'; }
+        btnSubmit.style.display = 'none';
+        if (bidsLink) {
+            bidsLink.style.display = 'block';
+            bidsLink.textContent = lang === 'en' ? '📊 View All Submitted Bids' : '📊 عرض جميع العروض المقدمة';
+        }
     }
 }
 
@@ -863,6 +909,12 @@ function renderTender(t) {
     const demo = TENDERS[tenderId] || TENDERS['1'];
     renderTender(demo);
 })();
+
+// Re-render on language switch
+window.addEventListener('khedmah:lang-changed', function(e) {
+    if (_currentTenderData) renderTender(_currentTenderData, e.detail.lang);
+    buildNavAuthDetail();
+});
 
 // ─── Bid Modal ───────────────────────────────────────────────────────────────
 function openBidModal() {
@@ -977,8 +1029,6 @@ function buildNavAuthDetail() {
             (typeof window.t === 'function' ? window.t('nav_register') : 'سجّل') + '</a>';
     }
 }
-window.addEventListener('khedmah:lang-changed', buildNavAuthDetail);
-
 document.addEventListener('DOMContentLoaded', () => {
   const btn = document.getElementById('themeToggle');
   if (btn) btn.textContent = document.documentElement.classList.contains('dark') ? '☀️' : '🌙';

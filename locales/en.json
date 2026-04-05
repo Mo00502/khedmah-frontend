@@ -1,8 +1,10 @@
 {
-  "_meta": { "dir": "ltr", "lang": "en", "name": "English" },
-
+  "_meta": {
+    "dir": "ltr",
+    "lang": "en",
+    "name": "English"
+  },
   "home_page_title": "Khedmah | Saudi Arabia's #1 Service Platform",
-
   "nav_home_services": "Home Services",
   "nav_tenders": "Tenders",
   "nav_equipment": "Equipment",
@@ -11,7 +13,6 @@
   "nav_login": "Login",
   "nav_register": "Register",
   "nav_logout": "Logout",
-
   "home_hero_title": "Find the Best <span class=\"highlight\">Professional Services</span> Near You",
   "home_hero_subtitle": "Over 500 verified service providers in your area",
   "home_search_placeholder": "🔍 Search for a service...",
@@ -21,12 +22,10 @@
   "home_stats_orders": "Completed Orders",
   "home_stats_rating": "Avg. Rating",
   "home_stats_cities": "Cities",
-
   "home_services_title": "Most Requested Services",
   "home_services_subtitle": "Browse hundreds of specialties — from plumbing to programming",
   "home_book_now": "Book Now",
   "home_see_more": "See More →",
-
   "home_how_title": "How Khedmah Works",
   "home_how_step1_title": "Find a Provider",
   "home_how_step1_desc": "Browse hundreds of providers in your city",
@@ -36,7 +35,6 @@
   "home_how_step3_desc": "Payments protected by escrow system",
   "home_how_step4_title": "Rate the Service",
   "home_how_step4_desc": "Share your experience to help others",
-
   "home_modules_equipment": "Heavy Equipment Rental",
   "home_modules_equipment_desc": "Excavators, cranes, generators — book instantly",
   "home_modules_tenders": "Project Tenders",
@@ -46,18 +44,15 @@
   "home_modules_ai": "AI Assistant",
   "home_modules_ai_desc": "Get instant AI-powered recommendations",
   "home_explore": "Explore →",
-
   "home_trust_verified": "✅ Verified Providers",
   "home_trust_secure": "🔒 Secure Escrow Payments",
   "home_trust_support": "📞 24/7 Support",
   "home_trust_vat": "📋 VAT Invoices",
-
   "footer_rights": "© 2026 Khedmah — All Rights Reserved",
   "footer_privacy": "Privacy Policy",
   "footer_terms": "Terms & Conditions",
   "footer_support": "Support",
   "footer_home": "Home",
-
   "equipment_page_title": "Heavy Equipment Rental - Khedmah",
   "equipment_hero_title": "🚜 Heavy Equipment Rental Marketplace",
   "equipment_hero_subtitle": "Instant rental or quote requests for large projects — guaranteed availability and delivery",
@@ -93,7 +88,6 @@
   "equipment_per_day": "/day",
   "equipment_available_now": "Available Now",
   "equipment_booked_until": "Booked Until",
-
   "rent_step_dates": "Dates",
   "rent_step_addons": "Add-ons",
   "rent_step_summary": "Summary",
@@ -114,7 +108,6 @@
   "rent_next": "Next",
   "rent_confirm_booking": "Confirm Booking",
   "rent_complete_payment": "Complete Payment & Book",
-
   "quote_modal_title": "Request a Quote",
   "quote_equipment_label": "Equipment",
   "quote_start_label": "Start Date",
@@ -133,7 +126,6 @@
   "quote_cancel": "Cancel",
   "quote_submit": "Submit Request",
   "quote_alert": "📌 This option is ideal for large projects and long-term rentals. The provider will contact you within 24 hours.",
-
   "consultations_page_title": "Engineering Consultations - Khedmah",
   "consultations_search_placeholder": "🔍 Search for a consultation...",
   "consultations_filter_specialty": "Specialty",
@@ -151,7 +143,6 @@
   "consultations_per_hour": "/hour",
   "consultations_experience": "yrs experience",
   "consultations_sessions": "sessions",
-
   "tenders_page_title": "Tenders - Khedmah",
   "tenders_btn_create": "+ Post Tender",
   "tenders_search_placeholder": "🔍 Search tenders...",
@@ -166,7 +157,6 @@
   "tenders_deadline": "Deadline",
   "tenders_bids_count": "bid(s)",
   "tenders_region": "Region",
-
   "common_save": "Save",
   "common_cancel": "Cancel",
   "common_close": "Close",
@@ -199,7 +189,6 @@
   "common_total": "Total",
   "common_subtotal": "Subtotal before tax",
   "common_vat": "Value Added Tax (15%)",
-
   "equipment_legend_available": "Available",
   "equipment_legend_booked": "Booked",
   "equipment_legend_selected": "Selected",
@@ -215,7 +204,6 @@
   "equipment_addons_cost": "Add-ons",
   "rent_cal_select_end": "📅 Start: {{start}} — now click the end date",
   "rent_cal_ready": "✅ {{start}} → {{end}}  ({{days}} days)",
-
   "tenders_hero_eyebrow": "Project Tenders Marketplace",
   "tenders_hero_title": "Have a project? Post it and get bids",
   "tenders_hero_desc": "From home renovation to café build-out — describe your project and receive bids from verified contractors",
@@ -269,5 +257,10 @@
   "tenders_toast_posted": "Tender posted successfully ✅",
   "tenders_alert_fill_all": "Please fill in all required fields",
   "tenders_alert_deadline": "Submission deadline must be in the future",
-  "tenders_estimated": "estimated"
+  "tenders_estimated": "estimated",
+  "tenders_badge_new": "New",
+  "tenders_badge_closing": "Closing Soon",
+  "tenders_badge_closed": "Closed",
+  "tenders_bids_label": "bids",
+  "tenders_no_translation": "Content not available in English yet"
 }
