@@ -196,26 +196,26 @@
     </nav>
 
     <div style="background:linear-gradient(135deg,#028090,#02C39A);padding:1.75rem 5%;text-align:center">
-      <p style="color:rgba(255,255,255,.6);font-size:.78rem;letter-spacing:.5px;text-transform:uppercase;margin-bottom:.4rem;font-family:'Tajawal',sans-serif">منصة المناقصات والمشاريع</p>
-      <h2 style="color:white;font-size:1.35rem;font-weight:900;margin-bottom:.45rem;font-family:'Tajawal',sans-serif">لديك مشروع؟ انشره وستأتيك العروض</h2>
-      <p style="color:rgba(255,255,255,.85);font-size:.88rem;margin-bottom:1rem;font-family:'Tajawal',sans-serif">من تجديد منزل إلى بناء مقهى — صف مشروعك واستقبل عروض من شركات ومقاولين موثوقين</p>
+      <p data-i18n="tenders_hero_eyebrow" style="color:rgba(255,255,255,.6);font-size:.78rem;letter-spacing:.5px;text-transform:uppercase;margin-bottom:.4rem;font-family:'Tajawal',sans-serif">منصة المناقصات والمشاريع</p>
+      <h2 data-i18n="tenders_hero_title" style="color:white;font-size:1.35rem;font-weight:900;margin-bottom:.45rem;font-family:'Tajawal',sans-serif">لديك مشروع؟ انشره وستأتيك العروض</h2>
+      <p data-i18n="tenders_hero_desc" style="color:rgba(255,255,255,.85);font-size:.88rem;margin-bottom:1rem;font-family:'Tajawal',sans-serif">من تجديد منزل إلى بناء مقهى — صف مشروعك واستقبل عروض من شركات ومقاولين موثوقين</p>
       <a href="tender-create.html" data-i18n="tenders_btn_create" style="background:white;color:#028090;padding:.8rem 2.25rem;border-radius:12px;text-decoration:none;font-weight:900;font-size:1rem;display:inline-flex;align-items:center;gap:.4rem;min-height:48px;box-shadow:0 4px 15px rgba(0,0,0,.15)">➕ أضف مناقصتك</a>
     </div>
 
     <div class="market-stats">
         <div class="market-stats-inner">
-            <div class="stat-pill">📋 <strong id="statOpen">5</strong> مشروع مفتوح</div>
-            <div class="stat-pill">🏗️ منازل • مقاهي • محلات • تقنية</div>
-            <div class="stat-pill">🏙️ <strong>5</strong> مدن</div>
-            <div class="stat-pill">⚡ آخر تحديث: اليوم</div>
+            <div class="stat-pill">📋 <strong id="statOpen">5</strong> <span data-i18n="tenders_stat_open">مشروع مفتوح</span></div>
+            <div class="stat-pill">🏗️ <span data-i18n="tenders_stat_cats">منازل • مقاهي • محلات • تقنية</span></div>
+            <div class="stat-pill">🏙️ <strong>5</strong> <span data-i18n="tenders_stat_cities">مدن</span></div>
+            <div class="stat-pill">⚡ <span data-i18n="tenders_stat_updated">آخر تحديث: اليوم</span></div>
         </div>
     </div>
 
     <div class="page-header">
         <div class="page-header-inner">
             <div>
-                <div class="page-title">المناقصات <span>والعطاءات</span></div>
-                <div class="page-subtitle">ابحث عن مناقصات مفتوحة وقدّم عروضك مباشرة</div>
+                <div class="page-title"><span data-i18n="tenders_header_title">المناقصات</span> <span data-i18n="tenders_header_title_accent">والعطاءات</span></div>
+                <div class="page-subtitle" data-i18n="tenders_header_subtitle">ابحث عن مناقصات مفتوحة وقدّم عروضك مباشرة</div>
             </div>
             <div class="header-search">
                 <input type="text" id="searchInput" placeholder="🔍 ابحث في المناقصات..." data-i18n-placeholder="tenders_search_placeholder" oninput="applyFilters()">
@@ -228,35 +228,35 @@
         <!-- Filters -->
         <aside class="filters-sidebar">
             <div class="filter-panel">
-                <div class="filter-title">القطاع <span class="filter-clear" onclick="clearFilters()">مسح الكل</span></div>
-                <div class="filter-option"><input type="checkbox" id="s1" data-filter="sector" value="تشطيبات" onchange="applyFilters()"><label for="s1">🎨 تشطيبات وديكور</label><span class="count">3</span></div>
-                <div class="filter-option"><input type="checkbox" id="s2" data-filter="sector" value="تقنية" onchange="applyFilters()"><label for="s2">💻 تقنية ومواقع</label><span class="count">2</span></div>
-                <div class="filter-option"><input type="checkbox" id="s3" data-filter="sector" value="إنشاء" onchange="applyFilters()"><label for="s3">🏗️ بناء وإنشاء</label><span class="count">1</span></div>
-                <div class="filter-option extra-filter" id="extraFilters" style="display:none"><input type="checkbox" id="s4" data-filter="sector" value="تصميم" onchange="applyFilters()"><label for="s4">✏️ تصميم</label><span class="count">1</span></div>
-                <div class="filter-option extra-filter" style="display:none"><input type="checkbox" id="s5" data-filter="sector" value="طاقة" onchange="applyFilters()"><label for="s5">☀️ طاقة شمسية</label><span class="count">1</span></div>
-                <button onclick="(function(btn){var els=document.querySelectorAll('.extra-filter');var show=els[0].style.display==='none';els.forEach(function(e){e.style.display=show?'flex':'none';});btn.textContent=show?'▲ أقل':'المزيد من الفلاتر ▼';})(this)" style="background:none;border:none;color:var(--primary);font-family:'Tajawal',sans-serif;font-size:0.8rem;font-weight:600;cursor:pointer;padding:0.25rem 0;text-align:right;width:100%">المزيد من الفلاتر ▼</button>
+                <div class="filter-title"><span data-i18n="tenders_filter_sector">القطاع</span> <span class="filter-clear" onclick="clearFilters()" data-i18n="tenders_filter_clear">مسح الكل</span></div>
+                <div class="filter-option"><input type="checkbox" id="s1" data-filter="sector" value="تشطيبات" onchange="applyFilters()"><label for="s1" data-i18n="tenders_sector_finishing">🎨 تشطيبات وديكور</label><span class="count">3</span></div>
+                <div class="filter-option"><input type="checkbox" id="s2" data-filter="sector" value="تقنية" onchange="applyFilters()"><label for="s2" data-i18n="tenders_sector_tech">💻 تقنية ومواقع</label><span class="count">2</span></div>
+                <div class="filter-option"><input type="checkbox" id="s3" data-filter="sector" value="إنشاء" onchange="applyFilters()"><label for="s3" data-i18n="tenders_sector_construction">🏗️ بناء وإنشاء</label><span class="count">1</span></div>
+                <div class="filter-option extra-filter" id="extraFilters" style="display:none"><input type="checkbox" id="s4" data-filter="sector" value="تصميم" onchange="applyFilters()"><label for="s4" data-i18n="tenders_sector_design">✏️ تصميم</label><span class="count">1</span></div>
+                <div class="filter-option extra-filter" style="display:none"><input type="checkbox" id="s5" data-filter="sector" value="طاقة" onchange="applyFilters()"><label for="s5" data-i18n="tenders_sector_energy">☀️ طاقة شمسية</label><span class="count">1</span></div>
+                <button id="moreSectorsBtn" onclick="toggleExtraFilters(this)" style="background:none;border:none;color:var(--primary);font-family:'Tajawal',sans-serif;font-size:0.8rem;font-weight:600;cursor:pointer;padding:0.25rem 0;text-align:right;width:100%" data-i18n="tenders_filter_more">المزيد من الفلاتر ▼</button>
             </div>
 
             <div class="filter-panel">
                 <div class="filter-title" data-i18n="tenders_filter_status">الحالة</div>
-                <div class="filter-option"><input type="checkbox" id="st1" data-filter="status" value="open" onchange="applyFilters()"><label for="st1">🟢 مفتوح</label></div>
-                <div class="filter-option"><input type="checkbox" id="st2" data-filter="status" value="soon" onchange="applyFilters()"><label for="st2">🟡 يغلق قريبًا</label></div>
-                <div class="filter-option"><input type="checkbox" id="st3" data-filter="status" value="closed" onchange="applyFilters()"><label for="st3">🔴 مغلق</label></div>
+                <div class="filter-option"><input type="checkbox" id="st1" data-filter="status" value="open" onchange="applyFilters()"><label for="st1" data-i18n="tenders_status_open">🟢 مفتوح</label></div>
+                <div class="filter-option"><input type="checkbox" id="st2" data-filter="status" value="soon" onchange="applyFilters()"><label for="st2" data-i18n="tenders_status_soon">🟡 يغلق قريبًا</label></div>
+                <div class="filter-option"><input type="checkbox" id="st3" data-filter="status" value="closed" onchange="applyFilters()"><label for="st3" data-i18n="tenders_status_closed_lbl">🔴 مغلق</label></div>
             </div>
 
             <div class="filter-panel">
-                <div class="filter-title">الميزانية (ر.س)</div>
+                <div class="filter-title" data-i18n="tenders_filter_budget">الميزانية (ر.س)</div>
                 <div class="range-row">
-                    <input type="number" id="budgetMin" class="range-input" placeholder="من" oninput="applyFilters()">
+                    <input type="number" id="budgetMin" class="range-input" placeholder="من" data-i18n-placeholder="tenders_budget_from" oninput="applyFilters()">
                     <span style="color:var(--gray)">—</span>
-                    <input type="number" id="budgetMax" class="range-input" placeholder="إلى" oninput="applyFilters()">
+                    <input type="number" id="budgetMax" class="range-input" placeholder="إلى" data-i18n-placeholder="tenders_budget_to" oninput="applyFilters()">
                 </div>
             </div>
 
             <div class="filter-panel">
-                <div class="filter-title">المدينة</div>
+                <div class="filter-title" data-i18n="tenders_filter_city">المدينة</div>
                 <select class="filter-select" id="cityFilter" onchange="applyFilters()">
-                    <option value="">جميع المدن</option>
+                    <option value="" data-i18n="tenders_city_all">جميع المدن</option>
                     <option value="الرياض">الرياض</option>
                     <option value="جدة">جدة</option>
                     <option value="الدمام">الدمام</option>
@@ -269,12 +269,12 @@
         <!-- Results -->
         <div class="results-area">
             <div class="results-header">
-                <div class="results-count">عرض <strong id="visibleCount">8</strong> من <strong>8</strong> مناقصة</div>
+                <div class="results-count"><span data-i18n="tenders_results_showing">عرض</span> <strong id="visibleCount">8</strong> <span data-i18n="tenders_results_of">من</span> <strong>8</strong> <span data-i18n="tenders_results_suffix">مناقصة</span></div>
                 <select class="sort-select" id="sortSelect" onchange="sortTenders()">
-                    <option value="newest">الأحدث أولاً</option>
-                    <option value="budget_high">الميزانية: الأعلى</option>
-                    <option value="budget_low">الميزانية: الأقل</option>
-                    <option value="deadline">أقرب موعد انتهاء</option>
+                    <option value="newest" data-i18n="tenders_sort_newest">الأحدث أولاً</option>
+                    <option value="budget_high" data-i18n="tenders_sort_budget_high">الميزانية: الأعلى</option>
+                    <option value="budget_low" data-i18n="tenders_sort_budget_low">الميزانية: الأقل</option>
+                    <option value="deadline" data-i18n="tenders_sort_deadline">أقرب موعد انتهاء</option>
                 </select>
             </div>
 
@@ -292,7 +292,7 @@
                         </div>
                         <div class="tc-side">
                             <div class="tc-budget">150,000 – 200,000<small>ر.س تقديرياً</small></div>
-                            <span class="status-badge status-open">مفتوح</span>
+                            <span class="status-badge status-open" data-i18n="tenders_status_open_badge">مفتوح</span>
                         </div>
                     </div>
                     <div class="tc-meta">
@@ -301,8 +301,8 @@
                         <span>👥 4 عروض</span>
                         <span class="sector-tag">تشطيبات</span>
                         <span class="spacer"></span>
-                        <a href="tender-detail.html?id=1" class="btn-details">عرض التفاصيل</a>
-                        <a href="tender-detail.html?id=1" class="btn-bid">✍️ تقديم عرض</a>
+                        <a href="tender-detail.html?id=1" class="btn-details" data-i18n="tenders_btn_view">عرض التفاصيل</a>
+                        <a href="tender-detail.html?id=1" class="btn-bid" data-i18n="tenders_btn_bid">✍️ تقديم عرض</a>
                     </div>
                 </div>
 
@@ -318,7 +318,7 @@
                         </div>
                         <div class="tc-side">
                             <div class="tc-budget">280,000 – 360,000<small>ر.س تقديرياً</small></div>
-                            <span class="status-badge status-open">مفتوح</span>
+                            <span class="status-badge status-open" data-i18n="tenders_status_open_badge">مفتوح</span>
                         </div>
                     </div>
                     <div class="tc-meta">
@@ -327,8 +327,8 @@
                         <span>👥 9 عروض</span>
                         <span class="sector-tag">تشطيبات</span>
                         <span class="spacer"></span>
-                        <a href="tender-detail.html?id=2" class="btn-details">عرض التفاصيل</a>
-                        <a href="tender-detail.html?id=2" class="btn-bid">✍️ تقديم عرض</a>
+                        <a href="tender-detail.html?id=2" class="btn-details" data-i18n="tenders_btn_view">عرض التفاصيل</a>
+                        <a href="tender-detail.html?id=2" class="btn-bid" data-i18n="tenders_btn_bid">✍️ تقديم عرض</a>
                     </div>
                 </div>
 
@@ -344,7 +344,7 @@
                         </div>
                         <div class="tc-side">
                             <div class="tc-budget">80,000 – 110,000<small>ر.س تقديرياً</small></div>
-                            <span class="status-badge status-soon">يغلق قريبًا</span>
+                            <span class="status-badge status-soon" data-i18n="tenders_status_soon_badge">يغلق قريبًا</span>
                         </div>
                     </div>
                     <div class="tc-meta">
@@ -353,8 +353,8 @@
                         <span>👥 6 عروض</span>
                         <span class="sector-tag">تشطيبات</span>
                         <span class="spacer"></span>
-                        <a href="tender-detail.html?id=3" class="btn-details">عرض التفاصيل</a>
-                        <a href="tender-detail.html?id=3" class="btn-bid">✍️ تقديم عرض</a>
+                        <a href="tender-detail.html?id=3" class="btn-details" data-i18n="tenders_btn_view">عرض التفاصيل</a>
+                        <a href="tender-detail.html?id=3" class="btn-bid" data-i18n="tenders_btn_bid">✍️ تقديم عرض</a>
                     </div>
                 </div>
 
@@ -370,7 +370,7 @@
                         </div>
                         <div class="tc-side">
                             <div class="tc-budget">35,000 – 45,000<small>ر.س تقديرياً</small></div>
-                            <span class="status-badge status-closed">مغلق</span>
+                            <span class="status-badge status-closed" data-i18n="tenders_status_closed_badge">مغلق</span>
                         </div>
                     </div>
                     <div class="tc-meta">
@@ -379,8 +379,8 @@
                         <span>👥 11 عرض</span>
                         <span class="sector-tag">تقنية</span>
                         <span class="spacer"></span>
-                        <a href="tender-detail.html?id=4" class="btn-details">عرض التفاصيل</a>
-                        <span class="btn-bid" style="background:#94a3b8;cursor:not-allowed">مغلق</span>
+                        <a href="tender-detail.html?id=4" class="btn-details" data-i18n="tenders_btn_view">عرض التفاصيل</a>
+                        <span class="btn-bid" style="background:#94a3b8;cursor:not-allowed" data-i18n="tenders_status_closed_badge">مغلق</span>
                     </div>
                 </div>
 
@@ -396,7 +396,7 @@
                         </div>
                         <div class="tc-side">
                             <div class="tc-budget">75,000 – 105,000<small>ر.س تقديرياً</small></div>
-                            <span class="status-badge status-open">مفتوح</span>
+                            <span class="status-badge status-open" data-i18n="tenders_status_open_badge">مفتوح</span>
                         </div>
                     </div>
                     <div class="tc-meta">
@@ -405,8 +405,8 @@
                         <span>👥 3 عروض</span>
                         <span class="sector-tag">تصميم</span>
                         <span class="spacer"></span>
-                        <a href="tender-detail.html?id=5" class="btn-details">عرض التفاصيل</a>
-                        <a href="tender-detail.html?id=5" class="btn-bid">✍️ تقديم عرض</a>
+                        <a href="tender-detail.html?id=5" class="btn-details" data-i18n="tenders_btn_view">عرض التفاصيل</a>
+                        <a href="tender-detail.html?id=5" class="btn-bid" data-i18n="tenders_btn_bid">✍️ تقديم عرض</a>
                     </div>
                 </div>
 
@@ -422,7 +422,7 @@
                         </div>
                         <div class="tc-side">
                             <div class="tc-budget">55,000 – 70,000<small>ر.س تقديرياً</small></div>
-                            <span class="status-badge status-soon">يغلق قريبًا</span>
+                            <span class="status-badge status-soon" data-i18n="tenders_status_soon_badge">يغلق قريبًا</span>
                         </div>
                     </div>
                     <div class="tc-meta">
@@ -431,8 +431,8 @@
                         <span>👥 7 عروض</span>
                         <span class="sector-tag">طاقة</span>
                         <span class="spacer"></span>
-                        <a href="tender-detail.html?id=6" class="btn-details">عرض التفاصيل</a>
-                        <a href="tender-detail.html?id=6" class="btn-bid">✍️ تقديم عرض</a>
+                        <a href="tender-detail.html?id=6" class="btn-details" data-i18n="tenders_btn_view">عرض التفاصيل</a>
+                        <a href="tender-detail.html?id=6" class="btn-bid" data-i18n="tenders_btn_bid">✍️ تقديم عرض</a>
                     </div>
                 </div>
 
@@ -448,7 +448,7 @@
                         </div>
                         <div class="tc-side">
                             <div class="tc-budget">45,000 – 60,000<small>ر.س تقديرياً</small></div>
-                            <span class="status-badge status-closed">مغلق</span>
+                            <span class="status-badge status-closed" data-i18n="tenders_status_closed_badge">مغلق</span>
                         </div>
                     </div>
                     <div class="tc-meta">
@@ -457,8 +457,8 @@
                         <span>👥 8 عروض</span>
                         <span class="sector-tag">تقنية</span>
                         <span class="spacer"></span>
-                        <a href="tender-detail.html?id=7" class="btn-details">عرض التفاصيل</a>
-                        <span class="btn-bid" style="background:#94a3b8;cursor:not-allowed">مغلق</span>
+                        <a href="tender-detail.html?id=7" class="btn-details" data-i18n="tenders_btn_view">عرض التفاصيل</a>
+                        <span class="btn-bid" style="background:#94a3b8;cursor:not-allowed" data-i18n="tenders_status_closed_badge">مغلق</span>
                     </div>
                 </div>
 
@@ -474,7 +474,7 @@
                         </div>
                         <div class="tc-side">
                             <div class="tc-budget">110,000 – 160,000<small>ر.س تقديرياً</small></div>
-                            <span class="status-badge status-open">مفتوح</span>
+                            <span class="status-badge status-open" data-i18n="tenders_status_open_badge">مفتوح</span>
                         </div>
                     </div>
                     <div class="tc-meta">
@@ -483,8 +483,8 @@
                         <span>👥 5 عروض</span>
                         <span class="sector-tag">إنشاء</span>
                         <span class="spacer"></span>
-                        <a href="tender-detail.html?id=8" class="btn-details">عرض التفاصيل</a>
-                        <a href="tender-detail.html?id=8" class="btn-bid">✍️ تقديم عرض</a>
+                        <a href="tender-detail.html?id=8" class="btn-details" data-i18n="tenders_btn_view">عرض التفاصيل</a>
+                        <a href="tender-detail.html?id=8" class="btn-bid" data-i18n="tenders_btn_bid">✍️ تقديم عرض</a>
                     </div>
                 </div>
 
@@ -492,8 +492,8 @@
 
             <div class="empty-state-ux" id="emptyState" style="display:none;">
                 <div class="empty-icon">🔍</div>
-                <h3>لا توجد مناقصات مطابقة</h3>
-                <p>جرّب تغيير معايير البحث أو إزالة بعض الفلاتر</p>
+                <h3 data-i18n="tenders_empty_title">لا توجد مناقصات مطابقة</h3>
+                <p data-i18n="tenders_empty_desc">جرّب تغيير معايير البحث أو إزالة بعض الفلاتر</p>
             </div>
         </div>
     </div>
@@ -502,17 +502,17 @@
     <div class="modal-overlay" id="postModal">
         <div class="modal">
             <div class="modal-header">
-                <div class="modal-title">نشر مناقصة جديدة</div>
+                <div class="modal-title" data-i18n="tenders_modal_post_title">نشر مناقصة جديدة</div>
                 <button class="modal-close" onclick="closeModal('postModal')">✕</button>
             </div>
             <div class="form-group">
-                <label class="form-label">عنوان المناقصة *</label>
-                <input type="text" class="form-control" placeholder="وصف موجز للمشروع">
+                <label class="form-label" data-i18n="tenders_modal_title_lbl">عنوان المناقصة *</label>
+                <input type="text" class="form-control" placeholder="وصف موجز للمشروع" data-i18n-placeholder="tenders_modal_title_ph">
             </div>
             <div class="form-group">
-                <label class="form-label">القطاع *</label>
+                <label class="form-label" data-i18n="tenders_modal_sector_lbl">القطاع *</label>
                 <select class="form-control">
-                    <option value="">اختر القطاع</option>
+                    <option value="" data-i18n="tenders_modal_sector_ph">اختر القطاع</option>
                     <option>بناء وإنشاء</option>
                     <option>تقنية المعلومات</option>
                     <option>رعاية صحية</option>
@@ -522,27 +522,27 @@
                 </select>
             </div>
             <div class="form-group">
-                <label class="form-label">الميزانية التقديرية (ر.س) *</label>
+                <label class="form-label" data-i18n="tenders_modal_budget_lbl">الميزانية التقديرية (ر.س) *</label>
                 <input type="number" class="form-control" placeholder="0">
             </div>
             <div class="form-group">
-                <label class="form-label">تاريخ انتهاء الاستقبال *</label>
+                <label class="form-label" data-i18n="tenders_modal_deadline_lbl">تاريخ انتهاء الاستقبال *</label>
                 <input type="date" class="form-control">
             </div>
             <div class="form-group">
-                <label class="form-label">المدينة *</label>
+                <label class="form-label" data-i18n="tenders_modal_city_lbl">المدينة *</label>
                 <select class="form-control">
                     <option>الرياض</option><option>جدة</option><option>الدمام</option>
                     <option>مكة المكرمة</option><option>المدينة المنورة</option>
                 </select>
             </div>
             <div class="form-group">
-                <label class="form-label">وصف المناقصة والمتطلبات *</label>
-                <textarea class="form-control" placeholder="اشرح المشروع بالتفصيل..."></textarea>
+                <label class="form-label" data-i18n="tenders_modal_desc_lbl">وصف المناقصة والمتطلبات *</label>
+                <textarea class="form-control" placeholder="اشرح المشروع بالتفصيل..." data-i18n-placeholder="tenders_modal_desc_ph"></textarea>
             </div>
             <div class="modal-footer">
-                <button class="btn-full btn-cancel" onclick="closeModal('postModal')">إلغاء</button>
-                <button class="btn-full btn-submit" onclick="submitPost()">نشر المناقصة</button>
+                <button class="btn-full btn-cancel" onclick="closeModal('postModal')" data-i18n="common_cancel">إلغاء</button>
+                <button class="btn-full btn-submit" onclick="submitPost()" data-i18n="tenders_modal_submit">نشر المناقصة</button>
             </div>
         </div>
     </div>
@@ -605,6 +605,15 @@
             applyFilters();
         }
 
+        function toggleExtraFilters(btn) {
+            var els = document.querySelectorAll('.extra-filter');
+            var show = els[0].style.display === 'none';
+            els.forEach(function(e) { e.style.display = show ? 'flex' : 'none'; });
+            btn.setAttribute('data-i18n', show ? 'tenders_filter_less' : 'tenders_filter_more');
+            if (typeof t === 'function') btn.textContent = t(show ? 'tenders_filter_less' : 'tenders_filter_more');
+            else btn.textContent = show ? '▲ أقل' : 'المزيد من الفلاتر ▼';
+        }
+
         function openPostModal() {
             document.getElementById('postModal').classList.add('show');
         }
@@ -620,19 +629,19 @@
             const deadline = document.querySelector('#postModal input[type="date"]').value;
             const description = document.querySelector('#postModal textarea').value.trim();
             if (!title || !sector || !budget || !deadline || !description) {
-                alert('يرجى تعبئة جميع الحقول الإلزامية');
+                alert(typeof t === 'function' ? t('tenders_alert_fill_all') : 'يرجى تعبئة جميع الحقول الإلزامية');
                 return;
             }
             const deadlineDate = new Date(deadline);
             if (deadlineDate <= new Date()) {
-                alert('يجب أن يكون تاريخ انتهاء الاستقبال في المستقبل');
+                alert(typeof t === 'function' ? t('tenders_alert_deadline') : 'يجب أن يكون تاريخ انتهاء الاستقبال في المستقبل');
                 return;
             }
             closeModal('postModal');
             try {
                 await API.tenders.create({ title, category: sector, budget: Number(budget), deadline, description });
             } catch(e) { /* demo — proceed */ }
-            showToast('تم نشر المناقصة بنجاح ✅');
+            showToast(typeof t === 'function' ? t('tenders_toast_posted') : 'تم نشر المناقصة بنجاح ✅');
         }
 
         function escHtml(s) { return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
@@ -672,7 +681,8 @@
 
         function buildTenderCard(t) {
             const statusMap = { OPEN:'open', CLOSED:'closed', AWARDED:'closed', CANCELLED:'closed', DRAFT:'closed', UNDER_REVIEW:'open' };
-            const statusLabelMap = { OPEN:'مفتوح', AWARDED:'مُرسى', CANCELLED:'ملغي', CLOSED:'مغلق', DRAFT:'مسودة', UNDER_REVIEW:'قيد المراجعة' };
+            const _tFn = typeof t === 'function' ? t : (k => k);
+            const statusLabelMap = { OPEN: _tFn('tenders_status_open_badge') || 'مفتوح', AWARDED: 'مُرسى', CANCELLED: 'ملغي', CLOSED: _tFn('tenders_status_closed_badge') || 'مغلق', DRAFT: 'مسودة', UNDER_REVIEW: _tFn('tenders_status_soon_badge') || 'قيد المراجعة' };
             const badgeClass = t.status === 'OPEN' ? 'status-open' : t.status === 'UNDER_REVIEW' ? 'status-soon' : 'status-closed';
             const budgetMin = Number(t.budgetMin || t.budgetLow || 0);
             const budgetMax = Number(t.budgetMax || t.budgetHigh || 0);
@@ -709,10 +719,10 @@
                 <span>⏰ الإغلاق: ${deadline}</span>
                 <span class="sector-tag">${escHtml(t.category || '')}</span>
                 <span class="spacer"></span>
-                <a href="tender-detail.html?id=${encodeURIComponent(t.id)}" class="btn-details">عرض التفاصيل</a>
+                <a href="tender-detail.html?id=${encodeURIComponent(t.id)}" class="btn-details" data-i18n="tenders_btn_view">عرض التفاصيل</a>
                 ${canBid
-                  ? `<a href="tender-detail.html?id=${encodeURIComponent(t.id)}" class="btn-bid">✍️ تقديم عرض</a>`
-                  : `<span class="btn-bid" style="background:#94a3b8;cursor:not-allowed">مغلق</span>`
+                  ? `<a href="tender-detail.html?id=${encodeURIComponent(t.id)}" class="btn-bid" data-i18n="tenders_btn_bid">✍️ تقديم عرض</a>`
+                  : `<span class="btn-bid" style="background:#94a3b8;cursor:not-allowed" data-i18n="tenders_status_closed_badge">مغلق</span>`
                 }
               </div>`;
             return card;
@@ -739,7 +749,10 @@
                         }
                     });
                     const total = list.querySelectorAll('.tender-card').length;
-                    document.querySelector('.results-count').innerHTML = `عرض <strong id="visibleCount">${total}</strong> من <strong>${total}</strong> مناقصة`;
+                    const showing = typeof t === 'function' ? t('tenders_results_showing') : 'عرض';
+                    const ofTxt = typeof t === 'function' ? t('tenders_results_of') : 'من';
+                    const suffix = typeof t === 'function' ? t('tenders_results_suffix') : 'مناقصة';
+                    document.querySelector('.results-count').innerHTML = `<span data-i18n="tenders_results_showing">${showing}</span> <strong id="visibleCount">${total}</strong> <span data-i18n="tenders_results_of">${ofTxt}</span> <strong>${total}</strong> <span data-i18n="tenders_results_suffix">${suffix}</span>`;
                     // Update stats bar
                     const openCount = items.filter(t => t.status === 'OPEN').length;
                     const statEl = document.getElementById('statOpen');
@@ -752,12 +765,12 @@
 
 <footer style="background:#1e293b;color:rgba(255,255,255,0.55);padding:1.5rem 5%;text-align:center;font-family:'Tajawal',sans-serif;font-size:0.85rem;margin-top:2rem;">
     <div style="display:flex;gap:1.5rem;justify-content:center;flex-wrap:wrap;margin-bottom:0.75rem;">
-        <a href="home.html" style="color:rgba(255,255,255,0.55);text-decoration:none;">الرئيسية</a>
-        <a href="terms.html" style="color:rgba(255,255,255,0.55);text-decoration:none;">شروط الاستخدام</a>
-        <a href="privacy-policy.html" style="color:rgba(255,255,255,0.55);text-decoration:none;">سياسة الخصوصية</a>
-        <a href="support.html" style="color:rgba(255,255,255,0.55);text-decoration:none;">الدعم والمساعدة</a>
+        <a href="home.html" style="color:rgba(255,255,255,0.55);text-decoration:none;" data-i18n="footer_home">الرئيسية</a>
+        <a href="terms.html" style="color:rgba(255,255,255,0.55);text-decoration:none;" data-i18n="footer_terms">شروط الاستخدام</a>
+        <a href="privacy-policy.html" style="color:rgba(255,255,255,0.55);text-decoration:none;" data-i18n="footer_privacy">سياسة الخصوصية</a>
+        <a href="support.html" style="color:rgba(255,255,255,0.55);text-decoration:none;" data-i18n="footer_support">الدعم والمساعدة</a>
     </div>
-    <p>© 2025 خدمة — جميع الحقوق محفوظة</p>
+    <p data-i18n="footer_rights">© 2026 خدمة — جميع الحقوق محفوظة</p>
 </footer>
 <button id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="للأعلى">↑</button>
 <script>
