@@ -146,8 +146,17 @@
         .badge-closing { background: rgba(245,158,11,0.12); color: #92400e; font-size: 0.72rem; font-weight: 700; padding: 0.2rem 0.55rem; border-radius: 8px; }
         .badge-closed { background: rgba(239,68,68,0.1); color: #991b1b; font-size: 0.72rem; font-weight: 700; padding: 0.2rem 0.55rem; border-radius: 8px; }
 
-        /* View bids button */
-        .btn-view-bids { background: rgba(2,128,144,0.1); color: var(--primary); border-radius: 10px; padding: 0.45rem 0.875rem; text-decoration: none; font-size: 0.82rem; font-weight: 700; white-space: nowrap; }
+        /* Secondary details button */
+        .btn-details { background: rgba(2,128,144,0.1); color: var(--primary); border-radius: 10px; padding: 0.45rem 0.875rem; text-decoration: none; font-size: 0.82rem; font-weight: 700; white-space: nowrap; }
+        .btn-details:hover { background: rgba(2,128,144,0.18); }
+
+        /* Marketplace stats bar */
+        .market-stats { background: white; border-bottom: 1px solid #e2e8f0; padding: 0.85rem 5%; }
+        .market-stats-inner { max-width: 1200px; margin: 0 auto; display: flex; gap: 2rem; flex-wrap: wrap; align-items: center; justify-content: center; }
+        .stat-pill { display: flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; color: var(--gray); }
+        .stat-pill strong { color: var(--primary); font-weight: 800; }
+        html.dark .market-stats { background: #1e293b; border-color: #334155; }
+        html.dark .btn-details { background: rgba(2,128,144,0.15); }
 
         @media (max-width: 768px) {
             .filters-sidebar { display: none; }
@@ -189,6 +198,15 @@
     <div style="background:linear-gradient(135deg,#028090,#02C39A);padding:1.5rem 5%;text-align:center">
       <p style="color:rgba(255,255,255,.85);font-size:.9rem;margin-bottom:.75rem;font-family:'Tajawal',sans-serif">هل لديك مشروع؟ انشر مناقصتك واستقبل عروض من متخصصين</p>
       <a href="tender-create.html" data-i18n="tenders_btn_create" style="background:white;color:#028090;padding:.75rem 2rem;border-radius:12px;text-decoration:none;font-weight:800;font-size:1rem;display:inline-flex;align-items:center;min-height:48px">+ انشر مناقصة</a>
+    </div>
+
+    <div class="market-stats">
+        <div class="market-stats-inner">
+            <div class="stat-pill">📋 <strong id="statOpen">5</strong> مناقصة مفتوحة</div>
+            <div class="stat-pill">💰 إجمالي الميزانيات: <strong>5.2 مليون ر.س</strong></div>
+            <div class="stat-pill">🏙️ <strong>5</strong> مدن</div>
+            <div class="stat-pill">⚡ آخر تحديث: اليوم</div>
+        </div>
     </div>
 
     <div class="page-header">
@@ -280,8 +298,8 @@
                         <span>👥 12 عرض</span>
                         <span class="sector-tag">بناء</span>
                         <span class="spacer"></span>
-                        <a href="tender-detail.html?id=1" class="btn-bid">عرض التفاصيل</a>
-                        <a href="tender-bids.html?tenderId=1" class="btn-view-bids">📊 العروض (12)</a>
+                        <a href="tender-detail.html?id=1" class="btn-details">عرض التفاصيل</a>
+                        <a href="tender-detail.html?id=1" class="btn-bid">✍️ تقديم عرض</a>
                     </div>
                 </div>
 
@@ -305,8 +323,8 @@
                         <span>👥 7 عروض</span>
                         <span class="sector-tag">تقنية</span>
                         <span class="spacer"></span>
-                        <a href="tender-detail.html?id=2" class="btn-bid">عرض التفاصيل</a>
-                        <a href="tender-bids.html?tenderId=2" class="btn-view-bids">📊 العروض (8)</a>
+                        <a href="tender-detail.html?id=2" class="btn-details">عرض التفاصيل</a>
+                        <a href="tender-detail.html?id=2" class="btn-bid">✍️ تقديم عرض</a>
                     </div>
                 </div>
 
@@ -330,8 +348,8 @@
                         <span>👥 18 عرض</span>
                         <span class="sector-tag">بناء</span>
                         <span class="spacer"></span>
-                        <a href="tender-detail.html?id=3" class="btn-bid">عرض التفاصيل</a>
-                        <a href="tender-bids.html?tenderId=3" class="btn-view-bids">📊 العروض (5)</a>
+                        <a href="tender-detail.html?id=3" class="btn-details">عرض التفاصيل</a>
+                        <a href="tender-detail.html?id=3" class="btn-bid">✍️ تقديم عرض</a>
                     </div>
                 </div>
 
@@ -379,7 +397,8 @@
                         <span>👥 3 عروض</span>
                         <span class="sector-tag">تعليم</span>
                         <span class="spacer"></span>
-                        <a href="tender-detail.html?id=5" class="btn-bid">عرض التفاصيل</a>
+                        <a href="tender-detail.html?id=5" class="btn-details">عرض التفاصيل</a>
+                        <a href="tender-detail.html?id=5" class="btn-bid">✍️ تقديم عرض</a>
                     </div>
                 </div>
 
@@ -403,7 +422,8 @@
                         <span>👥 9 عروض</span>
                         <span class="sector-tag">طاقة</span>
                         <span class="spacer"></span>
-                        <a href="tender-detail.html?id=6" class="btn-bid">عرض التفاصيل</a>
+                        <a href="tender-detail.html?id=6" class="btn-details">عرض التفاصيل</a>
+                        <a href="tender-detail.html?id=6" class="btn-bid">✍️ تقديم عرض</a>
                     </div>
                 </div>
 
@@ -451,7 +471,8 @@
                         <span>👥 4 عروض</span>
                         <span class="sector-tag">بناء</span>
                         <span class="spacer"></span>
-                        <a href="tender-detail.html?id=8" class="btn-bid">عرض التفاصيل</a>
+                        <a href="tender-detail.html?id=8" class="btn-details">عرض التفاصيل</a>
+                        <a href="tender-detail.html?id=8" class="btn-bid">✍️ تقديم عرض</a>
                     </div>
                 </div>
 
@@ -676,9 +697,11 @@
                 <span>⏰ الإغلاق: ${deadline}</span>
                 <span class="sector-tag">${escHtml(t.category || '')}</span>
                 <span class="spacer"></span>
-                <a href="tender-detail.html?id=${encodeURIComponent(t.id)}" class="btn-bid ${canBid ? '' : ''}" ${canBid ? '' : 'style="background:#94a3b8;pointer-events:none"'}>
-                  ${canBid ? 'عرض التفاصيل' : 'مغلق'}
-                </a>
+                <a href="tender-detail.html?id=${encodeURIComponent(t.id)}" class="btn-details">عرض التفاصيل</a>
+                ${canBid
+                  ? `<a href="tender-detail.html?id=${encodeURIComponent(t.id)}" class="btn-bid">✍️ تقديم عرض</a>`
+                  : `<span class="btn-bid" style="background:#94a3b8;cursor:not-allowed">مغلق</span>`
+                }
               </div>`;
             return card;
         }
@@ -705,6 +728,10 @@
                     });
                     const total = list.querySelectorAll('.tender-card').length;
                     document.querySelector('.results-count').innerHTML = `عرض <strong id="visibleCount">${total}</strong> من <strong>${total}</strong> مناقصة`;
+                    // Update stats bar
+                    const openCount = items.filter(t => t.status === 'OPEN').length;
+                    const statEl = document.getElementById('statOpen');
+                    if (statEl) statEl.textContent = openCount;
                 }
             } catch(e) { /* keep demo cards on error */ }
             applyFilters();
