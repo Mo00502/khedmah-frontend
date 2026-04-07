@@ -383,6 +383,15 @@
         .time-chip:hover { border-color: var(--primary); }
         .time-chip.sel { background: var(--primary); border-color: var(--primary); color: white; }
         .time-chip.urgent { border-color: #ef4444; color: #ef4444; background: rgba(239,68,68,0.05); }
+        .time-chip.booked { opacity: 0.45; cursor: not-allowed; background: #f1f5f9; border-color: #e2e8f0; color: #94a3b8; text-decoration: line-through; pointer-events: none; }
+        .time-chip.avail { border-color: var(--success); color: var(--success); background: rgba(16,185,129,0.06); }
+        .time-chip.avail.sel { background: var(--success); border-color: var(--success); color: white; }
+        .time-chip.locked { opacity: 0.55; cursor: not-allowed; border-color: #f59e0b; color: #f59e0b; background: rgba(245,158,11,0.06); pointer-events: none; }
+        .slots-loading { text-align: center; padding: 1rem; color: var(--gray); font-size: 0.85rem; }
+        .slots-loading .spinner-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--primary); margin: 0 3px; animation: slotPulse 1.2s infinite; }
+        .slots-loading .spinner-dot:nth-child(2) { animation-delay: 0.15s; }
+        .slots-loading .spinner-dot:nth-child(3) { animation-delay: 0.3s; }
+        @keyframes slotPulse { 0%,80%,100%{opacity:.3;transform:scale(.8)} 40%{opacity:1;transform:scale(1)} }
         .time-chip.urgent.sel { background: #ef4444; border-color: #ef4444; color: white; }
         .sheet-textarea { width:100%; border:1.5px solid #e2e8f0; border-radius:12px; padding:0.875rem 1rem; font-family:'Tajawal',sans-serif; font-size:0.9rem; resize:none; min-height:90px; outline:none; background:white; color:var(--dark); transition:border-color 0.15s; }
         .sheet-textarea:focus { border-color: var(--primary); }
@@ -413,6 +422,9 @@
         html.dark .material-option { background: #0f172a; border-color: #334155; }
         html.dark .material-title { color: #e2e8f0; }
         html.dark .time-chip { background: #0f172a; border-color: #334155; color: #cbd5e1; }
+        html.dark .time-chip.booked { background: #1e293b; border-color: #334155; color: #475569; }
+        html.dark .time-chip.avail { border-color: var(--success); color: #6ee7b7; background: rgba(16,185,129,0.1); }
+        html.dark .time-chip.avail.sel { background: var(--success); color: white; }
         html.dark .sheet-textarea { background: #0f172a !important; color: #e2e8f0 !important; border-color: #334155 !important; }
         html.dark .summary-card { background: #0f172a; }
         html.dark .summary-row { border-color: #334155; }
@@ -1165,15 +1177,21 @@
                         <button class="time-chip" data-when="schedule" onclick="selectWhen(this)">🗓️ اختر تاريخاً</button>
                     </div>
                     <input type="date" id="customDateInput"
-                        style="display:none;margin-top:0.75rem;width:100%;border:1.5px solid #e2e8f0;border-radius:12px;padding:0.75rem 1rem;font-family:Tajawal,sans-serif;font-size:0.9rem;outline:none;color:var(--dark);">
+                        style="display:none;margin-top:0.75rem;width:100%;border:1.5px solid #e2e8f0;border-radius:12px;padding:0.75rem 1rem;font-family:Tajawal,sans-serif;font-size:0.9rem;outline:none;color:var(--dark);"
+                        onchange="loadAvailableSlots()">
                 </div>
+                <!-- Dynamic availability slots -->
                 <div class="sheet-section" id="slotSection">
-                    <div class="sheet-section-label">⏰ الفترة الزمنية</div>
-                    <div class="time-grid">
-                        <button class="time-chip sel" data-slot="8ص–12م" onclick="selectSlot(this)">🌅 8ص – 12م</button>
-                        <button class="time-chip" data-slot="12م–4م" onclick="selectSlot(this)">☀️ 12م – 4م</button>
-                        <button class="time-chip" data-slot="4م–8م" onclick="selectSlot(this)">🌆 4م – 8م</button>
-                        <button class="time-chip" data-slot="مرن" onclick="selectSlot(this)">🕐 مرن / أي وقت</button>
+                    <div class="sheet-section-label">⏰ الفترات المتاحة <span id="slotStatus" style="font-weight:400;font-size:0.78rem;color:var(--gray);"></span></div>
+                    <div id="slotsContainer" class="time-grid">
+                        <!-- Populated by loadAvailableSlots() -->
+                        <button class="time-chip sel" data-slot="8ص–12م" onclick="selectSlot(this)">🌅 8 – 12 ص</button>
+                        <button class="time-chip" data-slot="12م–4م" onclick="selectSlot(this)">☀️ 12 – 4 م</button>
+                        <button class="time-chip" data-slot="4م–8م" onclick="selectSlot(this)">🌆 4 – 8 م</button>
+                        <button class="time-chip" data-slot="مرن" onclick="selectSlot(this)">🕐 مرن</button>
+                    </div>
+                    <div id="noSlotsMsg" style="display:none;text-align:center;padding:1.25rem;color:var(--error);font-size:0.9rem;font-weight:600;">
+                        🚫 لا يوجد وقت متاح في هذا اليوم — اختر يوماً آخر
                     </div>
                 </div>
                 <div class="sheet-section">
@@ -1307,12 +1325,190 @@ function selectWhen(el) {
     }
     // Hide time slot for urgent
     document.getElementById('slotSection').style.display = _booking.when === 'urgent' ? 'none' : '';
+    // Load real availability for this date
+    if (_booking.when !== 'urgent') loadAvailableSlots();
 }
 
 function selectSlot(el) {
-    document.querySelectorAll('.time-chip[data-slot]').forEach(c => c.classList.remove('sel'));
+    if (el.classList.contains('booked') || el.classList.contains('locked')) return;
+    document.querySelectorAll('#slotsContainer .time-chip').forEach(c => c.classList.remove('sel'));
     el.classList.add('sel');
     _booking.timeSlot = el.dataset.slot;
+}
+
+// ─── Provider Availability Integration ────────────────────────────────────
+// Slot definitions: key → Arabic label, hour range
+const SLOT_DEFS = [
+    { key: '7-9',   label: '7 – 9 ص',   icon: '🌅', period: 'morning',   h: [7,9]  },
+    { key: '9-11',  label: '9 – 11 ص',  icon: '🌅', period: 'morning',   h: [9,11] },
+    { key: '11-1',  label: '11 – 1 م',  icon: '☀️', period: 'afternoon', h: [11,13]},
+    { key: '1-3',   label: '1 – 3 م',   icon: '☀️', period: 'afternoon', h: [13,15]},
+    { key: '3-5',   label: '3 – 5 م',   icon: '☀️', period: 'afternoon', h: [15,17]},
+    { key: '5-7',   label: '5 – 7 م',   icon: '🌆', period: 'evening',   h: [17,19]},
+    { key: '7-9pm', label: '7 – 9 م',   icon: '🌆', period: 'evening',   h: [19,21]},
+    { key: '9-11pm',label: '9 – 11 م',  icon: '🌙', period: 'evening',   h: [21,23]},
+];
+
+// Map JS getDay() → schedule key used in provider-availability
+const DAY_KEYS = ['sun','mon','tue','wed','thu','fri','sat'];
+
+function _getSelectedDate() {
+    if (_booking.when === 'today') return new Date();
+    if (_booking.when === 'tomorrow') { const d = new Date(); d.setDate(d.getDate() + 1); return d; }
+    if (_booking.when === 'schedule') {
+        const v = document.getElementById('customDateInput').value;
+        return v ? new Date(v + 'T00:00:00') : null;
+    }
+    return null;
+}
+
+// Get provider's saved schedule from localStorage or API (demo-compatible)
+function _getProviderSchedule() {
+    // In a real system, we'd fetch from API using _booking.providerId
+    // Demo: use the logged-in provider's schedule or build a plausible default
+    try {
+        const saved = localStorage.getItem('khedmah_availability');
+        if (saved) return JSON.parse(saved);
+    } catch(e) {}
+    // Fallback: typical schedule (Sun–Thu, morning+afternoon)
+    const sched = {};
+    ['sun','mon','tue','wed','thu'].forEach(d => {
+        sched[d + '-morning'] = true;
+        sched[d + '-afternoon'] = true;
+        sched[d + '-evening'] = false;
+    });
+    ['fri','sat'].forEach(d => {
+        sched[d + '-morning'] = false;
+        sched[d + '-afternoon'] = false;
+        sched[d + '-evening'] = false;
+    });
+    return { schedule: sched };
+}
+
+// Simulated existing bookings for demo (keyed by YYYY-MM-DD → set of slot keys)
+const _demoBookings = {};
+function _getDemoBookings(dateStr) {
+    if (!_demoBookings[dateStr]) {
+        // Randomly mark 1-3 slots as booked for demo realism
+        const booked = new Set();
+        const count = Math.floor(Math.random() * 3);
+        for (let i = 0; i < count; i++) {
+            booked.add(SLOT_DEFS[Math.floor(Math.random() * SLOT_DEFS.length)].key);
+        }
+        _demoBookings[dateStr] = booked;
+    }
+    return _demoBookings[dateStr];
+}
+
+async function loadAvailableSlots() {
+    const container = document.getElementById('slotsContainer');
+    const noMsg = document.getElementById('noSlotsMsg');
+    const statusEl = document.getElementById('slotStatus');
+    noMsg.style.display = 'none';
+
+    const date = _getSelectedDate();
+    if (!date) { container.innerHTML = ''; return; }
+
+    // Show loading
+    container.innerHTML = '<div class="slots-loading" style="grid-column:1/-1;"><span class="spinner-dot"></span><span class="spinner-dot"></span><span class="spinner-dot"></span> جارٍ تحميل المواعيد...</div>';
+
+    // Simulate network delay
+    await new Promise(r => setTimeout(r, 400));
+
+    const dayKey = DAY_KEYS[date.getDay()];
+    const dateStr = date.toISOString().split('T')[0];
+    const provSchedule = _getProviderSchedule();
+    const sched = provSchedule.schedule || {};
+
+    // Check vacation
+    if (provSchedule.vacation && provSchedule.vacFrom && provSchedule.vacTo) {
+        if (dateStr >= provSchedule.vacFrom && dateStr <= provSchedule.vacTo) {
+            container.innerHTML = '';
+            noMsg.style.display = '';
+            noMsg.textContent = '🏖️ المزود في إجازة في هذا التاريخ — اختر تاريخاً آخر';
+            statusEl.textContent = '';
+            return;
+        }
+    }
+
+    // Determine which periods are available for this day
+    const morningAvail   = sched[dayKey + '-morning']   !== false;
+    const afternoonAvail = sched[dayKey + '-afternoon']  !== false;
+    const eveningAvail   = sched[dayKey + '-evening']    !== false;
+
+    if (!morningAvail && !afternoonAvail && !eveningAvail) {
+        container.innerHTML = '';
+        noMsg.style.display = '';
+        noMsg.innerHTML = '🚫 لا يوجد وقت متاح في هذا اليوم — اختر يوماً آخر';
+        statusEl.textContent = '';
+        return;
+    }
+
+    // Try fetching real bookings from API, fall back to demo
+    let bookedSlots = new Set();
+    try {
+        if (typeof API !== 'undefined' && API.providers && API.providers.getBookedSlots) {
+            const res = await API.providers.getBookedSlots(_booking.providerId, dateStr);
+            bookedSlots = new Set(res || []);
+        } else {
+            bookedSlots = _getDemoBookings(dateStr);
+        }
+    } catch(e) {
+        bookedSlots = _getDemoBookings(dateStr);
+    }
+
+    // Filter past slots if date is today
+    const now = new Date();
+    const isToday = dateStr === now.toISOString().split('T')[0];
+    const currentHour = now.getHours();
+
+    // Build slot buttons
+    container.innerHTML = '';
+    let availCount = 0;
+    let firstAvail = null;
+
+    SLOT_DEFS.forEach(slot => {
+        // Check if this slot's period is available in provider's schedule
+        const periodAvail = (slot.period === 'morning' && morningAvail) ||
+                           (slot.period === 'afternoon' && afternoonAvail) ||
+                           (slot.period === 'evening' && eveningAvail);
+        if (!periodAvail) return; // Don't show slots for unavailable periods
+
+        const isBooked = bookedSlots.has(slot.key);
+        const isPast = isToday && slot.h[1] <= currentHour;
+
+        const btn = document.createElement('button');
+        btn.className = 'time-chip';
+        btn.dataset.slot = slot.key;
+        btn.onclick = function() { selectSlot(this); };
+
+        if (isBooked) {
+            btn.classList.add('booked');
+            btn.textContent = slot.icon + ' ' + slot.label + ' — محجوز';
+        } else if (isPast) {
+            btn.classList.add('booked');
+            btn.textContent = slot.icon + ' ' + slot.label + ' — انتهى';
+        } else {
+            btn.classList.add('avail');
+            btn.textContent = slot.icon + ' ' + slot.label;
+            availCount++;
+            if (!firstAvail) firstAvail = btn;
+        }
+        container.appendChild(btn);
+    });
+
+    // Auto-select first available
+    if (firstAvail) {
+        firstAvail.classList.add('sel');
+        _booking.timeSlot = firstAvail.dataset.slot;
+    }
+
+    if (availCount === 0) {
+        noMsg.style.display = '';
+        noMsg.innerHTML = '🚫 جميع المواعيد محجوزة — اختر يوماً آخر';
+    }
+
+    statusEl.textContent = availCount > 0 ? '(' + availCount + ' متاح)' : '';
 }
 
 function updatePricingBanner() {
@@ -1352,12 +1548,20 @@ function buildSummary() {
     document.getElementById('sumType').textContent      = _booking.serviceType;
     document.getElementById('sumMaterials').textContent = MAT_LABELS[_booking.materialsOption];
     document.getElementById('sumWhen').textContent      = whenMap[_booking.when] || _booking.when;
-    document.getElementById('sumSlot').textContent      = _booking.when === 'urgent' ? 'في أقرب وقت ممكن' : '⏰ ' + _booking.timeSlot;
+    // Map slot key to readable label
+    const slotDef = SLOT_DEFS.find(s => s.key === _booking.timeSlot);
+    const slotLabel = slotDef ? slotDef.icon + ' ' + slotDef.label : _booking.timeSlot;
+    document.getElementById('sumSlot').textContent      = _booking.when === 'urgent' ? 'في أقرب وقت ممكن' : '⏰ ' + slotLabel;
     document.getElementById('sumPrice').textContent     = priceMap[_booking.priceType] || '';
 }
 
 function bookingNext() {
-    if (_bStep < 3) { _bStep++; renderBStep(); }
+    if (_bStep < 3) {
+        _bStep++;
+        renderBStep();
+        // Load available slots when entering step 2
+        if (_bStep === 2 && _booking.when !== 'urgent') loadAvailableSlots();
+    }
 }
 
 function bookingPrev() {
