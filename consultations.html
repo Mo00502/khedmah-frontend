@@ -233,6 +233,7 @@
 <body>
 <script src="js/config.js"></script>
 <script src="js/api.js"></script>
+<script src="js/cancellation.js"></script>
 <script src="js/i18n.js"></script>
 
 <nav>
@@ -694,6 +695,28 @@ function renderActiveConsultations() {
 // ── Request Modal ───────────────────────────────────────────────
 let _reqConsultant = null;
 
+function cancelConsultation(consultationId, status) {
+    closeModal('chatModal');
+    CancelSystem.show({
+        module: 'consultations',
+        requestId: consultationId,
+        status: status,
+        onConfirm: async function(reason, note) {
+            try {
+                if (typeof API !== 'undefined' && API.consultations && API.consultations.cancel) {
+                    await API.consultations.cancel(consultationId, { reason, note });
+                } else {
+                    await new Promise(r => setTimeout(r, 600));
+                }
+                const arr = getConsultations();
+                const idx = arr.findIndex(c => c.id === consultationId);
+                if (idx !== -1) { arr[idx].status = 'CANCELLED'; saveConsultations(arr); }
+            } catch(e) { throw e; }
+        },
+        onComplete: function() { renderActiveConsultations(); showToast('تم إلغاء الاستشارة بنجاح'); }
+    });
+}
+
 function openRequestModal(consultantId) {
     _reqConsultant = CONSULTANTS.find(c => c.id === consultantId);
     if (!_reqConsultant) return;
@@ -773,6 +796,18 @@ function refreshChatModal(cons) {
     document.getElementById('chatProviderActions').style.display   = (isProvider && cons.status === 'PENDING') ? 'flex' : 'none';
     document.getElementById('chatCompletedActions').style.display  = cons.status === 'COMPLETED' ? 'flex' : 'none';
     document.getElementById('chatInputArea').style.display         = (cons.status === 'PENDING' || cons.status === 'ACCEPTED') ? 'flex' : 'none';
+    // Cancel button — only for customer, only if PENDING or ACCEPTED
+    let cancelBtn = document.getElementById('btnCancelConsultation');
+    if (!cancelBtn) {
+        cancelBtn = document.createElement('button');
+        cancelBtn.id = 'btnCancelConsultation';
+        cancelBtn.style.cssText = 'background:transparent;color:#ef4444;border:1.5px solid #ef4444;border-radius:10px;padding:.45rem .85rem;font-family:Tajawal,sans-serif;font-size:.82rem;font-weight:600;cursor:pointer;margin-right:auto;';
+        cancelBtn.textContent = '❌ إلغاء الاستشارة';
+        bar.parentNode.insertBefore(cancelBtn, bar.nextSibling);
+    }
+    const canCancel = !isProvider && (cons.status === 'PENDING' || cons.status === 'ACCEPTED');
+    cancelBtn.style.display = canCancel ? '' : 'none';
+    cancelBtn.onclick = function() { cancelConsultation(cons.id, cons.status); };
     document.getElementById('chatSecurityWarning').style.display   = 'none';
 
     renderMessages(cons);

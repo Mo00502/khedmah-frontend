@@ -295,6 +295,7 @@
 <body>
 <script src="js/config.js"></script>
     <script src="js/api.js"></script>
+    <script src="js/cancellation.js"></script>
 <script>
     (function() {
         if (!localStorage.getItem('khedmah_demo')) { window.location.href = 'login.html'; return; }
@@ -612,29 +613,38 @@
         showToast('📞 جارٍ الاتصال بأحمد السباك...');
     }
 
-    async function cancelOrder() {
+    function cancelOrder() {
         if (currentStep > 1) return;
-        if (!confirm('هل تريد إلغاء الطلب؟\n\nسيتم استرداد المبلغ خلال 2-5 أيام عمل.')) return;
-        const btn = document.getElementById('cancelBtn');
-        btn.disabled = true;
-        clearInterval(timerInterval);
-        clearInterval(moveInterval);
-        document.getElementById('etaCard').style.display = 'none';
-        const reqId = new URLSearchParams(location.search).get('requestId');
-        try {
-            if (reqId && reqId.includes('-')) await API.requests.cancel(reqId);
-        } catch(e) { /* silent */ }
-        showToast('✓ تم إلغاء الطلب. سيتم استرداد المبلغ قريباً.');
-        // Update the first step to show cancelled state
-        const step1 = document.getElementById('step-1');
-        if (step1) {
-            step1.className = 'step';
-            step1.querySelector('.step-icon').textContent = '✕';
-            step1.querySelector('.step-icon').style.background = 'var(--error)';
-            step1.querySelector('.step-title').textContent = 'تم إلغاء الطلب';
-            step1.querySelector('.step-title').style.color = 'var(--error)';
-        }
-        setTimeout(() => { window.location.href = 'customer-dashboard.html'; }, 2500);
+        const reqId = new URLSearchParams(location.search).get('requestId') || '';
+        const statusMap = ['PENDING', 'ON_THE_WAY', 'STARTED', 'IN_PROGRESS', 'COMPLETED'];
+        const status = statusMap[currentStep] || 'PENDING';
+        CancelSystem.show({
+            module: 'home',
+            requestId: reqId,
+            status: status,
+            onConfirm: async function(reason, note) {
+                const btn = document.getElementById('cancelBtn');
+                if (btn) btn.disabled = true;
+                clearInterval(timerInterval);
+                clearInterval(moveInterval);
+                document.getElementById('etaCard').style.display = 'none';
+                try {
+                    if (reqId && reqId.includes('-')) await API.requests.cancel(reqId, { reason, note });
+                } catch(e) { /* silent */ }
+                showToast('✓ تم إلغاء الطلب. سيتم استرداد المبلغ قريباً.');
+                const step1 = document.getElementById('step-1');
+                if (step1) {
+                    step1.className = 'step';
+                    step1.querySelector('.step-icon').textContent = '✕';
+                    step1.querySelector('.step-icon').style.background = 'var(--error)';
+                    step1.querySelector('.step-title').textContent = 'تم إلغاء الطلب';
+                    step1.querySelector('.step-title').style.color = 'var(--error)';
+                }
+            },
+            onComplete: function() {
+                setTimeout(() => { window.location.href = 'customer-dashboard.html'; }, 1500);
+            }
+        });
     }
 
     function simulateCompletion() {

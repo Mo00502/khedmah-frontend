@@ -239,6 +239,7 @@
 <body>
 <script src="js/config.js"></script>
 <script src="js/api.js"></script>
+<script src="js/cancellation.js"></script>
 <script src="js/i18n.js"></script>
 
 <nav>
@@ -1379,7 +1380,7 @@ function openQuoteResponse(id) {
     let content = '', footer = '';
     if (q.status === 'PENDING') {
         content = `<div style="text-align:center;padding:1.5rem;"><div style="font-size:2.5rem;">⏳</div><div style="font-size:1rem;font-weight:700;margin:.5rem 0;">في انتظار رد المزود</div><div style="font-size:.85rem;color:var(--gray);">تم إرسال طلبك بتاريخ ${new Date(q.createdAt).toLocaleDateString('ar-SA')}</div></div>`;
-        footer = `<button class="btn-full btn-cancel" onclick="closeModal('quoteRespModal')">إغلاق</button>`;
+        footer = `<button class="btn-full btn-cancel" onclick="closeModal('quoteRespModal')">إغلاق</button><button class="btn-full btn-danger" style="background:transparent;color:#ef4444;border:1.5px solid #ef4444;" onclick="cancelEquipment('${q.id}','PENDING')">❌ إلغاء الطلب</button>`;
     } else if (q.status === 'QUOTED') {
         const b = q.quoteBreakdown || {};
         content = `<div style="margin-bottom:.75rem;"><div style="font-weight:700;margin-bottom:.25rem;">${q.equipmentName}</div><div style="font-size:.82rem;color:var(--gray);">${q.startDate} — ${q.endDate} (${q.days} يوم)</div></div>
@@ -1392,7 +1393,7 @@ function openQuoteResponse(id) {
             <div class="price-row total-row"><span>إجمالي عرض السعر</span><span>${(b.total||q.quotePrice||0).toLocaleString()} ر.س</span></div>
         </div>
         ${q.quoteNotes?`<div style="background:#f0fdf4;border-radius:10px;padding:.7rem .9rem;margin-top:.75rem;font-size:.84rem;"><strong>ملاحظة المزود:</strong> ${q.quoteNotes}</div>`:''}`;
-        footer = `<button class="btn-full btn-danger" onclick="rejectQuote('${q.id}')">رفض العرض</button><button class="btn-full btn-success" onclick="acceptQuote('${q.id}')">قبول والدفع</button>`;
+        footer = `<button class="btn-full btn-danger" onclick="rejectQuote('${q.id}')">رفض العرض</button><button class="btn-full btn-success" onclick="acceptQuote('${q.id}')">قبول والدفع</button><button class="btn-full" style="background:transparent;color:#ef4444;border:1.5px solid #ef4444;margin-top:.5rem;" onclick="cancelEquipment('${q.id}','QUOTED')">❌ إلغاء الحجز</button>`;
     } else if (q.status === 'ACCEPTED') {
         content = `<div style="text-align:center;padding:1rem;"><div style="font-size:2.5rem;">✅</div><div style="font-weight:700;margin:.5rem 0;">تم قبول العرض</div><div style="font-size:.85rem;color:var(--gray);">إجمالي ${(q.quotePrice||0).toLocaleString()} ر.س</div></div>`;
         footer = `<button class="btn-full btn-cancel" onclick="closeModal('quoteRespModal')">إغلاق</button><button class="btn-full btn-submit" onclick="payQuote('${q.id}')">إتمام الدفع</button>`;
@@ -1409,6 +1410,28 @@ function acceptQuote(id) {
     renderQuotesStrip(); closeModal('quoteRespModal');
     showToast('✅ تم قبول عرض السعر — يمكنك الدفع الآن');
     setTimeout(() => openQuoteResponse(id), 500);
+}
+
+function cancelEquipment(quoteId, status) {
+    closeModal('quoteRespModal');
+    CancelSystem.show({
+        module: 'equipment',
+        requestId: quoteId,
+        status: status,
+        onConfirm: async function(reason, note) {
+            try {
+                if (typeof API !== 'undefined' && API.equipment && API.equipment.cancelRental) {
+                    await API.equipment.cancelRental(quoteId, { reason, note });
+                } else {
+                    await new Promise(r => setTimeout(r, 600));
+                }
+                const arr = getQuotes();
+                const idx = arr.findIndex(q => q.id === quoteId);
+                if (idx !== -1) { arr.splice(idx, 1); saveQuotes(arr); }
+            } catch(e) { throw e; }
+        },
+        onComplete: function() { renderQuotesStrip(); showToast('تم إلغاء الحجز بنجاح'); }
+    });
 }
 
 function rejectQuote(id) {

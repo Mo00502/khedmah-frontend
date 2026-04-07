@@ -984,6 +984,7 @@
 
     <script src="js/config.js"></script>
     <script src="js/api.js"></script>
+    <script src="js/cancellation.js"></script>
     <script>
     /* ── Dashboard Data Loader ─────────────────────────────────────────────── */
     (async function initDashboard() {
@@ -1051,6 +1052,7 @@
                         <div class="request-actions">
                             <a href="order-tracking.html?requestId=${r.id}" class="btn-sm btn-primary">📍 تتبع</a>
                             <a href="chat.html?type=service&requestId=${r.id}" class="btn-sm btn-outline">💬 محادثة</a>
+                            ${CancelSystem.canCancel('home', r.status) ? `<button class="btn-sm btn-outline" style="color:#ef4444;border-color:#ef4444;" onclick="cancelRequest('${r.id}','${r.status}')">❌ إلغاء</button>` : ''}
                         </div>
                     </div>`;
                 }).join('');
@@ -1090,6 +1092,24 @@
             /* silent fail — dashboard shows cached data */
         }
     })();
+
+    function cancelRequest(reqId, status) {
+        CancelSystem.show({
+            module: 'home',
+            requestId: reqId,
+            status: status,
+            onConfirm: async function(reason, note) {
+                try {
+                    if (typeof API !== 'undefined' && API.requests && API.requests.cancel) {
+                        await API.requests.cancel(reqId, { reason, note });
+                    } else {
+                        await new Promise(r => setTimeout(r, 600));
+                    }
+                } catch(e) { throw e; }
+            },
+            onComplete: function() { window.location.reload(); }
+        });
+    }
 
     async function acceptQuote(reqId, quoteId, serviceName) {
         try {

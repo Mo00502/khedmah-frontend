@@ -161,6 +161,7 @@
 <body>
 <script src="js/config.js"></script>
     <script src="js/api.js"></script>
+    <script src="js/cancellation.js"></script>
     <script src="js/i18n.js"></script>
 
 <script>
@@ -317,7 +318,10 @@
                         <span class="icon">✅</span>
                         <div class="msg">تم إرسال عرضك بنجاح<br><small style="font-weight:400;color:#065f46;">سيتواصل معك صاحب المناقصة إذا اختار عرضك</small></div>
                     </div>
-                    <button class="btn-save" onclick="saveTender()">🔖 حفظ المناقصة</button>
+                    <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
+                        <button class="btn-save" onclick="saveTender()">🔖 حفظ المناقصة</button>
+                        <button class="btn-save" id="btnWithdrawBid" style="background:transparent;color:#ef4444;border:1.5px solid #ef4444;" onclick="withdrawBid()">❌ سحب العرض</button>
+                    </div>
                 </div>
 
             </div>
@@ -1028,6 +1032,31 @@ async function submitBid() {
     document.getElementById('ctaArea').style.display = 'none';
     document.getElementById('successArea').style.display = 'block';
     showToast('✅ تم إرسال عرضك بنجاح — سيتواصل معك صاحب المناقصة');
+}
+
+function withdrawBid() {
+    const tenderId = new URLSearchParams(location.search).get('id') || '';
+    CancelSystem.show({
+        module: 'tenders',
+        requestId: tenderId,
+        status: 'SUBMITTED',
+        onConfirm: async function(reason, note) {
+            try {
+                if (typeof API !== 'undefined' && API.tenders && API.tenders.withdrawBid) {
+                    await API.tenders.withdrawBid(tenderId);
+                } else {
+                    await new Promise(r => setTimeout(r, 600));
+                }
+            } catch(e) { throw e; }
+        },
+        onComplete: function() {
+            document.getElementById('successArea').style.display = 'none';
+            document.getElementById('btnSubmit').style.display = '';
+            document.getElementById('btnSubmit').disabled = false;
+            document.getElementById('btnSubmit').textContent = '✍️ تقديم عرض';
+            showToast('تم سحب عرضك بنجاح');
+        }
+    });
 }
 
 function saveTender() {
