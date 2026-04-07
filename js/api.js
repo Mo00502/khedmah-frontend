@@ -358,6 +358,18 @@
     translate: (title, description) => http.post('/ai/translate', { title, description }),
   };
 
+  /* ─── AI assistant endpoints ─────────────────────────────────────────────── */
+  const ai = {
+    faq:          (question)  => http.post('/ai/faq',           { question }),
+    recommend:    (dto)       => http.post('/ai/recommend',     dto),
+    quoteEstimate:(dto)       => http.post('/ai/quote-estimate',dto),
+    categorize:   (dto)       => http.post('/ai/categorize',    dto),
+    widget:       (question)  => fetch(
+      (window.KHEDMAH_API_URL || 'http://localhost:3000/api/v1').replace(/\/$/, '') + '/ai/widget',
+      { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ question }) }
+    ).then(r => r.json()),
+  };
+
   const invoices = {
     list:      (p = {}) => http.get('/invoices?' + new URLSearchParams(p)),
     get:       (id)     => http.get(`/invoices/${id}`),
@@ -489,7 +501,7 @@
     // Domain namespaces
     auth, requests, payments, wallet, providers, services,
     search, reviews, notifications, chat, admin, tenders,
-    invoices, equipment, consultations, maps, addresses, translation,
+    invoices, equipment, consultations, maps, addresses, translation, ai,
 
     // Auth helpers (frequently needed in guards)
     isLoggedIn:  auth.isLoggedIn,
@@ -505,6 +517,24 @@
     ApiError,
   };
 
-  /* ─── CSS for toast fade-in (handled inside toast() now) ────────────────── */
+  /* ─── AI Chat Widget auto-loader ─────────────────────────────────────────── */
+  // Injects the floating AI assistant on every page that loads api.js.
+  // Pages opt-out by setting window.KHEDMAH_NO_WIDGET = true before api.js.
+  // (admin-dashboard.html, admin-login.html, chat.html, ai-assistant.html all set this)
+  (function loadWidget() {
+    if (window.KHEDMAH_NO_WIDGET) return;
+    var s = document.createElement('script');
+    // Resolve path relative to this script's own location
+    var base = (function() {
+      try {
+        var scripts = document.querySelectorAll('script[src*="api.js"]');
+        var src = scripts[scripts.length - 1]?.src || '';
+        return src.replace(/api\.js.*$/, '');
+      } catch(e) { return 'js/'; }
+    })();
+    s.src = base + 'ai-chat-widget.js?v=3';
+    s.onerror = function() {};
+    document.head.appendChild(s);
+  })();
 
 })();

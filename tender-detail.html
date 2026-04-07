@@ -164,17 +164,8 @@
     <script src="js/i18n.js"></script>
 
 <script>
-  // Tender detail is PUBLIC — everyone can read
-  // Admin users: hide bid CTA
-  (function() {
-    const role = JSON.parse(localStorage.getItem('khedmah_user') || '{}').role;
-    if (role === 'admin') {
-      document.addEventListener('DOMContentLoaded', function() {
-        const cta = document.getElementById('ctaArea');
-        if (cta) cta.style.display = 'none';
-      });
-    }
-  })();
+  // Tender detail is PUBLIC — no auth required to read
+  // CTA visibility is handled by renderTender() based on role
 </script>
 
 <nav>
@@ -222,22 +213,22 @@
                 <div class="info-row">
                     <div class="info-item">
                         <span>📍</span>
-                        <span class="label">الموقع:</span>
+                        <span class="label" id="lblCity">الموقع:</span>
                         <span class="value" id="tCity">—</span>
                     </div>
                     <div class="info-item">
                         <span>⏰</span>
-                        <span class="label">آخر موعد:</span>
+                        <span class="label" id="lblDeadline">آخر موعد:</span>
                         <span class="value" id="tDeadline">—</span>
                     </div>
                     <div class="info-item">
                         <span>🏷️</span>
-                        <span class="label">القطاع:</span>
+                        <span class="label" id="lblSector">القطاع:</span>
                         <span class="value" id="tSector">—</span>
                     </div>
                     <div class="info-item">
                         <span>💰</span>
-                        <span class="label">الميزانية التقديرية:</span>
+                        <span class="label" id="lblBudget">الميزانية التقديرية:</span>
                         <span class="value budget" id="tBudget">—</span>
                     </div>
                 </div>
@@ -285,13 +276,13 @@
                     <div>
                         <div class="company-name" id="sCompanyName">—</div>
                         <div class="company-meta" id="sCompanyMeta">—</div>
-                        <div class="company-verified">✓ جهة موثّقة</div>
+                        <div class="company-verified" id="lblVerified">✓ جهة موثّقة</div>
                     </div>
                 </div>
 
                 <!-- Deadline Bar -->
                 <div class="deadline-box">
-                    <div class="deadline-label">موعد انتهاء الاستقبال</div>
+                    <div class="deadline-label" id="lblDeadlineTitle">موعد انتهاء الاستقبال</div>
                     <div class="deadline-date" id="sDeadline">—</div>
                     <div class="deadline-bar"><div class="deadline-fill" id="sDeadlineFill" style="width:65%"></div></div>
                     <div class="deadline-remaining" id="sDeadlineRemaining">—</div>
@@ -300,23 +291,24 @@
                 <!-- Bid Count — public, NO prices -->
                 <div class="bid-count-box">
                     <div class="bid-count-num" id="sBidCount">—</div>
-                    <div class="bid-count-label">شركة قدّمت عروضها حتى الآن</div>
-                    <div class="bid-privacy-note">
+                    <div class="bid-count-label" id="lblBidCount">شركة قدّمت عروضها حتى الآن</div>
+                    <div class="bid-privacy-note" id="lblBidPrivacy">
                         🔒 أسعار العروض سرية ولا تظهر إلا لصاحب المناقصة
                     </div>
                 </div>
 
-                <!-- Privacy box -->
-                <div class="privacy-box">
+                <!-- Privacy box — shown for providers only -->
+                <div class="privacy-box" id="privacyBox">
                     <div style="font-size:1.1rem;margin-bottom:0.35rem">🔒</div>
-                    <div style="font-size:0.78rem;font-weight:700;color:var(--dark);margin-bottom:0.2rem">أسعار العروض سرية</div>
-                    <div style="font-size:0.72rem;color:var(--gray);line-height:1.5">لا يمكن لأي مزود آخر رؤية سعر عرضك. فقط صاحب المناقصة يرى الأسعار.</div>
+                    <div style="font-size:0.78rem;font-weight:700;color:var(--dark);margin-bottom:0.2rem" id="lblPrivacyTitle">أسعار العروض سرية</div>
+                    <div style="font-size:0.72rem;color:var(--gray);line-height:1.5" id="lblPrivacyDesc">لا يمكن لأي مزود آخر رؤية سعر عرضك. فقط صاحب المناقصة يرى الأسعار.</div>
                 </div>
 
-                <!-- CTA -->
+                <!-- CTA — content controlled by renderTender() based on role -->
                 <div id="ctaArea">
                     <button class="btn-submit-bid" id="btnSubmit" onclick="openBidModal()">✍️ تقديم عرض</button>
-                    <button class="btn-save" onclick="saveTender()">🔖 حفظ المناقصة</button>
+                    <a href="tender-bids.html" class="btn-my-bids-link" id="bidsLink" style="display:none">📊 عرض جميع العروض المقدمة</a>
+                    <button class="btn-save" id="btnSave" onclick="saveTender()">🔖 حفظ المناقصة</button>
                     <a href="#" class="btn-chat-tender" id="btnChatTender">💬 تواصل مع صاحب المشروع</a>
                 </div>
 
@@ -858,22 +850,42 @@ function renderTender(t, lang) {
     // Bid count
     document.getElementById('sBidCount').textContent = t.bidCount !== undefined ? t.bidCount : '—';
 
-    // CTA state
-    const btnSubmit = document.getElementById('btnSubmit');
-    if (isClosed || (deadlineDate && Date.now() > deadlineDate)) {
-        btnSubmit.disabled = true;
-        btnSubmit.textContent = lang === 'en' ? 'Tender Closed' : 'المناقصة مغلقة';
-    } else {
-        btnSubmit.disabled = false;
-        btnSubmit.textContent = lang === 'en' ? 'Submit Bid' : 'تقديم عرض';
-    }
+    // ── Bilingual info-row labels ────────────────────────────────────────────
+    const lbl = {
+        city:    lang === 'en' ? 'Location:'          : 'الموقع:',
+        deadline:lang === 'en' ? 'Deadline:'          : 'آخر موعد:',
+        sector:  lang === 'en' ? 'Sector:'            : 'القطاع:',
+        budget:  lang === 'en' ? 'Estimated Budget:'  : 'الميزانية التقديرية:',
+        bidCount:lang === 'en' ? 'bids submitted so far'   : 'شركة قدّمت عروضها حتى الآن',
+        bidPriv: lang === 'en' ? '🔒 Bid prices are confidential — visible only to the tender owner'
+                               : '🔒 أسعار العروض سرية ولا تظهر إلا لصاحب المناقصة',
+        privTitle:lang === 'en'? 'Bid Prices Are Confidential' : 'أسعار العروض سرية',
+        privDesc: lang === 'en'? 'No other bidder can see your price. Only the tender owner sees all prices.'
+                               : 'لا يمكن لأي مزود آخر رؤية سعر عرضك. فقط صاحب المناقصة يرى الأسعار.',
+    };
+    ['lblCity','lblDeadline','lblSector','lblBudget'].forEach((id, i) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = [lbl.city, lbl.deadline, lbl.sector, lbl.budget][i];
+    });
+    const lblBid = document.getElementById('lblBidCount');
+    if (lblBid) lblBid.textContent = lbl.bidCount;
+    const lblPriv = document.getElementById('lblBidPrivacy');
+    if (lblPriv) lblPriv.textContent = lbl.bidPriv;
+    const lblPT = document.getElementById('lblPrivacyTitle');
+    if (lblPT) lblPT.textContent = lbl.privTitle;
+    const lblPD = document.getElementById('lblPrivacyDesc');
+    if (lblPD) lblPD.textContent = lbl.privDesc;
+    const lblVerified = document.getElementById('lblVerified');
+    if (lblVerified) lblVerified.textContent = lang === 'en' ? '✓ Verified Entity' : '✓ جهة موثّقة';
+    const lblDlTitle = document.getElementById('lblDeadlineTitle');
+    if (lblDlTitle) lblDlTitle.textContent = lang === 'en' ? 'Submission Deadline' : 'موعد انتهاء الاستقبال';
 
-    // Show "already bid" state
-    if (t.myBid) {
-        document.getElementById('ctaArea').style.display = 'none';
-        document.getElementById('successArea').style.display = 'block';
-        document.getElementById('sBidCount').textContent = '—';
-    }
+    // ── Section headings ────────────────────────────────────────────────────
+    const secTitles = document.querySelectorAll('.sec-title');
+    const headings = lang === 'en'
+        ? ['Project Description','Scope of Work','Tender Requirements','📎 Files & Attachments','📝 Additional Notes']
+        : ['وصف المشروع','نطاق العمل','متطلبات المناقصة','📎 الملفات والمرفقات','📝 ملاحظات إضافية'];
+    secTitles.forEach((el, i) => { if (headings[i]) el.textContent = headings[i]; });
 
     // Modal info
     document.getElementById('modalTenderName').textContent = titleStr;
@@ -884,16 +896,73 @@ function renderTender(t, lang) {
     if (chatBtn) chatBtn.href = `chat.html?type=tender&id=${tenderId}`;
 
     // Wire bids link
-    const bidsLink = document.querySelector('.btn-my-bids-link');
+    const bidsLink = document.getElementById('bidsLink');
     if (bidsLink) bidsLink.href = `tender-bids.html?tenderId=${tenderId}`;
 
-    // Owner view: replace "submit bid" with "view all bids"
-    if (t._isOwner) {
+    // ── CTA: role-based ─────────────────────────────────────────────────────
+    const _userObj  = (() => { try { return JSON.parse(localStorage.getItem('khedmah_user') || '{}'); } catch(e) { return {}; } })();
+    const _role     = (_userObj.role || '').toLowerCase();
+    const _loggedIn  = !!localStorage.getItem('khedmah_demo');
+    const _isAdmin   = !!localStorage.getItem('khedmah_admin');
+    const _isCustomer= _role === 'customer';
+    const _isProvider= _role === 'provider';
+    const _isExpired = isClosed || (deadlineDate && Date.now() > deadlineDate);
+
+    const btnSubmit   = document.getElementById('btnSubmit');
+    const ctaArea     = document.getElementById('ctaArea');
+    const successArea = document.getElementById('successArea');
+    const privacyBox  = document.getElementById('privacyBox');
+    const btnSave     = document.getElementById('btnSave');
+
+    // Reset visibility defaults
+    btnSubmit.style.display = '';
+    if (bidsLink) bidsLink.style.display = 'none';
+    if (privacyBox) privacyBox.style.display = '';
+    if (btnSave) btnSave.style.display = '';
+
+    if (_isAdmin) {
+        // Admins: read-only, no action
+        ctaArea.style.display = 'none';
+        if (privacyBox) privacyBox.style.display = 'none';
+
+    } else if (_isCustomer) {
+        // Customer (tender poster): shows "View All Bids" link, no bid button
         btnSubmit.style.display = 'none';
+        if (privacyBox) privacyBox.style.display = 'none';
         if (bidsLink) {
             bidsLink.style.display = 'block';
             bidsLink.textContent = lang === 'en' ? '📊 View All Submitted Bids' : '📊 عرض جميع العروض المقدمة';
         }
+        if (chatBtn) chatBtn.style.display = 'none'; // customer doesn't chat via this button
+        if (btnSave) btnSave.textContent = lang === 'en' ? '🔖 Save Tender' : '🔖 حفظ المناقصة';
+
+    } else if (_isProvider) {
+        // Provider: submit bid or show already-bid state
+        if (bidsLink) bidsLink.style.display = 'none';
+        if (t.myBid) {
+            ctaArea.style.display = 'none';
+            successArea.style.display = 'block';
+        } else if (_isExpired) {
+            btnSubmit.disabled = true;
+            btnSubmit.textContent = lang === 'en' ? 'Tender Closed' : 'المناقصة مغلقة';
+        } else {
+            btnSubmit.disabled = false;
+            btnSubmit.textContent = lang === 'en' ? '✍️ Submit Bid' : '✍️ تقديم عرض';
+        }
+        if (chatBtn) chatBtn.textContent = lang === 'en' ? '💬 Contact Project Owner' : '💬 تواصل مع صاحب المشروع';
+
+    } else {
+        // Guest: show "Login to bid" (no modal opened, openBidModal redirects)
+        if (bidsLink) bidsLink.style.display = 'none';
+        if (privacyBox) privacyBox.style.display = 'none';
+        if (_isExpired) {
+            btnSubmit.disabled = true;
+            btnSubmit.textContent = lang === 'en' ? 'Tender Closed' : 'المناقصة مغلقة';
+        } else {
+            btnSubmit.disabled = false;
+            btnSubmit.textContent = lang === 'en' ? '🔑 Log in to Submit a Bid' : '🔑 سجّل دخولك لتقديم عرض';
+        }
+        if (chatBtn) chatBtn.style.display = 'none';
     }
 }
 

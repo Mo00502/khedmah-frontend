@@ -330,22 +330,25 @@
         .btn-chat-sm { width: 38px; height: 38px; border: 1.5px solid #e2e8f0; border-radius: 10px; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 1rem; flex-shrink: 0; transition: all 0.15s; }
         .btn-chat-sm:hover { border-color: var(--primary); }
 
-        /* ── Booking Bottom Sheet ────────────────────────────────────────────── */
+        /* ── Booking Modal ──────────────────────────────────────────────────── */
         .booking-backdrop {
             display: none; position: fixed; inset: 0;
-            background: rgba(0,0,0,0.55); z-index: 800;
-            align-items: flex-end; justify-content: center;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.45); z-index: 800;
+            align-items: center; justify-content: center;
         }
         .booking-backdrop.open { display: flex; }
-        @media (min-width: 600px) { .booking-backdrop { align-items: center; } }
         .booking-sheet {
-            background: white; width: 100%; max-width: 560px;
-            border-radius: 24px 24px 0 0; overflow: hidden;
-            max-height: 92vh; display: flex; flex-direction: column;
-            animation: sheetUp 0.28s ease;
+            background: white; width: 100%; max-width: 540px;
+            border-radius: 24px; overflow: hidden;
+            max-height: 90vh; display: flex; flex-direction: column;
+            animation: sheetUp 0.22s ease;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
         }
-        @media (min-width: 600px) { .booking-sheet { border-radius: 24px; max-height: 88vh; } }
-        @keyframes sheetUp { from { transform: translateY(36px); opacity:0; } to { transform: translateY(0); opacity:1; } }
+        @media (max-width: 599px) {
+            .booking-sheet { border-radius: 24px 24px 0 0; max-height: 95vh; align-self: flex-end; }
+        }
+        @keyframes sheetUp { from { transform: translateY(24px); opacity:0; } to { transform: translateY(0); opacity:1; } }
         .sheet-handle { width: 40px; height: 5px; background: #e2e8f0; border-radius: 3px; margin: 0.85rem auto 0; flex-shrink: 0; }
         @media (min-width: 600px) { .sheet-handle { display: none; } }
         .sheet-header { padding: 0.875rem 1.25rem 0; flex-shrink: 0; }
@@ -417,6 +420,7 @@
         html.dark .sheet-footer { background: #1e293b; border-color: #334155; }
         html.dark .sheet-btn-prev { background: #0f172a; color: #e2e8f0; }
         html.dark .pricing-banner { background: rgba(2,128,144,0.1); border-color: rgba(2,128,144,0.3); }
+        html.dark #pricingAgreementBox .pricing-banner { background: rgba(16,185,129,0.08); border-color: rgba(16,185,129,0.25); }
         html.dark .info-tip { color: #e2e8f0; }
         html.dark #customDateInput { background: #0f172a !important; color: #e2e8f0 !important; border-color: #334155 !important; }
     </style>
@@ -1107,32 +1111,45 @@
                         <button class="option-chip sel" data-stype="كشف وتشخيص" onclick="selectChip(this,'stype')">🔍 كشف وتشخيص</button>
                         <button class="option-chip" data-stype="إصلاح" onclick="selectChip(this,'stype')">🔧 إصلاح</button>
                         <button class="option-chip" data-stype="تركيب" onclick="selectChip(this,'stype')">🔩 تركيب</button>
-                        <button class="option-chip" data-stype="صيانة دورية" onclick="selectChip(this,'stype')">🛠️ صيانة دورية</button>
                     </div>
                 </div>
                 <div class="sheet-section">
                     <div class="sheet-section-label">💰 التسعير</div>
-                    <div class="pricing-banner">
-                        <div>
-                            <div class="pricing-banner-label" id="pricingLabel">سعر الساعة</div>
-                            <div style="font-size:0.75rem;color:var(--gray);margin-top:0.2rem;" id="pricingNote">يتم احتساب الوقت الفعلي للعمل</div>
+                    <div class="option-chips" id="pricingChips">
+                        <button class="option-chip sel" data-price="hourly" onclick="selectPricing(this)">⏱️ سعر بالساعة</button>
+                        <button class="option-chip" data-price="agreement" onclick="selectPricing(this)">🤝 الاتفاق على السعر</button>
+                    </div>
+                    <div id="pricingHourlyBox" style="margin-top:0.65rem;">
+                        <div class="pricing-banner">
+                            <div>
+                                <div class="pricing-banner-label">سعر الساعة</div>
+                                <div style="font-size:0.75rem;color:var(--gray);margin-top:0.2rem;">يتم احتساب التكلفة حسب الوقت المستغرق</div>
+                            </div>
+                            <div class="pricing-banner-value" id="pricingValue">— ر.س</div>
                         </div>
-                        <div class="pricing-banner-value" id="pricingValue">— ر.س</div>
+                    </div>
+                    <div id="pricingAgreementBox" style="display:none;margin-top:0.65rem;">
+                        <div class="pricing-banner" style="border-color:rgba(16,185,129,0.25);background:rgba(16,185,129,0.06);">
+                            <div>
+                                <div class="pricing-banner-label" style="color:#059669;font-weight:700;">🤝 حسب الاتفاق</div>
+                                <div style="font-size:0.75rem;color:var(--gray);margin-top:0.2rem;">يتم الاتفاق على السعر بعد المعاينة</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="sheet-section">
                     <div class="sheet-section-label">📦 المواد والقطع</div>
                     <div class="material-option sel" id="bmat0" onclick="selectMaterial(0)">
                         <div class="material-radio"></div>
-                        <div><div class="material-title">الخدمة فقط</div><div class="material-desc">العميل يوفر المواد والقطع مسبقاً</div></div>
+                        <div><div class="material-title">المواد على العميل</div><div class="material-desc">العميل يوفر المواد والقطع اللازمة</div></div>
                     </div>
                     <div class="material-option" id="bmat1" onclick="selectMaterial(1)">
                         <div class="material-radio"></div>
-                        <div><div class="material-title">المواد مشمولة في الخدمة</div><div class="material-desc">المزود يحضر المواد — يتم الاتفاق على التكلفة عند الوصول</div></div>
+                        <div><div class="material-title">المواد مشمولة بالخدمة</div><div class="material-desc">المزود يوفر جميع المواد المطلوبة</div></div>
                     </div>
                     <div class="material-option" id="bmat2" onclick="selectMaterial(2)">
                         <div class="material-radio"></div>
-                        <div><div class="material-title">فحص أولاً ثم اتفاق على التكلفة</div><div class="material-desc">المزود يكشف أولاً ويقدم عرضاً شاملاً قبل بدء العمل</div></div>
+                        <div><div class="material-title">يتم الاتفاق لاحقاً</div><div class="material-desc">تحديد المواد والتكلفة بعد المعاينة</div></div>
                     </div>
                 </div>
             </div>
@@ -1194,7 +1211,7 @@
 // ─────────────────────────── Booking Modal Logic ──────────────────────────────
 let _booking = {};
 let _bStep = 1;
-const MAT_LABELS = ['الخدمة فقط (بدون مواد)', 'المواد مشمولة في السعر', 'فحص أولاً ثم اتفاق'];
+const MAT_LABELS = ['المواد على العميل', 'المواد مشمولة بالخدمة', 'يتم الاتفاق لاحقاً'];
 
 function openBooking(prov) {
     _booking = {
@@ -1204,6 +1221,7 @@ function openBooking(prov) {
         category: prov.cat,
         price: prov.price,
         priceType: prov.priceType || 'hour',
+        pricingMode: 'hourly',
         available: prov.available !== false,
         serviceType: 'كشف وتشخيص',
         materialsOption: 0,
@@ -1298,11 +1316,20 @@ function selectSlot(el) {
 }
 
 function updatePricingBanner() {
-    const labels = { hour: 'سعر الساعة', visit: 'رسوم الزيارة', quote: 'سعر تقديري' };
-    const notes  = { hour: 'يتم احتساب الوقت الفعلي للعمل', visit: 'شامل الكشف والتشخيص', quote: 'بعد الفحص يتم الاتفاق على السعر النهائي' };
-    document.getElementById('pricingLabel').textContent = labels[_booking.priceType] || 'السعر';
-    document.getElementById('pricingNote').textContent  = notes[_booking.priceType]  || '';
-    document.getElementById('pricingValue').textContent = _booking.price ? _booking.price + ' ر.س' : 'حسب الاتفاق';
+    document.getElementById('pricingValue').textContent = _booking.price ? _booking.price + ' ر.س' : '— ر.س';
+    // Set initial pricing mode chip
+    const mode = _booking.pricingMode || 'hourly';
+    document.querySelectorAll('#pricingChips .option-chip').forEach(c => c.classList.toggle('sel', c.dataset.price === mode));
+    document.getElementById('pricingHourlyBox').style.display = mode === 'hourly' ? '' : 'none';
+    document.getElementById('pricingAgreementBox').style.display = mode === 'agreement' ? '' : 'none';
+}
+
+function selectPricing(el) {
+    el.closest('.option-chips').querySelectorAll('.option-chip').forEach(c => c.classList.remove('sel'));
+    el.classList.add('sel');
+    _booking.pricingMode = el.dataset.price;
+    document.getElementById('pricingHourlyBox').style.display = _booking.pricingMode === 'hourly' ? '' : 'none';
+    document.getElementById('pricingAgreementBox').style.display = _booking.pricingMode === 'agreement' ? '' : 'none';
 }
 
 function buildSummary() {
@@ -1317,6 +1344,10 @@ function buildSummary() {
         visit: (_booking.price || '—') + ' ر.س / زيارة',
         quote: 'حسب الفحص والاتفاق',
     };
+    // Override with new pricing mode
+    if (_booking.pricingMode === 'agreement') {
+        priceMap[_booking.priceType] = '🤝 حسب الاتفاق بعد المعاينة';
+    }
     document.getElementById('sumProvider').textContent  = _booking.providerName;
     document.getElementById('sumType').textContent      = _booking.serviceType;
     document.getElementById('sumMaterials').textContent = MAT_LABELS[_booking.materialsOption];
@@ -1348,6 +1379,7 @@ async function confirmBooking() {
         isUrgent:        _booking.when === 'urgent',
         description:     document.getElementById('issueDesc').value.trim(),
         category:        _booking.category,
+        pricingMode:     _booking.pricingMode,
     };
 
     try {

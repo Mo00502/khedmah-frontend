@@ -37,11 +37,19 @@
         .header-search input { flex: 1; border: none; background: transparent; padding: 0.5rem 1rem; font-family: 'Tajawal', sans-serif; font-size: 16px; outline: none; }
         .header-search button { background: var(--primary); border: none; color: white; padding: 0.5rem 1rem; cursor: pointer; font-size: 0.9rem; font-family: 'Tajawal', sans-serif; white-space: nowrap; }
 
-        /* Layout */
-        .page-layout { max-width: 1200px; margin: 0 auto; padding: 1.5rem 5%; display: flex; gap: 1.5rem; }
+        /* Layout — simple 2-col: sidebar + cards, no third column */
+        .page-layout {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1.5rem 5%;
+            display: flex;
+            gap: 1.5rem;
+            align-items: flex-start;
+            justify-content: flex-start;
+        }
 
         /* Filters Sidebar */
-        .filters-sidebar { width: 230px; flex-shrink: 0; }
+        .filters-sidebar { width: 230px; flex-shrink: 0; position: sticky; top: 5rem; }
         .filter-panel { background: white; border-radius: 16px; padding: 1.25rem; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 1rem; }
         .filter-title { font-weight: 700; font-size: 0.88rem; margin-bottom: 0.85rem; display: flex; justify-content: space-between; align-items: center; }
         .filter-clear { font-size: 0.75rem; color: var(--primary); cursor: pointer; font-weight: 500; }
@@ -121,15 +129,16 @@
         html.dark .nav-links a { color: #94a3b8; }
         html.dark .nav-links a.active { color: var(--primary); }
         html.dark .page-header { background: #1e293b; border-color: #334155; }
-        html.dark .header-search { background: #0f172a; border-color: #334155; }
-        html.dark .header-search input { color: #e2e8f0; }
+        html.dark .header-search { background: #1e293b; border-color: #334155; }
+        html.dark .header-search input { color: #e2e8f0; background: transparent; }
         html.dark .filter-panel { background: #1e293b; }
         html.dark .filter-option label { color: #cbd5e1; }
         html.dark .filter-select { background: #1e293b; color: #e2e8f0; border-color: #334155; }
         html.dark .range-input { background: #0f172a; color: #e2e8f0; border-color: #334155; }
         html.dark .sort-select { background: #1e293b; color: #e2e8f0; border-color: #334155; }
-        html.dark .tender-card { background: #1e293b; }
-        html.dark .tc-meta { border-color: #334155; }
+        html.dark .tender-card { background: #243448; box-shadow: 0 2px 12px rgba(0,0,0,.3); }
+        html.dark .tc-meta { border-color: #2e4060; }
+        html.dark .tender-card .skeleton { background: linear-gradient(90deg,#243448 25%,#334155 50%,#243448 75%); background-size:200% 100%; }
         html.dark .sector-tag { background: #0f172a; color: #94a3b8; }
         html.dark .modal { background: #1e293b; }
         html.dark .form-control { background: #0f172a; color: #e2e8f0; border-color: #334155; }
@@ -192,11 +201,14 @@
         </div>
     </nav>
 
-    <div style="background:linear-gradient(135deg,#028090,#02C39A);padding:1.75rem 5%;text-align:center">
+    <div style="background:linear-gradient(135deg,#028090,#02C39A);padding:1.75rem 5%;text-align:center" id="heroSection">
       <p data-i18n="tenders_hero_eyebrow" style="color:rgba(255,255,255,.6);font-size:.78rem;letter-spacing:.5px;text-transform:uppercase;margin-bottom:.4rem;font-family:'Tajawal',sans-serif">منصة المناقصات والمشاريع</p>
-      <h2 data-i18n="tenders_hero_title" style="color:white;font-size:1.35rem;font-weight:900;margin-bottom:.45rem;font-family:'Tajawal',sans-serif">لديك مشروع؟ انشره وستأتيك العروض</h2>
-      <p data-i18n="tenders_hero_desc" style="color:rgba(255,255,255,.85);font-size:.88rem;margin-bottom:1rem;font-family:'Tajawal',sans-serif">من تجديد منزل إلى بناء مقهى — صف مشروعك واستقبل عروض من شركات ومقاولين موثوقين</p>
-      <a href="tender-create.html" onclick="return guardPost(event)" data-i18n="tenders_btn_create" style="background:white;color:#028090;padding:.8rem 2.25rem;border-radius:12px;text-decoration:none;font-weight:900;font-size:1rem;display:inline-flex;align-items:center;gap:.4rem;min-height:48px;box-shadow:0 4px 15px rgba(0,0,0,.15)">➕ أضف مناقصتك</a>
+      <h2 id="heroTitle" style="color:white;font-size:1.35rem;font-weight:900;margin-bottom:.45rem;font-family:'Tajawal',sans-serif">لديك مشروع؟ انشره وستأتيك العروض</h2>
+      <p id="heroDesc" style="color:rgba(255,255,255,.85);font-size:.88rem;margin-bottom:1rem;font-family:'Tajawal',sans-serif">من تجديد منزل إلى بناء مقهى — صف مشروعك واستقبل عروض من شركات ومقاولين موثوقين</p>
+      <!-- Hero CTA — updated by renderHero() based on role -->
+      <div id="heroCta">
+        <a href="tender-create.html" onclick="return guardPost(event)" id="heroPostBtn" style="background:white;color:#028090;padding:.8rem 2.25rem;border-radius:12px;text-decoration:none;font-weight:900;font-size:1rem;display:inline-flex;align-items:center;gap:.4rem;min-height:48px;box-shadow:0 4px 15px rgba(0,0,0,.15)">➕ أضف مناقصتك</a>
+      </div>
     </div>
 
     <div class="market-stats">
@@ -277,16 +289,80 @@
 
             <div class="tenders-list" id="tendersList">
 
-
-            <!-- Cards injected by renderDemoCards(lang) -->
+            <!-- Skeleton cards — visible immediately, replaced by renderDemoCards() -->
+            <div class="tender-card" data-skeleton>
+                <div class="tc-header">
+                    <div class="tc-info">
+                        <div class="skeleton" style="height:18px;width:62%;margin-bottom:.55rem;border-radius:8px;"></div>
+                        <div class="skeleton" style="height:13px;width:38%;margin-bottom:.45rem;border-radius:6px;"></div>
+                        <div class="skeleton" style="height:13px;width:88%;border-radius:6px;"></div>
+                    </div>
+                    <div class="tc-side"><div class="skeleton" style="height:24px;width:90px;border-radius:8px;margin-bottom:.5rem;"></div><div class="skeleton" style="height:14px;width:60px;border-radius:6px;"></div></div>
+                </div>
+                <div class="tc-meta">
+                    <div class="skeleton" style="height:12px;width:55px;border-radius:6px;"></div>
+                    <div class="skeleton" style="height:12px;width:72px;border-radius:6px;"></div>
+                    <span class="spacer"></span>
+                    <div class="skeleton" style="height:32px;width:95px;border-radius:10px;"></div>
+                </div>
+            </div>
+            <div class="tender-card" data-skeleton>
+                <div class="tc-header">
+                    <div class="tc-info">
+                        <div class="skeleton" style="height:18px;width:70%;margin-bottom:.55rem;border-radius:8px;"></div>
+                        <div class="skeleton" style="height:13px;width:44%;margin-bottom:.45rem;border-radius:6px;"></div>
+                        <div class="skeleton" style="height:13px;width:80%;border-radius:6px;"></div>
+                    </div>
+                    <div class="tc-side"><div class="skeleton" style="height:24px;width:90px;border-radius:8px;margin-bottom:.5rem;"></div><div class="skeleton" style="height:14px;width:60px;border-radius:6px;"></div></div>
+                </div>
+                <div class="tc-meta">
+                    <div class="skeleton" style="height:12px;width:55px;border-radius:6px;"></div>
+                    <div class="skeleton" style="height:12px;width:72px;border-radius:6px;"></div>
+                    <span class="spacer"></span>
+                    <div class="skeleton" style="height:32px;width:95px;border-radius:10px;"></div>
+                </div>
+            </div>
+            <div class="tender-card" data-skeleton>
+                <div class="tc-header">
+                    <div class="tc-info">
+                        <div class="skeleton" style="height:18px;width:55%;margin-bottom:.55rem;border-radius:8px;"></div>
+                        <div class="skeleton" style="height:13px;width:42%;margin-bottom:.45rem;border-radius:6px;"></div>
+                        <div class="skeleton" style="height:13px;width:75%;border-radius:6px;"></div>
+                    </div>
+                    <div class="tc-side"><div class="skeleton" style="height:24px;width:90px;border-radius:8px;margin-bottom:.5rem;"></div><div class="skeleton" style="height:14px;width:60px;border-radius:6px;"></div></div>
+                </div>
+                <div class="tc-meta">
+                    <div class="skeleton" style="height:12px;width:55px;border-radius:6px;"></div>
+                    <div class="skeleton" style="height:12px;width:72px;border-radius:6px;"></div>
+                    <span class="spacer"></span>
+                    <div class="skeleton" style="height:32px;width:95px;border-radius:10px;"></div>
+                </div>
+            </div>
+            <div class="tender-card" data-skeleton>
+                <div class="tc-header">
+                    <div class="tc-info">
+                        <div class="skeleton" style="height:18px;width:68%;margin-bottom:.55rem;border-radius:8px;"></div>
+                        <div class="skeleton" style="height:13px;width:35%;margin-bottom:.45rem;border-radius:6px;"></div>
+                        <div class="skeleton" style="height:13px;width:82%;border-radius:6px;"></div>
+                    </div>
+                    <div class="tc-side"><div class="skeleton" style="height:24px;width:90px;border-radius:8px;margin-bottom:.5rem;"></div><div class="skeleton" style="height:14px;width:60px;border-radius:6px;"></div></div>
+                </div>
+                <div class="tc-meta">
+                    <div class="skeleton" style="height:12px;width:55px;border-radius:6px;"></div>
+                    <div class="skeleton" style="height:12px;width:72px;border-radius:6px;"></div>
+                    <span class="spacer"></span>
+                    <div class="skeleton" style="height:32px;width:95px;border-radius:10px;"></div>
+                </div>
+            </div>
 
             <div class="empty-state-ux" id="emptyState" style="display:none;">
                 <div class="empty-icon">🔍</div>
                 <h3 data-i18n="tenders_empty_title">لا توجد مناقصات مطابقة</h3>
                 <p data-i18n="tenders_empty_desc">جرّب تغيير معايير البحث أو إزالة بعض الفلاتر</p>
             </div>
-        </div>
-    </div>
+        </div><!-- /tendersList -->
+    </div><!-- /results-area -->
+    </div><!-- /page-layout -->
 
     <!-- Post Tender Modal -->
     <div class="modal-overlay" id="postModal">
@@ -446,6 +522,11 @@
         // ── Build one card DOM element for a given language ──────────────────
         function _tx(key, fallback) { return (typeof window.t === 'function') ? window.t(key) : fallback; }
 
+        // Detect current user role once per render cycle
+        function _getRole() {
+            try { return (JSON.parse(localStorage.getItem('khedmah_user') || '{}').role || '').toLowerCase(); } catch(e) { return ''; }
+        }
+
         function buildDemoCard(td, lang) {
             const FALLBACK = _tx('tenders_no_translation', 'Content not available in this language yet');
             const title  = td.title[lang]        || FALLBACK;
@@ -457,26 +538,34 @@
             const curr   = lang === 'en' ? 'SAR' : _tx('common_riyal','ر.س');
             const estLbl = lang === 'en' ? 'estimated' : _tx('tenders_estimated','تقديرياً');
             const bidsLbl= _tx('tenders_bids_label','عروض');
-            const viewLbl= _tx('tenders_btn_view','View Details');
-            const bidLbl = _tx('tenders_btn_bid','✍️ Submit Bid');
+            const viewLbl= lang === 'en' ? 'View Details' : 'عرض التفاصيل';
+            const bidLbl = lang === 'en' ? '✍️ Submit Bid' : '✍️ تقديم عرض';
 
             const statusLabels = {
-                open:   _tx('tenders_status_open_badge',  lang==='en'?'Open':'مفتوح'),
-                soon:   _tx('tenders_status_soon_badge',  lang==='en'?'Closing Soon':'يغلق قريبًا'),
-                closed: _tx('tenders_status_closed_badge',lang==='en'?'Closed':'مغلق')
+                open:   lang==='en'?'Open':'مفتوح',
+                soon:   lang==='en'?'Closing Soon':'يغلق قريبًا',
+                closed: lang==='en'?'Closed':'مغلق'
             };
             const statusLbl   = statusLabels[td.status] || td.status;
             const statusClass = td.status==='open'?'status-open':td.status==='soon'?'status-soon':'status-closed';
 
             let badgeHtml = '';
-            if (td.badge === 'new')     badgeHtml = `<span class="badge-new">${_tx('tenders_badge_new','New')}</span>`;
-            else if (td.badge==='closing') badgeHtml = `<span class="badge-closing">⏰ ${_tx('tenders_badge_closing','Closing Soon')}</span>`;
-            else if (td.badge==='closed')  badgeHtml = `<span class="badge-closed">${_tx('tenders_badge_closed','Closed')}</span>`;
+            if (td.badge === 'new')        badgeHtml = `<span class="badge-new">${lang==='en'?'New':'جديد'}</span>`;
+            else if (td.badge==='closing') badgeHtml = `<span class="badge-closing">⏰ ${lang==='en'?'Closing Soon':'يغلق قريبًا'}</span>`;
+            else if (td.badge==='closed')  badgeHtml = `<span class="badge-closed">${lang==='en'?'Closed':'مغلق'}</span>`;
 
+            // Role-aware action button
+            const role   = _getRole();
+            const isAdmin = !!localStorage.getItem('khedmah_admin');
             const isOpen = td.status !== 'closed';
-            const bidBtn = isOpen
-                ? `<a href="tender-detail.html?id=${td.id}" class="btn-bid">${escHtml(bidLbl)}</a>`
-                : `<span class="btn-bid" style="background:#94a3b8;cursor:not-allowed">${escHtml(statusLabels.closed)}</span>`;
+            // Customers post tenders; show only "View Details" — no bid button
+            // Providers and guests see the "Submit Bid" button (guests redirected to login by tender-detail)
+            let bidBtn = '';
+            if (!isAdmin && role !== 'customer') {
+                bidBtn = isOpen
+                    ? `<a href="tender-detail.html?id=${td.id}" class="btn-bid">${escHtml(bidLbl)}</a>`
+                    : `<span class="btn-bid" style="background:#94a3b8;cursor:not-allowed">${escHtml(statusLabels.closed)}</span>`;
+            }
 
             const div = document.createElement('div');
             div.className    = 'tender-card';
@@ -511,12 +600,20 @@
             return div;
         }
 
+        // Track whether real API cards are shown (prevents demo cards overriding them on lang switch)
+        let _apiCardsLoaded = false;
+
         // ── Re-render all demo cards in the given language ───────────────────
         function renderDemoCards(lang) {
+            if (_apiCardsLoaded) {
+                // API cards loaded — don't re-add demo cards; just re-apply filters
+                applyFilters();
+                return;
+            }
             const list = document.getElementById('tendersList');
             if (!list) return;
-            // Remove existing demo cards
-            list.querySelectorAll('[data-demo-id]').forEach(el => el.remove());
+            // Remove skeleton placeholders and any existing demo cards
+            list.querySelectorAll('[data-skeleton], [data-demo-id]').forEach(el => el.remove());
             // Re-insert in original order
             DEMO_TENDERS.forEach(td => list.appendChild(buildDemoCard(td, lang)));
             // Update total count display
@@ -657,18 +754,42 @@
         });
 
         function buildTenderCard(t) {
+            const lang = window.I18n ? I18n.getCurrentLang() : 'ar';
             const statusMap = { OPEN:'open', CLOSED:'closed', AWARDED:'closed', CANCELLED:'closed', DRAFT:'closed', UNDER_REVIEW:'open' };
-            const _tFn = typeof t === 'function' ? t : (k => k);
-            const statusLabelMap = { OPEN: _tFn('tenders_status_open_badge') || 'مفتوح', AWARDED: 'مُرسى', CANCELLED: 'ملغي', CLOSED: _tFn('tenders_status_closed_badge') || 'مغلق', DRAFT: 'مسودة', UNDER_REVIEW: _tFn('tenders_status_soon_badge') || 'قيد المراجعة' };
+            const statusLabelMap = {
+                OPEN:         lang==='en'?'Open':'مفتوح',
+                AWARDED:      lang==='en'?'Awarded':'مُرسى',
+                CANCELLED:    lang==='en'?'Cancelled':'ملغي',
+                CLOSED:       lang==='en'?'Closed':'مغلق',
+                DRAFT:        lang==='en'?'Draft':'مسودة',
+                UNDER_REVIEW: lang==='en'?'Under Review':'قيد المراجعة'
+            };
             const badgeClass = t.status === 'OPEN' ? 'status-open' : t.status === 'UNDER_REVIEW' ? 'status-soon' : 'status-closed';
             const budgetMin = Number(t.budgetMin || t.budgetLow || 0);
             const budgetMax = Number(t.budgetMax || t.budgetHigh || 0);
             const budgetAvg = budgetMax > 0 ? Math.round((budgetMin + budgetMax) / 2) : budgetMin;
             const budgetStr = budgetMin > 0 && budgetMax > 0
-                ? `${budgetMin.toLocaleString('ar-SA')} – ${budgetMax.toLocaleString('ar-SA')}`
-                : budgetAvg > 0 ? budgetAvg.toLocaleString('ar-SA') : '—';
-            const deadline = t.deadline ? new Date(t.deadline).toLocaleDateString('ar-SA', {year:'numeric',month:'long',day:'numeric'}) : '—';
+                ? `${budgetMin.toLocaleString(lang==='en'?'en-US':'ar-SA')} – ${budgetMax.toLocaleString(lang==='en'?'en-US':'ar-SA')}`
+                : budgetAvg > 0 ? budgetAvg.toLocaleString(lang==='en'?'en-US':'ar-SA') : '—';
+            const curr = lang === 'en' ? 'SAR' : 'ر.س';
+            const closingLbl = lang === 'en' ? 'Closes:' : 'الإغلاق:';
+            const deadline = t.deadline
+                ? new Date(t.deadline).toLocaleDateString(lang==='en'?'en-US':'ar-SA', {year:'numeric',month:'long',day:'numeric'})
+                : '—';
             const canBid = t.status === 'OPEN' && new Date() < new Date(t.deadline || '9999');
+            const viewLbl = lang === 'en' ? 'View Details' : 'عرض التفاصيل';
+            const bidLbl  = lang === 'en' ? '✍️ Submit Bid' : '✍️ تقديم عرض';
+            const closedLbl = lang === 'en' ? 'Closed' : 'مغلق';
+
+            // Role-aware bid button
+            const role = _getRole();
+            const isAdm = !!localStorage.getItem('khedmah_admin');
+            let bidBtnHtml = '';
+            if (!isAdm && role !== 'customer') {
+                bidBtnHtml = canBid
+                    ? `<a href="tender-detail.html?id=${encodeURIComponent(t.id)}" class="btn-bid">${escHtml(bidLbl)}</a>`
+                    : `<span class="btn-bid" style="background:#94a3b8;cursor:not-allowed">${escHtml(closedLbl)}</span>`;
+            }
 
             const card = document.createElement('div');
             card.className = 'tender-card';
@@ -683,36 +804,79 @@
               <div class="tc-header">
                 <div class="tc-info">
                   <div class="tc-title"><a href="tender-detail.html?id=${encodeURIComponent(t.id)}">${escHtml(t.title)}</a></div>
-                  <div class="tc-org">🏢 ${escHtml(t.company?.nameAr || t.company?.name || 'شركة')}</div>
+                  <div class="tc-org">🏢 ${escHtml(t.company?.nameAr || t.company?.name || (lang==='en'?'Company':'شركة'))}</div>
                   <div class="tc-desc">${escHtml((t.description || '').slice(0, 150))}${(t.description?.length ?? 0) > 150 ? '...' : ''}</div>
                 </div>
                 <div class="tc-side">
-                  <div class="tc-budget">${budgetStr} <small>ر.س</small></div>
+                  <div class="tc-budget">${budgetStr}<small>${curr}</small></div>
                   <span class="status-badge ${badgeClass}">${statusLabelMap[t.status] || t.status}</span>
                 </div>
               </div>
               <div class="tc-meta">
                 <span>📍 ${escHtml(t.region || '')}</span>
-                <span>⏰ الإغلاق: ${deadline}</span>
+                <span>⏰ ${closingLbl} ${deadline}</span>
                 <span class="sector-tag">${escHtml(t.category || '')}</span>
                 <span class="spacer"></span>
-                <a href="tender-detail.html?id=${encodeURIComponent(t.id)}" class="btn-details" data-i18n="tenders_btn_view">عرض التفاصيل</a>
-                ${canBid
-                  ? `<a href="tender-detail.html?id=${encodeURIComponent(t.id)}" class="btn-bid" data-i18n="tenders_btn_bid">✍️ تقديم عرض</a>`
-                  : `<span class="btn-bid" style="background:#94a3b8;cursor:not-allowed" data-i18n="tenders_status_closed_badge">مغلق</span>`
-                }
+                <a href="tender-detail.html?id=${encodeURIComponent(t.id)}" class="btn-details">${escHtml(viewLbl)}</a>
+                ${bidBtnHtml}
               </div>`;
             return card;
         }
 
-        // ── Auth helper: redirect to login if not logged in ──────────────────
+        // ── Auth helper: customers only can post tenders ─────────────────────
         function guardPost(e) {
             if (!localStorage.getItem('khedmah_demo')) {
                 e.preventDefault();
                 window.location.href = 'login.html?redirect=tender-create.html';
                 return false;
             }
+            const role = _getRole();
+            if (role === 'provider') {
+                e.preventDefault();
+                const lang = window.I18n ? I18n.getCurrentLang() : 'ar';
+                showToast(lang === 'en'
+                    ? '⚠️ Providers submit bids, not post tenders. Visit "My Bids" in your dashboard.'
+                    : '⚠️ مزودو الخدمات يقدمون عروضاً، وليس مناقصات. راجع "عروضي" في لوحة التحكم.');
+                return false;
+            }
             return true;
+        }
+
+        // ── Role-aware hero section ───────────────────────────────────────────
+        function renderHero(lang) {
+            lang = lang || (window.I18n ? I18n.getCurrentLang() : 'ar');
+            const role = _getRole();
+            const heroTitle = document.getElementById('heroTitle');
+            const heroDesc  = document.getElementById('heroDesc');
+            const heroCta   = document.getElementById('heroCta');
+            if (!heroTitle) return;
+
+            if (role === 'provider') {
+                heroTitle.textContent = lang === 'en'
+                    ? 'Browse open projects and submit your bids'
+                    : 'تصفّح المشاريع المفتوحة وقدّم عروضك';
+                heroDesc.textContent  = lang === 'en'
+                    ? 'Find renovation, construction, and tech projects — and win contracts with a 2% platform commission only.'
+                    : 'ابحث عن مشاريع تشطيب وبناء وتقنية — وارسِ عقوداً بعمولة 2% فقط على المنصة.';
+                heroCta.innerHTML = `<a href="provider-dashboard.html" style="background:white;color:#028090;padding:.8rem 2.25rem;border-radius:12px;text-decoration:none;font-weight:900;font-size:1rem;display:inline-flex;align-items:center;gap:.4rem;min-height:48px;box-shadow:0 4px 15px rgba(0,0,0,.15)">${lang==='en'?'📊 My Dashboard':'📊 لوحة التحكم'}</a>`;
+            } else if (role === 'customer') {
+                heroTitle.textContent = lang === 'en'
+                    ? 'Got a project? Post it and receive bids'
+                    : 'لديك مشروع؟ انشره وستأتيك العروض';
+                heroDesc.textContent  = lang === 'en'
+                    ? 'From home renovation to building a café — describe your project and receive bids from vetted contractors.'
+                    : 'من تجديد منزل إلى بناء مقهى — صف مشروعك واستقبل عروض من شركات ومقاولين موثوقين';
+                heroCta.innerHTML = `<a href="tender-create.html" onclick="return guardPost(event)" style="background:white;color:#028090;padding:.8rem 2.25rem;border-radius:12px;text-decoration:none;font-weight:900;font-size:1rem;display:inline-flex;align-items:center;gap:.4rem;min-height:48px;box-shadow:0 4px 15px rgba(0,0,0,.15)">➕ ${lang==='en'?'Post Your Tender':'أضف مناقصتك'}</a>`;
+            } else {
+                // Guest
+                heroTitle.textContent = lang === 'en'
+                    ? 'Got a project? Post it and receive bids'
+                    : 'لديك مشروع؟ انشره وستأتيك العروض';
+                heroDesc.textContent  = lang === 'en'
+                    ? 'From home renovation to building a café — describe your project and receive bids from vetted contractors.'
+                    : 'من تجديد منزل إلى بناء مقهى — صف مشروعك واستقبل عروض من شركات ومقاولين موثوقين';
+                heroCta.innerHTML = `<a href="tender-create.html" onclick="return guardPost(event)" style="background:white;color:#028090;padding:.8rem 2.25rem;border-radius:12px;text-decoration:none;font-weight:900;font-size:1rem;display:inline-flex;align-items:center;gap:.4rem;min-height:48px;box-shadow:0 4px 15px rgba(0,0,0,.15)">➕ ${lang==='en'?'Post Your Tender':'أضف مناقصتك'}</a>`;
+            }
         }
 
         // ── Auth-aware nav (guest vs logged-in) ───────────────────────────────
@@ -736,13 +900,11 @@
                     (typeof window.t === 'function' ? window.t('nav_register') : 'سجّل') + '</a>';
             }
         }
-        // Re-build nav when language switches so labels update
-        window.addEventListener('khedmah:lang-changed', buildNavAuth);
-
-        // Re-render demo cards whenever language is switched
+        // Re-render demo cards + nav + hero whenever language switches
         window.addEventListener('khedmah:lang-changed', function(e) {
             renderDemoCards(e.detail.lang);
-            buildNavAuth(); // nav labels also update
+            buildNavAuth();
+            renderHero(e.detail.lang);
         });
 
         document.addEventListener('DOMContentLoaded', async function() {
@@ -750,6 +912,7 @@
             buildNavAuth();
             // Initial render with current language
             const initLang = window.I18n ? I18n.getCurrentLang() : 'ar';
+            renderHero(initLang);
             renderDemoCards(initLang);
 
             // Load real tenders from API — replace demo cards
@@ -757,13 +920,12 @@
                 const res = await API.tenders.list({ limit: 50 });
                 const items = Array.isArray(res) ? res : (res.data || res.items || []);
                 if (items.length > 0) {
+                    _apiCardsLoaded = true;
                     const list = document.getElementById('tendersList');
-                    // Remove demo cards (static HTML)
-                    list.querySelectorAll('.tender-card:not([data-api-id])').forEach(el => el.remove());
+                    // Remove all demo/skeleton cards, replace with API cards
+                    list.querySelectorAll('.tender-card').forEach(el => el.remove());
                     items.forEach(t => {
-                        if (!list.querySelector(`[data-api-id="${t.id}"]`)) {
-                            list.insertBefore(buildTenderCard(t), list.firstChild);
-                        }
+                        list.appendChild(buildTenderCard(t));
                     });
                     const total = list.querySelectorAll('.tender-card').length;
                     const showing = typeof t === 'function' ? t('tenders_results_showing') : 'عرض';
