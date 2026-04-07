@@ -404,25 +404,84 @@ html.dark .kw-msgs::-webkit-scrollbar-thumb { background: #475569; }
     // Try authenticated FAQ endpoint first; fall back to public widget endpoint
     const endpoint = token ? `${BASE}/ai/faq` : `${BASE}/ai/widget`;
 
-    const res = await fetch(endpoint, {
-      method:  'POST',
-      headers,
-      body:    JSON.stringify({ question }),
-    });
+    try {
+      const res = await fetch(endpoint, {
+        method:  'POST',
+        headers,
+        body:    JSON.stringify({ question }),
+      });
 
-    if (!res.ok) {
-      // If 401/403, user may have stale token — show login prompt
-      if (res.status === 401 || res.status === 403) {
-        return {
-          answer: s('loginPrompt'),
-          relatedLinks: [{ label: s('loginBtn'), path: 'login.html' }],
-          needsHumanSupport: false,
-        };
+      if (!res.ok) {
+        if (res.status === 401 || res.status === 403) {
+          return {
+            answer: s('loginPrompt'),
+            relatedLinks: [{ label: s('loginBtn'), path: 'login.html' }],
+            needsHumanSupport: false,
+          };
+        }
+        throw new Error(`HTTP ${res.status}`);
       }
-      throw new Error(`HTTP ${res.status}`);
+
+      return res.json();
+    } catch (_netErr) {
+      // Backend unreachable — use local demo FAQ
+      return _demoFAQ(question);
+    }
+  }
+
+  /* ─── Demo FAQ (offline fallback) ────────────────────────────────────────── */
+  function _demoFAQ(q) {
+    const low = (q || '').toLowerCase();
+    const ar = getLang() === 'ar';
+    const KB = [
+      { keys: ['ضمان','escrow','إسكرو','حماية','أموال','دفع'],
+        a: ar ? 'نظام الضمان (Escrow) يحمي أموالك — يتم حجز المبلغ حتى اكتمال الخدمة بنجاح. لا يُحوّل المبلغ للمزود إلا بعد تأكيدك.'
+             : 'The Escrow system holds your payment until the service is completed successfully. Funds are only released to the provider after your confirmation.',
+        links: [{ label: ar ? '💳 كيف يعمل الدفع' : '💳 How payment works', path: 'payment-escrow.html' }] },
+      { keys: ['رسوم','عمولة','نسبة','commission','fee','platform'],
+        a: ar ? 'عمولة المنصة:\n• خدمات منزلية: 15% من قيمة الضمان\n• المناقصات: 2% من قيمة العقد\n• المعدات: 10% من قيمة الإيجار\n• ضريبة القيمة المضافة: 15% على جميع الفواتير'
+             : 'Platform fees:\n• Home Services: 15% of escrow\n• Tenders: 2% of contract value\n• Equipment: 10% of rental\n• VAT: 15% on all invoices',
+        links: [] },
+      { keys: ['نزاع','شكوى','dispute','مشكل','خلاف'],
+        a: ar ? 'لفتح نزاع:\n1. اذهب للوحة التحكم\n2. اختر الطلب\n3. اضغط "فتح نزاع"\n\nفريق خدمة سيراجع الحالة خلال 24 ساعة.'
+             : 'To open a dispute:\n1. Go to Dashboard\n2. Select the order\n3. Click "Open Dispute"\n\nOur team will review within 24 hours.',
+        links: [{ label: ar ? '📋 لوحة التحكم' : '📋 Dashboard', path: 'customer-dashboard.html' }] },
+      { keys: ['تقييم','تقيم','rate','review','نجوم'],
+        a: ar ? 'بعد اكتمال الخدمة، ستظهر لك شاشة التقييم تلقائياً. يمكنك تقييم المزود من 1 إلى 5 نجوم مع كتابة ملاحظات.'
+             : 'After service completion, the rating screen appears automatically. Rate your provider 1-5 stars with optional comments.',
+        links: [{ label: ar ? '⭐ تقييم خدمة' : '⭐ Rate service', path: 'rate-service.html' }] },
+      { keys: ['إلغاء','الغاء','cancel','استرداد','refund'],
+        a: ar ? 'يمكنك الإلغاء إذا لم تبدأ الخدمة بعد. الإلغاء يعتمد على حالة الطلب:\n• قيد الانتظار / مقبول → إلغاء مباشر\n• المزود في الطريق → إلغاء مع تنبيه\n• بدأت الخدمة → لا يمكن الإلغاء'
+             : 'You can cancel if the service hasn\'t started yet. Cancellation depends on request status:\n• Pending/Accepted → direct cancel\n• Provider en route → cancel with warning\n• Service started → cannot cancel',
+        links: [{ label: ar ? '📋 طلباتي' : '📋 My orders', path: 'customer-dashboard.html' }] },
+      { keys: ['مناقصة','مناقصات','tender','عرض','bid','مشروع'],
+        a: ar ? 'منصة المناقصات تتيح لك نشر مشروعك واستقبال عروض من مقاولين موثوقين. العمولة 2% فقط على العقود المُرساة.'
+             : 'The Tenders platform lets you post projects and receive bids from verified contractors. Only 2% commission on awarded contracts.',
+        links: [{ label: ar ? '📋 المناقصات' : '📋 Tenders', path: 'tenders.html' }] },
+      { keys: ['معدات','معده','equipment','إيجار','rent','تأجير'],
+        a: ar ? 'يمكنك استئجار معدات ثقيلة (رافعات، حفارات، خلاطات) مباشرة من المنصة. احصل على عروض أسعار فورية.'
+             : 'Rent heavy equipment (cranes, excavators, mixers) directly. Get instant price quotes from verified suppliers.',
+        links: [{ label: ar ? '🏗️ المعدات' : '🏗️ Equipment', path: 'equipment.html' }] },
+      { keys: ['استشارة','استشار','consult','مهندس','هندس'],
+        a: ar ? 'احجز استشارة هندسية مع مهندسين معتمدين. يمكنك اختيار جلسة فورية أو مجدولة.'
+             : 'Book engineering consultations with certified engineers. Choose instant or scheduled sessions.',
+        links: [{ label: ar ? '🧑‍💼 الاستشارات' : '🧑‍💼 Consultations', path: 'consultations.html' }] },
+    ];
+
+    // Simulate typing delay
+    const match = KB.find(item => item.keys.some(k => low.includes(k)));
+    if (match) {
+      return { answer: match.a, relatedLinks: match.links || [], needsHumanSupport: false };
     }
 
-    return res.json();
+    // Default response
+    return {
+      answer: ar
+        ? 'شكراً لسؤالك! حالياً المساعد الذكي يعمل في وضع تجريبي.\n\nيمكنني مساعدتك في:\n• نظام الضمان والدفع\n• الرسوم والعمولات\n• فتح نزاع أو شكوى\n• تقييم الخدمة\n• إلغاء الطلبات\n• المناقصات والمعدات والاستشارات\n\nجرّب سؤالي عن أحد هذه المواضيع!'
+        : 'Thanks for your question! The AI assistant is currently in demo mode.\n\nI can help with:\n• Escrow & payments\n• Fees & commissions\n• Opening disputes\n• Rating services\n• Cancellations\n• Tenders, equipment & consultations\n\nTry asking about any of these topics!',
+      relatedLinks: [],
+      needsHumanSupport: false,
+    };
   }
 
   /* ─── Render messages ─────────────────────────────────────────────────────── */
