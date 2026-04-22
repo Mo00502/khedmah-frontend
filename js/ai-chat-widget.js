@@ -375,7 +375,9 @@ html.dark .kw-msgs::-webkit-scrollbar-thumb { background: #475569; }
     try {
       const result = await callAPI(q);
       hideTyping();
-      addAIMsg(result.answer, result.relatedLinks, result.needsHumanSupport);
+      // Support both old format (relatedLinks) and new format (actions)
+      const links = result.relatedLinks || (result.actions || []).map(a => ({ label: a.label, path: a.path }));
+      addAIMsg(result.answer, links, result.needsHumanSupport);
     } catch (err) {
       hideTyping();
       addAIMsg(s('error'));
@@ -422,7 +424,9 @@ html.dark .kw-msgs::-webkit-scrollbar-thumb { background: #475569; }
         throw new Error(`HTTP ${res.status}`);
       }
 
-      return res.json();
+      const json = await res.json();
+      // Unwrap {success, data} envelope from ResponseInterceptor
+      return json.data || json;
     } catch (_netErr) {
       // Backend unreachable — use local demo FAQ
       return _demoFAQ(question);

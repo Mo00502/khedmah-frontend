@@ -532,7 +532,7 @@
         return src.replace(/api\.js.*$/, '');
       } catch(e) { return 'js/'; }
     })();
-    s.src = base + 'ai-chat-widget.js?v=4';
+    s.src = base + 'ai-chat-widget.js?v=5';
     s.onerror = function() {};
     document.head.appendChild(s);
   })();
